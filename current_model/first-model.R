@@ -1,7 +1,6 @@
 # Um primeiro exemplo de https://github.com/JimDuggan/SDMR
 
-
-# Carregando Bibliotecas Necessárias 
+# Loading Libraries
 library(deSolve)
 library(ggplot2)
 require(gridExtra)
@@ -9,11 +8,27 @@ library(scales)
 library(lhs)
 
 
+##### Sampling #####
+variaveis = 2
+pontos = 100
 
+# Obtendo um Hypercubo com as Variáveis que eu Quero
+randomLHS <- randomLHS(pontos, variaveis)
+
+# Transformando o Hypercubo em variáveis
+var <- matrix(0, nrow=pontos, ncol=variaveis)
 
 ##### Amostragem #####
+# Definindo Variáveis, mínimos e máximos:
+variaveis = c("TaxaNascimento","TaxaMorte")
+minimos = c(0.001,0.001)
+maximos = c(0.05, 20)
 
-##### Amostragem #####
+# Obtendo a Amostra
+Amostra = qunif(p=randomLHS,min=minimos, max=maximos)
+
+plot(Amostra)
+
 
 
 
@@ -54,6 +69,9 @@ model <- function(time, stocks, auxs){
 # Rodando a Simulação (uma vez)
 o<-data.frame(ode(y=stocks, times=simtime, func = model, 
                   parms=auxs, method="euler"))
+
+
+# Rodando a Simulação às Ganhas
 
 
 # Rodando a Simulação em todo o Ensemble
