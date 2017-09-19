@@ -1,4 +1,4 @@
-# Um primeiro exemplo de https://github.com/JimDuggan/SDMR
+# Este exemplo é baseado no modelo de difusão do capítulo 6 do livro do Morecroft.
 
 # Loading Libraries
 library(deSolve)
@@ -10,23 +10,36 @@ library(dplyr)
 library(plotly)
 library(akima)
 
+
+## Carregando Funções Úteis
+source('funcoes.R', encoding = 'UTF-8')
+
+
+##### Amostragem #####
+# Definindo Variáveis, mínimos e máximos:
+# Neste exemplo serão Variáveis Aleatórias:
+variaveis = c("aAdvertisingEffectiveness","aContactRate","aAdoptionFraction","aTotalPopulation","siniPotentialAdopters")
+
+# Carregando Inputs
+inputs = carregar_inputs()
+
+#Obtendo DataFrame de Parâmetros
+params = inputs$Parametros
+
 ##### Sampling #####
-nvar = 2
+nvar = length(params$Variavel)
 pontos = 200
 
 # Obtendo um Hypercubo com as Variáveis que eu quero
 randomLHS <- randomLHS(pontos, nvar)
 
-# Transformando o Hypercubo em variáveis
-var <- matrix(nrow=pontos, ncol=variaveis)
-
-##### Amostragem #####
-# Definindo Variáveis, mínimos e máximos:
-variaveis = c("aTaxaNascimento","aTaxaMorte")
 p = as.data.frame(randomLHS)
-min = c(0.01,0.01)
-max = c(0.2, 0.2)
+min = as.vector(params$Min)
+max = as.vector(params$Max)
+variaveis = as.vector(params$Variavel)
 
+# Transformando o Hypercubo em variáveis
+# var <- matrix(nrow=pontos, ncol=variaveis)
 ensemble = matrix(nrow = pontos, ncol = nvar)
 
 # Montando o Ensemble
@@ -34,7 +47,6 @@ for (var in variaveis) {
   i = which(x = variaveis == var)
   ensemble[,i] = qunif(p = randomLHS[,i], min = min[i], max = max[i])
 }
-
 colnames(ensemble) = variaveis
 
 ##### Setup Dinâmica de Sistemas ####
