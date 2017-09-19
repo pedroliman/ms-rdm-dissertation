@@ -1,0 +1,14 @@
+Adopters(t) = Adopters(t - dt) + (Adoption_Rate) * dt
+INIT Adopters = 10  {people}
+INFLOWS:
+Adoption_Rate = Adoption_from_Advertising +Adoption_from_Word_of_Mouth  {people/year}
+Potential_Adopters(t) = Potential_Adopters(t - dt) + (-Adoption_Rate) * dt
+INIT Potential_Adopters = Total_Population - Adopters  {people}
+OUTFLOWS:
+Adoption_Rate = Adoption_from_Advertising +Adoption_from_Word_of_Mouth  {people/year}
+Adoption_Fraction = .02  {dimensionless}
+Adoption_from_Advertising = Advertising_Effectiveness*Potential_Adopters  {people/year}
+Adoption_from_Word_of_Mouth = Contact_Rate*Adopters*(Potential_Adopters/Total_Population)*Adoption_Fraction  {people/year}
+Advertising_Effectiveness = .01  {1/year}
+Contact_Rate = 100  {people per person/year, which simplifies dimensionally to 1/year}
+Total_Population = 1e+006  {people}

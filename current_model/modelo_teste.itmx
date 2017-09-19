@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<version>1.0</version>
+<level>3</level>
+<xmlns>http://www.systemdynamics.org/XMILE</xmlns>
+<xmlns:isee>http://iseesystems.com/XMILE</xmlns:isee>
+<version>1.0</version>
+<namespace>std, isee</namespace>
+<name>modelo_teste</name>
+<uuid>822de2ec-637d-429a-a3dc-8e82db37025b</uuid>
+<vendor>isee systems, inc.</vendor>
+iThink
+<version>10.0.3</version>
+<lang>en</lang>
+<font-family>Arial</font-family>
+<font-size>9</font-size>
+<font-family>Arial</font-family>
+<font-size>9</font-size>
+<start>1</start>
+<stop>13</stop>
+0.25
+<method>Euler</method>
+<time_units>Months</time_units>
+<layer>model</layer>
+<grid_width>20</grid_width>
+<grid_height>50</grid_height>
+<divide_by_zero_alert>true</divide_by_zero_alert>
+<hide_taskbar>true</hide_taskbar>
+<show_module_prefix>true</show_module_prefix>
+<width>1350</width>
+<height>669</height>
+<width>595</width>
+<height>842</height>
+<order_by>module</order_by>
+<name>teste</name>
+<eqn>1000</eqn>
+<outflow>teste2</outflow>
+<non_negative />
+<x>160</x>
+<y>66</y>
+<color>blue</color>
+<name>teste2</name>
+<eqn>20</eqn>
+<non_negative />
+<x>231</x>
+<y>69</y>
+<color>blue</color>
+<x>182</x>
+<y>69</y>
+<x>281</x>
+<y>69</y>
+<page_width>595</page_width>
+<page_height>842</page_height>
+<isee:show_values_on_hover>true</isee:show_values_on_hover>
+<isee:converter_size>medium</isee:converter_size>
+<isee:animate_flows>true</isee:animate_flows>
+<isee:animate_stocks>true</isee:animate_stocks>
+<isee:animate_converters>true</isee:animate_converters>
+<report_balances>ending</report_balances>
+<report_flows>summed</report_flows>
+<page_width>788</page_width>
+<page_height>528</page_height>
+<simulation_delay>0.1</simulation_delay>
