@@ -7,7 +7,8 @@ require(gridExtra)
 library(scales)
 library(lhs)
 library(dplyr)
-
+library(plotly)
+library(akima)
 
 ##### Sampling #####
 nvar = 2
@@ -24,7 +25,7 @@ var <- matrix(nrow=pontos, ncol=variaveis)
 variaveis = c("aTaxaNascimento","aTaxaMorte")
 p = as.data.frame(randomLHS)
 min = c(0.01,0.01)
-max = c(0.1, 0.08)
+max = c(0.2, 0.2)
 
 ensemble = matrix(nrow = pontos, ncol = nvar)
 
@@ -101,6 +102,38 @@ colnames(dados_simulacao) = nomes_variaveis_final
 
 dados_simulacao = as.data.frame(dados_simulacao)
 names(dados_simulacao) = nomes_variaveis_final
+
+dadosplot = dplyr::filter(dados_simulacao, Tempo == 2020) %>% select (TaxaNascimento, TaxaMorte, Populacao)
+
+dadosplot = as.matrix(dadosplot)
+
+names = colnames(dadosplot)
+
+s = interp(dadosplot[,1],dadosplot[,2],dadosplot[,3])
+
+names(s) = names
+
+# Titulos
+f <- list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#7f7f7f"
+)
+x <- list(
+  title = "Taxa Nascimento",
+  titlefont = f
+)
+y <- list(
+  title = "TaxaMorte",
+  titlefont = f
+)
+z <- list(
+  title = "População",
+  titlefont = f
+)
+
+plot_ly(x = s$TaxaNascimento, y = s$TaxaMorte, z = s$Populacao) %>% add_surface() %>% layout(xaxis = x, yaxis = y, zaxis = z)
+
 
 write.csv2(dados_simulacao, file = "dados_simulados.csv")
 
