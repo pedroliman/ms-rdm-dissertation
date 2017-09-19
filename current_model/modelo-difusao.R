@@ -28,7 +28,7 @@ params = inputs$Parametros
 
 ##### Sampling #####
 nvar = length(params$Variavel)
-pontos = 200
+pontos = 1000
 
 # Obtendo um Hypercubo com as Variáveis que eu quero
 randomLHS <- randomLHS(pontos, nvar)
@@ -52,7 +52,7 @@ colnames(ensemble) = variaveis
 ##### Setup Dinâmica de Sistemas ####
 
 # Definindo Tempos da Simulação
-START<-2015; FINISH<-2020; STEP<-0.5
+START<-2015; FINISH<-2030; STEP<-0.25
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
@@ -126,7 +126,7 @@ colnames(dados_simulacao) = nomes_variaveis_final
 dados_simulacao = as.data.frame(dados_simulacao)
 names(dados_simulacao) = nomes_variaveis_final
 
-dadosplot = dplyr::filter(dados_simulacao, Tempo == 2020) %>% select (TaxaNascimento, TaxaMorte, Populacao)
+dadosplot = dplyr::filter(dados_simulacao, Tempo == 2030) %>% select (Adoption_Rate, ContactRate, Adopters)
 
 dadosplot = as.matrix(dadosplot)
 
@@ -167,8 +167,8 @@ z <- list(
   titlefont = f
 )
 
-plot_ly(x = s$TaxaNascimento, y = s$TaxaMorte, z = s$Populacao) %>% add_surface() %>% layout(xaxis = x, yaxis = y, zaxis = z)
+plot_ly(x = s$Adoption_Rate, y = s$ContactRate, z = s$Adopters) %>% add_surface() %>% layout(xaxis = x, yaxis = y, zaxis = z)
 
 
 # Armazenando os Resultados
-write.csv2(dados_simulacao, file = "dados_simulados.csv")
+write.csv2(dados_simulacao, file = "dados_simulados_difusao.csv")
