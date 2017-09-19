@@ -12,7 +12,7 @@ library(akima)
 
 ##### Sampling #####
 nvar = 2
-pontos = 1000
+pontos = 200
 
 # Obtendo um Hypercubo com as Variáveis que eu quero
 randomLHS <- randomLHS(pontos, nvar)
@@ -78,11 +78,6 @@ o<-data.frame(ode(y=stocks, times=simtime, func = model,
 dados_simulacao = matrix(nrow = pontos*(1+(FINISH - START)/STEP), ncol = 7)
 
 
-# Rodando a Simulação uma vez
-#o<-data.frame(ode(y=stocks, times=simtime, func = model, 
-#                  parms=ensemble[1,], method="euler"))
-
-
 # J é o índice dos dados simulados
 j = 1
 # Rodando a Simulacao Em todo o Ensemble
@@ -113,7 +108,19 @@ s = interp(dadosplot[,1],dadosplot[,2],dadosplot[,3])
 
 names(s) = names
 
-# Titulos
+# # Visualizando os Resultados
+
+# Visualizando Todas as Replicações
+ggplot(dados_simulacao,
+       aes(x=Tempo, y=Populacao, color=Replicacao, group=Replicacao)) + 
+  geom_line() + 
+  ylab("Populacao") + 
+  xlab("Tempo") + guides(color=FALSE)
+
+
+# 
+
+# Plotando a População Final
 f <- list(
   family = "Courier New, monospace",
   size = 18,
@@ -135,26 +142,5 @@ z <- list(
 plot_ly(x = s$TaxaNascimento, y = s$TaxaMorte, z = s$Populacao) %>% add_surface() %>% layout(xaxis = x, yaxis = y, zaxis = z)
 
 
+# Armazenando os Resultados
 write.csv2(dados_simulacao, file = "dados_simulados.csv")
-
-# 
-# # Visualizando os Resultados
-# p1<-ggplot()+
-#   geom_line(data=o,aes(time,o$sPopulacao,color="Populacao"))+
-#   scale_y_continuous(labels = comma)+
-#   ylab("Stock")+
-#   xlab("Year") +
-#   labs(color="")+
-#   theme(legend.position="none")
-# 
-# 
-# p2<-ggplot()+
-#   geom_line(data=o,aes(time,o$Mortes,color="Mortes"))+
-#   geom_line(data=o,aes(time,o$Nascimentos,color="Nascimentos"))+
-#   scale_y_continuous(labels = comma)+
-#   ylab("Flows")+
-#   xlab("Year") +
-#   labs(color="")+
-#   theme(legend.position="none")
-# 
-# p3<-grid.arrange(p1, p2,nrow=2, ncol=1)
