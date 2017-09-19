@@ -11,7 +11,7 @@ library(dplyr)
 
 ##### Sampling #####
 nvar = 2
-pontos = 10
+pontos = 1000
 
 # Obtendo um Hypercubo com as Variáveis que eu quero
 randomLHS <- randomLHS(pontos, nvar)
@@ -23,8 +23,8 @@ var <- matrix(nrow=pontos, ncol=variaveis)
 # Definindo Variáveis, mínimos e máximos:
 variaveis = c("aTaxaNascimento","aTaxaMorte")
 p = as.data.frame(randomLHS)
-min = c(0.001,0.001)
-max = c(0.05, 0.05)
+min = c(0.01,0.01)
+max = c(0.1, 0.08)
 
 ensemble = matrix(nrow = pontos, ncol = nvar)
 
@@ -89,7 +89,7 @@ for (i in 1:nrow(ensemble)) {
   # Começando a Rodar
   print(paste("Rodando Iteracao",i))
   dados_simulacao[j:((j+((FINISH - START)/STEP))),1:6] = ode(y=stocks, times=simtime, func = model, 
-                               parms=ensemble[1,], method="euler")
+                               parms=ensemble[i,], method="euler")
   dados_simulacao[j:(j+((FINISH - START)/STEP)),7] = i
   j = j + 1 + ((FINISH - START)/STEP)
   }
@@ -101,9 +101,6 @@ colnames(dados_simulacao) = nomes_variaveis_final
 
 dados_simulacao = as.data.frame(dados_simulacao)
 names(dados_simulacao) = nomes_variaveis_final
-
-# Resumindo Dados Finais (continuar daqui...Mas já está bom demais)
-replicacoes = group_by(dados_simulacao, Replicacao)
 
 write.csv2(dados_simulacao, file = "dados_simulados.csv")
 
