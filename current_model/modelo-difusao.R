@@ -58,9 +58,9 @@ START<-2015; FINISH<-2020; STEP<-0.5
 simtime <- seq(START, FINISH, by=STEP)
 
 
-# Criando Estoques 
-stocks  <- c(sPopulacao=10000)
-auxs    <- c(aTaxaNascimento=0.08, aTaxaMorte=0.03)
+# Criando Estoques (na mão em um primeiro momento).
+stocks  <- c(sPotentialAdopters=10000, sAdopters=0)
+auxs    <- c(aAdvertisingEffectiveness= .01, aContactRate= 100, aAdoptionFraction= .02, aTotalPopulation= 1000000)
 
 
 ##### Modelo de Dinâmica de Sistemas ####
@@ -69,15 +69,30 @@ auxs    <- c(aTaxaNascimento=0.08, aTaxaMorte=0.03)
 model <- function(time, stocks, auxs){
   with(as.list(c(stocks, auxs)),{ 
     
-    fNascimentos<-sPopulacao*aTaxaNascimento
+    aAdoption_from_Advertising = aAdvertisingEffectiveness * sPotentialAdopters # {people/year}
     
-    fMortes<-sPopulacao*aTaxaMorte
+    aAdoption_from_Word_of_Mouth = aContactRate * sAdopters * (sPotentialAdopters/aTotalPopulation) * aAdoptionFraction  # {people/year}
     
-    dPopulacao_dt <- fNascimentos - fMortes
+    fAdoption_Rate = aAdoption_from_Advertising + aAdoption_from_Word_of_Mouth # {people/year}
     
-    return (list(c(dPopulacao_dt),
-                 Nascimentos=fNascimentos, Mortes=fMortes,
-                 TaxaNascimentos=aTaxaNascimento,TaxaMortes=aTaxaMorte))   
+    # fNascimentos<-sPopulacao*aTaxaNascimento
+    # 
+    # fMortes<-sPopulacao*aTaxaMorte
+    
+    # dPopulacao_dt <- fNascimentos - fMortes
+    
+    sAdopters_dt <- fAdoption_Rate
+    
+    sPotentialAdpoters_dt <- -fAdoption_Rate
+    
+    return (list(c(sAdopters_dt, sPotentialAdpoters_dt),
+                 AdvertisingEffectiveness = aAdvertisingEffectiveness,
+                 ContactRate = aContactRate,
+                 AdoptionFraction = aAdoptionFraction,
+                 TotalPopulation = aTotalPopulation,
+                 Adoption_from_Advertising = aAdoption_from_Advertising,
+                 Adoption_from_Word_of_Mouth = aAdoption_from_Word_of_Mouth,
+                 Adoption_Rate = fAdoption_Rate))   
   })
 }
 
@@ -86,9 +101,10 @@ model <- function(time, stocks, auxs){
 o<-data.frame(ode(y=stocks, times=simtime, func = model, 
                   parms=auxs, method="euler"))
 
-# Montando uma matriz com todos os dados para a simulação
-dados_simulacao = matrix(nrow = pontos*(1+(FINISH - START)/STEP), ncol = 7)
+ncolunas = ncol(o)+1
 
+# Montando uma matriz com todos os dados para a simulação
+dados_simulacao = matrix(nrow = pontos*(1+(FINISH - START)/STEP), ncol = ncolunas)
 
 # J é o índice dos dados simulados
 j = 1
@@ -96,14 +112,14 @@ j = 1
 for (i in 1:nrow(ensemble)) {
   # Começando a Rodar
   print(paste("Rodando Iteracao",i))
-  dados_simulacao[j:((j+((FINISH - START)/STEP))),1:6] = ode(y=stocks, times=simtime, func = model, 
+  dados_simulacao[j:((j+((FINISH - START)/STEP))),1:ncolunas-1] = ode(y=stocks, times=simtime, func = model, 
                                parms=ensemble[i,], method="euler")
-  dados_simulacao[j:(j+((FINISH - START)/STEP)),7] = i
+  dados_simulacao[j:(j+((FINISH - START)/STEP)),ncolunas] = i
   j = j + 1 + ((FINISH - START)/STEP)
   }
 
 # Nomeando o Dataframe de Saída
-nomes_variaveis_final = c("Tempo", "Populacao", "Nascimentos", "Mortes", "TaxaNascimento", "TaxaMorte", "Replicacao")
+nomes_variaveis_final = c("Tempo", "PotentialAdopters", "Adopters", "AdvEffectiveness", "ContactRate", "AdoptionFraction", "TotalPopulation", "Adoption_From_Advertising", "Adoption_From_Word_of_Mouth", "Adoption_Rate", "Replicacao")
 
 colnames(dados_simulacao) = nomes_variaveis_final
 
@@ -124,9 +140,9 @@ names(s) = names
 
 # Visualizando Todas as Replicações
 ggplot(dados_simulacao,
-       aes(x=Tempo, y=Populacao, color=Replicacao, group=Replicacao)) + 
+       aes(x=Tempo, y=Adopters, color=Replicacao, group=Replicacao)) + 
   geom_line() + 
-  ylab("Populacao") + 
+  ylab("Adopters") + 
   xlab("Tempo") + guides(color=FALSE)
 
 
