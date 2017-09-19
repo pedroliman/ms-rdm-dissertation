@@ -1,37 +1,100 @@
 ---
-title: "Capítulo 4 - Versão programada no R."
-output: html_notebook
+title: "Capitulo 4"
+output:
+  html_document: default
+  pdf_document:
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+    toc_depth: 6
+  word_document: default
+bibliography: references.bib
 ---
-Este documento contém a análise v0 aplicando a dinâmica de sistemas e analisando um modelo com o . Este exercício utilizará um modelo de difusão simples (Bass Difussion Model - Bass (1969)).
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, echo=FALSE}
+# Carregando Funcoes e Rodando o Modelo Préviamente
+source("funcoes.R")
+source("modelo-difusao.R")
+```
+
+Este documento servirá como um balão de ensaio. Como a Análise RDM é nova para todos nós, primeiro irei realizar a estruturação da análise com um modelo relativamente simples, com o propósito de aprender a realizar a análise. Ele irá conter todos os elementos analíticos da aplicação do modelo, e servirá como molde da estrutura do capítulo de resultados da dissertação. Esta seção utilizará como base o modelo de difusão de clientes observado em Morecroft (200x).
+
+Citando @Lempert2006
 
 #### Estruturação da Decisão - XLRM
 
+Conforme recomendado por @Lempert2006, o primeiro passo da Análise RDM é a estruturação da decisão.
+
 ##### Contextualização
-O presente modelo simulará a 
+[A versão final possuirá uma seção de contextualização sobre o problema em questão.]
 
 ##### X - Incertezas
+
+```{r, echo=FALSE}
+# Fazendo Output dos parâmetros do modelo
+library(knitr)
+knitr::kable(params, caption = "Tabela de Parâmetros.")
+```
 
 ##### L - Decisões
 
 ##### R - Modelo
 
+Esta seção apresenta o modelo para a análise necessária.
+
+![Caption](difusion_model.png) 
+
+Equações do Modelo:
+
+Potential Adopters
+
+$$PA = \int_{0}^{t} - AR \ dt$$
+
+Adopters
+
+$$A = \int_{0}^{t} AR \ dt$$
+
+Adoption Rate
+
+$$AR = AA + AW \ dt$$
+
+Adoption from Advertising
+
+$$AA = ADVEFF * sPotentialAdopters \ dt$$
+
+Adoption from Word of Mouth
+$$AW = aContactRate * sAdopters * (sPotentialAdopters/aTotalPopulation) * aAdoptionFraction \ dt$$
+
 ##### M - Métricas de Medição
 
 #### Geração de Casos
 
+Em geração de casos posso mostrar o "Design de Experimentos."
+
+
 #### Análise dos Casos Gerados
+
+Este gráfico mostra os resultados gerados...
+
+```{r}
+plot_replicacoes
+```
+
+E este gráfico mostra um gráfico com variáveis incertas...
+
+
+![Gráfico com Variáveis Incerteas](surface_plot_difusion.png) 
+
 
 #### Descoberta de cenários
 
+
+
 #### Análise de Tradeoffs
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+Try executing this chunk by clicking the *Run* button within the chunk or by placin
 
-```{r}
-plot(cars)
-
-
-```
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+# References

@@ -28,7 +28,7 @@ params = inputs$Parametros
 
 ##### Sampling #####
 nvar = length(params$Variavel)
-pontos = 1000
+pontos = 5000
 
 # Obtendo um Hypercubo com as Variáveis que eu quero
 randomLHS <- randomLHS(pontos, nvar)
@@ -108,10 +108,11 @@ dados_simulacao = matrix(nrow = pontos*(1+(FINISH - START)/STEP), ncol = ncoluna
 
 # J é o índice dos dados simulados
 j = 1
+print("Rodando Interações.")
 # Rodando a Simulacao Em todo o Ensemble
 for (i in 1:nrow(ensemble)) {
   # Começando a Rodar
-  print(paste("Rodando Iteracao",i))
+  #print(paste("Rodando Iteracao",i))
   dados_simulacao[j:((j+((FINISH - START)/STEP))),1:ncolunas-1] = ode(y=stocks, times=simtime, func = model, 
                                parms=ensemble[i,], method="euler")
   dados_simulacao[j:(j+((FINISH - START)/STEP)),ncolunas] = i
@@ -139,7 +140,7 @@ names(s) = names
 # # Visualizando os Resultados
 
 # Visualizando Todas as Replicações
-ggplot(dados_simulacao,
+plot_replicacoes = ggplot(dados_simulacao,
        aes(x=Tempo, y=Adopters, color=Replicacao, group=Replicacao)) + 
   geom_line() + 
   ylab("Adopters") + 
@@ -167,8 +168,8 @@ z <- list(
   titlefont = f
 )
 
-plot_ly(x = s$Adoption_Rate, y = s$ContactRate, z = s$Adopters) %>% add_surface() %>% layout(xaxis = x, yaxis = y, zaxis = z)
+plot_plotly = plot_ly(x = s$Adoption_Rate, y = s$ContactRate, z = s$Adopters) %>% add_surface() %>% layout(xaxis = x, yaxis = y, zaxis = z)
 
 
 # Armazenando os Resultados
-write.csv2(dados_simulacao, file = "dados_simulados_difusao.csv")
+write.csv(dados_simulacao, file = "dados_simulados_difusao.csv", row.names = FALSE)
