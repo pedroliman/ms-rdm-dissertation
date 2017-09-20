@@ -28,7 +28,7 @@ params = inputs$Parametros
 
 ##### Sampling #####
 nvar = length(params$Variavel)
-pontos = 5000
+pontos = 100
 
 # Obtendo um Hypercubo com as Variáveis que eu quero
 randomLHS <- randomLHS(pontos, nvar)
@@ -52,40 +52,37 @@ colnames(ensemble) = variaveis
 ##### Setup Dinâmica de Sistemas ####
 
 # Definindo Tempos da Simulação
-START<-2015; FINISH<-2030; STEP<-0.25
+START<-2015; FINISH<-2025; STEP<-0.125
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
 
 
 # Criando Estoques (na mão em um primeiro momento).
-stocks  <- c(sPotentialAdopters=10000, sAdopters=0)
-auxs    <- c(aAdvertisingEffectiveness= .01, aContactRate= 100, aAdoptionFraction= .02, aTotalPopulation= 1000000)
+auxs    <- c(aAdvertisingEffectiveness= 0.01, aContactRate= 100, aAdoptionFraction= 0.02, aTotalPopulation= 1000000)
 
+class(ensemble[,1])
+
+# A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO!!!!!!!
+stocks  <- c(sPotentialAdopters=999990, sAdopters=10)
 
 ##### Modelo de Dinâmica de Sistemas ####
 
 # Definindo o Modelo
-model <- function(time, stocks, auxs){
-  with(as.list(c(stocks, auxs)),{ 
+modelo <- function(time, stocks, auxs){
+  with(as.list(c(stocks, auxs)),{
     
-    aAdoption_from_Advertising = aAdvertisingEffectiveness * sPotentialAdopters # {people/year}
+    aAdoption_from_Advertising = aAdvertisingEffectiveness * sPotentialAdopters
     
-    aAdoption_from_Word_of_Mouth = aContactRate * sAdopters * (sPotentialAdopters/aTotalPopulation) * aAdoptionFraction  # {people/year}
+    aAdoption_from_Word_of_Mouth = aContactRate * sAdopters *  ((sPotentialAdopters)/(aTotalPopulation)) * aAdoptionFraction  # {people/year}
     
     fAdoption_Rate = aAdoption_from_Advertising + aAdoption_from_Word_of_Mouth # {people/year}
     
-    # fNascimentos<-sPopulacao*aTaxaNascimento
-    # 
-    # fMortes<-sPopulacao*aTaxaMorte
+    d_sPotentialAdopters_dt = - fAdoption_Rate
     
-    # dPopulacao_dt <- fNascimentos - fMortes
+    d_sAdopters_dt = fAdoption_Rate
     
-    sAdopters_dt <- fAdoption_Rate
-    
-    sPotentialAdpoters_dt <- -fAdoption_Rate
-    
-    return (list(c(sAdopters_dt, sPotentialAdpoters_dt),
+    return (list(c(d_sPotentialAdopters_dt, d_sAdopters_dt),
                  AdvertisingEffectiveness = aAdvertisingEffectiveness,
                  ContactRate = aContactRate,
                  AdoptionFraction = aAdoptionFraction,
@@ -98,13 +95,15 @@ model <- function(time, stocks, auxs){
 
 
 # Rodando a Simulação (uma vez)
-o<-data.frame(ode(y=stocks, times=simtime, func = model, 
-                  parms=auxs, method="euler"))
+o<-data.frame(ode(y=stocks, times=simtime, func = modelo, 
+                  parms=ensemble[1,], method="euler"))
+
+nlinhas = nrow(o)
 
 ncolunas = ncol(o)+1
 
 # Montando uma matriz com todos os dados para a simulação
-dados_simulacao = matrix(nrow = pontos*(1+(FINISH - START)/STEP), ncol = ncolunas)
+dados_simulacao = matrix(nrow = pontos*nlinhas, ncol = ncolunas)
 
 # J é o índice dos dados simulados
 j = 1
@@ -113,10 +112,15 @@ print("Rodando Interações.")
 for (i in 1:nrow(ensemble)) {
   # Começando a Rodar
   #print(paste("Rodando Iteracao",i))
-  dados_simulacao[j:((j+((FINISH - START)/STEP))),1:ncolunas-1] = ode(y=stocks, times=simtime, func = model, 
-                               parms=ensemble[i,], method="euler")
-  dados_simulacao[j:(j+((FINISH - START)/STEP)),ncolunas] = i
-  j = j + 1 + ((FINISH - START)/STEP)
+  
+  resultados_simulacao = ode(y=stocks, times=simtime, func = model, 
+                             parms=ensemble[i,], method="euler")
+  linhas = nrow(resultados_simulacao)
+  l_inicial = j
+  l_final = j + linhas-1
+  dados_simulacao[l_inicial:l_final,1:ncolunas-1] = resultados_simulacao
+  dados_simulacao[l_inicial:l_final,ncolunas] = i
+  j = j + linhas
   }
 
 # Nomeando o Dataframe de Saída
@@ -127,7 +131,7 @@ colnames(dados_simulacao) = nomes_variaveis_final
 dados_simulacao = as.data.frame(dados_simulacao)
 names(dados_simulacao) = nomes_variaveis_final
 
-dadosplot = dplyr::filter(dados_simulacao, Tempo == 2030) %>% select (Adoption_Rate, ContactRate, Adopters)
+dadosplot = dplyr::filter(dados_simulacao, Tempo == FINISH) %>% select (Adoption_Rate, ContactRate, Adopters)
 
 dadosplot = as.matrix(dadosplot)
 
@@ -140,7 +144,7 @@ names(s) = names
 # # Visualizando os Resultados
 
 # Visualizando Todas as Replicações
-plot_replicacoes = ggplot(dados_simulacao,
+ggplot(dados_simulacao,
        aes(x=Tempo, y=Adopters, color=Replicacao, group=Replicacao)) + 
   geom_line() + 
   ylab("Adopters") + 
@@ -168,8 +172,8 @@ z <- list(
   titlefont = f
 )
 
-plot_plotly = plot_ly(x = s$Adoption_Rate, y = s$ContactRate, z = s$Adopters) %>% add_surface() %>% layout(xaxis = x, yaxis = y, zaxis = z)
+# plot_plotly = plot_ly(x = s$Adoption_Rate, y = s$ContactRate, z = s$Adopters) %>% add_surface() %>% layout(xaxis = x, yaxis = y, zaxis = z)
 
 
 # Armazenando os Resultados
-write.csv(dados_simulacao, file = "dados_simulados_difusao.csv", row.names = FALSE)
+# write.csv(dados_simulacao, file = "dados_simulados_difusao.csv", row.names = FALSE)
