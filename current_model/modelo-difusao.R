@@ -18,7 +18,7 @@ source('funcoes.R', encoding = 'UTF-8')
 ##### Amostragem #####
 # Definindo Variáveis, mínimos e máximos:
 # Neste exemplo serão Variáveis Aleatórias:
-variaveis = c("aAdvertisingEffectiveness","aContactRate","aAdoptionFraction","aTotalPopulation","siniPotentialAdopters")
+variaveis = c("aAdvertisingEffectiveness","aContactRate","aAdoptionFraction","aTotalPopulation")
 
 # Carregando Inputs
 inputs = carregar_inputs()
@@ -61,7 +61,6 @@ simtime <- seq(START, FINISH, by=STEP)
 # Criando Estoques (na mão em um primeiro momento).
 auxs    <- c(aAdvertisingEffectiveness= 0.01, aContactRate= 100, aAdoptionFraction= 0.02, aTotalPopulation= 1000000)
 
-class(ensemble[,1])
 
 # A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO!!!!!!!
 stocks  <- c(sPotentialAdopters=999990, sAdopters=10)
@@ -96,7 +95,7 @@ modelo <- function(time, stocks, auxs){
 
 # Rodando a Simulação (uma vez)
 o<-data.frame(ode(y=stocks, times=simtime, func = modelo, 
-                  parms=ensemble[1,], method="euler"))
+                  parms=ensemble[100,], method="euler"))
 
 nlinhas = nrow(o)
 
@@ -113,13 +112,20 @@ for (i in 1:nrow(ensemble)) {
   # Começando a Rodar
   #print(paste("Rodando Iteracao",i))
   
-  resultados_simulacao = ode(y=stocks, times=simtime, func = model, 
+  resultados_simulacao = ode(y=stocks, times=simtime, func = modelo, 
                              parms=ensemble[i,], method="euler")
+  
+  #Temporario
+  resultados_simulacao
+  
   linhas = nrow(resultados_simulacao)
   l_inicial = j
   l_final = j + linhas-1
   dados_simulacao[l_inicial:l_final,1:ncolunas-1] = resultados_simulacao
   dados_simulacao[l_inicial:l_final,ncolunas] = i
+  
+  # Temporario
+  dados_simulacao[l_inicial:l_final,1:ncolunas]
   j = j + linhas
   }
 
@@ -131,6 +137,8 @@ colnames(dados_simulacao) = nomes_variaveis_final
 dados_simulacao = as.data.frame(dados_simulacao)
 names(dados_simulacao) = nomes_variaveis_final
 
+
+# Exibição - Filtrando as Variáveis a Observar no Gráfico
 dadosplot = dplyr::filter(dados_simulacao, Tempo == FINISH) %>% select (Adoption_Rate, ContactRate, Adopters)
 
 dadosplot = as.matrix(dadosplot)
