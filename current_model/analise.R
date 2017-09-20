@@ -14,15 +14,29 @@ source('funcoes.R', encoding = 'UTF-8')
 ## Carregando o Modelo
 source('modelo-difusao.R', encoding = 'UTF-8')
 
+source('OpenMORDM.R')
+
 # Carregando Inputs
 inputs = carregar_inputs()
 
 # Obter Ensemble LHS
-ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 100)
+ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 2)
 
 # Rodando a Simulação
 dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = ensemble, nomes_variaveis_final = nomes_variaveis_final)
 
+# Fazer Depois: Considerar Estratégias
+expand.grid(ensemble, as.matrix(inputs$Levers))
+
+
+# Analisar com o PRIM:
+library(prim)
+dados_prim = dplyr::filter(dados_simulacao, Tempo == FINISH)
+factors = as.matrix(dados_prim[4:11])
+response = as.matrix(dados_prim[3])
+
+analyze.prim(factors, response, threshold.type=1,
+             threshold=988229)
 
 # Exibição - Filtrando as Variáveis a Observar no Gráfico
 dadosplot = dplyr::filter(dados_simulacao, Tempo == FINISH) %>% select (Adoption_Rate, ContactRate, Adopters)

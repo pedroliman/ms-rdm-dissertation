@@ -3,7 +3,7 @@ library(deSolve)
 
 ##### CARREGAR INPUTS #####
 
-carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("params"), nomes_inputs = c("Parametros")) {
+carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("params", "levers"), nomes_inputs = c("Parametros", "Levers")) {
   
   # Criando uma list para os inputs
   message(
