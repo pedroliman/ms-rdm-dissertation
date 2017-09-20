@@ -23,6 +23,9 @@ variaveis = c("aAdvertisingEffectiveness","aContactRate","aAdoptionFraction","aT
 # Carregando Inputs
 inputs = carregar_inputs()
 
+# Obter Ensemble LHS
+ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 100)
+
 #Obtendo DataFrame de Parâmetros
 params = inputs$Parametros
 
