@@ -26,7 +26,7 @@ ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 2)
 dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = ensemble, nomes_variaveis_final = nomes_variaveis_final)
 
 # Fazer Depois: Considerar Estratégias
-expand.grid(ensemble, as.matrix(inputs$Levers))
+# expand.grid(ensemble, as.matrix(inputs$Levers))
 
 
 # Analisar com o PRIM:
