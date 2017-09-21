@@ -1,0 +1,45 @@
+This file documents changes to OpenMORDM after its initial release.
+Special thanks to Greg Garner, Xuan Yi, Yu Li, Tori Ward, Xihao Deng, 
+Perry Oddo, and the three anonymous reviewers for testing the software.
+
+
+---------------------------------
+Upgrading from a Previous Version
+---------------------------------
+
+If you previously installed an older version of OpenMORDM, you should upgrade
+OpenMORDM with the following two R commands:
+
+    devtools::install_local("OpenMORDM")
+    devtools::install_local("rgl")
+
+and also recompile the Borg MOEA and Lake Problem executables.
+
+
+-------
+Changes
+-------
+
+1) Fixes a number of compatability issues on different operating systems.
+      * Fixes segmentation fault on Mac OS
+      * Fixes invalid linker command -r on Mac OS
+      * Fixes issue locating executable files on various systems
+      * Adds required dependencies for Linux to README.txt
+
+2) Improvements to README file.  Following the instructions now, the user should
+   first try to recreate the figures from the manuscript.  After doing so, they
+   can try the more advanced step of compiling the Borg MOEA and Lake Problem
+   C++ code to reproduce the entire study.
+
+3) Includes the missing rdyncall package that is no longer available on CRAN.
+
+4) lakeProblemDemo.R previously selected Pareto design #274 for further analysis.
+   As the Pareto set size may be different for each run.  The code now randomly
+   selects a design.
+
+5) Renamed several methods to be more descriptive of their function.
+
+6) Generated a OpenMORDM.pdf containing all documentation.
+
+7) Enabled support for two PRIM methods, from the prim and sdtoolkit packages.
+

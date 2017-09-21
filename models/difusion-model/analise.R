@@ -7,6 +7,9 @@ library(scales)
 library(dplyr)
 library(plotly)
 library(akima)
+library(prim)
+
+library(OpenMORDM)
 
 ## Carregando Funções Úteis
 source('funcoes.R', encoding = 'UTF-8')
@@ -29,14 +32,20 @@ dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, e
 # expand.grid(ensemble, as.matrix(inputs$Levers))
 
 
-# Analisar com o PRIM:
+# Analisar com o PRIM / MORDM.
 library(prim)
-dados_prim = dplyr::filter(dados_simulacao, Tempo == FINISH)
-factors = as.matrix(dados_prim[4:11])
+dados_prim = dados_simulacao # dplyr::filter(dados_simulacao, Tempo == FINISH)
+factors = as.matrix(dados_prim[,c(4:11,1)])
 response = as.matrix(dados_prim[3])
 
-analyze.prim(factors, response, threshold.type=1,
-             threshold=988229)
+analyze.prim(factors, response, threshold.type=-1,
+             threshold=10661)
+
+mordm.correlation(factors, ht = 0.75, lt = 0.25, all = FALSE)
+
+box = prim.box(x = factors, y = response, threshold = 10661, threshold.type = -1)
+
+
 
 # Exibição - Filtrando as Variáveis a Observar no Gráfico
 dadosplot = dplyr::filter(dados_simulacao, Tempo == FINISH) %>% select (Adoption_Rate, ContactRate, Adopters)
