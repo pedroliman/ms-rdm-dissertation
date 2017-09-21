@@ -1,5 +1,8 @@
 # Um primeiro exemplo de https://github.com/JimDuggan/SDMR
 
+
+setwd("D:/dev/ms-rdm-dissertation/models/population-model")
+
 # Loading Libraries
 library(deSolve)
 library(ggplot2)
