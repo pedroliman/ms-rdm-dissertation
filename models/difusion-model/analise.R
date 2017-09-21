@@ -5,7 +5,7 @@ library(ggplot2)
 require(gridExtra)
 library(scales)
 library(dplyr)
-library(plotly)
+# library(plotly)
 library(akima)
 library(prim)
 
@@ -23,13 +23,45 @@ source('modelo-difusao.R', encoding = 'UTF-8')
 inputs = carregar_inputs()
 
 # Obter Ensemble LHS
-ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 5000)
+ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 300)
 
 # Rodando a Simulação
 dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = ensemble, nomes_variaveis_final = nomes_variaveis_final)
 
 # Fazer Depois: Considerar Estratégias
 # expand.grid(ensemble, as.matrix(inputs$Levers))
+
+# A biblioteca plotly entra em conflito com uma função usada pelo OpenMORDM!
+library(OpenMORDM)
+assign("mordm.globals", new.env())
+# Tentando fazer scenario discovery
+# assign("mordm.globals", new.env(), envir=parent.env(environment()))
+
+
+dados_sd = dplyr::filter(dados_simulacao, Tempo == FINISH) 
+
+# Variáveis a considerar na análise
+vfatores = c("AdvEffectiveness", "ContactRate", "AdoptionFraction")
+factors = dados_sd[,vfatores]
+
+vresposta = c("Adopters")
+response = dados_sd[,vresposta]
+# response = (dados_sd[,2] > 15000) * 1
+thr = 987470
+thr.type = -1 # >= x
+
+# Esta linha de código agora funciona:
+analyze.prim(factors, response, threshold = thr, threshold.type = thr.type, which.box = 1)
+
+
+
+
+
+
+
+
+
+
 
 
 # Analisar com o PRIM / MORDM.

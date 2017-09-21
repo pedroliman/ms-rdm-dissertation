@@ -1,5 +1,3 @@
-
-
 # A biblioteca plotly entra em conflito com uma função usada pelo OpenMORDM!
 library(OpenMORDM)
 assign("mordm.globals", new.env())
@@ -22,5 +20,5 @@ thr.type = 1 # >= x
 # Esta linha de código agora funciona:
 analyze.prim(factors, response, threshold = thr, threshold.type = thr.type, which.box = 1)
 
-# Esta linha tem o CART
+# Esta linha tem o CART, mas ainda não sei usar.
 analise_cart = analyze.cart(factors, response)
