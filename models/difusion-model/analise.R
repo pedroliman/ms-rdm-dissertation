@@ -134,4 +134,4 @@ plot_plotly = plot_ly(x = s$Adoption_Rate, y = s$ContactRate, z = s$Adopters) %>
 
 
 # Armazenando os Resultados
-# write.csv(dados_simulacao, file = "dados_simulados_difusao.csv", row.names = FALSE)
+write.csv(dados_simulacao, file = "dados_simulados_difusao.csv", row.names = FALSE)
