@@ -23,7 +23,7 @@ source('OpenMORDM.R')
 inputs = carregar_inputs()
 
 # Obter Ensemble LHS
-ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 2)
+ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 5000)
 
 # Rodando a Simulação
 dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = ensemble, nomes_variaveis_final = nomes_variaveis_final)
@@ -32,18 +32,18 @@ dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, e
 # expand.grid(ensemble, as.matrix(inputs$Levers))
 
 
-# Analisar com o PRIM / MORDM.
-library(prim)
-dados_prim = dados_simulacao # dplyr::filter(dados_simulacao, Tempo == FINISH)
-factors = as.matrix(dados_prim[,c(4:11,1)])
-response = as.matrix(dados_prim[3])
-
-analyze.prim(factors, response, threshold.type=-1,
-             threshold=10661)
-
-mordm.correlation(factors, ht = 0.75, lt = 0.25, all = FALSE)
-
-box = prim.box(x = factors, y = response, threshold = 10661, threshold.type = -1)
+# # Analisar com o PRIM / MORDM.
+# library(prim)
+# dados_prim = dados_simulacao # dplyr::filter(dados_simulacao, Tempo == FINISH)
+# factors = as.matrix(dados_prim[,c(4:11,1)])
+# response = as.matrix(dados_prim[3])
+# 
+# analyze.prim(factors, response, threshold.type=-1,
+#              threshold=10661)
+# 
+# mordm.correlation(factors, ht = 0.75, lt = 0.25, all = FALSE)
+# 
+# box = prim.box(x = factors, y = response, threshold = 10661, threshold.type = -1)
 
 
 
