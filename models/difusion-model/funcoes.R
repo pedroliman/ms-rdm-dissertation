@@ -100,3 +100,7 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
   
   dados_simulacao
 }
+
+
+
+
