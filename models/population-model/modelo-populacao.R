@@ -10,7 +10,7 @@ require(gridExtra)
 library(scales)
 library(lhs)
 library(dplyr)
-library(plotly)
+# library(plotly)
 library(akima)
 
 ##### Sampling #####
@@ -142,8 +142,8 @@ z <- list(
   titlefont = f
 )
 
-plot_ly(x = s$TaxaNascimento, y = s$TaxaMorte, z = s$Populacao) %>% add_surface() %>% layout(xaxis = x, yaxis = y, zaxis = z)
+# plot_ly(x = s$TaxaNascimento, y = s$TaxaMorte, z = s$Populacao) %>% add_surface() %>% layout(xaxis = x, yaxis = y, zaxis = z)
 
 
 # Armazenando os Resultados
-write.csv2(dados_simulacao, file = "dados_simulados.csv")
+# write.csv2(dados_simulacao, file = "dados_simulados.csv")
