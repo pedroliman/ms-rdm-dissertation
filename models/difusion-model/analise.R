@@ -17,7 +17,7 @@ source('funcoes.R', encoding = 'UTF-8')
 ## Carregando o Modelo
 source('modelo-difusao.R', encoding = 'UTF-8')
 
-source('OpenMORDM.R')
+# source('OpenMORDM.R')
 
 # Carregando Inputs
 inputs = carregar_inputs()
@@ -32,18 +32,18 @@ dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, e
 # expand.grid(ensemble, as.matrix(inputs$Levers))
 
 
-# # Analisar com o PRIM / MORDM.
-# library(prim)
-# dados_prim = dados_simulacao # dplyr::filter(dados_simulacao, Tempo == FINISH)
-# factors = as.matrix(dados_prim[,c(4:11,1)])
-# response = as.matrix(dados_prim[3])
-# 
-# analyze.prim(factors, response, threshold.type=-1,
-#              threshold=10661)
-# 
-# mordm.correlation(factors, ht = 0.75, lt = 0.25, all = FALSE)
-# 
-# box = prim.box(x = factors, y = response, threshold = 10661, threshold.type = -1)
+# Analisar com o PRIM / MORDM.
+library(prim)
+dados_prim = dados_simulacao # dplyr::filter(dados_simulacao, Tempo == FINISH)
+factors = as.matrix(dados_prim[,c(4:11,1)])
+response = as.matrix(dados_prim[3])
+
+analyze.prim(factors, response, threshold.type=-1,
+             threshold=10661)
+
+mordm.correlation(factors, ht = 0.75, lt = 0.25, all = FALSE)
+
+box = prim.box(x = factors, y = response, threshold = 10661, threshold.type = -1)
 
 
 

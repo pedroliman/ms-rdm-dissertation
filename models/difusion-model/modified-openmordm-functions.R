@@ -20,11 +20,41 @@
 #' @param method the method, such as \code{prim} or \code{sdprim}
 #' @param ... optional parameters passed to prim.box
 #' @export
+# 
 
-analyze.prim <- function(factors, response, bounds=NULL, which.box=1, show.plot=TRUE, method="prim", ...) {
-  if (method == "prim") {
+# Analisar com o PRIM / MORDM.
+library(prim)
+dados_prim = dplyr::filter(dados_simulacao, Tempo == FINISH)
+factors = as.matrix(dados_prim[,c(4:11,1)])
+response = as.matrix(dados_prim[3])
+
+threshold = 989017
+
+response_01 = (response < threshold) * 1
+
+hist(response_01)
+
+response = response_01
+
+# analyze.prim(factors, response, threshold.type=-1,
+#              threshold=10661)
+
+# mordm.correlation(factors, ht = 0.75, lt = 0.25, all = FALSE)
+
+box = prim.box(x = factors, y = response, threshold = 989017, threshold.type = -1)
+
+
+a = sdtoolkit::sdprim()
+
+
+
+
+
+# analyze.prim <- function(factors, response, bounds=NULL, which.box=1, show.plot=TRUE, method="prim", ...) {
+#   if (method == "prim") {
     message("Chamando algoritmo prim.box")
-    box <- prim.box(factors, response, ...)
+    # box <- prim.box(factors, response, ...)
+    box <- prim.box(factors, response)
     message("Iniciando tratamento do OpenMORDM.")
     marks <- lapply(1:box$num.hdr.class, function(i) {
       i <- eval(i)
