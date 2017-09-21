@@ -177,14 +177,25 @@ dados_sd = dadosplot = dplyr::filter(dados_simulacao, Tempo == FINISH)
 
 write.csv(dados_sd, file = "dadossd.csv")
 
-factors = dados_sd[,3:7]
+factors = dados_sd[,5:6]
 
 response = dados_sd[,2]
 # response = (dados_sd[,2] > 15000) * 1
-thr = 15000
+thr = 10000
 thr.type = 1
 
 library(prim)
+
+library(OpenMORDM)
+
+# Esta linha de código agora funcionou!!!!
+analise = analyze.prim(factors, response, threshold = thr, threshold.type = thr.type, which.box = 1)
+
+
+analise_cart = analyze.cart(factors, response)
+
+analise_cart$branch.x
+
 
 box = prim.box(x = factors, y = response, threshold = thr, threshold.type = thr.type)
 
@@ -203,7 +214,7 @@ if (is.null(bounds)) {
 dummy.data <- list()
 attr(dummy.data, "nvars") <- ncol(factors)
 attr(dummy.data, "bounds") <- bounds
-mordm.plot.box(dummy.data, marks[[which.box]])
+mordm.plot.box(dummy.data, marks[[1]])
 
 # compute density and coverage of the box
 varargs <- list(...)
