@@ -51,17 +51,12 @@ thr = 987470
 thr.type = -1 # >= x
 
 # Esta linha de código agora funciona:
-analyze.prim(factors, response, threshold = thr, threshold.type = thr.type, which.box = 1)
+analise_prim = analyze.prim(factors, response, threshold = thr, threshold.type = thr.type, which.box = 1)
 
+# Aqui abaixo há
+box_prim = prim::prim.box(x = factors, y = response, threshold = thr, threshold.type = thr.type)
 
-
-
-
-
-
-
-
-
+# Até aqui não consegui 
 
 
 # Analisar com o PRIM / MORDM.
