@@ -23,7 +23,7 @@ source('modelo-difusao.R', encoding = 'UTF-8')
 inputs = carregar_inputs()
 
 # Obter Ensemble LHS (Sem Variáveis das Estratégias)
-ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 1000)
+ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 50)
 
 # Ampliar Ensemble com as variáveis das Estratégias
 novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
@@ -94,9 +94,27 @@ dados = dados_simulacao
 x_axis_name = "Tempo"
 y_axis_name = "Adopters"
 
+
+
+
+
+# Não funcionou o gráfico por Leveler (por algum problema ainda não identificado, e não são os Nas e Infinitos.)
+
+
+# Remover dados Nan ou Infinitos (Aqui eu acho que deveria usar o apply)
+
+m.dados_simulacao = dados_simulacao
+
+casos_completos <- complete.cases(m.dados_simulacao[, "Adopters"])
+
+m.dados_simulacao_completas = m.dados_simulacao[casos_completos,]
+
+m.dados_simulacao_completas = dplyr::filter(m.dados_simulacao_completas, Lever == 1)
+
+
 # Visualizando Todas as Replicações
-ggplot(dados_simulacao,
-       aes(x=Tempo, y=Adopters, color=Replicacao, group=Replicacao)) + 
+ggplot(m.dados_simulacao_completas,
+       aes(x=Tempo, y=Adopters, color=Lever, group=Lever)) + 
   geom_line() + 
   ylab("Adopters") + 
   xlab("Tempo") + guides(color=FALSE)

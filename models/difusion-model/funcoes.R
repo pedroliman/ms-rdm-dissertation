@@ -31,7 +31,6 @@ obter_lhs_ensemble = function (params, n=100) {
   message("01. funcoes.R/obter_lhs_ensemble: Iniciando Obtenção do Ensemble.")
   #Obtendo DataFrame de Parâmetros
   
-  ##### Sampling #####
   nvar = length(params$Variavel)
   pontos = n
   
@@ -131,6 +130,12 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
   dados_simulacao
 }
 
+##### FUNÇÕES AUXILIARES #####
+
+completeFun <- function(data, desiredCols) {
+  completeVec <- complete.cases(data[, desiredCols])
+  return(data[completeVec, ])
+}
 
 
 
