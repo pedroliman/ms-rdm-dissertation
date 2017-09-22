@@ -25,7 +25,7 @@ carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("par
 }
 
 
-##### OBTER ENSEMBLE #####
+##### OBTER ENSEMBLE - PARÂMETROS #####
 
 obter_lhs_ensemble = function (params, n=100) {
   message("01. funcoes.R/obter_lhs_ensemble: Iniciando Obtenção do Ensemble.")
@@ -57,6 +57,34 @@ obter_lhs_ensemble = function (params, n=100) {
   ensemble
 }
 
+##### AMPLIAR ENSEMBLE COM ESTRATÉGIAS #####
+
+ampliar_ensemble_com_levers = function(ensemble, levers) {
+  
+  variaveis_adicionais = names(dplyr::select(levers, -LeverCode))
+  
+  linhas_ensemble_incial = nrow(ensemble)
+  novo_ensemble = matrix(0, nrow = nrow(ensemble)*length(levers$Lever), ncol = ncol(ensemble) + length(variaveis_adicionais))
+  
+  names_old_ensemble = colnames(ensemble)
+  names_novo_ensemble = c(names_old_ensemble, variaveis_adicionais)
+  
+  colnames(novo_ensemble) = names_novo_ensemble
+  
+  j = 1
+  for (l in seq_along(inputs$Levers$Lever)) {
+    lini = j
+    lfim = j + linhas_ensemble_incial-1
+    matriz_var_adicionais = as.matrix(inputs$Levers[l,variaveis_adicionais])
+    novo_ensemble[lini:lfim,names_old_ensemble] = ensemble
+    novo_ensemble[lini:lfim,variaveis_adicionais] = matrix(matriz_var_adicionais, nrow = linhas_ensemble_incial, ncol = ncol(matriz_var_adicionais), byrow = TRUE)
+    j = j + linhas_ensemble_incial
+  }
+  
+  novo_ensemble
+  
+}
+
 
 ##### SIMULAR #####
 
@@ -78,7 +106,6 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
   
   # J é o índice dos dados simulados
   j = 1
-  print("Rodando Interações.")
   # Rodando a Simulacao Em todo o Ensemble
   for (i in 1:nrow(ensemble)) {
     resultados_simulacao = ode(y=stocks, times=simtime, func = modelo, 
@@ -88,6 +115,9 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
     l_final = j + linhas-1
     dados_simulacao[l_inicial:l_final,1:ncolunas-1] = resultados_simulacao
     dados_simulacao[l_inicial:l_final,ncolunas] = i
+    if (i %% 100 == 0) {
+      message(paste(i, "simulações finalizadas."))
+    }
     j = j + linhas
   }
   

@@ -23,29 +23,10 @@ source('modelo-difusao.R', encoding = 'UTF-8')
 inputs = carregar_inputs()
 
 # Obter Ensemble LHS (Sem Variáveis das Estratégias)
-ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 50)
+ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 1000)
 
-
-# Ampliar Ensemble com Variaáveis das estratégias (comecei e parei por aqui.)
-
-variaveis_adicionais = names(dplyr::select(inputs$Levers, -LeverCode))
-
-linhas_ensemble_incial = nrow(ensemble)
-novo_ensemble = matrix(0, nrow = nrow(ensemble)*length(inputs$Levers$Lever), ncol = ncol(ensemble) + length(variaveis_adicionais))
-j = 1
-names_old_ensemble = colnames(ensemble)
-names_novo_ensemble = c(names_old_ensemble, variaveis_adicionais)
-
-colnames(novo_ensemble) = names_novo_ensemble
-
-for (l in seq_along(inputs$Levers$Lever)) {
-  lini = j
-  lfim = j + linhas_ensemble_incial-1
-  matriz_var_adicionais = as.matrix(inputs$Levers[l,variaveis_adicionais])
-  novo_ensemble[lini:lfim,names_old_ensemble] = ensemble
-  novo_ensemble[lini:lfim,variaveis_adicionais] = matrix(matriz_var_adicionais, nrow = linhas_ensemble_incial, ncol = ncol(matriz_var_adicionais), byrow = TRUE)
-  j = j + linhas_ensemble_incial
-}
+# Ampliar Ensemble com as variáveis das Estratégias
+novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
 
 # Rodando a Simulação
 dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = novo_ensemble, nomes_variaveis_final = nomes_variaveis_final)
