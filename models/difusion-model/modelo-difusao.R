@@ -1,12 +1,12 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
-START<-2015; FINISH<-2025; STEP<-0.125
+START<-2015; FINISH<-2025; STEP<-0.5
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
 
 # Criando Estoques (na mão em um primeiro momento).
-auxs    <- c(aAdvertisingEffectiveness= 0.01, aContactRate= 100, aAdoptionFraction= 0.02, aTotalPopulation= 1000000)
+auxs    <- c(aAdvertisingEffectiveness= 0.01, aContactRate= 100, aAdoptionFraction= 0.02, aTotalPopulation= 1000000, aAdvertisingON = 1, aAdvertisingIntensity = 1)
 
 # A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO!!!!!!!
 stocks  <- c(sPotentialAdopters=999990, sAdopters=10)
@@ -17,7 +17,7 @@ stocks  <- c(sPotentialAdopters=999990, sAdopters=10)
 modelo <- function(time, stocks, auxs){
   with(as.list(c(stocks, auxs)),{
     
-    aAdoption_from_Advertising = aAdvertisingEffectiveness * sPotentialAdopters
+    aAdoption_from_Advertising = aAdvertisingEffectiveness * sPotentialAdopters * aAdvertisingON * aAdvertisingIntensity
     
     aAdoption_from_Word_of_Mouth = aContactRate * sAdopters *  ((sPotentialAdopters)/(aTotalPopulation)) * aAdoptionFraction  # {people/year}
     
@@ -34,10 +34,13 @@ modelo <- function(time, stocks, auxs){
                  TotalPopulation = aTotalPopulation,
                  Adoption_from_Advertising = aAdoption_from_Advertising,
                  Adoption_from_Word_of_Mouth = aAdoption_from_Word_of_Mouth,
-                 Adoption_Rate = fAdoption_Rate))   
+                 Adoption_Rate = fAdoption_Rate,
+                 AdvertisingON = aAdvertisingON,
+                 AdvertisingIntensity = aAdvertisingIntensity,
+                 Lever = Lever))   
   })
 }
 
 # Nomeando o Dataframe de Saída
-nomes_variaveis_final = c("Tempo", "PotentialAdopters", "Adopters", "AdvEffectiveness", "ContactRate", "AdoptionFraction", "TotalPopulation", "Adoption_From_Advertising", "Adoption_From_Word_of_Mouth", "Adoption_Rate", "Replicacao")
+nomes_variaveis_final = c("Tempo", "PotentialAdopters", "Adopters", "AdvEffectiveness", "ContactRate", "AdoptionFraction", "TotalPopulation", "Adoption_From_Advertising", "Adoption_From_Word_of_Mouth", "Adoption_Rate", "AdvON", "AdvIntensity", "Lever", "Replicacao")
 
