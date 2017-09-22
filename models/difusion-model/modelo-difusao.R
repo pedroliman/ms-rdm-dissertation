@@ -21,7 +21,7 @@ modelo <- function(time, stocks, auxs){
     
     aAdoption_from_Word_of_Mouth = aContactRate * sAdopters *  ((sPotentialAdopters)/(aTotalPopulation)) * aAdoptionFraction  # {people/year}
     
-    fAdoption_Rate = aAdoption_from_Advertising + aAdoption_from_Word_of_Mouth # {people/year}
+    fAdoption_Rate = min(aAdoption_from_Advertising + aAdoption_from_Word_of_Mouth, sPotentialAdopters) # {people/year}
     
     d_sPotentialAdopters_dt = - fAdoption_Rate
     
