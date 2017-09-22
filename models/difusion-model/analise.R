@@ -1,12 +1,12 @@
 # Este exemplo é baseado no modelo de difusão do capítulo 6 do livro do Morecroft.
 
 # Loading Libraries
-library(ggplot2)
+# library(ggplot2)
 # require(gridExtra)
 # library(scales)
-library(dplyr)
-library(plotly)
-# library(akima)
+# library(dplyr)
+# # library(plotly)
+library(akima)
 # library(prim)
 
 # library(OpenMORDM)
@@ -23,7 +23,7 @@ source('modelo-difusao.R', encoding = 'UTF-8')
 inputs = carregar_inputs()
 
 # Obter Ensemble LHS (Sem Variáveis das Estratégias)
-ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 25)
+ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 100)
 
 # Ampliar Ensemble com as variáveis das Estratégias
 novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
@@ -32,8 +32,9 @@ novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs
 dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = novo_ensemble, nomes_variaveis_final = nomes_variaveis_final)
 
 
+library(ggplot2)
 # Visualizando Todas as Replicações
-ggplot(dados_simulacao,
+ggplot2::ggplot(dados_simulacao,
        aes(x=Tempo, y=Adopters, color=factor(Lever), group=Replicacao)) + 
   geom_line() + 
   ylab("Adopters") + 
@@ -118,8 +119,13 @@ ggplot(dados_simulacao,
 # 
 # # 
 
+library(dplyr)
 # Exibição - Filtrando as Variáveis a Observar no Gráfico
-dadosplot = dplyr::filter(dados_simulacao, Tempo == FINISH, Lever == 1) %>% select (Adoption_Rate, ContactRate, Adopters)
+
+# De uma hora para outra o filter não está mais funcionando.
+# dadosplot = dplyr::filter(dados_simulacao, Tempo == FINISH, Lever == 1) %>% select (Adoption_Rate, ContactRate, Adopters)
+
+dadosplot = subset.data.frame(dados_simulacao, (Tempo == FINISH & Lever == 5)) %>% select(Adoption_Rate, ContactRate, Adopters)
 
 dadosplot = as.matrix(dadosplot)
 
@@ -148,7 +154,9 @@ z <- list(
   titlefont = f
 )
 
+library(plotly)
 plot_ly(x = s$Adoption_Rate, y = s$ContactRate, z = s$Adopters) %>% add_surface() %>% layout(xaxis = x, yaxis = y)
+
 
 # Armazenando os Resultados
 # write.csv(dados_simulacao, file = "dados_simulados_difusao.csv", row.names = FALSE)
