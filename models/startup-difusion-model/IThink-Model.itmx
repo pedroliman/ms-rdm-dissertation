@@ -27,11 +27,13 @@
         <stock name="ConsumidoresAtivos">
             <eqn>10</eqn>
             <inflow>AdesaoConsumidores</inflow>
+            <non_negative />
             <display x="274" y="73" color="blue" />
         </stock>
         <stock name="ProvedoresAtivos">
             <eqn>10</eqn>
             <inflow>AdesaoProvedores</inflow>
+            <non_negative />
             <display x="228" y="453" color="blue" />
         </stock>
         <aux name="DemandaUnitaria">
@@ -95,7 +97,7 @@
             <display x="550" y="209" color="blue" label_side="top" label_angle="81" />
         </aux>
         <aux name="PrecoMedio">
-            <eqn>10</eqn>
+            <eqn>11</eqn>
             <display x="446" y="341" color="blue" />
         </aux>
         <flow name="ReceitaTotalBruta">
@@ -122,7 +124,8 @@
             <eqn>200</eqn>
             <outflow>AdesaoProvedores</outflow>
             <outflow>MudancasDemograficasProvedores</outflow>
-            <display x="117" y="493" color="blue" label_side="bottom" label_angle="205" />
+            <non_negative />
+            <display x="117" y="481" color="blue" label_side="bottom" label_angle="205" />
         </stock>
         <aux name="MarkupMedio">
             <eqn>0.1</eqn>
@@ -200,11 +203,10 @@
         </aux>
         <flow name="AdesaoProvedores">
             <eqn>AdesaoBocaABoca+AdesaoMarketing</eqn>
-            <display x="172" y="461" color="blue" label_side="top" label_angle="138">
+            <display x="172" y="464" color="blue" label_side="top" label_angle="138">
                 <pts>
-                    <pt x="139" y="476" />
-                    <pt x="139" y="461" />
-                    <pt x="206" y="461" />
+                    <pt x="139" y="464" />
+                    <pt x="206" y="464" />
                 </pts>
             </display>
         </flow>
@@ -233,6 +235,7 @@
             <eqn>1000</eqn>
             <inflow>MudancasDemograficasConsumidores</inflow>
             <outflow>AdesaoConsumidores</outflow>
+            <non_negative />
             <display x="76" y="69" color="blue" label_angle="87" />
         </stock>
         <flow name="MudancasDemograficasProvedores">
@@ -240,7 +243,7 @@
             <non_negative />
             <display x="67" y="412" color="blue" label_angle="278">
                 <pts>
-                    <pt x="95" y="476" />
+                    <pt x="95" y="464" />
                     <pt x="95" y="412" />
                     <pt x="39" y="412" />
                 </pts>
@@ -389,7 +392,7 @@
                 <from>AtratividadeProvedores</from>
                 <to>AdesaoMarketing</to>
             </connector>
-            <connector x="129" y="510" uid="25" color="#FF007F">
+            <connector x="124" y="499" uid="25" color="#FF007F">
                 <from>ProvedoresPotenciais</from>
                 <to>AdesaoBocaABoca</to>
             </connector>
@@ -397,11 +400,11 @@
                 <from>ProvedoresAtivos</from>
                 <to>AdesaoBocaABoca</to>
             </connector>
-            <connector x="114" y="510" uid="27" color="#FF007F">
+            <connector x="111" y="498" uid="27" color="#FF007F">
                 <from>ProvedoresPotenciais</from>
                 <to>AdesaoMarketing</to>
             </connector>
-            <connector x="223" y="536" uid="28" color="#FF007F">
+            <connector x="224" y="537" uid="28" color="#FF007F">
                 <from>AdesaoBocaABoca</from>
                 <to>AdesaoProvedores</to>
             </connector>
