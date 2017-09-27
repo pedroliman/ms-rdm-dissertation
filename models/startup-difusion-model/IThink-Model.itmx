@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xmile version="1.0" level="3" xmlns="http://www.systemdynamics.org/XMILE" xmlns:isee="http://iseesystems.com/XMILE">
+    <header>
+        <smile version="1.0" namespace="std, isee" />
+        <name>IThink-Model</name>
+        <uuid>98015c49-6e5c-474e-a6de-249d450e384a</uuid>
+        <vendor>isee systems, inc.</vendor>
+        <product version="10.0.3" lang="en">iThink</product>
+    </header>
+    <style>
+        <model font-family="Arial" font-size="9" />
+        <interface font-family="Arial" font-size="9" />
+    </style>
+    <sim_specs method="Euler" time_units="Months">
+        <start>1</start>
+        <stop>13</stop>
+        <dt>0.25</dt>
+    </sim_specs>
+    <model_units />
+    <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
+        <isee:window width="1366" height="685" />
+        <isee:security />
+        <isee:print_setup width="595" height="842" />
+    </isee:prefs>
+    <isee:equation_prefs order_by="module" />
+    <model>
+        <stock name="ConsumidoresAtivos">
+            <eqn>10</eqn>
+            <inflow>AdesaoConsumidores</inflow>
+            <display x="274" y="73" color="blue" />
+        </stock>
+        <stock name="ProvedoresAtivos">
+            <eqn>10</eqn>
+            <inflow>AdesaoProvedores</inflow>
+            <display x="228" y="453" color="blue" />
+        </stock>
+        <aux name="DemandaUnitaria">
+            <eqn>10</eqn>
+            <display x="411" y="90" color="blue" label_side="top" label_angle="86" />
+        </aux>
+        <aux name="ShareDemanda">
+            <eqn>0.3</eqn>
+            <display x="484" y="164" color="blue" label_side="top" label_angle="86" />
+        </aux>
+        <flow name="TransacoesDemandadas">
+            <eqn>DemandaUnitaria*ConsumidoresAtivos</eqn>
+            <non_negative />
+            <display x="334" y="139" color="blue">
+                <pts>
+                    <pt x="287" y="139" />
+                    <pt x="382" y="139" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="TransacoesDisponiveis">
+            <eqn>ShareDemanda*TransacoesDemandadas</eqn>
+            <non_negative />
+            <display x="399" y="199" color="blue" label_angle="322">
+                <pts>
+                    <pt x="352" y="199" />
+                    <pt x="447" y="199" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="ShareCapacidade">
+            <eqn>0.5</eqn>
+            <display x="369" y="368" color="blue" />
+        </aux>
+        <flow name="TransacoesPossiveis">
+            <eqn>ProvedoresAtivos*CapacidadeUnitaria*ShareCapacidade</eqn>
+            <non_negative />
+            <display x="301" y="332" color="blue">
+                <pts>
+                    <pt x="254" y="332" />
+                    <pt x="349" y="332" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="CapacidadeUnitaria">
+            <eqn>10</eqn>
+            <display x="286" y="375" color="blue" />
+        </aux>
+        <flow name="TransacoesEfetivadas">
+            <eqn>MIN(TransacoesDisponiveis,TransacoesPossiveis)*PercMatch</eqn>
+            <non_negative />
+            <display x="461" y="263" color="blue">
+                <pts>
+                    <pt x="414" y="263" />
+                    <pt x="509" y="263" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="PercMatch">
+            <eqn>0.5</eqn>
+            <display x="550" y="209" color="blue" label_side="top" label_angle="81" />
+        </aux>
+        <aux name="PrecoMedio">
+            <eqn>10</eqn>
+            <display x="446" y="341" color="blue" />
+        </aux>
+        <flow name="ReceitaTotalBruta">
+            <eqn>TransacoesEfetivadas*PrecoMedio</eqn>
+            <non_negative />
+            <display x="567" y="316" color="blue">
+                <pts>
+                    <pt x="520" y="316" />
+                    <pt x="615" y="316" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="ReceitaStartup">
+            <eqn>ReceitaTotalBruta*MarkupMedio</eqn>
+            <non_negative />
+            <display x="670" y="442" color="blue">
+                <pts>
+                    <pt x="620" y="442" />
+                    <pt x="720" y="442" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="ProvedoresPotenciais">
+            <eqn>200</eqn>
+            <outflow>AdesaoProvedores</outflow>
+            <outflow>MudancasDemograficasProvedores</outflow>
+            <display x="117" y="493" color="blue" label_side="bottom" label_angle="205" />
+        </stock>
+        <aux name="MarkupMedio">
+            <eqn>0.1</eqn>
+            <display x="687" y="388" color="blue" />
+        </aux>
+        <stock name="CaixaStartup">
+            <eqn>1000</eqn>
+            <inflow>ReceitaStartup</inflow>
+            <outflow>CustosFixosOperacaoStartup</outflow>
+            <outflow>CustosVariaveis</outflow>
+            <outflow>CustosMarketingStartup</outflow>
+            <display x="742" y="445" color="blue" />
+        </stock>
+        <flow name="CustosFixosOperacaoStartup">
+            <eqn>100</eqn>
+            <non_negative />
+            <display x="848" y="442" color="blue">
+                <pts>
+                    <pt x="764" y="442" />
+                    <pt x="933" y="442" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="CustosVariaveis">
+            <eqn>TransacoesEfetivadas*CustoVariavelPorTransacao</eqn>
+            <non_negative />
+            <display x="848" y="366" color="blue">
+                <pts>
+                    <pt x="764" y="428" />
+                    <pt x="764" y="366" />
+                    <pt x="932" y="366" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="CustoVariavelPorTransacao">
+            <eqn>10</eqn>
+            <display x="860" y="307" color="blue" label_side="top" label_angle="99" />
+        </aux>
+        <aux name="TaxasMédias">
+            <eqn>0.1</eqn>
+            <display x="554" y="466" color="blue" label_side="right" label_angle="352" />
+        </aux>
+        <flow name="CustosMarketingStartup">
+            <eqn>InvestimentoMarketing</eqn>
+            <non_negative />
+            <display x="848" y="520" color="blue">
+                <pts>
+                    <pt x="764" y="462" />
+                    <pt x="764" y="520" />
+                    <pt x="932" y="520" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="ReceitaTotalProvedores">
+            <eqn>(ReceitaTotalBruta*(1-TaxasMédias))-ReceitaStartup</eqn>
+            <non_negative />
+            <display x="519" y="414" color="blue">
+                <pts>
+                    <pt x="472" y="414" />
+                    <pt x="567" y="414" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="ReceitaUnitariaProvedoresAtivos" flow_concept="true">
+            <eqn>ReceitaTotalProvedores/TransacoesEfetivadas</eqn>
+            <display x="396" y="431" color="blue" />
+        </aux>
+        <aux name="ReceitaUnitariaBaseline" flow_concept="true">
+            <eqn>10</eqn>
+            <display x="485" y="494" color="blue" />
+        </aux>
+        <aux name="AtratividadeProvedores" flow_concept="true">
+            <eqn>ReceitaUnitariaProvedoresAtivos/ReceitaUnitariaBaseline</eqn>
+            <display x="372" y="493" color="blue" />
+        </aux>
+        <flow name="AdesaoProvedores">
+            <eqn>AdesaoBocaABoca+AdesaoMarketing</eqn>
+            <display x="172" y="461" color="blue" label_side="top" label_angle="138">
+                <pts>
+                    <pt x="139" y="476" />
+                    <pt x="139" y="461" />
+                    <pt x="206" y="461" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="AdesaoBocaABoca">
+            <eqn>(ProvedoresPotenciais/ProvedoresAtivos)*AtratividadeProvedores</eqn>
+            <non_negative />
+            <display x="233" y="535" color="blue">
+                <pts>
+                    <pt x="178" y="545" />
+                    <pt x="178" y="535" />
+                    <pt x="288" y="535" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="AdesaoMarketing">
+            <eqn>InvestimentoMarketing*CustoAquisicaoMarketing*ProvedoresPotenciais*AtratividadeProvedores</eqn>
+            <non_negative />
+            <display x="224" y="591" color="blue">
+                <pts>
+                    <pt x="152" y="591" />
+                    <pt x="297" y="591" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="ConsumidoresPotenciais">
+            <eqn>1000</eqn>
+            <inflow>MudancasDemograficasConsumidores</inflow>
+            <outflow>AdesaoConsumidores</outflow>
+            <display x="76" y="69" color="blue" label_angle="87" />
+        </stock>
+        <flow name="MudancasDemograficasProvedores">
+            <eqn>10</eqn>
+            <non_negative />
+            <display x="67" y="412" color="blue" label_angle="278">
+                <pts>
+                    <pt x="95" y="476" />
+                    <pt x="95" y="412" />
+                    <pt x="39" y="412" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="AdesaoConsumidores">
+            <eqn>ConsumidoresPotenciais*AtratividadeConsumidores</eqn>
+            <display x="175" y="68" color="blue" label_angle="278">
+                <pts>
+                    <pt x="98" y="68" />
+                    <pt x="252" y="68" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="MudancasDemograficasConsumidores">
+            <eqn>10</eqn>
+            <display x="76" y="118" color="blue" label_side="right">
+                <pts>
+                    <pt x="76" y="150" />
+                    <pt x="76" y="86" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="AtratividadeConsumidores" flow_concept="true">
+            <eqn>MEAN(AtratividadePreco,AtratividadeDiversidade)</eqn>
+            <display x="160" y="215" color="blue" label_side="left" label_angle="184" />
+        </aux>
+        <aux name="AtratividadePreco">
+            <eqn>PrecoMedio/PrecoBaseline</eqn>
+            <display x="258" y="229" color="blue" />
+        </aux>
+        <aux name="AtratividadeDiversidade" flow_concept="true">
+            <eqn>TransacoesDisponiveis/TransacoesPossiveis</eqn>
+            <display x="187" y="285" color="blue" label_angle="207" />
+        </aux>
+        <aux name="InvestimentoMarketing">
+            <eqn>100</eqn>
+            <display x="663" y="586" color="blue" />
+        </aux>
+        <aux name="CustoAquisicaoMarketing">
+            <eqn>1</eqn>
+            <display x="257" y="646" color="blue" />
+        </aux>
+        <aux name="PrecoBaseline">
+            <eqn>12</eqn>
+            <display x="253" y="179" color="blue" />
+        </aux>
+        <display page_width="595" page_height="842" page_cols="2" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed">
+            <connector x="296" y="88" uid="0" color="#FF007F">
+                <from>ConsumidoresAtivos</from>
+                <to>TransacoesDemandadas</to>
+            </connector>
+            <connector x="402" y="91" uid="1" color="#FF007F">
+                <from>DemandaUnitaria</from>
+                <to>TransacoesDemandadas</to>
+            </connector>
+            <connector x="341" y="145" uid="2" color="#FF007F">
+                <from>TransacoesDemandadas</from>
+                <to>TransacoesDisponiveis</to>
+            </connector>
+            <connector x="476" y="167" uid="3" color="#FF007F">
+                <from>ShareDemanda</from>
+                <to>TransacoesDisponiveis</to>
+            </connector>
+            <connector x="295" y="374" uid="4" color="#FF007F">
+                <from>CapacidadeUnitaria</from>
+                <to>TransacoesPossiveis</to>
+            </connector>
+            <connector x="222" y="436" uid="5" color="#FF007F">
+                <from>ProvedoresAtivos</from>
+                <to>TransacoesPossiveis</to>
+            </connector>
+            <connector x="362" y="363" uid="6" color="#FF007F">
+                <from>ShareCapacidade</from>
+                <to>TransacoesPossiveis</to>
+            </connector>
+            <connector x="392" y="204" uid="7" color="#FF007F">
+                <from>TransacoesDisponiveis</from>
+                <to>TransacoesEfetivadas</to>
+            </connector>
+            <connector x="309" y="328" uid="8" color="#FF007F">
+                <from>TransacoesPossiveis</from>
+                <to>TransacoesEfetivadas</to>
+            </connector>
+            <connector x="541" y="208" uid="9" color="#FF007F">
+                <from>PercMatch</from>
+                <to>TransacoesEfetivadas</to>
+            </connector>
+            <connector x="455" y="339" uid="10" color="#FF007F">
+                <from>PrecoMedio</from>
+                <to>ReceitaTotalBruta</to>
+            </connector>
+            <connector x="468" y="268" uid="11" color="#FF007F">
+                <from>TransacoesEfetivadas</from>
+                <to>ReceitaTotalBruta</to>
+            </connector>
+            <connector x="567" y="324" uid="12" color="#FF007F">
+                <from>ReceitaTotalBruta</from>
+                <to>ReceitaStartup</to>
+            </connector>
+            <connector x="661" y="440" uid="13" color="#FF007F">
+                <from>ReceitaStartup</from>
+                <to>ReceitaTotalProvedores</to>
+            </connector>
+            <connector x="679" y="393" uid="14" color="#FF007F">
+                <from>MarkupMedio</from>
+                <to>ReceitaStartup</to>
+            </connector>
+            <connector x="469" y="259" uid="15" color="#FF007F">
+                <from>TransacoesEfetivadas</from>
+                <to>CustosVariaveis</to>
+            </connector>
+            <connector x="861" y="316" uid="16" color="#FF007F">
+                <from>CustoVariavelPorTransacao</from>
+                <to>CustosVariaveis</to>
+            </connector>
+            <connector x="561" y="323" uid="17" color="#FF007F">
+                <from>ReceitaTotalBruta</from>
+                <to>ReceitaTotalProvedores</to>
+            </connector>
+            <connector x="548" y="460" uid="18" color="#FF007F">
+                <from>TaxasMédias</from>
+                <to>ReceitaTotalProvedores</to>
+            </connector>
+            <connector x="459" y="272" uid="19" color="#FF007F">
+                <from>TransacoesEfetivadas</from>
+                <to>ReceitaUnitariaProvedoresAtivos</to>
+            </connector>
+            <connector x="512" y="408" uid="20" color="#FF007F">
+                <from>ReceitaTotalProvedores</from>
+                <to>ReceitaUnitariaProvedoresAtivos</to>
+            </connector>
+            <connector x="391" y="438" uid="21" color="#FF007F">
+                <from>ReceitaUnitariaProvedoresAtivos</from>
+                <to>AtratividadeProvedores</to>
+            </connector>
+            <connector x="476" y="496" uid="22" color="#FF007F">
+                <from>ReceitaUnitariaBaseline</from>
+                <to>AtratividadeProvedores</to>
+            </connector>
+            <connector x="363" y="495" uid="23" color="#FF007F">
+                <from>AtratividadeProvedores</from>
+                <to>AdesaoBocaABoca</to>
+            </connector>
+            <connector x="366" y="500" uid="24" color="#FF007F">
+                <from>AtratividadeProvedores</from>
+                <to>AdesaoMarketing</to>
+            </connector>
+            <connector x="129" y="510" uid="25" color="#FF007F">
+                <from>ProvedoresPotenciais</from>
+                <to>AdesaoBocaABoca</to>
+            </connector>
+            <connector x="223" y="470" uid="26" color="#FF007F">
+                <from>ProvedoresAtivos</from>
+                <to>AdesaoBocaABoca</to>
+            </connector>
+            <connector x="114" y="510" uid="27" color="#FF007F">
+                <from>ProvedoresPotenciais</from>
+                <to>AdesaoMarketing</to>
+            </connector>
+            <connector x="223" y="536" uid="28" color="#FF007F">
+                <from>AdesaoBocaABoca</from>
+                <to>AdesaoProvedores</to>
+            </connector>
+            <connector x="167" y="208" uid="29" color="#FF007F">
+                <from>AtratividadeConsumidores</from>
+                <to>AdesaoConsumidores</to>
+            </connector>
+            <connector x="440" y="335" uid="30" color="#FF007F">
+                <from>PrecoMedio</from>
+                <to>AtratividadePreco</to>
+            </connector>
+            <connector x="249" y="226" uid="31" color="#FF007F">
+                <from>AtratividadePreco</from>
+                <to>AtratividadeConsumidores</to>
+            </connector>
+            <connector x="183" y="277" uid="32" color="#FF007F">
+                <from>AtratividadeDiversidade</from>
+                <to>AtratividadeConsumidores</to>
+            </connector>
+            <connector x="293" y="327" uid="33" color="#FF007F">
+                <from>TransacoesPossiveis</from>
+                <to>AtratividadeDiversidade</to>
+            </connector>
+            <connector x="672" y="583" uid="34" color="#FF007F">
+                <from>InvestimentoMarketing</from>
+                <to>CustosMarketingStartup</to>
+            </connector>
+            <connector x="221" y="583" uid="35" color="#FF007F">
+                <from>AdesaoMarketing</from>
+                <to>AdesaoProvedores</to>
+            </connector>
+            <connector x="650" y="591" uid="36" color="#FF007F">
+                <from>InvestimentoMarketing</from>
+                <to>AdesaoMarketing</to>
+            </connector>
+            <connector x="251" y="639" uid="37" color="#FF007F">
+                <from>CustoAquisicaoMarketing</from>
+                <to>AdesaoMarketing</to>
+            </connector>
+            <connector x="254" y="188" uid="38" color="#FF007F">
+                <from>PrecoBaseline</from>
+                <to>AtratividadePreco</to>
+            </connector>
+            <connector x="98" y="59" uid="39" color="#FF007F">
+                <from>ConsumidoresPotenciais</from>
+                <to>AdesaoConsumidores</to>
+            </connector>
+            <connector x="392" y="204" uid="40" color="#FF007F">
+                <from>TransacoesDisponiveis</from>
+                <to>AtratividadeDiversidade</to>
+            </connector>
+        </display>
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+</xmile>
