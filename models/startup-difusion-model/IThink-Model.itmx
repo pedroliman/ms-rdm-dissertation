@@ -34,7 +34,7 @@
             <eqn>10</eqn>
             <inflow>AdesaoProvedores</inflow>
             <non_negative />
-            <display x="228" y="453" color="blue" />
+            <display x="248" y="477" color="blue" />
         </stock>
         <aux name="DemandaUnitaria">
             <eqn>10</eqn>
@@ -113,10 +113,10 @@
         <flow name="ReceitaStartup">
             <eqn>ReceitaTotalBruta*MarkupMedio</eqn>
             <non_negative />
-            <display x="670" y="442" color="blue">
+            <display x="682" y="442" color="blue">
                 <pts>
                     <pt x="620" y="442" />
-                    <pt x="720" y="442" />
+                    <pt x="744" y="442" />
                 </pts>
             </display>
         </flow>
@@ -137,14 +137,14 @@
             <outflow>CustosFixosOperacaoStartup</outflow>
             <outflow>CustosVariaveis</outflow>
             <outflow>CustosMarketingStartup</outflow>
-            <display x="742" y="445" color="blue" />
+            <display x="766" y="445" color="blue" />
         </stock>
         <flow name="CustosFixosOperacaoStartup">
-            <eqn>100</eqn>
+            <eqn>0</eqn>
             <non_negative />
-            <display x="848" y="442" color="blue">
+            <display x="860" y="442" color="blue">
                 <pts>
-                    <pt x="764" y="442" />
+                    <pt x="788" y="442" />
                     <pt x="933" y="442" />
                 </pts>
             </display>
@@ -161,7 +161,7 @@
             </display>
         </flow>
         <aux name="CustoVariavelPorTransacao">
-            <eqn>10</eqn>
+            <eqn>1</eqn>
             <display x="860" y="307" color="blue" label_side="top" label_angle="99" />
         </aux>
         <aux name="TaxasMédias">
@@ -194,19 +194,19 @@
             <display x="396" y="431" color="blue" />
         </aux>
         <aux name="ReceitaUnitariaBaseline" flow_concept="true">
-            <eqn>10</eqn>
+            <eqn>20</eqn>
             <display x="485" y="494" color="blue" />
         </aux>
         <aux name="AtratividadeProvedores" flow_concept="true">
-            <eqn>ReceitaUnitariaProvedoresAtivos/ReceitaUnitariaBaseline</eqn>
+            <eqn>(ReceitaUnitariaProvedoresAtivos/ReceitaUnitariaBaseline)/TaxaAtratividadeProvedores/10</eqn>
             <display x="372" y="493" color="blue" />
         </aux>
         <flow name="AdesaoProvedores">
             <eqn>AdesaoBocaABoca+AdesaoMarketing</eqn>
-            <display x="172" y="464" color="blue" label_side="top" label_angle="138">
+            <display x="182" y="480" color="blue" label_side="top" label_angle="137">
                 <pts>
-                    <pt x="139" y="464" />
-                    <pt x="206" y="464" />
+                    <pt x="139" y="480" />
+                    <pt x="226" y="480" />
                 </pts>
             </display>
         </flow>
@@ -241,7 +241,7 @@
         <flow name="MudancasDemograficasProvedores">
             <eqn>10</eqn>
             <non_negative />
-            <display x="67" y="412" color="blue" label_angle="278">
+            <display x="67" y="412" color="blue" label_side="top" label_angle="52">
                 <pts>
                     <pt x="95" y="464" />
                     <pt x="95" y="412" />
@@ -250,7 +250,7 @@
             </display>
         </flow>
         <flow name="AdesaoConsumidores">
-            <eqn>ConsumidoresPotenciais*AtratividadeConsumidores</eqn>
+            <eqn>(ConsumidoresPotenciais*AtratividadeConsumidores)/10</eqn>
             <display x="175" y="68" color="blue" label_angle="278">
                 <pts>
                     <pt x="98" y="68" />
@@ -269,14 +269,14 @@
         </flow>
         <aux name="AtratividadeConsumidores" flow_concept="true">
             <eqn>MEAN(AtratividadePreco,AtratividadeDiversidade)</eqn>
-            <display x="160" y="215" color="blue" label_side="left" label_angle="184" />
+            <display x="155" y="212" color="blue" label_side="left" label_angle="184" />
         </aux>
         <aux name="AtratividadePreco">
             <eqn>PrecoMedio/PrecoBaseline</eqn>
             <display x="258" y="229" color="blue" />
         </aux>
         <aux name="AtratividadeDiversidade" flow_concept="true">
-            <eqn>TransacoesDisponiveis/TransacoesPossiveis</eqn>
+            <eqn>(TransacoesDisponiveis/TransacoesPossiveis)/TaxaDiversidade</eqn>
             <display x="187" y="285" color="blue" label_angle="207" />
         </aux>
         <aux name="InvestimentoMarketing">
@@ -290,6 +290,14 @@
         <aux name="PrecoBaseline">
             <eqn>12</eqn>
             <display x="253" y="179" color="blue" />
+        </aux>
+        <aux name="TaxaDiversidade">
+            <eqn>10</eqn>
+            <display x="84" y="262" color="blue" />
+        </aux>
+        <aux name="TaxaAtratividadeProvedores" flow_concept="true">
+            <eqn>20</eqn>
+            <display x="419" y="544" color="blue" />
         </aux>
         <display page_width="595" page_height="842" page_cols="3" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" scroll_y="48">
             <connector x="296" y="88" uid="0" color="#FF007F">
@@ -312,7 +320,7 @@
                 <from>CapacidadeUnitaria</from>
                 <to>TransacoesPossiveis</to>
             </connector>
-            <connector x="222" y="436" uid="5" color="#FF007F">
+            <connector x="228" y="460" uid="5" color="#FF007F">
                 <from>ProvedoresAtivos</from>
                 <to>TransacoesPossiveis</to>
             </connector>
@@ -340,11 +348,11 @@
                 <from>TransacoesEfetivadas</from>
                 <to>ReceitaTotalBruta</to>
             </connector>
-            <connector x="567" y="324" uid="12" color="#FF007F">
+            <connector x="567" y="325" uid="12" color="#FF007F">
                 <from>ReceitaTotalBruta</from>
                 <to>ReceitaStartup</to>
             </connector>
-            <connector x="661" y="440" uid="13" color="#FF007F">
+            <connector x="673" y="440" uid="13" color="#FF007F">
                 <from>ReceitaStartup</from>
                 <to>ReceitaTotalProvedores</to>
             </connector>
@@ -352,11 +360,11 @@
                 <from>MarkupMedio</from>
                 <to>ReceitaStartup</to>
             </connector>
-            <connector x="469" y="259" uid="15" color="#FF007F">
+            <connector x="470" y="260" uid="15" color="#FF007F">
                 <from>TransacoesEfetivadas</from>
                 <to>CustosVariaveis</to>
             </connector>
-            <connector x="861" y="316" uid="16" color="#FF007F">
+            <connector x="860" y="316" uid="16" color="#FF007F">
                 <from>CustoVariavelPorTransacao</from>
                 <to>CustosVariaveis</to>
             </connector>
@@ -396,7 +404,7 @@
                 <from>ProvedoresPotenciais</from>
                 <to>AdesaoBocaABoca</to>
             </connector>
-            <connector x="223" y="470" uid="26" color="#FF007F">
+            <connector x="226" y="482" uid="26" color="#FF007F">
                 <from>ProvedoresAtivos</from>
                 <to>AdesaoBocaABoca</to>
             </connector>
@@ -404,11 +412,11 @@
                 <from>ProvedoresPotenciais</from>
                 <to>AdesaoMarketing</to>
             </connector>
-            <connector x="224" y="537" uid="28" color="#FF007F">
+            <connector x="224" y="538" uid="28" color="#FF007F">
                 <from>AdesaoBocaABoca</from>
                 <to>AdesaoProvedores</to>
             </connector>
-            <connector x="167" y="208" uid="29" color="#FF007F">
+            <connector x="162" y="205" uid="29" color="#FF007F">
                 <from>AtratividadeConsumidores</from>
                 <to>AdesaoConsumidores</to>
             </connector>
@@ -416,11 +424,11 @@
                 <from>PrecoMedio</from>
                 <to>AtratividadePreco</to>
             </connector>
-            <connector x="249" y="226" uid="31" color="#FF007F">
+            <connector x="249" y="228" uid="31" color="#FF007F">
                 <from>AtratividadePreco</from>
                 <to>AtratividadeConsumidores</to>
             </connector>
-            <connector x="183" y="277" uid="32" color="#FF007F">
+            <connector x="184" y="277" uid="32" color="#FF007F">
                 <from>AtratividadeDiversidade</from>
                 <to>AtratividadeConsumidores</to>
             </connector>
@@ -428,11 +436,11 @@
                 <from>TransacoesPossiveis</from>
                 <to>AtratividadeDiversidade</to>
             </connector>
-            <connector x="672" y="583" uid="34" color="#FF007F">
+            <connector x="671" y="583" uid="34" color="#FF007F">
                 <from>InvestimentoMarketing</from>
                 <to>CustosMarketingStartup</to>
             </connector>
-            <connector x="221" y="583" uid="35" color="#FF007F">
+            <connector x="221" y="582" uid="35" color="#FF007F">
                 <from>AdesaoMarketing</from>
                 <to>AdesaoProvedores</to>
             </connector>
@@ -456,44 +464,117 @@
                 <from>TransacoesDisponiveis</from>
                 <to>AtratividadeDiversidade</to>
             </connector>
+            <connector x="92" y="258" uid="41" color="#FF007F">
+                <from>TaxaDiversidade</from>
+                <to>AtratividadeDiversidade</to>
+            </connector>
+            <connector x="412" y="538" uid="42" color="#FF007F">
+                <from>TaxaAtratividadeProvedores</from>
+                <to>AtratividadeProvedores</to>
+            </connector>
         </display>
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
-            <stacked_container x="220" y="62" height="282" width="492" visible_index="1" uid="41">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-705609045" comparative="true" time_precision="2" from="1" to="13">
+            <stacked_container x="220" y="62" height="282" width="492" visible_index="2" uid="43">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-705604507" comparative="true" time_precision="2" from="1" to="13">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="ConsumidoresAtivos" />
-                        <data name="Run 3 data" />
+                        <data name="Run 37 data" />
                     </plot>
                     <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
                         <entity name="ConsumidoresAtivos" />
-                        <data name="Run 4 data" />
+                        <data name="Run 38 data" />
                     </plot>
                     <plot index="2" pen_width="1" color="fuchsia" precision="0" show_y_axis="true">
                         <entity name="ConsumidoresAtivos" />
-                        <data name="Run 5 data" />
+                        <data name="Run 39 data" />
+                    </plot>
+                    <plot index="3" pen_width="1" color="#008F44" precision="0" show_y_axis="true">
+                        <entity name="ConsumidoresAtivos" />
+                        <data name="Run 40 data" />
+                    </plot>
+                    <plot index="4" pen_width="1" color="#FF7F00" precision="0" show_y_axis="true">
+                        <entity name="ConsumidoresAtivos" />
+                        <data name="Run 41 data" />
+                    </plot>
+                    <plot index="5" pen_width="1" color="#7F00FF" precision="0" show_y_axis="true">
+                        <entity name="ConsumidoresAtivos" />
+                        <data name="Run 42 data" />
                     </plot>
                 </graph>
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-705609045" comparative="true" time_precision="2" from="1" to="13">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-705604507" comparative="true" time_precision="2" from="1" to="13">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="CaixaStartup" />
-                        <data name="Run 3 data" />
+                        <data name="Run 35 data" />
                     </plot>
                     <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
                         <entity name="CaixaStartup" />
-                        <data name="Run 4 data" />
+                        <data name="Run 36 data" />
                     </plot>
                     <plot index="2" pen_width="1" color="fuchsia" precision="0" show_y_axis="true">
                         <entity name="CaixaStartup" />
-                        <data name="Run 5 data" />
+                        <data name="Run 37 data" />
+                    </plot>
+                    <plot index="3" pen_width="1" color="#008F44" precision="0" show_y_axis="true">
+                        <entity name="CaixaStartup" />
+                        <data name="Run 38 data" />
+                    </plot>
+                    <plot index="4" pen_width="1" color="#FF7F00" precision="0" show_y_axis="true">
+                        <entity name="CaixaStartup" />
+                        <data name="Run 39 data" />
+                    </plot>
+                    <plot index="5" pen_width="1" color="#7F00FF" precision="0" show_y_axis="true">
+                        <entity name="CaixaStartup" />
+                        <data name="Run 40 data" />
+                    </plot>
+                    <plot index="6" pen_width="1" color="#0CA0FF" precision="0" show_y_axis="true">
+                        <entity name="CaixaStartup" />
+                        <data name="Run 41 data" />
+                    </plot>
+                    <plot index="7" pen_width="1" color="lime" precision="0" show_y_axis="true">
+                        <entity name="CaixaStartup" />
+                        <data name="Run 42 data" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-705604507" comparative="true" time_precision="2" from="1" to="13">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="AdesaoConsumidores" />
+                        <data name="Run 36 data" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="AdesaoConsumidores" />
+                        <data name="Run 37 data" />
+                    </plot>
+                    <plot index="2" pen_width="1" color="fuchsia" precision="0" show_y_axis="true">
+                        <entity name="AdesaoConsumidores" />
+                        <data name="Run 38 data" />
+                    </plot>
+                    <plot index="3" pen_width="1" color="#008F44" precision="0" show_y_axis="true">
+                        <entity name="AdesaoConsumidores" />
+                        <data name="Run 39 data" />
+                    </plot>
+                    <plot index="4" pen_width="1" color="#FF7F00" precision="0" show_y_axis="true">
+                        <entity name="AdesaoConsumidores" />
+                        <data name="Run 40 data" />
+                    </plot>
+                    <plot index="5" pen_width="1" color="#7F00FF" precision="0" show_y_axis="true">
+                        <entity name="AdesaoConsumidores" />
+                        <data name="Run 41 data" />
+                    </plot>
+                    <plot index="6" pen_width="1" color="#0CA0FF" precision="0" show_y_axis="true">
+                        <entity name="AdesaoConsumidores" />
+                        <data name="Run 42 data" />
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="441" y="97" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="41" />
+            <pad_icon x="441" y="97" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="43" />
             <slider x="333" y="415" color="black" width="197" height="43" min="9" max="15">
-                <entity name="PrecoMedio">
-                    <value>15</value>
+                <entity name="PrecoMedio" />
+            </slider>
+            <slider x="584" y="416" color="black" width="197" height="43" min="0" max="200">
+                <entity name="InvestimentoMarketing">
+                    <value>200</value>
                 </entity>
             </slider>
         </interface>
