@@ -17,7 +17,7 @@
         <dt>0.25</dt>
     </sim_specs>
     <model_units />
-    <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
+    <isee:prefs layer="interface" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
         <isee:window width="1366" height="685" />
         <isee:security />
         <isee:print_setup width="595" height="842" />
@@ -291,7 +291,7 @@
             <eqn>12</eqn>
             <display x="253" y="179" color="blue" />
         </aux>
-        <display page_width="595" page_height="842" page_cols="2" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed">
+        <display page_width="595" page_height="842" page_cols="3" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" scroll_y="48">
             <connector x="296" y="88" uid="0" color="#FF007F">
                 <from>ConsumidoresAtivos</from>
                 <to>TransacoesDemandadas</to>
@@ -460,6 +460,42 @@
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
+            <stacked_container x="220" y="62" height="282" width="492" visible_index="1" uid="41">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-705609045" comparative="true" time_precision="2" from="1" to="13">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="ConsumidoresAtivos" />
+                        <data name="Run 3 data" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="ConsumidoresAtivos" />
+                        <data name="Run 4 data" />
+                    </plot>
+                    <plot index="2" pen_width="1" color="fuchsia" precision="0" show_y_axis="true">
+                        <entity name="ConsumidoresAtivos" />
+                        <data name="Run 5 data" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-705609045" comparative="true" time_precision="2" from="1" to="13">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="CaixaStartup" />
+                        <data name="Run 3 data" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="CaixaStartup" />
+                        <data name="Run 4 data" />
+                    </plot>
+                    <plot index="2" pen_width="1" color="fuchsia" precision="0" show_y_axis="true">
+                        <entity name="CaixaStartup" />
+                        <data name="Run 5 data" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="441" y="97" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="41" />
+            <slider x="333" y="415" color="black" width="197" height="43" min="9" max="15">
+                <entity name="PrecoMedio">
+                    <value>15</value>
+                </entity>
+            </slider>
         </interface>
     </model>
 </xmile>
