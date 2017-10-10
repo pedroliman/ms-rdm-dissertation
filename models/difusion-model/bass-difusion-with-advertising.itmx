@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xmile version="1.0" level="3" xmlns="http://www.systemdynamics.org/XMILE" xmlns:isee="http://iseesystems.com/XMILE">
+    <header>
+        <smile version="1.0" namespace="std, isee">
+            <uses_arrays>1</uses_arrays>
+        </smile>
+        <name>modelo-teste-difusao</name>
+        <uuid>f90cae0e-22f5-4964-bdac-2fbfb063410a</uuid>
+        <vendor>isee systems, inc.</vendor>
+        <product version="10.0.3" lang="en">iThink</product>
+    </header>
+    <style>
+        <model font-family="Arial" font-size="9" />
+        <interface font-family="Arial" font-size="9" />
+    </style>
+    <sim_specs method="Euler" time_units="Years">
+        <start>0</start>
+        <stop>10</stop>
+        <dt>0.0625</dt>
+        <isee:analyze_mode>false</isee:analyze_mode>
+    </sim_specs>
+    <dimensions>
+        <dim name="Dim_Name_1" size="1" />
+    </dimensions>
+    <model_units />
+    <isee:prefs layer="map" grid_width="20" grid_height="50" divide_by_zero_alert="true" link_high_level_map="true" show_module_prefix="true">
+        <isee:window width="1366" height="685" />
+        <isee:security />
+        <isee:print_setup width="582" height="765" />
+    </isee:prefs>
+    <isee:equation_prefs order_by="sector" />
+    <model>
+        <stock name="Potential_Adopters">
+            <doc>The number of potential adopters is determined by the total population size and the current number of active adopters.&#x0D;</doc>
+            <eqn>Total_Population - Adopters  {people}</eqn>
+            <outflow>Adoption_Rate</outflow>
+            <display x="87" y="66" color="blue">
+                <scale min="0" max="1000000" />
+            </display>
+        </stock>
+        <flow name="Adoption_Rate">
+            <doc>The rate at which a potential adopter becomes an active adopter. This is driven by advertising efforts and the word of mouth effect.&#x0D;&#x0D;&#x0D;</doc>
+            <eqn>Adoption_from_Advertising +Adoption_from_Word_of_Mouth  {people/year}</eqn>
+            <non_negative />
+            <display x="197" y="66" color="blue" label_side="top" label_angle="69">
+                <pts>
+                    <pt x="109" y="66" />
+                    <pt x="285" y="66" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="Adopters">
+            <doc>The number of active adopters in the system.&#x0D;&#x0D;&#x0D;</doc>
+            <eqn>10  {people}</eqn>
+            <inflow>Adoption_Rate</inflow>
+            <display x="307" y="64" color="blue">
+                <scale min="0" max="1000000" />
+            </display>
+        </stock>
+        <aux name="Adoption_from\nAdvertising">
+            <doc>Adoption can result from advertising according to the effectiveness of the advertising effort among the pool of potential adopters.&#x0D;&#x0D;&#x0D;</doc>
+            <eqn>Advertising_Effectiveness*Potential_Adopters  {people/year}</eqn>
+            <display x="147" y="147" color="blue" label_side="right" label_angle="297" />
+        </aux>
+        <aux name="Adoption_from\nWord_of_Mouth">
+            <doc>Adoption by word of mouth is driven by the contact rate between potential adopters and active adopters and the fraction of times these interactions will result in adoption. The word of mouth effect is small if the number of active adopters relative to the total population size is small.&#x0D;&#x0D;&#x0D;</doc>
+            <eqn>Contact_Rate*Adopters*(Potential_Adopters/Total_Population)*Adoption_Fraction  {people/year}</eqn>
+            <display x="354" y="201" color="blue" label_side="left" label_angle="231" />
+        </aux>
+        <aux name="Advertising_Effectiveness">
+            <doc>Advertising results in adoption according the effectiveness of the advertising, expressed as a fraction per year of potential adopters. &#x0D;</doc>
+            <eqn>.01  {1/year}</eqn>
+            <display x="71" y="218" color="blue" label_angle="337" />
+        </aux>
+        <aux name="Total\nPopulation">
+            <doc>The size of the total population.&#x0D;&#x0D;</doc>
+            <eqn>1e+006  {people}</eqn>
+            <display x="432" y="142" color="blue" label_side="top" label_angle="77" />
+        </aux>
+        <aux name="Adoption\nFraction">
+            <doc>The proportion of contacts between an active adopter and a potential adopter that result in adoption.&#x0D;&#x0D;</doc>
+            <eqn>.02  {dimensionless}</eqn>
+            <display x="435" y="195" color="blue" label_side="right" label_angle="277" />
+        </aux>
+        <aux name="Contact_Rate">
+            <doc>The rate at which active adopters come into contact with potential adopters.&#x0D;&#x0D;&#x0D;</doc>
+            <eqn>100  {people per person/year, which simplifies dimensionally to 1/year}</eqn>
+            <display x="405" y="265" color="blue" label_angle="263" />
+        </aux>
+        <display page_width="582" page_height="765" page_cols="2" isee:show_values_on_hover="true" isee:converter_size="large" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed">
+            <connector x="157" y="140" uid="0" color="#FF3299">
+                <from>Adoption_from_Advertising</from>
+                <to>Adoption_Rate</to>
+            </connector>
+            <connector x="342" y="198" uid="1" color="#FF007F">
+                <from>Adoption_from_Word_of_Mouth</from>
+                <to>Adoption_Rate</to>
+            </connector>
+            <connector x="394" y="260" uid="2" color="#FF007F">
+                <from>Contact_Rate</from>
+                <to>Adoption_from_Word_of_Mouth</to>
+            </connector>
+            <connector x="424" y="202" uid="3" color="#FF007F">
+                <from>Adoption_Fraction</from>
+                <to>Adoption_from_Word_of_Mouth</to>
+            </connector>
+            <connector x="420" y="145" uid="4" color="#FF007F">
+                <from>Total_Population</from>
+                <to>Adoption_from_Word_of_Mouth</to>
+            </connector>
+            <connector x="330" y="78" uid="5" color="#FF007F">
+                <from>Adopters</from>
+                <to>Adoption_from_Word_of_Mouth</to>
+            </connector>
+            <connector x="88" y="83" uid="6" color="#FF3299">
+                <from>Potential_Adopters</from>
+                <to>Adoption_from_Advertising</to>
+            </connector>
+            <connector x="69" y="83" uid="7" color="#FF007F">
+                <from>Potential_Adopters</from>
+                <to>Adoption_from_Word_of_Mouth</to>
+            </connector>
+            <connector x="82" y="213" uid="8" color="#FF3299">
+                <from>Advertising_Effectiveness</from>
+                <to>Adoption_from_Advertising</to>
+            </connector>
+            <button x="316" y="372" width="80" height="32" uid="9" appearance="opaque" background="black" color="white" style="square" label="To Graph" font-family="Arial" font-size="12" text-align="center">
+                <link target="interface" x="0" y="0" />
+            </button>
+        </display>
+        <interface page_width="1588" page_height="1128">
+            <simulation_delay>1</simulation_delay>
+            <pages />
+            <stacked_container x="96" y="41" height="282" width="492" visible_index="0" uid="10">
+                <graph type="time_series" title="" background="#E0E0E0" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="1" from="0" to="10">
+                    <plot index="0" pen_width="3" color="red" precision="0" show_y_axis="true">
+                        <entity name="Adopters" />
+                    </plot>
+                    <plot index="1" pen_width="3" color="blue" precision="0" show_y_axis="true">
+                        <entity name="Potential_Adopters" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="" background="#E0E0E0" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="1" from="0" to="10">
+                    <plot index="0" pen_width="3" color="blue" precision="0" show_y_axis="true">
+                        <scale min="0" max="800000" />
+                        <entity name="Adoption_Rate" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="" background="#E0E0E0" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="3" color="red" precision="0" show_y_axis="true">
+                        <entity name="Adopters" />
+                    </plot>
+                    <plot index="1" pen_width="3" color="#6B6B6B" precision="0" show_y_axis="true">
+                        <scale min="6.53145e-316" max="1.0163e-270" />
+                        <entity />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="394" y="89" width="26" height="22" color="fuchsia" label_side="bottom" label="Graph 1" type="graph" icon_of="10" />
+            <button x="514" y="384" width="77" height="31" uid="11" appearance="opaque" background="black" color="white" style="square" label="To Model" font-family="Arial" font-size="12" text-align="center">
+                <link target="model" x="0" y="0" />
+            </button>
+            <button x="22" y="94" width="47" height="32" uid="12" appearance="opaque" background="black" color="white" style="rounded" label="Run" font-family="Arial" font-size="12" text-align="center">
+                <menu_action>run</menu_action>
+            </button>
+            <slider x="182" y="375" color="red" width="197" height="43" min="0" max="0.02" increment="0.01">
+                <entity name="Advertising_Effectiveness" />
+            </slider>
+            <slider x="389" y="375" color="red" width="197" height="43" min="0" max="0.03" increment="0.01">
+                <entity name="Adoption_Fraction" />
+            </slider>
+        </interface>
+    </model>
+</xmile>

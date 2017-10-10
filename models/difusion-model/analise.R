@@ -23,7 +23,7 @@ source('modelo-difusao.R', encoding = 'UTF-8')
 inputs = carregar_inputs()
 
 # Obter Ensemble LHS (Sem Variáveis das Estratégias)
-ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 100)
+ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 30)
 
 # Ampliar Ensemble com as variáveis das Estratégias
 novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
@@ -37,9 +37,25 @@ library(ggplot2)
 ggplot2::ggplot(dados_simulacao,
        aes(x=Tempo, y=Adopters, color=factor(Lever), group=Replicacao)) + 
   geom_line() + 
-  ylab("Adopters") + 
+  ylab("Clientes") + 
   xlab("Tempo") +
   labs(color = "Estratégia")
+
+
+# Plotando o Adoption Rate 
+ggplot2::ggplot(dados_simulacao,
+                aes(x=Tempo, y=Adoption_Rate, color=factor(Lever), group=Replicacao)) + 
+  geom_line() + 
+  ylab("Taxa de Adoção") + 
+  xlab("Tempo") +
+  labs(color = "Estratégia")
+
+
+# Considerando o último ano
+
+dados_ultimo_ano = 
+
+
 # + guides(color=FALSE) +
 
 # + scale_color_manual(values = Mypalette(5))
@@ -125,7 +141,7 @@ library(dplyr)
 # De uma hora para outra o filter não está mais funcionando.
 # dadosplot = dplyr::filter(dados_simulacao, Tempo == FINISH, Lever == 1) %>% select (Adoption_Rate, ContactRate, Adopters)
 
-dadosplot = subset.data.frame(dados_simulacao, (Tempo == FINISH & Lever == 5)) %>% select(Adoption_Rate, ContactRate, Adopters)
+dadosplot = subset.data.frame(dados_simulacao, (Tempo == FINISH & Lever == 2)) %>% select(AdoptionFraction, ContactRate, Adopters)
 
 dadosplot = as.matrix(dadosplot)
 
@@ -155,7 +171,7 @@ z <- list(
 )
 
 library(plotly)
-plot_ly(x = s$Adoption_Rate, y = s$ContactRate, z = s$Adopters) %>% add_surface() %>% layout(xaxis = x, yaxis = y)
+plot_ly(x = s$AdoptionFraction, y = s$ContactRate, z = s$Adopters) %>% add_surface() %>% layout(xaxis = x, yaxis = y)
 
 
 # Armazenando os Resultados

@@ -1,6 +1,6 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
-START<-2015; FINISH<-2025; STEP<-0.5
+START<-2015; FINISH<-2020; STEP<-0.125
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
