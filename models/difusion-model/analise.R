@@ -33,6 +33,27 @@ dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, e
 
 
 
+# Avaliando o Regret
+
+library(dplyr)
+dados_ano_final = dados_simulacao %>% dplyr::filter(Tempo == max(Tempo))
+
+dados_teste = dplyr::group_by(dados_ano_final, Scenario)
+
+max_var = dplyr::summarise(dados_teste, max(
+  
+  # Variável de Resposta aqui:
+  Adopters
+  
+  ))
+
+dados_join = dplyr::inner_join(dados_ano_final, max_var)
+
+dados_join[,"Adopters_Regret"] = dados_join[,"max(Adopters)"] - dados_join[,"Adopters"]
+
+dados_ano_final[,"Adopters_Regret"] = max_var[,2] - dados_ano_final[,"Adopters"]
+
+
 library(ggplot2)
 # Visualizando Todas as Replicações
 ggplot2::ggplot(dados_simulacao,
