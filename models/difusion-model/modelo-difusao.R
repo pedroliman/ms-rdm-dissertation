@@ -42,5 +42,5 @@ modelo <- function(time, stocks, auxs){
 }
 
 # Nomeando o Dataframe de Saída
-nomes_variaveis_final = c("Tempo", "PotentialAdopters", "Adopters", "AdvEffectiveness", "ContactRate", "AdoptionFraction", "TotalPopulation", "Adoption_From_Advertising", "Adoption_From_Word_of_Mouth", "Adoption_Rate", "AdvON", "AdvIntensity", "Lever", "Replicacao")
+nomes_variaveis_final = c("Tempo", "PotentialAdopters", "Adopters", "AdvEffectiveness", "ContactRate", "AdoptionFraction", "TotalPopulation", "Adoption_From_Advertising", "Adoption_From_Word_of_Mouth", "Adoption_Rate", "AdvON", "AdvIntensity", "Lever", "Scenario")
 

@@ -118,13 +118,24 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
     resultados_simulacao = ode(y=stocks, times=simtime, func = modelo, 
                                parms=ensemble[i,], method="euler")
     linhas = nrow(resultados_simulacao)
+    
+    
+    # Avançando a linha inicial e Final da Simulação
     l_inicial = j
     l_final = j + linhas-1
+    
+    # Adicionando o resultado ao ensemble
     dados_simulacao[l_inicial:l_final,1:ncolunas-1] = resultados_simulacao
-    dados_simulacao[l_inicial:l_final,ncolunas] = i
+    
+    # Adicionando o Número do Cenário
+    dados_simulacao[l_inicial:l_final,ncolunas] = ensemble[i,"Scenario"]
+    
+    # Exibindo uma Mensagem de Status
     if (i %% 100 == 0) {
       message(paste(i, "simulações finalizadas."))
     }
+    
+    # Avançando o índice dos dados simulados
     j = j + linhas
   }
   

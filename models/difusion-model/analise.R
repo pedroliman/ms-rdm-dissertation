@@ -32,6 +32,7 @@ novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs
 dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = novo_ensemble, nomes_variaveis_final = nomes_variaveis_final)
 
 
+
 library(ggplot2)
 # Visualizando Todas as Replicações
 ggplot2::ggplot(dados_simulacao,
