@@ -44,14 +44,22 @@ obter_lhs_ensemble = function (params, n=100) {
   
   # Transformando o Hypercubo em variáveis
   # var <- matrix(nrow=pontos, ncol=variaveis)
-  ensemble = matrix(nrow = pontos, ncol = nvar)
+  ensemble = matrix(nrow = pontos, ncol = nvar+1)
   
   # Montando o Ensemble
   for (var in variaveis) {
     i = which(x = variaveis == var)
-    ensemble[,i] = qunif(p = randomLHS[,i], min = min[i], max = max[i])
+    
+    # Aqui o i é +1 porque a primeira coluna será o cenário.
+    ensemble[,i+1] = qunif(p = randomLHS[,i], min = min[i], max = max[i])
   }
+  
+  # Adicionando A variável "Scenario"
+  variaveis = c(c("Scenario"),variaveis)
+  
   colnames(ensemble) = variaveis
+  
+  ensemble[,"Scenario"] = 1:nrow(ensemble)
   
   ensemble
 }
