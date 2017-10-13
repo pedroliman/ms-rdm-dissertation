@@ -53,9 +53,6 @@ ggplot2::ggplot(dados_simulacao,
 
 # Considerando o último ano
 
-dados_ultimo_ano = 
-
-
 # + guides(color=FALSE) +
 
 # + scale_color_manual(values = Mypalette(5))
