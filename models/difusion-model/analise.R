@@ -23,7 +23,7 @@ source('modelo-difusao.R', encoding = 'UTF-8')
 inputs = carregar_inputs()
 
 # Obter Ensemble LHS (Sem Variáveis das Estratégias)
-ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 30)
+ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 100)
 
 # Ampliar Ensemble com as variáveis das Estratégias
 novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
@@ -31,33 +31,50 @@ novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs
 # Rodando a Simulação
 dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = novo_ensemble, nomes_variaveis_final = nomes_variaveis_final)
 
-
+View(dados_simulacao)
 
 # Avaliando o Regret
 
 library(dplyr)
 dados_ano_final = dados_simulacao %>% dplyr::filter(Tempo == max(Tempo))
 
-dados_teste = dplyr::group_by(dados_ano_final, Scenario)
+dados_por_scenario = dplyr::group_by(dados_ano_final, Scenario)
 
-max_var = dplyr::summarise(dados_teste, max(
+max_adopters = dplyr::summarise(dados_por_scenario, Maximo = max(
   
   # Variável de Resposta aqui:
   Adopters
   
   ))
 
-dados_join = dplyr::inner_join(dados_ano_final, max_var)
+dados_join = dplyr::inner_join(dados_por_scenario, max_adopters)
 
-dados_join[,"Adopters_Regret"] = dados_join[,"max(Adopters)"] - dados_join[,"Adopters"]
+dados_join[,"Adopters_Regret"] = dados_join$Maximo - dados_join$Adopters
 
-dados_ano_final[,"Adopters_Regret"] = max_var[,2] - dados_ano_final[,"Adopters"]
+dados_por_estrategia = dplyr::group_by(dados_join, Lever) %>% select(Lever, Scenario, Adopters, Adopters_Regret)
+
+resumo_estrategias = summarise(dados_por_estrategia,
+                               Adopters_Medio = mean(Adopters),
+                               Regret_Medio = mean(Adopters_Regret),
+                               Desvio_Regret = sd(Adopters_Regret),
+                               Percentil_25 = quantile(Adopters_Regret, probs = c(0.25)),
+                               Percentil_75 = quantile(Adopters_Regret, probs = c(0.75)))
+
+
+resumo_estrategias
+
+library(ggplot2)
+p <- ggplot(dados_por_estrategia, aes(y = Adopters_Regret,x = Lever, group = Lever))
+p + geom_boxplot()
+                                      
+
+
 
 
 library(ggplot2)
 # Visualizando Todas as Replicações
 ggplot2::ggplot(dados_simulacao,
-       aes(x=Tempo, y=Adopters, color=factor(Lever), group=Replicacao)) + 
+       aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
   geom_line() + 
   ylab("Clientes") + 
   xlab("Tempo") +
