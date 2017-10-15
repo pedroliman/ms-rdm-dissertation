@@ -23,7 +23,7 @@ source('modelo-difusao.R', encoding = 'UTF-8')
 inputs = carregar_inputs()
 
 # Obter Ensemble LHS (Sem Variáveis das Estratégias)
-ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 100)
+ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 50)
 
 # Ampliar Ensemble com as variáveis das Estratégias
 novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
@@ -31,67 +31,55 @@ novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs
 # Rodando a Simulação
 dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = novo_ensemble, nomes_variaveis_final = nomes_variaveis_final)
 
-View(dados_simulacao)
-
-
-
-var_resposta = "Adopters"
-var_tempo = "Tempo"
-
-
+# Selecionando dados do último ano:
 dados_ano_final = selecionar_ultimo_periodo(dados_simulacao = dados_simulacao, var_tempo = "Tempo")
 
+# Calculando Regret
+
+dados_ano_final["MaximoPorScenario"] = calcular_maximo_por_variavel(var_resposta = "Cash", var_group = "Scenario", dados = dados_ano_final)
+
+
+dados_ano_final["Cash_Regret"] = dados_ano_final$MaximoPorScenario - dados_ano_final$Cash
 
 
 
-dados_por_scenario = dplyr::group_by(dados_ano_final, Scenario)
-
-max_adopters = dplyr::summarise(dados_por_scenario, Maximo = max(
-  
-  # Variável de Resposta aqui:
-  Adopters
-  
-  ))
+dados_por_estrategia = dplyr::group_by(dados_ano_final, Lever) %>% select(Lever, Scenario, Cash, Cash_Regret)
 
 
-var_max = c("Adopters")
-
-max_adopters = dplyr::summarise_(dados_por_scenario, Maximo = max(
-  
-  # Variável de Resposta aqui:
-  
-  var_max
-  
-))
-
-  dados_join = dplyr::inner_join(dados_por_scenario, max_adopters)
-
-dados_join[,"Adopters_Regret"] = dados_join$Maximo - dados_join$Adopters
-
-dados_por_estrategia = dplyr::group_by(dados_join, Lever) %>% select(Lever, Scenario, Adopters, Adopters_Regret)
+# Explorar melhor uma forma de mostrar em que condições cada estratégia é melhor.
 
 resumo_estrategias = summarise(dados_por_estrategia,
-                               Adopters_Medio = mean(Adopters),
-                               Regret_Medio = mean(Adopters_Regret),
-                               Desvio_Regret = sd(Adopters_Regret),
-                               Percentil_25 = quantile(Adopters_Regret, probs = c(0.25)),
-                               Percentil_75 = quantile(Adopters_Regret, probs = c(0.75)))
+                               Cash_Medio = mean(Cash),
+                               Regret_Medio = mean(Cash_Regret),
+                               Desvio_Regret = sd(Cash_Regret),
+                               Percentil_25 = quantile(Cash_Regret, probs = c(0.25)),
+                               Percentil_75 = quantile(Cash_Regret, probs = c(0.75)))
 
 
 resumo_estrategias
 
-library(ggplot2)
-p <- ggplot(dados_por_estrategia, aes(y = Adopters_Regret,x = Lever, group = Lever))
-p + geom_boxplot()
-                                      
 
+dados_por_estrategia$Lever = as.factor(dados_por_estrategia$Lever)
+
+
+# Gerando Grafico da Variável de Perda de Oportunidade
+library(ggplot2)
+p <- ggplot(dados_por_estrategia, aes(y = Cash_Regret,x = Lever, group = Lever))
+p + geom_boxplot()
+
+
+
+# Gerando Grafico da Variável de Resposta                                      
+library(ggplot2)
+p <- ggplot(dados_por_estrategia, aes(y = Cash,x = Lever, group = Lever))
+p + geom_boxplot()
 
 
 
 library(ggplot2)
 # Visualizando Todas as Replicações
 ggplot2::ggplot(dados_simulacao,
-       aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
+       aes(x=Tempo, y=Cash, color=factor(Lever), group=Scenario)) + 
   geom_line() + 
   ylab("Clientes") + 
   xlab("Tempo") +

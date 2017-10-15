@@ -105,7 +105,6 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
   # Esta função apenas funciona com o estoque inicial fixo, será necessário implementar de outra forma depois.
   o<-data.frame(ode(y=stocks, times=simtime, func = modelo, 
                     parms=ensemble[1,], method="euler"))
-  
   pontos = nrow(ensemble)
   
   nlinhas = nrow(o)
@@ -164,6 +163,28 @@ selecionar_ultimo_periodo = function(dados_simulacao, var_tempo) {
 }
 
 
+selecionar_ultimo_periodo = function(dados_simulacao, var_tempo) {
+  call = substitute(
+    expr = dados_simulacao %>% dplyr::filter(Tempo == max(Tempo)),
+    env = list(Tempo = as.name(var_tempo)))
+  eval(call)  
+}
+
+
+calcular_maximo_por_variavel = function(var_resposta, var_group, dados) {
+  call = substitute(
+    expr = {dplyr::group_by(dados, VarGroup) %>%
+        dplyr::summarise(Maximo = max(VarResposta))
+    }
+    ,
+    env = list(VarGroup = as.name(var_group), VarResposta = as.name(var_resposta)))
+  
+  max_variavel_resposta = eval(call)
+  
+  dados_join = dplyr::inner_join(dados, max_variavel_resposta)
+  
+  dados_join$Maximo
+}
 
 completeFun <- function(data, desiredCols) {
   completeVec <- complete.cases(data[, desiredCols])
