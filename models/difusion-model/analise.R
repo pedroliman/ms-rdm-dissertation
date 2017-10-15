@@ -33,10 +33,16 @@ dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, e
 
 View(dados_simulacao)
 
-# Avaliando o Regret
 
-library(dplyr)
-dados_ano_final = dados_simulacao %>% dplyr::filter(Tempo == max(Tempo))
+
+var_resposta = "Adopters"
+var_tempo = "Tempo"
+
+
+dados_ano_final = selecionar_ultimo_periodo(dados_simulacao = dados_simulacao, var_tempo = "Tempo")
+
+
+
 
 dados_por_scenario = dplyr::group_by(dados_ano_final, Scenario)
 
@@ -47,7 +53,18 @@ max_adopters = dplyr::summarise(dados_por_scenario, Maximo = max(
   
   ))
 
-dados_join = dplyr::inner_join(dados_por_scenario, max_adopters)
+
+var_max = c("Adopters")
+
+max_adopters = dplyr::summarise_(dados_por_scenario, Maximo = max(
+  
+  # Variável de Resposta aqui:
+  
+  var_max
+  
+))
+
+  dados_join = dplyr::inner_join(dados_por_scenario, max_adopters)
 
 dados_join[,"Adopters_Regret"] = dados_join$Maximo - dados_join$Adopters
 

@@ -1,6 +1,10 @@
 library(lhs)
 library(deSolve)
 
+##### CONSTANTES #####
+VAR_SCENARIO = "Scenario"
+
+
 ##### CARREGAR INPUTS #####
 
 carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("params", "levers"), nomes_inputs = c("Parametros", "Levers")) {
@@ -55,11 +59,11 @@ obter_lhs_ensemble = function (params, n=100) {
   }
   
   # Adicionando A variável "Scenario"
-  variaveis = c(c("Scenario"),variaveis)
+  variaveis = c(c(VAR_SCENARIO),variaveis)
   
   colnames(ensemble) = variaveis
   
-  ensemble[,"Scenario"] = 1:nrow(ensemble)
+  ensemble[,VAR_SCENARIO] = 1:nrow(ensemble)
   
   ensemble
 }
@@ -128,7 +132,7 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
     dados_simulacao[l_inicial:l_final,1:ncolunas-1] = resultados_simulacao
     
     # Adicionando o Número do Cenário
-    dados_simulacao[l_inicial:l_final,ncolunas] = ensemble[i,"Scenario"]
+    dados_simulacao[l_inicial:l_final,ncolunas] = ensemble[i,VAR_SCENARIO]
     
     # Exibindo uma Mensagem de Status
     if (i %% 100 == 0) {
@@ -150,6 +154,16 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
 }
 
 ##### FUNÇÕES AUXILIARES #####
+
+library(dplyr)
+selecionar_ultimo_periodo = function(dados_simulacao, var_tempo) {
+  call = substitute(
+    expr = dados_simulacao %>% dplyr::filter(Tempo == max(Tempo)),
+    env = list(Tempo = as.name(var_tempo)))
+  eval(call)  
+}
+
+
 
 completeFun <- function(data, desiredCols) {
   completeVec <- complete.cases(data[, desiredCols])
