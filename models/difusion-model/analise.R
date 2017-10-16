@@ -34,29 +34,44 @@ dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, e
 # Selecionando dados do último ano:
 dados_ano_final = selecionar_ultimo_periodo(dados_simulacao = dados_simulacao, var_tempo = "Tempo")
 
-# Calculando Regret
+# Calculando Regret:
+dados_ano_final = calcular_regret(dados = dados_ano_final, var_resposta = "Cash", var_group = "Scenario")
 
-dados_ano_final["MaximoPorScenario"] = calcular_maximo_por_variavel(var_resposta = "Cash", var_group = "Scenario", dados = dados_ano_final)
+# Resumindo Variável de Resposta Cash:
+resumo_estrategias = resumir_variavel_resposta(dados = dados_ano_final, var_resposta = "Cash", var_group = "Lever")
+
+# Escolhendo a estratégia que tem o menor percentil percentual 75 (assim como Lempert):
+estrategia = escolher_estrategia(resumo_estrategias, "CashRegretPercPercentil75")
 
 
-dados_ano_final["Cash_Regret"] = dados_ano_final$MaximoPorScenario - dados_ano_final$Cash
+# Definindo Threshold de Aceitabilidade
+threshold_regr_percentual = 0.2 # 
 
 
 
-dados_por_estrategia = dplyr::group_by(dados_ano_final, Lever) %>% select(Lever, Scenario, Cash, Cash_Regret)
+
+
+dados_por_estrategia = dplyr::group_by(dados_ano_final, Lever) %>% select(Lever, Scenario, Cash, Cash_Regret, Cash_Percent_Regret)
+
+# A fórmula do Percent Regret, assim como está, só faz sentido se a variável de resposta nunca for negativa. Ao invés de pegar o percent pelo máximo, talvez podemos pegar a diferença entre o máximo e mínimo, e assim arbitrar um denominador que faz mais sentido.
+# Isso fará sentido, já o denominador já é uma diferença entre o máximo e 0. Agora esta diferença será o máximo e mínimo.
 
 
 # Explorar melhor uma forma de mostrar em que condições cada estratégia é melhor.
 
-resumo_estrategias = summarise(dados_por_estrategia,
+resumo_estrategias = dplyr::summarise(dados_por_estrategia,
                                Cash_Medio = mean(Cash),
                                Regret_Medio = mean(Cash_Regret),
                                Desvio_Regret = sd(Cash_Regret),
-                               Percentil_25 = quantile(Cash_Regret, probs = c(0.25)),
-                               Percentil_75 = quantile(Cash_Regret, probs = c(0.75)))
+                               Percentil_25_regr = quantile(Cash_Regret, probs = c(0.25)),
+                               Percentil_75_regr = quantile(Cash_Regret, probs = c(0.75)),
+                               Regret_Perc_Medio = mean(Cash_Percent_Regret),
+                               Desvio_Regret_perc = sd(Cash_Percent_Regret),
+                               Percentil_25_perc = quantile(Cash_Percent_Regret, probs = c(0.25)),
+                               Percentil_75_perc = quantile(Cash_Percent_Regret, probs = c(0.75)))
 
 
-resumo_estrategias
+View(resumo_estrategias)
 
 
 dados_por_estrategia$Lever = as.factor(dados_por_estrategia$Lever)
@@ -66,8 +81,17 @@ dados_por_estrategia$Lever = as.factor(dados_por_estrategia$Lever)
 library(ggplot2)
 p <- ggplot(dados_por_estrategia, aes(y = Cash_Regret,x = Lever, group = Lever))
 p + geom_boxplot()
+p + geom_boxplot() + geom_jitter(width = 0.2)
+p + geom_violin() + geom_jitter(height = 0, width = 0.1)
+p + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75))
 
 
+# Gerando Grafico da Variável de Perda de Oportunidade Percentual
+library(ggplot2)
+p <- ggplot(dados_por_estrategia, aes(y = Cash_Percent_Regret,x = Lever, group = Lever))
+p + geom_boxplot() + geom_jitter(width = 0.2)
+p + geom_violin() + geom_jitter(height = 0, width = 0.1)
+p + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75))
 
 # Gerando Grafico da Variável de Resposta                                      
 library(ggplot2)

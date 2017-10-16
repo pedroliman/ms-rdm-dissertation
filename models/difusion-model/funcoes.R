@@ -1,5 +1,14 @@
+###############################################################
+# Autor: Pedro Nascimento de Lima, 2017
+# Código fonte desenvolvido para a Dissertação de Mestrado.
+# Arquivo: funcoes.R
+# Objetivo: Este arquivo contém funções utilizadas para as análises 
+# RDM realizadas durante a dissertação.
+###############################################################
+
 library(lhs)
 library(deSolve)
+library(dplyr)
 
 ##### CONSTANTES #####
 VAR_SCENARIO = "Scenario"
@@ -152,6 +161,87 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
   dados_simulacao
 }
 
+
+##### CALCULO DO REGRET (PERDA DE OPORTUNIDADE) #####
+
+calcular_regret = function(dados, var_resposta, var_group) {
+  var_maximo = paste("MaximoPor", var_group, sep = "")
+  var_minimo = paste("MinimoPor", var_group, sep = "")
+  var_regret = paste(var_resposta, "Regret", sep = "")
+  var_regret_perc = paste(var_regret, "Perc", sep = "")
+  
+  dados[var_maximo] = calcular_maximo_por_variavel(var_resposta = var_resposta, var_group = var_group, dados = dados)
+  
+  dados[var_minimo] = calcular_minimo_por_variavel(var_resposta = var_resposta, var_group = var_group, dados = dados)
+  
+  dados[var_regret] = dados[var_maximo] - dados[var_resposta]
+  
+  dados[var_regret_perc] = dados[var_regret] / (dados[var_maximo] - dados[var_minimo])
+  
+  dados  
+}
+
+
+##### CALCULO DO REGRET (PERDA DE OPORTUNIDADE) #####
+resumir_variavel_resposta = function(dados = dados_ano_final, var_resposta = "Cash", var_group = "Lever") {
+  var_regret = paste(var_resposta, "Regret", sep = "")
+  var_regret_perc = paste(var_regret, "Perc", sep = "")
+  
+  call = substitute(
+    expr =
+      dplyr::group_by(dados, VarGroup) 
+    %>% select(VarGroup, VarResposta, VarRegret, VarRegretPerc)
+    %>% summarise(VarMedio = mean(VarResposta),
+                  VarDev = sd(VarResposta),
+                  Percentil25Var = quantile(VarResposta, probs = c(0.25)),
+                  Percentil75Var = quantile(VarResposta, probs = c(0.75)),
+                  RegretMedio = mean(VarRegret),
+                  DesvioRegret = sd(VarRegret),
+                  Percentil25Regret = quantile(VarRegret, probs = c(0.25)),
+                  Percentil75Regret = quantile(VarRegret, probs = c(0.75)),
+                  RegretMedioPerc = mean(VarRegretPerc),
+                  DesvioRegretPerc = sd(VarRegretPerc),
+                  Percentil25RegretPerc = quantile(VarRegretPerc, probs = c(0.25)),
+                  Percentil75RegretPerc = quantile(VarRegretPerc, probs = c(0.75))
+    )
+    ,
+    env = list(VarGroup = as.name(var_group),
+               VarResposta = as.name(var_resposta),
+               VarRegret = as.name(var_regret),
+               VarRegretPerc = as.name(var_regret_perc)
+    )
+  )
+  
+  resumo = eval(call)  
+  
+  colnames(resumo) = c(
+    var_group,
+    paste(var_resposta, "Medio", sep = ""),
+    paste(var_resposta, "Desvio", sep = ""),
+    paste(var_resposta, "Percentil25", sep = ""),
+    paste(var_resposta, "Percentil75", sep = ""),
+    paste(var_regret, "Medio", sep = ""),
+    paste(var_regret, "Desvio", sep = ""),
+    paste(var_regret, "Percentil25", sep = ""),
+    paste(var_regret, "Percentil75", sep = ""),
+    paste(var_regret_perc, "Medio", sep = ""),
+    paste(var_regret_perc, "Desvio", sep = ""),
+    paste(var_regret_perc, "Percentil25", sep = ""),
+    paste(var_regret_perc, "Percentil75", sep = "")
+  )
+  
+  resumo
+}
+
+
+##### ESCOLHER ESTRATÉGIA MINIMIZANDO #####
+
+escolher_estrategia = function(dados_resumidos, criterio) {
+  linha_estrategia = which(resumo_estrategias[criterio] == min(resumo_estrategias[criterio]))
+  estrategia = subset(resumo_estrategias, Lever == 8)["Lever"]  
+}
+
+
 ##### FUNÇÕES AUXILIARES #####
 
 library(dplyr)
@@ -184,6 +274,21 @@ calcular_maximo_por_variavel = function(var_resposta, var_group, dados) {
   dados_join = dplyr::inner_join(dados, max_variavel_resposta)
   
   dados_join$Maximo
+}
+
+calcular_minimo_por_variavel = function(var_resposta, var_group, dados) {
+  call = substitute(
+    expr = {dplyr::group_by(dados, VarGroup) %>%
+        dplyr::summarise(Minimo = min(VarResposta))
+    }
+    ,
+    env = list(VarGroup = as.name(var_group), VarResposta = as.name(var_resposta)))
+  
+  max_variavel_resposta = eval(call)
+  
+  dados_join = dplyr::inner_join(dados, max_variavel_resposta)
+  
+  dados_join$Minimo
 }
 
 completeFun <- function(data, desiredCols) {
