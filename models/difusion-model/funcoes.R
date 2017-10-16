@@ -162,6 +162,53 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
 }
 
 
+##### SIMULAR RDM #####
+
+#' simular_RDM
+#'
+#' @param arquivo_de_inputs Caminho para o arquivo de dados padronizado com Estrategias e Incertezas (character)
+#' @param modelo Modelo de dinâmica de sistemas no padrão do deSolve (function)
+#' @param stocks Integrais a serem resolvidas numéricamente. (numeric)
+#' @param simtime Tempo de simulação (numeric)
+#' @param n Número de replicações (numeric)
+#'
+#' @return data.frame com resultados da simulação
+#' @export
+#'
+simular_RDM = function(arquivo_de_inputs="params.xlsx", modelo, stocks, simtime, n = 10){
+  t_inicio = Sys.time()
+  message("Bem vindo ao SIMULADOR RDM! Pedro Lima.")
+  message(paste("Iniciando Simulacao RDM: ", t_inicio))
+  
+  # Carregando Inputs
+  inputs = carregar_inputs(arquivo_de_inputs = arquivo_de_inputs)
+  
+  # Obter Ensemble LHS (Sem Variáveis das Estratégias)
+  ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = n)
+  
+  # Ampliar Ensemble com as variáveis das Estratégias
+  novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
+  
+  # Rodando a Simulação
+  nestrategias = length(inputs$Levers$Lever)
+  nfuturos = nrow(ensemble)
+  ntempo = ((FINISH - START)/STEP)
+  
+  message(paste("Esta rotina realizará", nestrategias * nfuturos * ntempo, "Simulacoes.\n (", nestrategias, "estratégias x", nfuturos, "futuros, em", ntempo , "periodos de tempo."))
+  
+  message(paste("Iniciando a Simulacao de", periodos, "periodos"))
+  dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = novo_ensemble, nomes_variaveis_final = nomes_variaveis_final)
+  
+  
+  t_fim = Sys.time()
+  
+  message("Finalizando Simulacao. Tempo de Simulacao: ", t_fim - t_inicio)
+  
+  dados_simulacao
+}
+
+
+
 ##### CALCULO DO REGRET (PERDA DE OPORTUNIDADE) #####
 
 calcular_regret = function(dados, var_resposta, var_group) {

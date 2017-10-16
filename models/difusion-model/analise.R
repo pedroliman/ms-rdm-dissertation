@@ -1,11 +1,11 @@
-# Este exemplo é baseado no modelo de difusão do capítulo 6 do livro do Morecroft.
+###############################################################
+# Autor: Pedro Nascimento de Lima, 2017
+# Código fonte desenvolvido para a Dissertação de Mestrado.
+# Arquivo: analise.R
+# Objetivo: Este arquivo contém funções utilizadas para as análises 
+# RDM realizadas durante a dissertação.
+###############################################################
 
-# Loading Libraries
-# library(ggplot2)
-# require(gridExtra)
-# library(scales)
-# library(dplyr)
-# # library(plotly)
 library(akima)
 # library(prim)
 
@@ -14,22 +14,46 @@ library(akima)
 ## Carregando Funções Úteis
 source('funcoes.R', encoding = 'UTF-8')
 
-## Carregando o Modelo
+## Carregando o Modelo, e outros objetos
 source('modelo-difusao.R', encoding = 'UTF-8')
 
-# source('OpenMORDM.R')
 
-# Carregando Inputs
-inputs = carregar_inputs()
+dados_simulacao = simular_RDM(arquivo_de_inputs="params.xlsx", modelo, stocks, simtime, n = 10)
 
-# Obter Ensemble LHS (Sem Variáveis das Estratégias)
-ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = 50)
+simular_RDM = function(arquivo_de_inputs="params.xlsx", modelo, stocks, simtime, n = 10){
+  t_inicio = Sys.time()
+  message("Bem vindo ao SIMULADOR RDM! Pedro Lima.")
+  message(paste("Iniciando Simulacao RDM: ", t_inicio))
+  
+  # Carregando Inputs
+  inputs = carregar_inputs(arquivo_de_inputs = arquivo_de_inputs)
+  
+  # Obter Ensemble LHS (Sem Variáveis das Estratégias)
+  ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = n)
+  
+  # Ampliar Ensemble com as variáveis das Estratégias
+  novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
+  
+  # Rodando a Simulação
+  nestrategias = length(inputs$Levers$Lever)
+  nfuturos = nrow(ensemble)
+  ntempo = ((FINISH - START)/STEP)
+  
+  message(paste("Esta rotina realizará", nestrategias * nfuturos * ntempo, "Simulacoes.\n (", nestrategias, "estratégias x", nfuturos, "futuros, em", ntempo , "periodos de tempo."))
+  
+  message(paste("Iniciando a Simulacao de", periodos, "periodos"))
+  dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = novo_ensemble, nomes_variaveis_final = nomes_variaveis_final)
+  
+  
+  t_fim = Sys.time()
+  
+  message("Finalizando Simulacao. Tempo de Simulacao: ", t_fim - t_inicio)
+  
+  dados_simulacao
+}
 
-# Ampliar Ensemble com as variáveis das Estratégias
-novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
 
-# Rodando a Simulação
-dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = novo_ensemble, nomes_variaveis_final = nomes_variaveis_final)
+
 
 # Selecionando dados do último ano:
 dados_ano_final = selecionar_ultimo_periodo(dados_simulacao = dados_simulacao, var_tempo = "Tempo")
