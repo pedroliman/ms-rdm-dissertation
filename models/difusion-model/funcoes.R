@@ -16,6 +16,13 @@ VAR_SCENARIO = "Scenario"
 
 ##### CARREGAR INPUTS #####
 
+#' carregar_inputs
+#'
+#' @param arquivo_de_inputs caminho para o arquivo de inputs com estratégias e incertezas
+#' @param abas_a_ler abas a ler do arquivo de inputs
+#' @param nomes_inputs Nome a ser atribuido aos dataframes de input.
+#'
+#' @return list com inputs para a simulação.
 carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("params", "levers"), nomes_inputs = c("Parametros", "Levers")) {
   
   # Criando uma list para os inputs
@@ -40,6 +47,12 @@ carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("par
 
 ##### OBTER ENSEMBLE - PARÂMETROS #####
 
+#' obter_lhs_ensemble
+#'
+#' @param params dataframe de parâmetros a usar (no padrão pré-determinado)
+#' @param n tamanho do ensemble a montar
+#'
+#' @return dataframe com ensemble montado (pronto para a simulação)
 obter_lhs_ensemble = function (params, n=100) {
   message("01. funcoes.R/obter_lhs_ensemble: Iniciando Obtenção do Ensemble.")
   #Obtendo DataFrame de Parâmetros
@@ -79,6 +92,12 @@ obter_lhs_ensemble = function (params, n=100) {
 
 ##### AMPLIAR ENSEMBLE COM ESTRATÉGIAS #####
 
+#' ampliar_ensemble_com_levers
+#'
+#' @param ensemble conjunto de cenarios a simular
+#' @param levers conjunto de estratégias a simular
+#'
+#' @return dataframe com a combinação de todas as estratégias em todos os cenários.
 ampliar_ensemble_com_levers = function(ensemble, levers) {
   
   variaveis_adicionais = names(dplyr::select(levers, -LeverCode))
@@ -108,6 +127,18 @@ ampliar_ensemble_com_levers = function(ensemble, levers) {
 
 ##### SIMULAR #####
 
+#' simular
+#'
+#' @param stocks integrais a serem resolvidas numéricamente. (numeric) 
+#' @param simtime Tempo de simulação (numeric)
+#' @param modelo Modelo de dinâmica de sistemas no padrão do deSolve (function)
+#' @param ensemble ensemble montado (pronto para a simulação)
+#' @param nomes_variaveis_final vetor com nomes de variáveis
+#'
+#' @return
+#' @export
+#'
+#' @examples
 simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
   message("01. funcoes.R/simular: Iniciando Simulação.")
   # Rodando a Simulação (uma vez), com a primeira linha do ensemble - Ajuda a saber se funciona.
@@ -171,11 +202,12 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
 #' @param stocks Integrais a serem resolvidas numéricamente. (numeric)
 #' @param simtime Tempo de simulação (numeric)
 #' @param n Número de replicações (numeric)
+#' @param nomes_variaveis_final Vetor com nomes de variáveis resultantes da simulação do modelo.
 #'
 #' @return data.frame com resultados da simulação
 #' @export
 #'
-simular_RDM = function(arquivo_de_inputs="params.xlsx", modelo, stocks, simtime, n = 10){
+simular_RDM = function(arquivo_de_inputs="params.xlsx", modelo, stocks, simtime, n = 10, nomes_variaveis_final){
   t_inicio = Sys.time()
   message("Bem vindo ao SIMULADOR RDM! Pedro Lima.")
   message(paste("Iniciando Simulacao RDM: ", t_inicio))
@@ -211,6 +243,16 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", modelo, stocks, simtime,
 
 ##### CALCULO DO REGRET (PERDA DE OPORTUNIDADE) #####
 
+#' calcular_regret
+#'
+#' @param dados dataframe de dados simulados para o calculo do Regret.
+#' @param var_resposta variável de resposta com
+#' @param var_group 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 calcular_regret = function(dados, var_resposta, var_group) {
   var_maximo = paste("MaximoPor", var_group, sep = "")
   var_minimo = paste("MinimoPor", var_group, sep = "")
@@ -230,6 +272,16 @@ calcular_regret = function(dados, var_resposta, var_group) {
 
 
 ##### CALCULO DO REGRET (PERDA DE OPORTUNIDADE) #####
+#' resumir_variavel_resposta
+#'
+#' @param dados dataframe com dados para analise do regret.
+#' @param var_resposta variável de resposta para análise do RDM.
+#' @param var_group 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 resumir_variavel_resposta = function(dados = dados_ano_final, var_resposta = "Cash", var_group = "Lever") {
   var_regret = paste(var_resposta, "Regret", sep = "")
   var_regret_perc = paste(var_regret, "Perc", sep = "")
