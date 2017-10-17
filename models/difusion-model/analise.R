@@ -9,8 +9,6 @@
 library(akima)
 # library(prim)
 
-# library(OpenMORDM)
-
 ## Carregando Funções Úteis
 source('funcoes.R', encoding = 'UTF-8')
 
@@ -18,27 +16,37 @@ source('funcoes.R', encoding = 'UTF-8')
 source('modelo-difusao.R', encoding = 'UTF-8')
 
 
+## Simular
 dados_simulacao = simular_RDM(arquivo_de_inputs="params.xlsx", modelo, stocks, simtime, n = 10)
 
+# Selecionando dados do último ano:
+dados_ano_final = selecionar_ultimo_periodo(dados_simulacao = dados_simulacao, var_tempo = "Tempo")
+
+# Analisar Regret e Escolher Estrategia
 
 
-var_tempo = "Tempo"
 var_resposta = "Cash"
 var_cenarios = "Scenario"
 var_estrategias = "Lever"
 var_minimizar = "CashRegretPercentil75"
 
-# Selecionando dados do último ano:
-dados_ano_final = selecionar_ultimo_periodo(dados_simulacao = dados_simulacao, var_tempo = "Tempo")
+analisar_regret = function(dados, var_resposta, var_cenarios, var_estrategias, var_criterio = "PercentRegret", sentido = "min") {
+  # Calculando Regret:
+  dados_ano_final = calcular_regret(dados = dados_ano_final, var_resposta = "Cash", var_group = "Scenario")
+  
+  # Resumindo Variável de Resposta Cash:
+  resumo_estrategias = resumir_variavel_resposta(dados = dados_ano_final, var_resposta = "Cash", var_group = "Lever")
+  
+  # Escolhendo a estratégia que tem o menor percentil percentual 75 (assim como Lempert):
+  estrategias_candidatas = escolher_estrategia(resumo_estrategias, "CashRegretPercPercentil75")
+  
+}
 
-# Calculando Regret:
-dados_ano_final = calcular_regret(dados = dados_ano_final, var_resposta = "Cash", var_group = "Scenario")
 
-# Resumindo Variável de Resposta Cash:
-resumo_estrategias = resumir_variavel_resposta(dados = dados_ano_final, var_resposta = "Cash", var_group = "Lever")
 
-# Escolhendo a estratégia que tem o menor percentil percentual 75 (assim como Lempert):
-estrategia = escolher_estrategia(resumo_estrategias, "CashRegretPercPercentil75")
+
+
+
 
 
 # Definindo Threshold de Aceitabilidade

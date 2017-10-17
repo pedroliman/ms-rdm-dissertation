@@ -278,7 +278,7 @@ calcular_regret = function(dados, var_resposta, var_group) {
 #' @param var_resposta variável de resposta para análise do RDM.
 #' @param var_group 
 #'
-#' @return
+#' @return dataframe com resumo das variaveis por grupo definido.
 #' @export
 #'
 #' @examples
@@ -335,11 +335,18 @@ resumir_variavel_resposta = function(dados = dados_ano_final, var_resposta = "Ca
 
 ##### ESCOLHER ESTRATÉGIA MINIMIZANDO #####
 
-escolher_estrategia = function(dados_resumidos, criterio) {
+escolher_estrategia_min = function(dados_resumidos, criterio) {
   linha_estrategia = which(resumo_estrategias[criterio] == min(resumo_estrategias[criterio]))
-  estrategia = subset(resumo_estrategias, Lever == 8)["Lever"]  
+  estrategia = resumo_estrategias[linha_estrategia, "Lever"]  
+  estrategia
 }
 
+
+escolher_estrategia_max = function(dados_resumidos, criterio) {
+  linha_estrategia = which(resumo_estrategias[criterio] == max(resumo_estrategias[criterio]))
+  estrategia = resumo_estrategias[linha_estrategia, "Lever"]  
+  estrategia
+}
 
 ##### FUNÇÕES AUXILIARES #####
 
