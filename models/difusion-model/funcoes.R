@@ -111,10 +111,10 @@ ampliar_ensemble_com_levers = function(ensemble, levers) {
   colnames(novo_ensemble) = names_novo_ensemble
   
   j = 1
-  for (l in seq_along(inputs$Levers$Lever)) {
+  for (l in seq_along(levers$Lever)) {
     lini = j
     lfim = j + linhas_ensemble_incial-1
-    matriz_var_adicionais = as.matrix(inputs$Levers[l,variaveis_adicionais])
+    matriz_var_adicionais = as.matrix(levers[l,variaveis_adicionais])
     novo_ensemble[lini:lfim,names_old_ensemble] = ensemble
     novo_ensemble[lini:lfim,variaveis_adicionais] = matrix(matriz_var_adicionais, nrow = linhas_ensemble_incial, ncol = ncol(matriz_var_adicionais), byrow = TRUE)
     j = j + linhas_ensemble_incial
@@ -198,16 +198,11 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
 #' simular_RDM
 #'
 #' @param arquivo_de_inputs Caminho para o arquivo de dados padronizado com Estrategias e Incertezas (character)
-#' @param modelo Modelo de dinâmica de sistemas no padrão do deSolve (function)
-#' @param stocks Integrais a serem resolvidas numéricamente. (numeric)
-#' @param simtime Tempo de simulação (numeric)
-#' @param n Número de replicações (numeric)
-#' @param nomes_variaveis_final Vetor com nomes de variáveis resultantes da simulação do modelo.
+#' @param sdmodel Lista com variáveis para simulação de dinamica de sistemas
+#' @param n Número de cenarios a gerar (numeric)
 #'
 #' @return data.frame com resultados da simulação
-#' @export
-#'
-simular_RDM = function(arquivo_de_inputs="params.xlsx", modelo, stocks, simtime, n = 10, nomes_variaveis_final){
+simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = 10){
   t_inicio = Sys.time()
   message("Bem vindo ao SIMULADOR RDM! Pedro Lima.")
   message(paste("Iniciando Simulacao RDM: ", t_inicio))
@@ -224,13 +219,11 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", modelo, stocks, simtime,
   # Rodando a Simulação
   nestrategias = length(inputs$Levers$Lever)
   nfuturos = nrow(ensemble)
-  ntempo = ((FINISH - START)/STEP)
+  ntempo = ((sdmodel$Finish - sdmodel$Start)/sdmodel$Step)
   
   message(paste("Esta rotina realizará", nestrategias * nfuturos * ntempo, "Simulacoes.\n (", nestrategias, "estratégias x", nfuturos, "futuros, em", ntempo , "periodos de tempo."))
   
-  message(paste("Iniciando a Simulacao de", periodos, "periodos"))
-  dados_simulacao = simular(stocks = stocks, simtime = simtime, modelo = modelo, ensemble = novo_ensemble, nomes_variaveis_final = nomes_variaveis_final)
-  
+  dados_simulacao = simular(stocks = sdmodel$Stocks, simtime = sdmodel$SimTime, modelo = sdmodel$Modelo, ensemble = novo_ensemble, nomes_variaveis_final = sdmodel$Variaveis)
   
   t_fim = Sys.time()
   
@@ -240,19 +233,15 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", modelo, stocks, simtime,
 }
 
 
-
 ##### CALCULO DO REGRET (PERDA DE OPORTUNIDADE) #####
 
 #' calcular_regret
 #'
 #' @param dados dataframe de dados simulados para o calculo do Regret.
-#' @param var_resposta variável de resposta com
-#' @param var_group 
+#' @param var_resposta variável de resposta a utilizar no calculo de regret (quanto mais, melhor)
+#' @param var_group variável a agrupar (ex.: Cenários)
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return mesmo dataframe de entrada com variáveis a mais.
 calcular_regret = function(dados, var_resposta, var_group) {
   var_maximo = paste("MaximoPor", var_group, sep = "")
   var_minimo = paste("MinimoPor", var_group, sep = "")
@@ -279,9 +268,6 @@ calcular_regret = function(dados, var_resposta, var_group) {
 #' @param var_group 
 #'
 #' @return dataframe com resumo das variaveis por grupo definido.
-#' @export
-#'
-#' @examples
 resumir_variavel_resposta = function(dados = dados_ano_final, var_resposta = "Cash", var_group = "Lever") {
   var_regret = paste(var_resposta, "Regret", sep = "")
   var_regret_perc = paste(var_regret, "Perc", sep = "")
@@ -401,6 +387,4 @@ completeFun <- function(data, desiredCols) {
   completeVec <- complete.cases(data[, desiredCols])
   return(data[completeVec, ])
 }
-
-
 

@@ -17,7 +17,7 @@ source('modelo-difusao.R', encoding = 'UTF-8')
 
 
 ## Simular
-dados_simulacao = simular_RDM(arquivo_de_inputs="params.xlsx", modelo, stocks, simtime, n = 10)
+dados_simulacao = simular_RDM(arquivo_de_inputs="params.xlsx",sdmodel = sdmodel, n = 10)
 
 # Selecionando dados do último ano:
 dados_ano_final = selecionar_ultimo_periodo(dados_simulacao = dados_simulacao, var_tempo = "Tempo")

@@ -52,5 +52,17 @@ modelo <- function(time, stocks, auxs){
 }
 
 # Nomeando o Dataframe de Saída
-nomes_variaveis_final = c("Tempo", "PotentialAdopters", "Adopters", "Cash", "Revenue", "Costs","AverageTicket","AdvertisingCost", "AdvEffectiveness", "ContactRate", "AdoptionFraction", "TotalPopulation", "Adoption_From_Advertising", "Adoption_From_Word_of_Mouth", "Adoption_Rate", "AdvON", "AdvIntensity", "Lever", "Scenario")
+nomes_variaveis = c("Tempo", "PotentialAdopters", "Adopters", "Cash", "Revenue", "Costs","AverageTicket","AdvertisingCost", "AdvEffectiveness", "ContactRate", "AdoptionFraction", "TotalPopulation", "Adoption_From_Advertising", "Adoption_From_Word_of_Mouth", "Adoption_Rate", "AdvON", "AdvIntensity", "Lever", "Scenario")
 
+
+# Inicializando um list com Tudo o que é necessário
+sdmodel = list(
+  Start = START,
+  Finish = FINISH,
+  Step = STEP,
+  SimTime = simtime,
+  Auxs = auxs,
+  Stocks = stocks,
+  Modelo = modelo,
+  Variaveis = nomes_variaveis
+)
