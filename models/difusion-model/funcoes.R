@@ -14,6 +14,42 @@ library(dplyr)
 VAR_SCENARIO = "Scenario"
 
 
+##### SIMULAR RDM E ESCOLHER ESTRATEGIA #####
+
+#' simularRDM_e_escolher_estrategia
+#'
+#' @param inputs caminho para o arquivo de inputs
+#' @param sdmodel list com modelo e suas opções
+#' @param opcoes list com opções para a simulação e analise de Regret.
+#'
+#' @return list com resultados da simulacao e uma estratégia candidata.
+simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes) {
+  ## Simular
+  dados_simulacao = simular_RDM(arquivo_de_inputs=inputs ,sdmodel = sdmodel, n = opcoes$N)
+  
+  # Selecionando dados do último ano:
+  dados = selecionar_ultimo_periodo(dados_simulacao = dados_simulacao, var_tempo = opcoes$VarTempo)
+  
+  # Analisar Regret
+  analise_regret = calcular_e_resumir_regret(dados = dados, var_resposta = opcoes$VarResposta, var_cenarios = opcoes$VarCenarios, var_estrategias = opcoes$VarEstrategias)
+  
+  # Escolher a Estratégia Candidata
+  estrategia_candidata = escolher_estrategia_candidata(dados = analise_regret$Dados, resumo_estrategias = analise_regret$ResumoEstrategias, var_resposta = opcoes$VarResposta, var_criterio = opcoes$VarCriterio, sentido = opcoes$SentidoCriterio)
+  
+  message(paste("A Estrategia candidata é a ", estrategia_candidata$Lever))
+  
+  output = list(
+    DadosSimulados = dados_simulacao,
+    DadosUltimoPeriodo = dados,
+    AnaliseRegret = analise_regret,
+    EstrategiaCandidata =  as.numeric(estrategia_candidata[opcoes$VarEstrategias]) 
+  )
+  
+  output
+  
+}
+
+
 ##### CARREGAR INPUTS #####
 
 #' carregar_inputs
@@ -319,16 +355,68 @@ resumir_variavel_resposta = function(dados = dados_ano_final, var_resposta = "Ca
 }
 
 
+##### ESCOLHER ESTRATÉGIA CANDIDATA #####
+
+escolher_estrategia_candidata = function(dados, resumo_estrategias, var_resposta, var_criterio = "RegretPercPercentil75", sentido = "min") {
+  
+  var_respota_criterio = paste(var_resposta, var_criterio, sep = "")
+  
+  
+  # Esta lista de criterios deve ser mantida igual à lista que a funcao resumir_variavel_resposta()
+  possiveis_var_criterios = c("Percentil25", "Percentil75", "Medio", "Desvio", "RegretMedio", "RegretDesvio", "RegretPercentil25", "RegretPercentil75", "RegretPercMedio", "RegretPercDesvio", "RegretPercPercentil25", "RegretPercPercentil75")
+  
+  # Conferindo alguns pressupostos basicos:
+  possiveis_var_respota_e_criterios = paste(var_resposta, possiveis_var_criterios, sep = "")
+  
+  # Conferindo se a variável de resposta e variável de critério combinam corretamente:
+  if (!all(possiveis_var_respota_e_criterios %in% names(resumo_estrategias))){
+    stop("Existe algo errado com a sua variavel de resposta ou variavel de criterio (a combinacao das duas no existe no resumo de estrategias).")
+  }
+  
+  # Conferindo se a Variavel de criterio está correta.
+  if(!var_criterio %in% possiveis_var_criterios){
+    stop(paste("Esta variavel de criterio esta incorreta. escolha entre:",possiveis_var_criterios))
+  }
+  
+  
+  # Agora sim, posso escolhenr a estratégia que tem o menor percentil percentual 75 (assim como Lempert):
+  estrategias_candidatas = switch(sentido,
+                                  "min" = escolher_estrategia_min(resumo_estrategias, var_respota_criterio),
+                                  "max" = escolher_estrategia_max(resumo_estrategias, var_respota_criterio))
+  
+  estrategias_candidatas
+}
+
+
+##### CALCULAR E RESUMIR REGRET #####
+
+calcular_e_resumir_regret = function(dados, var_resposta, var_cenarios, var_estrategias) {
+  dados = calcular_regret(dados = dados, var_resposta = var_resposta, var_group = var_cenarios)
+  
+  # Resumindo Variável de Resposta Cash:
+  resumo_estrategias = resumir_variavel_resposta(dados = dados, var_resposta = var_resposta, var_group = var_estrategias)
+  
+  # Formar lista de outputs dessta análise
+  output = list(
+    Dados = dados,
+    ResumoEstrategias = resumo_estrategias
+  )
+  
+  output
+}
+
+
+
 ##### ESCOLHER ESTRATÉGIA MINIMIZANDO #####
 
-escolher_estrategia_min = function(dados_resumidos, criterio) {
+escolher_estrategia_min = function(resumo_estrategias, criterio) {
   linha_estrategia = which(resumo_estrategias[criterio] == min(resumo_estrategias[criterio]))
   estrategia = resumo_estrategias[linha_estrategia, "Lever"]  
   estrategia
 }
 
 
-escolher_estrategia_max = function(dados_resumidos, criterio) {
+escolher_estrategia_max = function(resumo_estrategias, criterio) {
   linha_estrategia = which(resumo_estrategias[criterio] == max(resumo_estrategias[criterio]))
   estrategia = resumo_estrategias[linha_estrategia, "Lever"]  
   estrategia
@@ -387,4 +475,3 @@ completeFun <- function(data, desiredCols) {
   completeVec <- complete.cases(data[, desiredCols])
   return(data[completeVec, ])
 }
-
