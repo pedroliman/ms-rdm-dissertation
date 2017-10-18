@@ -1,0 +1,49 @@
+---
+title: "AnÃ¡lise RDM Piloto - Modelo de Bass"
+author: "Pedro Lima"
+date: "18 de outubro de 2017"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Análise Piloto RDM - Modelo de Bass
+
+O modelo de Bass @Bass1969 é um modelo amplamente reconhecido na literatura (frequentemente citado entre os 10 trabalhos mais influentes nos periódicos da INFORMS, e utilizado por Sterman (2000) e Morecroft (2001) em seus livros a respeito de dinâmica de sistemas).
+
+A análise do modelo de Bass é propícia para este propósito por dois motivos. Primeiro, o modelo representa um dos fatores mais incertos para as empresas privadas: Como será a evolução da demanda de um novo produto. Este modelo foi aplicado em diversas situações, e é capaz de representar processos de crescimento da demanda em novos produtos. Segundo, a execução do modelo depende de parâmetros altamente incertos (ex.: A probabilidade de que um consumidor atual do produto divulgue o produto a outro consumidor).
+
+O Modelo de Bass representa o processo de adoção de novos produtos, e propõe-se a identificar / predizer variáveis importantes para a empresa (ex.: qual será e quando será o pico de vendas de um novo produto?).
+
+Este documento apresenta uma análise RDM piloto deste modelo. O objetivo desta análise foi exercitar a aplicação do RDM com um exemplo conhecido pela literatura atual. Além disso, foi necessário desenvolver algoritmos para a execução e análise dos experimentos computacionais.
+
+### X, L, R, M
+A análise RDM sugere a utilização do framework XLRM para a estruturação do problema.
+
+#### X - Incertezas
+
+#### L - Levers (Estratégias)
+
+#### R - Relações (Modelo)
+
+#### M - Métricas
+
+Para a avlaiação de 
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
