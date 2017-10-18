@@ -227,7 +227,7 @@ library(dplyr)
 # De uma hora para outra o filter não está mais funcionando.
 # dadosplot = dplyr::filter(dados_simulacao, Tempo == FINISH, Lever == 1) %>% select (Adoption_Rate, ContactRate, Adopters)
 
-dadosplot = subset.data.frame(dados_simulacao, (Tempo == FINISH & Lever == 2)) %>% select(AdoptionFraction, ContactRate, Adopters)
+dadosplot = subset.data.frame(results$DadosUltimoPeriodo, (Lever == 2)) %>% select(AdoptionFraction, ContactRate, Cash)
 
 dadosplot = as.matrix(dadosplot)
 
@@ -257,7 +257,49 @@ z <- list(
 )
 
 library(plotly)
-plot_ly(x = s$AdoptionFraction, y = s$ContactRate, z = s$Adopters) %>% add_surface() %>% layout(xaxis = x, yaxis = y)
+plot_ly(x = s$ContactRate, y = s$AdvEffectiveness, z = s$Cash) %>% add_surface() %>% layout(xaxis = x, yaxis = y)
+
+dados_ultimo_ano = results$DadosUltimoPeriodo
+variaveis = c("AdoptionFraction", "ContactRate", "Cash")
+estrategia = 2
+
+gerar_grafico_superficie(dados_ultimo_ano, variaveis, estrategia = 8)
+
+gerar_grafico_superficie = function(dados_ultimo_ano,variaveis, estrategia) {
+  dadosplot = subset.data.frame(dados_ultimo_ano, (Lever == estrategia))
+  
+  dadosplot = dadosplot[variaveis]
+  
+  dadosplot = as.matrix(dadosplot)
+  
+  names = colnames(dadosplot)
+  
+  s = interp(dadosplot[,1],dadosplot[,2],dadosplot[,3])
+  
+  names(s) = names
+  
+  # Plotando a População Final
+  f <- list(
+    family = "Courier New, monospace",
+    size = 18,
+    color = "#7f7f7f"
+  )
+  x <- list(
+    title = "Taxa Nascimento",
+    titlefont = f
+  )
+  y <- list(
+    title = "TaxaMorte",
+    titlefont = f
+  )
+  z <- list(
+    title = "Populacao",
+    titlefont = f
+  )
+  
+  plot_ly(x = s[[1]], y = s[[2]], z = s[[3]]) %>% add_surface() %>% layout(xaxis = x, yaxis = y)
+  
+}
 
 
 # Armazenando os Resultados

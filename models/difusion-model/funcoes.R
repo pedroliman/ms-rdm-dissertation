@@ -6,6 +6,7 @@
 # RDM realizadas durante a dissertação.
 ###############################################################
 
+library(plotly)
 library(lhs)
 library(deSolve)
 library(dplyr)
@@ -474,4 +475,74 @@ calcular_minimo_por_variavel = function(var_resposta, var_group, dados) {
 completeFun <- function(data, desiredCols) {
   completeVec <- complete.cases(data[, desiredCols])
   return(data[completeVec, ])
+}
+
+
+
+##### GRÁFICOS ####
+gerar_grafico_superficie = function(dados_ultimo_ano,variaveis, estrategia) {
+  dadosplot = subset.data.frame(dados_ultimo_ano, (Lever == estrategia))
+  
+  dadosplot = dadosplot[variaveis]
+  
+  dadosplot = as.matrix(dadosplot)
+  
+  names = colnames(dadosplot)
+  
+  s = interp(dadosplot[,1],dadosplot[,2],dadosplot[,3])
+  
+  names(s) = names
+  
+  # Plotando a População Final
+  f <- list(
+    family = "Courier New, monospace",
+    size = 18,
+    color = "#7f7f7f"
+  )
+  x <- list(
+    title = "Taxa Nascimento",
+    titlefont = f
+  )
+  y <- list(
+    title = "TaxaMorte",
+    titlefont = f
+  )
+  z <- list(
+    title = "Populacao",
+    titlefont = f
+  )
+  
+  plot_ly(x = s[[1]], y = s[[2]], z = s[[3]]) %>% add_surface() %>% layout(xaxis = x, yaxis = y)
+  
+}
+
+plot_clientes_uma_estrategia = function(dados, estrategia) {
+  gr2_dados = subset(dados, (Lever == estrategia))
+  ggplot2::ggplot(gr2_dados,
+                  aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
+    geom_line() + 
+    ylab("Clientes") + 
+    xlab("Tempo") +
+    labs(color = "Estratégia")
+}
+
+plot_cash_uma_estrategia = function(dados, estrategia) {
+  gr2_dados = subset(dados, (Lever == estrategia))
+  ggplot2::ggplot(gr2_dados,
+                  aes(x=Tempo, y=Cash, color=factor(Lever), group=Scenario)) + 
+    geom_line() + 
+    ylab("Valor Presente") + 
+    xlab("Tempo") +
+    labs(color = "Estratégia")
+}
+
+
+plot_taxa_adocao_uma_estrategia = function(dados, estrategia) {
+  gr2_dados = subset(dados, (Lever == estrategia))
+  ggplot2::ggplot(gr2_dados,
+                  aes(x=Tempo, y=Adoption_Rate, color=factor(Lever), group=Scenario)) + 
+    geom_line() + 
+    ylab("Taxa de Adoção") + 
+    xlab("Tempo") +
+    labs(color = "Estratégia")
 }

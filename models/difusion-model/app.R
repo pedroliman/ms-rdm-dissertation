@@ -6,6 +6,7 @@
 # install_github("pedroliman/oshcba")
 library(shiny)
 library(shinythemes)
+library(plotly)
 library(ggplot2)
 library(readxl)
 library(dplyr)
@@ -21,7 +22,7 @@ opcoes = list(
   VarResposta = "Cash",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 100,
+  N = 30,
   VarTempo = "Tempo",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
@@ -32,11 +33,11 @@ opcoes = list(
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-  theme = shinytheme("yeti"),
+  theme = shinytheme("flatly"),
   navbarPage(
     # theme = "cerulean",  # <--- To use a theme, uncomment this
     "Calculadora RDM",fluid = TRUE,
-    tabPanel("Início - XLRM",
+    tabPanel("Início - Input das Incertezas e Estratégias",
              sidebarPanel(
                "Faca Upload de seus dados de Input",
                    fileInput("Dados de Input",
@@ -59,11 +60,11 @@ ui <- fluidPage(
              "Esta aba apresenta os resultados do modelo de dinâmica de sistemas utilizado.",
              mainPanel(
              tabsetPanel(
-               tabPanel("Resultados das Simulacoes",
+               tabPanel("Resultados das Simulações",
                         "Mostrando primeiras 100 linhas dos resultados"
                         ,tableOutput("dados_simulados_table")
                         ),
-               tabPanel("Resultados dos último ano de simulação em todos os cenários e estratégias",
+               tabPanel("Comparação das Estratégias",
                         "Mostrando primeiras 100 linhas dos resultados"
                         ,tableOutput("analise_regret_table")
                         )
@@ -71,19 +72,32 @@ ui <- fluidPage(
              )
              ),
     tabPanel("Análise dos Resultados",
-             "Esta aba apresenta resultados para análise da Simulação.",
-             mainPanel(
+             
+             
+             mainPanel(width = 12,
                tabsetPanel(
-                 tabPanel("Resultados das Simulacoes",
-                          "Gráfico com os resultados de uma determinada estratégia.",
-                          plotOutput("plot_clientes"),
-                          plotOutput("plot_cash")
-                 )
+                 tabPanel("Gráficos - Tempo",
+                          column(6,
+                                 selectInput("gr1_estrategia_selecionada", choices = 1:20, label = "Selecione uma Estratégia", selected = 1),
+                                 plotOutput("plot_clientes1"),
+                                 plotOutput("plot_cash1"),
+                                 plotOutput("plot_taxa1")
+                          ),
+                          column(6,
+                                 selectInput("gr2_estrategia_selecionada", choices = 1:20, label = "Selecione uma Estratégia", selected = 2),
+                                 plotOutput("plot_clientes2"),
+                                 plotOutput("plot_cash2"),
+                                 plotOutput("plot_taxa2")
+                                 )
+                 ),
+                 tabPanel("Grafico - Superficie",
+                          selectInput("estrategia_superficie", choices = 1:20, label = "Selecione uma Estratégia", selected = 1),
+                          plotlyOutput("plot_superficie"))
                )
              )
     ),
     tabPanel("Descoberta de Cenários",
-             "Esta aba apresenta resultados da descoberta de cenários.",
+             "Esta aba apresenta os cenários para os quais uma dada estratégia é vulnerável.",
              mainPanel(width = 12
                
              )
@@ -92,7 +106,6 @@ ui <- fluidPage(
     tabPanel("Análise de Tradeoffs",
              "Esta aba apresenta resultados da análise de Tradeoffs.",
              mainPanel(width = 12
-                       
              )
              
     )
@@ -101,27 +114,6 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
-  
-  plot_clientes_uma_estrategia = function(dados, estrategia) {
-    gr2_dados = subset(dados, (Lever == estrategia))
-    ggplot2::ggplot(gr2_dados,
-                    aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
-      geom_line() + 
-      ylab("Clientes") + 
-      xlab("Tempo") +
-      labs(color = "Estratégia")
-  }
-  
-  plot_cash_uma_estrategia = function(dados, estrategia) {
-    gr2_dados = subset(dados, (Lever == estrategia))
-    ggplot2::ggplot(gr2_dados,
-                    aes(x=Tempo, y=Cash, color=factor(Lever), group=Scenario)) + 
-      geom_line() + 
-      ylab("Valor Presente") + 
-      xlab("Tempo") +
-      labs(color = "Estratégia")
-  }
-  
   
   # Esta função apenas retorna o arquivo de Dados
   CarregaDados <- reactive({
@@ -159,6 +151,19 @@ server <- function(input, output, session) {
   })
   
   
+  
+
+  # Tentativa de deixar a escolha de estratégias dinâmica.
+  # observe({
+  #   # Can also set the label and select items
+  #   updateSelectInput("gr1_estrategia_selecionada",
+  #                     label = "Estratégia",
+  #                     choices = output$inputs_vetor_levers(),
+  #                     selected = tail(inputs_vetor_levers, 1)
+  #   )
+  # })
+  
+  
   # Dados de Absenteismo simulados
   output_rdm = reactive({
       inputs = CarregaDados()
@@ -171,6 +176,8 @@ server <- function(input, output, session) {
       })
       return(dados)
     })
+  
+  
   # Parametros
   resultados_dados_simulados = reactive({
     output_rdm()$DadosSimulados
@@ -191,8 +198,6 @@ server <- function(input, output, session) {
     output_rdm()$AnaliseRegret$ResumoEstrategias
   })
   
-  
-  
   ###### OUTPUTS ######
   output$dados_simulados_table <- renderTable({
     head(resultados_dados_simulados(),n = 100)
@@ -202,14 +207,42 @@ server <- function(input, output, session) {
     resultados_resumo_estrategias()
   })
   
-  output$plot_clientes = renderPlot({
+  output$plot_clientes1 = renderPlot({
     dados = resultados_dados_simulados()
-    plot_clientes_uma_estrategia(dados = dados,estrategia = 1)
+    plot_clientes_uma_estrategia(dados = dados,estrategia = input$gr1_estrategia_selecionada)
   })
   
-  output$plot_cash = renderPlot({
+  output$plot_cash1 = renderPlot({
     dados = resultados_dados_simulados()
-    plot_cash_uma_estrategia(dados = dados,estrategia = 1)
+    plot_cash_uma_estrategia(dados = dados,estrategia = input$gr1_estrategia_selecionada)
+  })
+  
+  output$plot_taxa1 = renderPlot({
+    dados = resultados_dados_simulados()
+    plot_taxa_adocao_uma_estrategia(dados = dados,estrategia = input$gr1_estrategia_selecionada)
+  })
+  
+  output$plot_clientes2 = renderPlot({
+    dados = resultados_dados_simulados()
+    plot_clientes_uma_estrategia(dados = dados,estrategia = input$gr2_estrategia_selecionada)
+  })
+  
+  output$plot_cash2 = renderPlot({
+    dados = resultados_dados_simulados()
+    plot_cash_uma_estrategia(dados = dados,estrategia = input$gr2_estrategia_selecionada)
+  })
+  
+  output$plot_taxa2 = renderPlot({
+    dados = resultados_dados_simulados()
+    plot_taxa_adocao_uma_estrategia(dados = dados,estrategia = input$gr2_estrategia_selecionada)
+  })
+  
+  
+  output$plot_superficie = renderPlotly({
+    dados_ultimo_ano = resultados_dados_ultimo_periodo()
+    variaveis = c("AdoptionFraction", "ContactRate", "Cash")
+    estrategia = input$estrategia_superficie
+    gerar_grafico_superficie(dados_ultimo_ano, variaveis, estrategia = estrategia)
   })
   
   output$leverstable <- renderTable({
