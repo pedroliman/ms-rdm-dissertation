@@ -10,6 +10,7 @@ library(plotly)
 library(lhs)
 library(deSolve)
 library(dplyr)
+library(ggplot2)
 
 ##### CONSTANTES #####
 VAR_SCENARIO = "Scenario"
@@ -545,4 +546,20 @@ plot_taxa_adocao_uma_estrategia = function(dados, estrategia) {
     ylab("Taxa de Adoção") + 
     xlab("Tempo") +
     labs(color = "Estratégia")
+}
+
+
+grafico_whisker_por_lever = function(dados_regret, variavel) {
+  dados_por_estrategia = dplyr::group_by(dados_regret, Lever)
+  
+  dados_por_estrategia$Lever = as.factor(dados_por_estrategia$Lever)
+  
+  # Gerando Grafico da Variável de Perda de Oportunidade
+  call_grafico = substitute(
+    expr = ggplot(dados_por_estrategia, aes(y = Variavel,x = Lever, group = Lever)),
+    env = list(Variavel = as.name(variavel))
+  )
+  
+  p <- eval(call_grafico)
+  p + geom_boxplot()
 }

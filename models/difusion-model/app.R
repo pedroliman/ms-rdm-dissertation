@@ -90,10 +90,16 @@ ui <- fluidPage(
                                  plotOutput("plot_taxa2")
                                  )
                  ),
-                 tabPanel("Grafico - Superficie",
-                          selectInput("estrategia_superficie", choices = 1:20, label = "Selecione uma Estratégia", selected = 1),
-                          plotlyOutput("plot_superficie"))
-               )
+                 tabPanel("Gráficos - Arrependimento",
+                          "Nesta Aba todas as estratégias são comparadas de acordo com quatro critérios de análise.",
+                          plotOutput("plot_whisker_lever_cash"),
+                          plotOutput("plot_whisker_lever_adopters"),
+                          plotOutput("plot_whisker_lever_regretperc"),
+                          plotOutput("plot_whisker_lever_regret")),
+               tabPanel("Grafico - Superficie",
+                        selectInput("estrategia_superficie", choices = 1:20, label = "Selecione uma Estratégia", selected = 1),
+                        plotlyOutput("plot_superficie"))
+             )
              )
     ),
     tabPanel("Descoberta de Cenários",
@@ -198,6 +204,10 @@ server <- function(input, output, session) {
     output_rdm()$AnaliseRegret$ResumoEstrategias
   })
   
+  resultados_analise_regret_dados = reactive({
+    output_rdm()$AnaliseRegret$Dados
+  })
+  
   ###### OUTPUTS ######
   output$dados_simulados_table <- renderTable({
     head(resultados_dados_simulados(),n = 100)
@@ -235,6 +245,22 @@ server <- function(input, output, session) {
   output$plot_taxa2 = renderPlot({
     dados = resultados_dados_simulados()
     plot_taxa_adocao_uma_estrategia(dados = dados,estrategia = input$gr2_estrategia_selecionada)
+  })
+  
+  output$plot_whisker_lever_cash = renderPlot({
+    grafico_whisker_por_lever(dados_regret = resultados_analise_regret_dados(), variavel = "Cash")
+  })
+  
+  output$plot_whisker_lever_adopters = renderPlot({
+    grafico_whisker_por_lever(dados_regret = resultados_analise_regret_dados(), variavel = "Adopters")
+  })
+  
+  output$plot_whisker_lever_regretperc = renderPlot({
+    grafico_whisker_por_lever(dados_regret = resultados_analise_regret_dados(), variavel = "CashRegretPerc")
+  })
+  
+  output$plot_whisker_lever_regret = renderPlot({
+    grafico_whisker_por_lever(dados_regret = resultados_analise_regret_dados(), variavel = "CashRegret")
   })
   
   

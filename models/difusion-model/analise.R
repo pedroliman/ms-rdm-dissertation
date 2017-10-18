@@ -8,6 +8,7 @@
 
 library(akima)
 # library(prim)
+library(dplyr)
 
 
 # Carregando Funções Úteis
@@ -29,79 +30,33 @@ opcoes = list(
 results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
 
-write.csv2(results$DadosSimulados, "./resultados/dadossimulados.csv")
 
-write.csv2(results$DadosUltimoPeriodo, "./resultados/dadosultimoperiodo.csv")
-
-write.csv2(results$AnaliseRegret$ResumoEstrategias, "./resultados/resumoestrategias.csv")
-
-
-# Gráfico 1: Valor em Caixa da Estratégia 1 em todos os Cenários
-gr1_dados = subset(results$DadosSimulados, Lever == 1)
-ggplot2::ggplot(gr1_dados,
-                aes(x=Tempo, y=Cash, color=factor(Lever), group=Scenario)) + 
-  geom_line() + 
-  ylab("Valor Presente") + 
-  xlab("Tempo") +
-  labs(color = "Estratégia")
-
-
-# Gráfico 2: Número de Clientes em todos os cenários, na estratégia 1 - sem propaganda.
-gr2_dados = subset(results$DadosSimulados, (Lever == 1))
-ggplot2::ggplot(gr2_dados,
-                aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
-  geom_line() + 
-  ylab("Clientes") + 
-  xlab("Tempo") +
-  labs(color = "Estratégia")
-
-
-## Observando o número de clientes na estratégia 10
-gr4_dados = subset(results$DadosSimulados, (Lever == 10))
-ggplot2::ggplot(gr4_dados,
-                aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
-  geom_line() + 
-  ylab("Clientes") + 
-  xlab("Tempo") +
-  labs(color = "Estratégia")
-
-
-# Observando o número de clientes na estratégia 20
-gr3_dados = subset(results$DadosSimulados, (Lever == 20))
-ggplot2::ggplot(gr3_dados,
-                aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
-  geom_line() + 
-  ylab("Clientes") + 
-  xlab("Tempo") +
-  labs(color = "Estratégia")
+gerar_grafico_regret_perc = function(dados_regret) {
+  dados_por_estrategia = dplyr::group_by(dados_regret, Lever)
+  
+  dados_por_estrategia$Lever = as.factor(dados_por_estrategia$Lever)
+  
+  # Gerando Grafico da Variável de Perda de Oportunidade
+  
+  p <- ggplot(dados_por_estrategia, aes(y = CashRegretPerc,x = Lever, group = Lever))
+  p + geom_boxplot()
+}
 
 
 
-# Observando o Comportamento de um cenário apenas em todas as 20 estratégias:
 
-scenario1 = 20
-levers = c(10,15,20)
-gr4_dados = dplyr::filter(results$DadosSimulados, Scenario == 20, Lever == 20)
-ggplot2::ggplot(gr4_dados,
-                aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
-  geom_line() + 
-  ylab("Clientes") + 
-  xlab("Tempo") +
-  labs(color = "Estratégia")
+grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel = "Cash")
+
+grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel = "Adopters")
+
+grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel = "CashRegretPerc")
+
+grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel = "CashRegret")
 
 
 
-# Continuar a partir daqui: definir critério de aceitação e seguir com a análise para a identificaçao de cenários.
-threshold_regr_percentual = 0.2 # 
+View(results$AnaliseRegret$Dados)
 
-dados_por_estrategia = dplyr::group_by(results$AnaliseRegret$Dados, Lever) %>% select(Lever, Scenario, Cash, CashRegret, CashRegretPerc)
-
-dados_por_estrategia$Lever = as.factor(dados_por_estrategia$Lever)
-
-# Gerando Grafico da Variável de Perda de Oportunidade
-library(ggplot2)
-p <- ggplot(dados_por_estrategia, aes(y = CashRegretPerc,x = Lever, group = Lever))
-p + geom_boxplot()
 p + geom_boxplot() + geom_jitter(width = 0.2)
 p + geom_violin() + geom_jitter(height = 0, width = 0.1)
 p + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75))
@@ -221,85 +176,7 @@ ggplot2::ggplot(dados_simulacao,
 # 
 # # 
 
-library(dplyr)
-# Exibição - Filtrando as Variáveis a Observar no Gráfico
 
-# De uma hora para outra o filter não está mais funcionando.
-# dadosplot = dplyr::filter(dados_simulacao, Tempo == FINISH, Lever == 1) %>% select (Adoption_Rate, ContactRate, Adopters)
-
-dadosplot = subset.data.frame(results$DadosUltimoPeriodo, (Lever == 2)) %>% select(AdoptionFraction, ContactRate, Cash)
-
-dadosplot = as.matrix(dadosplot)
-
-names = colnames(dadosplot)
-
-s = interp(dadosplot[,1],dadosplot[,2],dadosplot[,3])
-
-names(s) = names
-
-# Plotando a População Final
-f <- list(
-  family = "Courier New, monospace",
-  size = 18,
-  color = "#7f7f7f"
-)
-x <- list(
-  title = "Taxa Nascimento",
-  titlefont = f
-)
-y <- list(
-  title = "TaxaMorte",
-  titlefont = f
-)
-z <- list(
-  title = "Populacao",
-  titlefont = f
-)
-
-library(plotly)
-plot_ly(x = s$ContactRate, y = s$AdvEffectiveness, z = s$Cash) %>% add_surface() %>% layout(xaxis = x, yaxis = y)
-
-dados_ultimo_ano = results$DadosUltimoPeriodo
-variaveis = c("AdoptionFraction", "ContactRate", "Cash")
-estrategia = 2
-
-gerar_grafico_superficie(dados_ultimo_ano, variaveis, estrategia = 8)
-
-gerar_grafico_superficie = function(dados_ultimo_ano,variaveis, estrategia) {
-  dadosplot = subset.data.frame(dados_ultimo_ano, (Lever == estrategia))
-  
-  dadosplot = dadosplot[variaveis]
-  
-  dadosplot = as.matrix(dadosplot)
-  
-  names = colnames(dadosplot)
-  
-  s = interp(dadosplot[,1],dadosplot[,2],dadosplot[,3])
-  
-  names(s) = names
-  
-  # Plotando a População Final
-  f <- list(
-    family = "Courier New, monospace",
-    size = 18,
-    color = "#7f7f7f"
-  )
-  x <- list(
-    title = "Taxa Nascimento",
-    titlefont = f
-  )
-  y <- list(
-    title = "TaxaMorte",
-    titlefont = f
-  )
-  z <- list(
-    title = "Populacao",
-    titlefont = f
-  )
-  
-  plot_ly(x = s[[1]], y = s[[2]], z = s[[3]]) %>% add_surface() %>% layout(xaxis = x, yaxis = y)
-  
-}
 
 
 # Armazenando os Resultados
