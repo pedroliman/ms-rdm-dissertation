@@ -47,10 +47,10 @@ ui <- fluidPage(
                "Abaixo serao exibidos os inputs que voce inseriu no arquivo de dados.<br>",
                tabsetPanel(
                  tabPanel("Parametros"
-                          #,tableOutput("parametrostable")
+                          ,tableOutput("parametrostable")
                  ),
-                 tabPanel("Estrategias",
-                          tableOutput("leverstable")
+                 tabPanel("Estrategias"
+                          ,tableOutput("leverstable")
                  )
                )
              )
@@ -61,11 +61,11 @@ ui <- fluidPage(
              tabsetPanel(
                tabPanel("Resultados das Simulacoes",
                         "Mostrando primeiras 100 linhas dos resultados"
-                        #,tableOutput("resultados_descontadostable")
+                        ,tableOutput("dados_simulados_table")
                         ),
                tabPanel("Resultados dos último ano de simulação em todos os cenários e estratégias",
                         "Mostrando primeiras 100 linhas dos resultados"
-                        #,tableOutput("resultados_dados_ultimo_periodo")
+                        ,tableOutput("analise_regret_table")
                         )
               )
              )
@@ -138,11 +138,19 @@ server <- function(input, output, session) {
   
   # Esta função retorna a lista inputs
   inputs = reactive({
-    arquivoinputs = CarregaDados()
+    inputs = CarregaDados()
+    if (is.null(inputs))
+      return(NULL)
+    withProgress(message = 'Carregando...', value = 0.3, {
+      #dados = simular_cba(paste(inputs$datapath, ".xlsx", sep=""), modo = "completo")
+      objeto_inputs = carregar_inputs(paste(inputs$datapath, ".xlsx", sep=""))
+      incProgress(1, detail = "Finalizando")
+    })
+    
     # if (is.null(arquivoinputs))
     #   return(NULL)
     # inputs = carregar_inputs(arquivoinputs)
-    return(carregar_inputs(inputs))
+    return(objeto_inputs)
   })
   
   # Inputs - Lista de Levers
@@ -205,12 +213,13 @@ server <- function(input, output, session) {
   })
   
   output$leverstable <- renderTable({
-    inputs()$Levers
+    tabela = as.data.frame(inputs()$Levers) 
+    tabela
   })
   
-  # output$parametrostable <- renderTable({
-  #   inputs()$Parametros
-  # })
+  output$parametrostable <- renderTable({
+    inputs()$Parametros
+  })
 
   output$downloadData <- downloadHandler(
     filename = function() { paste("output_simulacao", '.csv', sep='') },
