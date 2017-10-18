@@ -1,5 +1,5 @@
 ---
-title: "AnÃ¡lise RDM Piloto - Modelo de Bass"
+title: "Análise RDM Piloto - Modelo de Bass"
 author: "Pedro Lima"
 date: "18 de outubro de 2017"
 output:
@@ -11,9 +11,34 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r funcoes, echo=FALSE, message=FALSE}
+
+# Obtendo Funcões, modelo e setando opções.
+source('funcoes.R', encoding = 'UTF-8')
+
+source('modelo-difusao.R', encoding = 'UTF-8')
+
+opcoes = list(
+  VarResposta = "Cash",
+  VarCenarios = "Scenario",
+  VarEstrategias = "Lever",
+  N = 100,
+  VarTempo = "Tempo",
+  VarCriterio = "RegretPercPercentil75",
+  SentidoCriterio = "min"
+)
+
+# Rodando o Modelo:
+results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
+
+```
+
 ## Análise Piloto RDM - Modelo de Bass
 
-O modelo de Bass @Bass1969 é um modelo amplamente reconhecido na literatura (frequentemente citado entre os 10 trabalhos mais influentes nos periódicos da INFORMS, e utilizado por Sterman (2000) e Morecroft (2001) em seus livros a respeito de dinâmica de sistemas).
+Esta é uma análise piloto utilizando o RDM. Estou usando este documento nesta formatação para integrar os resultados do R dentro do documento sem precisar copiar e colar. No final da análise este texto vai todo para o word. Este documento e análise servirão como um template para a análise "real" do RDM a ser integrada na dissertação, porém deve conter todos os elementos de uma análise RDM.
+
+O modelo de Bass (1969) é um modelo amplamente reconhecido na literatura (frequentemente citado entre os 10 trabalhos mais influentes nos periódicos da INFORMS, e utilizado por Sterman (2000) e Morecroft (2001) em seus livros a respeito de dinâmica de sistemas).
 
 A análise do modelo de Bass é propícia para este propósito por dois motivos. Primeiro, o modelo representa um dos fatores mais incertos para as empresas privadas: Como será a evolução da demanda de um novo produto. Este modelo foi aplicado em diversas situações, e é capaz de representar processos de crescimento da demanda em novos produtos. Segundo, a execução do modelo depende de parâmetros altamente incertos (ex.: A probabilidade de que um consumidor atual do produto divulgue o produto a outro consumidor).
 
@@ -21,29 +46,96 @@ O Modelo de Bass representa o processo de adoção de novos produtos, e propõe-
 
 Este documento apresenta uma análise RDM piloto deste modelo. O objetivo desta análise foi exercitar a aplicação do RDM com um exemplo conhecido pela literatura atual. Além disso, foi necessário desenvolver algoritmos para a execução e análise dos experimentos computacionais.
 
-### X, L, R, M
+Estruturação da Decisão - XLRM
+===================
 A análise RDM sugere a utilização do framework XLRM para a estruturação do problema.
 
 #### X - Incertezas
 
+```{r incertezas, echo=FALSE, message=FALSE}
+
+inputs = carregar_inputs("./params.xlsx")
+
+v_exibir = c("NomeAmigavel", "Min", "Max", "Unidade")
+
+knitr::kable(inputs$Parametros[v_exibir], digits = 2)
+
+```
+
 #### L - Levers (Estratégias)
+
+
+A única decisão a avaliar neste exemplo é realizar ou não propaganda para aumentar o número de 
+
+```{r levers, echo=FALSE, message=FALSE}
+
+v_exibir = c("NomeAmigavel", "Min", "Max", "Unidade")
+
+knitr::kable(inputs$Levers, digits = 2)
+
+```
+
 
 #### R - Relações (Modelo)
 
+d_sPotentialAdopters_dt = - fAdoption_Rate
+    
+d_sAdopters_dt = fAdoption_Rate
+    
+d_sCash_dt = fRevenue - fCosts
+
+
+aAdoption_from_Advertising = aAdvertisingEffectiveness * sPotentialAdopters * aAdvertisingON * aAdvertisingIntensity
+    
+aAdoption_from_Word_of_Mouth = aContactRate * sAdopters *  ((sPotentialAdopters)/(aTotalPopulation)) * aAdoptionFraction  # {people/year}
+    
+fAdoption_Rate = min(aAdoption_from_Advertising + aAdoption_from_Word_of_Mouth, sPotentialAdopters) # {people/year}
+    
+fRevenue = sAdopters * aAverageTicket
+    
+fCosts = aAdvertisingIntensity * aAdvertisingCost
+    
+d_sPotentialAdopters_dt = - fAdoption_Rate
+    
+d_sAdopters_dt = fAdoption_Rate
+    
+d_sCash_dt = fRevenue - fCosts
+
+O Modelo, implementado no R, e contendo todas as suas definições necessárias para a sua replicação pode ser observado abaixo.
+```{r}
+sdmodel
+```
+
+
+
 #### M - Métricas
 
-Para a avlaiação de 
+Regret.
 
-```{r cars}
-summary(cars)
+
+Geração de Casos
+===================
+
+#### Projeto de Experimentos Computacionais
+
+#### Resultados da Simulação
+
+Uma Simulação de exemplo.
+```{r}
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+#### Escolha da Estratégia Candidata
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+Descoberta de Cenários - Análise de Vulnerabilidades
+===================
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+#### Em que condições a Estratégia Candidata Falha
+
+Descoberta de Cenários - Análise de Vulnerabilidades
+===================
+
+
+Análise de Tradeoff
+===================
