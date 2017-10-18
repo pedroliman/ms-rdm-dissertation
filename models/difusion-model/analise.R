@@ -28,6 +28,69 @@ opcoes = list(
 
 results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
+
+write.csv2(results$DadosSimulados, "./resultados/dadossimulados.csv")
+
+write.csv2(results$DadosUltimoPeriodo, "./resultados/dadosultimoperiodo.csv")
+
+write.csv2(results$AnaliseRegret$ResumoEstrategias, "./resultados/resumoestrategias.csv")
+
+
+# Gráfico 1: Valor em Caixa da Estratégia 1 em todos os Cenários
+gr1_dados = subset(results$DadosSimulados, Lever == 1)
+ggplot2::ggplot(gr1_dados,
+                aes(x=Tempo, y=Cash, color=factor(Lever), group=Scenario)) + 
+  geom_line() + 
+  ylab("Valor Presente") + 
+  xlab("Tempo") +
+  labs(color = "Estratégia")
+
+
+# Gráfico 2: Número de Clientes em todos os cenários, na estratégia 1 - sem propaganda.
+gr2_dados = subset(results$DadosSimulados, (Lever == 1))
+ggplot2::ggplot(gr2_dados,
+                aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
+  geom_line() + 
+  ylab("Clientes") + 
+  xlab("Tempo") +
+  labs(color = "Estratégia")
+
+
+## Observando o número de clientes na estratégia 10
+gr4_dados = subset(results$DadosSimulados, (Lever == 10))
+ggplot2::ggplot(gr4_dados,
+                aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
+  geom_line() + 
+  ylab("Clientes") + 
+  xlab("Tempo") +
+  labs(color = "Estratégia")
+
+
+# Observando o número de clientes na estratégia 20
+gr3_dados = subset(results$DadosSimulados, (Lever == 20))
+ggplot2::ggplot(gr3_dados,
+                aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
+  geom_line() + 
+  ylab("Clientes") + 
+  xlab("Tempo") +
+  labs(color = "Estratégia")
+
+
+
+# Observando o Comportamento de um cenário apenas em todas as 20 estratégias:
+
+scenario1 = 20
+levers = c(10,15,20)
+gr4_dados = dplyr::filter(results$DadosSimulados, Scenario == 20, Lever == 20)
+ggplot2::ggplot(gr4_dados,
+                aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
+  geom_line() + 
+  ylab("Clientes") + 
+  xlab("Tempo") +
+  labs(color = "Estratégia")
+
+
+
 # Continuar a partir daqui: definir critério de aceitação e seguir com a análise para a identificaçao de cenários.
 threshold_regr_percentual = 0.2 # 
 
