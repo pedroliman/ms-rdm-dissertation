@@ -47,11 +47,12 @@ ui <- fluidPage(
              mainPanel(
                "Abaixo serao exibidos os inputs que voce inseriu no arquivo de dados.<br>",
                tabsetPanel(
-                 tabPanel("Parametros"
+                 tabPanel("X - Incertezas"
                           ,tableOutput("parametrostable")
                  ),
-                 tabPanel("Estrategias"
+                 tabPanel("L - Estratégias"
                           ,tableOutput("leverstable")
+                 )
                  )
                )
              )

@@ -29,22 +29,6 @@ opcoes = list(
 
 results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
-
-
-gerar_grafico_regret_perc = function(dados_regret) {
-  dados_por_estrategia = dplyr::group_by(dados_regret, Lever)
-  
-  dados_por_estrategia$Lever = as.factor(dados_por_estrategia$Lever)
-  
-  # Gerando Grafico da Variável de Perda de Oportunidade
-  
-  p <- ggplot(dados_por_estrategia, aes(y = CashRegretPerc,x = Lever, group = Lever))
-  p + geom_boxplot()
-}
-
-
-
-
 grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel = "Cash")
 
 grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel = "Adopters")
@@ -54,45 +38,6 @@ grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel =
 grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel = "CashRegret")
 
 
-
-View(results$AnaliseRegret$Dados)
-
-p + geom_boxplot() + geom_jitter(width = 0.2)
-p + geom_violin() + geom_jitter(height = 0, width = 0.1)
-p + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75))
-
-
-# Gerando Grafico da Variável de Perda de Oportunidade Percentual
-library(ggplot2)
-p <- ggplot(dados_por_estrategia, aes(y = Cash_Percent_Regret,x = Lever, group = Lever))
-p + geom_boxplot() + geom_jitter(width = 0.2)
-p + geom_violin() + geom_jitter(height = 0, width = 0.1)
-p + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75))
-
-# Gerando Grafico da Variável de Resposta                                      
-library(ggplot2)
-p <- ggplot(dados_por_estrategia, aes(y = Cash,x = Lever, group = Lever))
-p + geom_boxplot()
-
-
-
-library(ggplot2)
-# Visualizando Todas as Replicações
-ggplot2::ggplot(dados_simulacao,
-       aes(x=Tempo, y=Cash, color=factor(Lever), group=Scenario)) + 
-  geom_line() + 
-  ylab("Clientes") + 
-  xlab("Tempo") +
-  labs(color = "Estratégia")
-
-
-# Plotando o Adoption Rate 
-ggplot2::ggplot(dados_simulacao,
-                aes(x=Tempo, y=Adoption_Rate, color=factor(Lever), group=Replicacao)) + 
-  geom_line() + 
-  ylab("Taxa de Adoção") + 
-  xlab("Tempo") +
-  labs(color = "Estratégia")
 
 
 # Considerando o último ano

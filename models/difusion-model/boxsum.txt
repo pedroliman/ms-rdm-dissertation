@@ -1,0 +1,32 @@
+
+Dataset statistics: 
+ 
+Total number of points: 100 
+Total number of interesting points: 13 
+Global mean: 0.13 
+Total input dimensions: 5 
+
+ 
+   Ensemble box sequence statistics: 
+ 
+Total number of boxes:  1 
+Ensemble coverage:  1 ( 13 out of 13 interesting points captured) 
+Ensemble density:   0.2889 ( 13 out of 45 captured points are interesting) 
+Ensemble support:   0.45 ( 45 out of 100 total points are captured) 
+ 
+   Report on individual boxes 
+ 
+   Box 1 
+
+Density:   0.2889 
+Coverage:  1 
+Support:   0.45 
+Number of dimensions restricted:  3 
+
+    Box definition:
+ 
+    dimension name rel     bound dimind   density coverage support   qpval
+1  AdvertisingCost  <  5.727e+04      5    0.1300        1    1.00 0.02605
+2    AverageTicket  >  1.789e+00      4    0.2281        1    0.57 0.25103
+3 AdoptionFraction  <  2.895e-02      3    0.2766        1    0.47 0.48293
+
