@@ -105,20 +105,20 @@ ui <- fluidPage(
 
              )
              )
-    ),
-    tabPanel("Descoberta de Cenários",
-             "Esta aba apresenta os cenários para os quais uma dada estratégia é vulnerável.",
-             mainPanel(width = 12
-               
-             )
-             
-    ),
-    tabPanel("Análise de Tradeoffs",
-             "Esta aba apresenta resultados da análise de Tradeoffs.",
-             mainPanel(width = 12
-             )
-             
     )
+    # ,tabPanel("Descoberta de Cenários",
+    #          "Esta aba apresenta os cenários para os quais uma dada estratégia é vulnerável.",
+    #          mainPanel(width = 12
+    #            
+    #          )
+    #          
+    # )
+    # ,tabPanel("Análise de Tradeoffs",
+    #          "Esta aba apresenta resultados da análise de Tradeoffs.",
+    #          mainPanel(width = 12
+    #          )
+    #          
+    # )
   )
   )
 
@@ -268,7 +268,8 @@ server <- function(input, output, session) {
   })
   
   output$plot_tradeoff = renderPlotly({
-    plot_fronteira_tradeoff_estrategia(results = output_rdm(), opcoes = opcoes)
+    plot_fronteira_tradeoff_estrategia(results = output_rdm(), opcoes = opcoes) %>%
+      layout(autosize = F, width = 800, height = 800, margin = 50)
   })
   
   
@@ -278,7 +279,8 @@ server <- function(input, output, session) {
     dados_ultimo_ano = resultados_dados_ultimo_periodo()
     variaveis = c("AdoptionFraction", "ContactRate", "Cash")
     estrategia = input$estrategia_superficie
-    gerar_grafico_superficie(dados_ultimo_ano, variaveis, estrategia = estrategia)
+    gerar_grafico_superficie(dados_ultimo_ano, variaveis, estrategia = estrategia)  %>%
+      layout(autosize = F, width = 800, height = 800, margin = 50)
   })
   
   output$leverstable <- renderTable({

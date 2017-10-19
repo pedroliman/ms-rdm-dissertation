@@ -1,0 +1,13 @@
+name: dissertacaordm
+title: dissertacaordm
+username:
+account: pedrolima
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 226919
+bundleId: 1034804
+url: https://pedrolima.shinyapps.io/dissertacaordm/
+when: 1508420103.40146
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|analise.R|Analise_Modelo_Bass.docx|Analise_Modelo_Bass.pdf|Analise_Modelo_Bass.Rmd|bass-difusion-with-advertising.itmx|boxsum.txt|dados_simulados_difusao.csv|Equations_difusion_model.TXT|install_old_sdtoolkig.R|install_rdnycall_for_OpenMORDM.R|modified-openmordm-functions.R|OpenMORDM.R|params.xlsx|scenario-discovery.R|sdtoolkit_2.31.tar.gz|resultados/dadossimulados.csv|resultados/dadosultimoperiodo.csv|resultados/resumoestrategias.csv
