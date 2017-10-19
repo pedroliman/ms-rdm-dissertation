@@ -55,7 +55,7 @@ ui <- fluidPage(
                  )
                  )
                )
-             )
+             #)
     ),
     tabPanel("Resultados das Simulações",
              "Esta aba apresenta os resultados do modelo de dinâmica de sistemas utilizado.",
@@ -99,7 +99,10 @@ ui <- fluidPage(
                           plotOutput("plot_whisker_lever_regret")),
                tabPanel("Grafico - Superficie",
                         selectInput("estrategia_superficie", choices = 1:20, label = "Selecione uma Estratégia", selected = 1),
-                        plotlyOutput("plot_superficie"))
+                        plotlyOutput("plot_superficie")),
+               tabPanel("Grafico - Tradeoff",
+                        plotlyOutput("plot_tradeoff"))
+
              )
              )
     ),
@@ -263,6 +266,12 @@ server <- function(input, output, session) {
   output$plot_whisker_lever_regret = renderPlot({
     grafico_whisker_por_lever(dados_regret = resultados_analise_regret_dados(), variavel = "CashRegret")
   })
+  
+  output$plot_tradeoff = renderPlotly({
+    plot_fronteira_tradeoff_estrategia(results = output_rdm(), opcoes = opcoes)
+  })
+  
+  
   
   
   output$plot_superficie = renderPlotly({

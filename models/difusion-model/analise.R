@@ -38,6 +38,38 @@ grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel =
 grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel = "CashRegret")
 
 
+plot_fronteira_tradeoff_estrategia = function(results, opcoes) {
+  
+  dados_cenario = results$DadosUltimoPeriodo %>% filter(AdvertisingCost  < 5.727e+04 & AverageTicket  >  1.789e+00 & AdoptionFraction  <  2.895e-02)
+  
+  analise_regret_cenario = calcular_e_resumir_regret(dados = dados_cenario, var_resposta = opcoes$VarResposta, var_cenarios = opcoes$VarCenarios, var_estrategias = opcoes$VarEstrategias)
+  
+  variavel_comparacao = paste(opcoes$VarResposta,opcoes$VarCriterio, sep = "")
+  
+  variaveis_grafico_regret = c(opcoes$VarEstrategias, variavel_comparacao)
+  
+  regret_todos_os_futuros = results$AnaliseRegret$ResumoEstrategias[variaveis_grafico_regret]
+  
+  regret_todos_os_futuros = as.data.frame(regret_todos_os_futuros)
+  
+  names(regret_todos_os_futuros) = c(opcoes$VarEstrategias, "PerdaOportunidadeTodosOsCenarios")
+  
+  # names(regret_todos_os_futuros[variaveis_grafico_regret]) = c(opcoes$VarEstrategias, paste(variavel_comparacao, "TodosOsCenarios", sep = ""))
+  
+  regret_cenario = analise_regret_cenario$ResumoEstrategias[variaveis_grafico_regret]
+  
+  regret_cenario = as.data.frame(regret_cenario)
+  
+  names(regret_cenario) = c(opcoes$VarEstrategias, "PerdaOportunidadeNoCenario")
+  
+  dados_join = dplyr::left_join(regret_todos_os_futuros, regret_cenario)
+  
+  plot_ly(data = dados_join, x = ~PerdaOportunidadeTodosOsCenarios, y = ~PerdaOportunidadeNoCenario, color = ~Lever, text = ~Lever)
+  
+}
+
+
+
 
 
 # Considerando o último ano
