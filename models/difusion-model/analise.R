@@ -29,6 +29,13 @@ opcoes = list(
 
 results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
+
+lever = results$EstrategiaCandidata
+variaveis = c("CashRegretPerc","CashRegret","Cash", "AverageTicket", "AdvertisingCost", "AdvEffectiveness", "ContactRate", "AdoptionFraction")
+
+sdrdm.pairs_plot(data = results$AnaliseRegret$Dados, lever = 1, variables = variaveis)
+
+
 grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel = "Cash")
 
 grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel = "Adopters")

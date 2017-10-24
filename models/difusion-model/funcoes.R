@@ -593,3 +593,11 @@ plot_fronteira_tradeoff_estrategia = function(results, opcoes) {
   plot_ly(data = dados_join, x = ~PerdaOportunidadeTodosOsCenarios, y = ~PerdaOportunidadeNoCenario, color = ~Lever, text = ~Lever)
   
 }
+
+
+sdrdm.pairs_plot= function(data, lever, variables) {
+  dados_grafico = subset(data, Lever == lever)
+  dados_grafico = dados_grafico[variables]
+  
+  pairs(dados_grafico)
+}
