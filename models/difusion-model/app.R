@@ -22,7 +22,7 @@ opcoes = list(
   VarResposta = "Cash",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 300,
+  N = 50,
   VarTempo = "Tempo",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
@@ -101,7 +101,9 @@ ui <- fluidPage(
                         selectInput("estrategia_superficie", choices = 1:20, label = "Selecione uma Estratégia", selected = 1),
                         plotlyOutput("plot_superficie")),
                tabPanel("Grafico - Tradeoff",
-                        plotlyOutput("plot_tradeoff"))
+                        plotlyOutput("plot_tradeoff")),
+               tabPanel("Grafico - Vulnerabilidades",
+                        plotlyOutput("plot_estrategias_versus_incertezas"))
 
              )
              )
@@ -212,6 +214,16 @@ server <- function(input, output, session) {
     output_rdm()$AnaliseRegret$Dados
   })
   
+  
+  ensemble_analisado = reactive({
+    analisar_ensemble_com_melhor_estrategia(ensemble = output_rdm()$Ensemble,
+                                            dados_regret = output_rdm()$AnaliseRegret$Dados, 
+                                            var_cenarios = opcoes$VarCenarios, 
+                                            var_estrategias = opcoes$VarEstrategias, 
+                                            var_resposta = opcoes$VarResposta, 
+                                            estrategia_candidata = output_rdm()$EstrategiaCandidata)
+  })
+  
   ###### OUTPUTS ######
   output$dados_simulados_table <- renderTable({
     head(resultados_dados_simulados(),n = 100)
@@ -270,6 +282,16 @@ server <- function(input, output, session) {
   output$plot_tradeoff = renderPlotly({
     plot_fronteira_tradeoff_estrategia(results = output_rdm(), opcoes = opcoes) %>%
       layout(autosize = F, width = 800, height = 800, margin = 50)
+  })
+  
+  output$plot_estrategias_versus_incertezas = renderPlot({
+    
+    incertezas = c("aAdvertisingEffectiveness", "aContactRate", "aAdoptionFraction", "aAdvertisingCost", "aAverageTicket")
+    
+    ensemble_analisado = ensemble_analisado()
+    
+    plot_estrategias_versus_incertezas(ensemble_analisado, incertezas)
+    
   })
   
   

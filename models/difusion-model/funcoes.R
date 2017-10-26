@@ -11,6 +11,7 @@ library(lhs)
 library(deSolve)
 library(dplyr)
 library(ggplot2)
+library(GGally)
 
 ##### CONSTANTES #####
 VAR_SCENARIO = "Scenario"
@@ -314,7 +315,7 @@ calcular_regret = function(dados, var_resposta, var_group) {
 }
 
 
-##### CALCULO DO REGRET (PERDA DE OPORTUNIDADE) #####
+##### RESUMIR VARIÁVEL DE RESPOSTA PARA A ANÁLISE DO REGRET #####
 #' resumir_variavel_resposta
 #'
 #' @param dados dataframe com dados para analise do regret.
@@ -425,7 +426,7 @@ calcular_e_resumir_regret = function(dados, var_resposta, var_cenarios, var_estr
 
 
 
-##### ESCOLHER ESTRATÉGIA MINIMIZANDO #####
+##### ESCOLHER ESTRATÉGIA #####
 
 escolher_estrategia_min = function(resumo_estrategias, criterio) {
   linha_estrategia = which(resumo_estrategias[criterio] == min(resumo_estrategias[criterio]))
@@ -439,6 +440,34 @@ escolher_estrategia_max = function(resumo_estrategias, criterio) {
   estrategia = resumo_estrategias[linha_estrategia, "Lever"]  
   estrategia
 }
+
+
+##### ANALISAR ENSEMBLE DETERMINANDO A MELHOR ESTRATÉGIA #####
+analisar_ensemble_com_melhor_estrategia = function(ensemble, dados_regret, var_cenarios, var_estrategias, var_resposta, estrategia_candidata) {
+  
+  
+  ensemble = as.data.frame(ensemble)
+  dados_regret = as.data.frame(dados_regret)
+  
+  
+  dados_regret["MelhorEstrategia"] = dados_regret[var_resposta] == dados_regret$MaximoPorScenario
+  
+  linhas_melhores_estrategias = which(dados_regret[var_resposta] == dados_regret$MaximoPorScenario)
+  
+  variaveis = c(var_cenarios, var_estrategias, var_resposta)
+  
+  melhores_estrategias = as.data.frame(dados_regret[linhas_melhores_estrategias, variaveis])
+  
+  ensemble_com_melhor_estrategia = dplyr::inner_join(ensemble, melhores_estrategias)
+  
+  ensemble_com_melhor_estrategia["EstrategiaCandidata"] = ensemble_com_melhor_estrategia[var_estrategias] == estrategia_candidata
+  
+  #ensemble_com_melhor_estrategia = as.factor(ensemble_com_melhor_estrategia[var_estrategias])
+  
+  ensemble_com_melhor_estrategia
+  
+}
+
 
 ##### FUNÇÕES AUXILIARES #####
 
@@ -609,6 +638,31 @@ plot_fronteira_tradeoff_estrategia = function(results, opcoes) {
   plot_ly(data = dados_join, x = ~PerdaOportunidadeTodosOsCenarios, y = ~PerdaOportunidadeNoCenario, color = ~Lever, text = ~Lever)
   
 }
+
+
+#' plot_estrategias_versus_incertezas
+#'
+#' @param ensemble_analisado data.frame resultante da funcao analisar_ensemble_com_melhor_estrategia
+#' @param incertezas vetor com nomes das variáveis de incerteza a incluir no gráfico, devem corresponder à variáveis no ensemble.
+#' @param binario default \code{TRUE}, pode apresentar a divisão entre as outras estratégias ou não.
+#'
+#' @return grafico que mostra a que condições a estratégia candidata é mais sucetível a falhar.
+#' @export
+plot_estrategias_versus_incertezas = function(ensemble_analisado, incertezas, binario = TRUE) {
+  ensemble_analisado$EstrategiaCandidata = as.factor(ensemble_analisado$EstrategiaCandidata)
+  
+  ensemble_analisado$Lever = as.factor(ensemble_analisado$Lever)
+  
+  p = if(binario) {
+    GGally::ggpairs(ensemble_analisado, columns = incertezas, aes(colour = EstrategiaCandidata, alpha = 0.7))
+  } else {
+    GGally::ggpairs(ensemble_analisado, columns = incertezas, aes(colour = Lever, alpha = 0.7))
+  }
+  
+  p
+}
+
+
 
 
 sdrdm.pairs_plot= function(data, lever, variables) {
