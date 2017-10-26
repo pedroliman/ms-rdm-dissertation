@@ -21,13 +21,55 @@ opcoes = list(
   VarResposta = "Cash",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 100,
+  N = 500,
   VarTempo = "Tempo",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
 )
 
 results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
+
+
+ensemble_analisado = analisar_ensemble_com_melhor_estrategia(ensemble = results$Ensemble, dados_regret = results$AnaliseRegret$Dados, var_cenarios = opcoes$VarCenarios, var_estrategias = opcoes$VarEstrategias, var_resposta = opcoes$VarResposta)
+
+analisar_ensemble_com_melhor_estrategia = function(ensemble, dados_regret, var_cenarios, var_estrategias, var_resposta) {
+  
+  ensemble = as.data.frame(ensemble)
+  dados_regret = as.data.frame(dados_regret)
+  
+  
+  dados_regret["MelhorEstrategia"] = dados_regret[var_resposta] == dados_regret$MaximoPorScenario
+  
+  linhas_melhores_estrategias = which(dados_regret[var_resposta] == dados_regret$MaximoPorScenario)
+  
+  variaveis = c(var_cenarios, var_estrategias, var_resposta)
+  
+  melhores_estrategias = as.data.frame(dados_regret[linhas_melhores_estrategias, variaveis])
+  
+  
+  ensemble_com_melhor_estrategia = dplyr::inner_join(ensemble, melhores_estrategias)
+  
+  ensemble_com_melhor_estrategia
+}
+
+
+ensemble_analisado$Lever = as.factor(ensemble_analisado$Lever)
+
+incertezas = c("aAdvertisingEffectiveness", "aContactRate", "aAdoptionFraction", "aAdvertisingCost", "aAverageTicket")
+
+p = GGally::ggpairs(ensemble_analisado, columns = incertezas, aes(colour = Lever, alpha = 0.7))
+
+for(i in 1:p$nrow) {
+  for(j in 1:p$ncol){
+    p[i,j] <- p[i,j] + 
+      scale_fill_manual(values=rainbow(9)) +
+      scale_color_manual(values=rainbow(9))  
+  }
+}
+
+p
+
+
 
 
 lever = results$EstrategiaCandidata

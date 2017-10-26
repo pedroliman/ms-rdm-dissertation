@@ -26,8 +26,12 @@ VAR_SCENARIO = "Scenario"
 #'
 #' @return list com resultados da simulacao e uma estratégia candidata.
 simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes) {
+  
+  
+  output_simulacao = simular_RDM(arquivo_de_inputs=inputs ,sdmodel = sdmodel, n = opcoes$N)
+  
   ## Simular
-  dados_simulacao = simular_RDM(arquivo_de_inputs=inputs ,sdmodel = sdmodel, n = opcoes$N)
+  dados_simulacao = output_simulacao$DadosSimulacao
   
   # Selecionando dados do último ano:
   dados = selecionar_ultimo_periodo(dados_simulacao = dados_simulacao, var_tempo = opcoes$VarTempo)
@@ -35,7 +39,7 @@ simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sd
   # Analisar Regret
   analise_regret = calcular_e_resumir_regret(dados = dados, var_resposta = opcoes$VarResposta, var_cenarios = opcoes$VarCenarios, var_estrategias = opcoes$VarEstrategias)
   
-  # Escolher a Estratégia Candidata
+  # Escolher a Estratégia Candidata, com base no critério de robustez dos percentis
   estrategia_candidata = escolher_estrategia_candidata(dados = analise_regret$Dados, resumo_estrategias = analise_regret$ResumoEstrategias, var_resposta = opcoes$VarResposta, var_criterio = opcoes$VarCriterio, sentido = opcoes$SentidoCriterio)
   
   message(paste("A Estrategia candidata é a ", estrategia_candidata$Lever))
@@ -44,7 +48,11 @@ simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sd
     DadosSimulados = dados_simulacao,
     DadosUltimoPeriodo = dados,
     AnaliseRegret = analise_regret,
-    EstrategiaCandidata =  as.numeric(estrategia_candidata[opcoes$VarEstrategias]) 
+    Inputs = output_simulacao$Inputs,
+    Ensemble = output_simulacao$Ensemble,
+    EstrategiaCandidata =  as.numeric(estrategia_candidata[opcoes$VarEstrategias]),
+    Opcoes = opcoes,
+    SdModel = sdmodel
   )
   
   output
@@ -267,7 +275,15 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = 10){
   
   message("Finalizando Simulacao. Tempo de Simulacao: ", t_fim - t_inicio)
   
-  dados_simulacao
+  output = list(
+    Inputs = inputs,
+    Ensemble = ensemble,
+    NovoEnsemble = novo_ensemble,
+    DadosSimulacao = dados_simulacao
+  )
+  
+  output
+  
 }
 
 
