@@ -663,8 +663,6 @@ plot_estrategias_versus_incertezas = function(ensemble_analisado, incertezas, bi
 }
 
 
-
-
 sdrdm.pairs_plot= function(data, lever, variables) {
   dados_grafico = subset(data, Lever == lever)
   dados_grafico = dados_grafico[variables]

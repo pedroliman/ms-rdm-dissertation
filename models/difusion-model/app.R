@@ -11,6 +11,7 @@ library(ggplot2)
 library(readxl)
 library(dplyr)
 library(akima)
+library(GGally)
 
 # Carregando Funções Úteis
 source('funcoes.R', encoding = 'UTF-8')
@@ -103,7 +104,7 @@ ui <- fluidPage(
                tabPanel("Grafico - Tradeoff",
                         plotlyOutput("plot_tradeoff")),
                tabPanel("Grafico - Vulnerabilidades",
-                        plotlyOutput("plot_estrategias_versus_incertezas"))
+                        plotOutput("plot_estrategias_versus_incertezas"))
 
              )
              )
@@ -216,6 +217,7 @@ server <- function(input, output, session) {
   
   
   ensemble_analisado = reactive({
+    message("Ensemble_analisado")
     analisar_ensemble_com_melhor_estrategia(ensemble = output_rdm()$Ensemble,
                                             dados_regret = output_rdm()$AnaliseRegret$Dados, 
                                             var_cenarios = opcoes$VarCenarios, 
@@ -289,7 +291,7 @@ server <- function(input, output, session) {
     incertezas = c("aAdvertisingEffectiveness", "aContactRate", "aAdoptionFraction", "aAdvertisingCost", "aAverageTicket")
     
     ensemble_analisado = ensemble_analisado()
-    
+    message("plot_estrategias_versus_incertezas")
     plot_estrategias_versus_incertezas(ensemble_analisado, incertezas)
     
   })
@@ -299,7 +301,7 @@ server <- function(input, output, session) {
   
   output$plot_superficie = renderPlotly({
     dados_ultimo_ano = resultados_dados_ultimo_periodo()
-    variaveis = c("AdoptionFraction", "ContactRate", "Cash")
+    variaveis = c("AdoptionFraction", "AdvertisingCost", "Cash")
     estrategia = input$estrategia_superficie
     gerar_grafico_superficie(dados_ultimo_ano, variaveis, estrategia = estrategia)  %>%
       layout(autosize = F, width = 800, height = 800, margin = 50)
