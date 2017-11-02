@@ -34,6 +34,8 @@ resultado_unico <- data.frame(ode(y=stocks, times=simtime, func = modelo,
                   parms=auxs, method="euler"))
 
 
+
+
 results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
 incertezas = c("aAdvertisingEffectiveness", "aContactRate", "aAdoptionFraction", "aAdvertisingCost", "aAverageTicket")

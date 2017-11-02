@@ -6,10 +6,19 @@ START<-0; FINISH<-20; STEP<-0.25
 simtime <- seq(START, FINISH, by=STEP)
 
 # Criando Estoques (na mão em um primeiro momento).
-auxs    <- c(aDiscountRate = 0.04, fNetIncome = 10)
+auxs    <- c(aDiscountRate = 0.04)
+
+
+# Variaveis definidas de modo independente (porque são vetorizadas)
+fNetIncome = c(10,10)
+
+# Os aux devem ser um vetor normal
+
+# Número de Players no modelo
+N_PLAYERS = 2
 
 # A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO!!!!!!!
-stocks  <- c(NPVProfit=0)
+stocks  <- c(NPVProfit=c(0,0))
 
 ##### Modelo de Dinâmica de Sistemas ####
 
@@ -22,7 +31,6 @@ modelo <- function(time, stocks, auxs){
     
     fNPVProfitChange = fNetIncome * aDiscountFactor
     
-    
     # Estoques
     d_NPVProfit_dt = fNPVProfitChange
     
@@ -33,6 +41,7 @@ modelo <- function(time, stocks, auxs){
                  ,fNetIncome = fNetIncome))   
   })
 }
+
 
 # Nomeando o Dataframe de Saída
 nomes_variaveis = c("Tempo", "d_NPVProfit_dt", "aDiscountFactor", "aDiscountRate", "fNPVProfitChange", "fNetIncome")
