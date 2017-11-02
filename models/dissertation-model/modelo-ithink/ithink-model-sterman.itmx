@@ -3,10 +3,9 @@
     <header>
         <smile version="1.0" namespace="std, isee">
             <uses_arrays>1</uses_arrays>
-            <uses_submodels />
         </smile>
         <name>ithink-model-sterman</name>
-        <uuid>095430c6-2224-462b-be0e-270670cd7d7c</uuid>
+        <uuid>02ddc2c5-26cc-4ce1-814e-72b03bf226e2</uuid>
         <vendor>isee systems, inc.</vendor>
         <product version="10.0.3" lang="en">iThink</product>
     </header>
@@ -33,149 +32,65 @@
     </isee:prefs>
     <isee:equation_prefs order_by="module" />
     <model>
-        <module name="Diffusion">
-            <display x="484" y="267" color="blue" />
-        </module>
-        <module name="IndustryDemand">
-            <display x="397" y="175" color="blue" />
-        </module>
-        <module name="Market">
-            <display x="185" y="250" color="blue" />
-        </module>
-        <module name="Orders">
-            <display x="296" y="194" color="blue" />
-        </module>
-        <module name="Price">
-            <display x="187" y="147" color="blue" />
-        </module>
-        <module name="LearningCurve">
-            <display x="411" y="374" color="blue" />
-        </module>
-        <module name="Capacity1">
-            <display x="71" y="346" color="blue" />
-        </module>
-        <module name="TargetCapacity">
-            <display x="346" y="474" color="blue" />
-        </module>
-        <module name="ExpectedIndustryDemand">
-            <display x="184" y="408" color="blue" />
-        </module>
-        <module name="NetIncome">
-            <display x="309" y="85" color="blue" />
-        </module>
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed">
-            <connector x="212" y="134" uid="0" autocreated="true" color="#FF007F">
-                <from>Price</from>
-                <to>NetIncome</to>
-            </connector>
-        </display>
-        <interface page_width="788" page_height="528">
-            <simulation_delay>0.1</simulation_delay>
-            <pages />
-        </interface>
-    </model>
-    <model name="Capacity1">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
-        <interface page_width="788" page_height="528">
-            <simulation_delay>0.1</simulation_delay>
-            <pages />
-        </interface>
-    </model>
-    <model name="Diffusion">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
-        <interface page_width="788" page_height="528">
-            <simulation_delay>0.1</simulation_delay>
-            <pages />
-        </interface>
-    </model>
-    <model name="ExpectedIndustryDemand">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
-        <interface page_width="788" page_height="528">
-            <simulation_delay>0.1</simulation_delay>
-            <pages />
-        </interface>
-    </model>
-    <model name="IndustryDemand">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
-        <interface page_width="788" page_height="528">
-            <simulation_delay>0.1</simulation_delay>
-            <pages />
-        </interface>
-    </model>
-    <model name="LearningCurve">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
-        <interface page_width="788" page_height="528">
-            <simulation_delay>0.1</simulation_delay>
-            <pages />
-        </interface>
-    </model>
-    <model name="Market">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
-        <interface page_width="788" page_height="528">
-            <simulation_delay>0.1</simulation_delay>
-            <pages />
-        </interface>
-    </model>
-    <model name="NetIncome">
         <stock name="NPVProfit">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>0</eqn>
             <inflow>NPVProfitChange</inflow>
-            <display x="315" y="77" color="blue" />
+            <display x="437" y="66" color="blue" />
         </stock>
         <flow name="NPVProfitChange">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>NetIncome*DiscountFactor</eqn>
-            <display x="230" y="78" color="blue">
+            <eqn>NetIncome_1*DiscountFactor</eqn>
+            <display x="352" y="67" color="blue">
                 <pts>
-                    <pt x="167" y="78" />
-                    <pt x="293" y="78" />
+                    <pt x="289" y="67" />
+                    <pt x="415" y="67" />
                 </pts>
             </display>
         </flow>
         <aux name="DiscountRate">
             <eqn>0.04</eqn>
-            <display x="127" y="159" color="blue" />
+            <display x="249" y="148" color="blue" />
         </aux>
         <aux name="DiscountFactor">
             <eqn>EXP(-DiscountRate*Time)</eqn>
-            <display x="212" y="132" color="blue" />
+            <display x="334" y="121" color="blue" />
         </aux>
-        <aux name="NetIncome" flow_concept="true">
+        <aux name="NetIncome_1" flow_concept="true">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>Revenue-Cost</eqn>
-            <display x="306" y="162" color="blue" />
+            <display x="428" y="151" color="blue" />
         </aux>
         <aux name="NPVIndustryProfits">
             <eqn>SUM(NPVProfit[*])</eqn>
-            <display x="417" y="79" color="blue" />
+            <display x="539" y="68" color="blue" />
         </aux>
         <aux name="Cost">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>VariableCost+FixedCost</eqn>
-            <display x="400" y="223" color="blue" />
+            <display x="522" y="212" color="blue" />
         </aux>
         <aux name="FixedCost">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>10</eqn>
-            <display x="449" y="291" color="blue" />
+            <display x="571" y="280" color="blue" />
         </aux>
         <aux name="VariableCost">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>10</eqn>
-            <display x="362" y="294" color="blue" />
+            <display x="484" y="283" color="blue" />
         </aux>
         <stock name="ValueOfBacklog">
             <dimensions>
@@ -184,17 +99,17 @@
             <eqn>0</eqn>
             <inflow>ValueOfNewOrders</inflow>
             <outflow>Revenue</outflow>
-            <display x="203" y="238" color="blue" />
+            <display x="325" y="227" color="blue" />
         </stock>
         <flow name="Revenue">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <non_negative />
-            <display x="272" y="239" color="blue">
+            <display x="394" y="228" color="blue">
                 <pts>
-                    <pt x="225" y="239" />
-                    <pt x="320" y="239" />
+                    <pt x="347" y="228" />
+                    <pt x="442" y="228" />
                 </pts>
             </display>
         </flow>
@@ -204,10 +119,10 @@
             </dimensions>
             <eqn>10</eqn>
             <non_negative />
-            <display x="135" y="242" color="blue">
+            <display x="257" y="231" color="blue">
                 <pts>
-                    <pt x="89" y="242" />
-                    <pt x="181" y="242" />
+                    <pt x="211" y="231" />
+                    <pt x="303" y="231" />
                 </pts>
             </display>
         </flow>
@@ -216,27 +131,27 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>10</eqn>
-            <display x="248" y="285" color="blue" />
+            <display x="370" y="274" color="blue" />
         </aux>
         <stock name="Backlog">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>0</eqn>
-            <inflow>Orders</inflow>
+            <inflow>Orders_1</inflow>
             <outflow>Shipments</outflow>
-            <display x="529" y="560" color="blue" />
+            <display x="651" y="549" color="blue" />
         </stock>
-        <flow name="Orders">
+        <flow name="Orders_1">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>1</eqn>
             <non_negative />
-            <display x="476" y="561" color="blue">
+            <display x="598" y="550" color="blue">
                 <pts>
-                    <pt x="445" y="561" />
-                    <pt x="507" y="561" />
+                    <pt x="567" y="550" />
+                    <pt x="629" y="550" />
                 </pts>
             </display>
         </flow>
@@ -246,30 +161,30 @@
             </dimensions>
             <eqn>1</eqn>
             <non_negative />
-            <display x="600" y="561" color="blue">
+            <display x="722" y="550" color="blue">
                 <pts>
-                    <pt x="551" y="561" />
-                    <pt x="649" y="561" />
+                    <pt x="673" y="550" />
+                    <pt x="771" y="550" />
                 </pts>
             </display>
         </flow>
         <stock name="NonAdopters">
             <eqn>0</eqn>
             <outflow>AdoptionRate</outflow>
-            <display x="96" y="599" color="blue" />
+            <display x="218" y="588" color="blue" />
         </stock>
         <stock name="CumulativeAdopters">
             <eqn>0</eqn>
             <inflow>AdoptionRate</inflow>
-            <display x="254" y="600" color="blue" />
+            <display x="376" y="589" color="blue" />
         </stock>
         <flow name="AdoptionRate">
             <eqn>0</eqn>
             <non_negative />
-            <display x="175" y="599" color="blue">
+            <display x="297" y="588" color="blue">
                 <pts>
-                    <pt x="118" y="599" />
-                    <pt x="232" y="599" />
+                    <pt x="240" y="588" />
+                    <pt x="354" y="588" />
                 </pts>
             </display>
         </flow>
@@ -280,7 +195,7 @@
             <eqn>0</eqn>
             <inflow>Shipments</inflow>
             <outflow>DiscardRate</outflow>
-            <display x="671" y="564" color="blue" />
+            <display x="793" y="553" color="blue" />
         </stock>
         <flow name="DiscardRate">
             <dimensions>
@@ -288,127 +203,94 @@
             </dimensions>
             <eqn>1</eqn>
             <non_negative />
-            <display x="736" y="563" color="blue">
+            <display x="858" y="552" color="blue">
                 <pts>
-                    <pt x="693" y="563" />
-                    <pt x="779" y="563" />
+                    <pt x="815" y="552" />
+                    <pt x="901" y="552" />
                 </pts>
             </display>
         </flow>
-        <stock name="Price">
+        <stock name="Price_1">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>0</eqn>
             <inflow>ChangeInPrice</inflow>
-            <display x="1010" y="572" color="blue" />
+            <display x="1132" y="561" color="blue" />
         </stock>
         <flow name="ChangeInPrice">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <non_negative />
-            <display x="946" y="571" color="blue">
+            <display x="1068" y="560" color="blue">
                 <pts>
-                    <pt x="905" y="571" />
-                    <pt x="988" y="571" />
+                    <pt x="1027" y="560" />
+                    <pt x="1110" y="560" />
                 </pts>
             </display>
         </flow>
         <group name="Diffusion_Sector">
-            <entity name="AdoptionRate" />
             <entity name="NonAdopters" />
+            <entity name="AdoptionRate" />
             <entity name="CumulativeAdopters" />
-            <display x="24" y="483" width="330" height="225" color="red" />
+            <display x="146" y="472" width="330" height="225" color="red" />
         </group>
         <group name="Orders_Sector">
-            <entity name="DiscardRate" />
-            <entity name="Orders" />
-            <entity name="Backlog" />
+            <entity name="Orders_1" />
             <entity name="Shipments" />
+            <entity name="Backlog" />
+            <entity name="DiscardRate" />
             <entity name="InstalledBase" />
-            <display x="416" y="475" width="396" height="235" color="red" />
+            <display x="538" y="464" width="396" height="235" color="red" />
         </group>
         <group name="Price_Sector">
-            <entity name="Price" />
             <entity name="ChangeInPrice" />
-            <display x="857" y="464" width="301" height="245" color="red" />
+            <entity name="Price_1" />
+            <display x="979" y="453" width="301" height="245" color="red" />
         </group>
-        <display page_width="595" page_height="842" page_cols="2" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" scroll_y="96">
-            <connector x="300" y="155" uid="1" color="#FF007F">
-                <from>NetIncome</from>
-                <to>NPVProfitChange</to>
-            </connector>
-            <connector x="337" y="77" uid="2" color="#FF007F">
-                <from>NPVProfit</from>
-                <to>NPVIndustryProfits</to>
-            </connector>
-            <connector x="134" y="154" uid="3" color="#FF007F">
-                <from>DiscountRate</from>
-                <to>DiscountFactor</to>
-            </connector>
-            <connector x="212" y="123" uid="4" color="#FF007F">
-                <from>DiscountFactor</from>
-                <to>NPVProfitChange</to>
-            </connector>
-            <connector x="367" y="286" uid="5" color="#FF007F">
-                <from>VariableCost</from>
-                <to>Cost</to>
-            </connector>
-            <connector x="446" y="283" uid="6" color="#FF007F">
-                <from>FixedCost</from>
-                <to>Cost</to>
-            </connector>
-            <connector x="273" y="230" uid="7" color="#FF007F">
-                <from>Revenue</from>
-                <to>NetIncome</to>
-            </connector>
-            <connector x="392" y="221" uid="8" color="#FF007F">
+        <display page_width="595" page_height="842" page_cols="3" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed">
+            <connector x="513" y="210" uid="0" color="#FF007F">
                 <from>Cost</from>
-                <to>NetIncome</to>
+                <to>NetIncome_1</to>
             </connector>
-            <connector x="212" y="255" uid="9" color="#FF007F">
+            <connector x="334" y="244" uid="1" color="#FF007F">
                 <from>ValueOfBacklog</from>
                 <to>AveragePriceofOrderBook</to>
             </connector>
-            <connector x="254" y="278" uid="10" color="#FF007F">
+            <connector x="568" y="273" uid="2" color="#FF007F">
+                <from>FixedCost</from>
+                <to>Cost</to>
+            </connector>
+            <connector x="256" y="144" uid="3" color="#FF007F">
+                <from>DiscountRate</from>
+                <to>DiscountFactor</to>
+            </connector>
+            <connector x="334" y="112" uid="4" color="#FF007F">
+                <from>DiscountFactor</from>
+                <to>NPVProfitChange</to>
+            </connector>
+            <connector x="489" y="275" uid="5" color="#FF007F">
+                <from>VariableCost</from>
+                <to>Cost</to>
+            </connector>
+            <connector x="459" y="66" uid="6" color="#FF007F">
+                <from>NPVProfit</from>
+                <to>NPVIndustryProfits</to>
+            </connector>
+            <connector x="422" y="144" uid="7" color="#FF007F">
+                <from>NetIncome_1</from>
+                <to>NPVProfitChange</to>
+            </connector>
+            <connector x="395" y="219" uid="8" color="#FF007F">
+                <from>Revenue</from>
+                <to>NetIncome_1</to>
+            </connector>
+            <connector x="376" y="267" uid="9" color="#FF007F">
                 <from>AveragePriceofOrderBook</from>
                 <to>Revenue</to>
             </connector>
-            <stacked_container x="636" y="50" height="270" width="475" visible_index="0" uid="11">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="111" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702477557">
-                    <item type="time" color="black" text-align="left" precision="3" width="100" />
-                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
-                        <entity name="NPVProfit" index="Company1" />
-                    </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="1">
-                        <entity name="NPVProfit" index="Company2" />
-                    </item>
-                </table>
-            </stacked_container>
-            <pad_icon x="658" y="66" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="11" />
         </display>
-        <interface page_width="788" page_height="528">
-            <simulation_delay>0.1</simulation_delay>
-            <pages />
-        </interface>
-    </model>
-    <model name="Orders">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
-        <interface page_width="788" page_height="528">
-            <simulation_delay>0.1</simulation_delay>
-            <pages />
-        </interface>
-    </model>
-    <model name="Price">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
-        <interface page_width="788" page_height="528">
-            <simulation_delay>0.1</simulation_delay>
-            <pages />
-        </interface>
-    </model>
-    <model name="TargetCapacity">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
