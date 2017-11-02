@@ -38,59 +38,59 @@
             </dimensions>
             <eqn>0</eqn>
             <inflow>NPVProfitChange</inflow>
-            <display x="437" y="66" color="blue" />
+            <display x="399" y="85" color="blue" />
         </stock>
         <flow name="NPVProfitChange">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>NetIncome_1*DiscountFactor</eqn>
-            <display x="352" y="67" color="blue">
+            <eqn>NetIncome*DiscountFactor</eqn>
+            <display x="314" y="86" color="blue">
                 <pts>
-                    <pt x="289" y="67" />
-                    <pt x="415" y="67" />
+                    <pt x="251" y="86" />
+                    <pt x="377" y="86" />
                 </pts>
             </display>
         </flow>
         <aux name="DiscountRate">
             <eqn>0.04</eqn>
-            <display x="249" y="148" color="blue" />
+            <display x="211" y="167" color="blue" />
         </aux>
         <aux name="DiscountFactor">
             <eqn>EXP(-DiscountRate*Time)</eqn>
-            <display x="334" y="121" color="blue" />
+            <display x="296" y="140" color="blue" />
         </aux>
-        <aux name="NetIncome_1" flow_concept="true">
+        <aux name="NetIncome" flow_concept="true">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>Revenue-Cost</eqn>
-            <display x="428" y="151" color="blue" />
+            <display x="390" y="170" color="blue" />
         </aux>
         <aux name="NPVIndustryProfits">
             <eqn>SUM(NPVProfit[*])</eqn>
-            <display x="539" y="68" color="blue" />
+            <display x="501" y="87" color="blue" />
         </aux>
         <aux name="Cost">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>VariableCost+FixedCost</eqn>
-            <display x="522" y="212" color="blue" />
+            <display x="484" y="231" color="blue" />
         </aux>
         <aux name="FixedCost">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>10</eqn>
-            <display x="571" y="280" color="blue" />
+            <display x="533" y="299" color="blue" />
         </aux>
         <aux name="VariableCost">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>10</eqn>
-            <display x="484" y="283" color="blue" />
+            <display x="446" y="302" color="blue" />
         </aux>
         <stock name="ValueOfBacklog">
             <dimensions>
@@ -99,17 +99,17 @@
             <eqn>0</eqn>
             <inflow>ValueOfNewOrders</inflow>
             <outflow>Revenue</outflow>
-            <display x="325" y="227" color="blue" />
+            <display x="287" y="246" color="blue" />
         </stock>
         <flow name="Revenue">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <non_negative />
-            <display x="394" y="228" color="blue">
+            <display x="356" y="247" color="blue">
                 <pts>
-                    <pt x="347" y="228" />
-                    <pt x="442" y="228" />
+                    <pt x="309" y="247" />
+                    <pt x="404" y="247" />
                 </pts>
             </display>
         </flow>
@@ -119,10 +119,10 @@
             </dimensions>
             <eqn>10</eqn>
             <non_negative />
-            <display x="257" y="231" color="blue">
+            <display x="219" y="250" color="blue">
                 <pts>
-                    <pt x="211" y="231" />
-                    <pt x="303" y="231" />
+                    <pt x="173" y="250" />
+                    <pt x="265" y="250" />
                 </pts>
             </display>
         </flow>
@@ -131,7 +131,7 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>10</eqn>
-            <display x="370" y="274" color="blue" />
+            <display x="332" y="293" color="blue" />
         </aux>
         <stock name="Backlog">
             <dimensions>
@@ -140,7 +140,7 @@
             <eqn>0</eqn>
             <inflow>Orders_1</inflow>
             <outflow>Shipments</outflow>
-            <display x="651" y="549" color="blue" />
+            <display x="558" y="522" color="blue" />
         </stock>
         <flow name="Orders_1">
             <dimensions>
@@ -148,10 +148,10 @@
             </dimensions>
             <eqn>1</eqn>
             <non_negative />
-            <display x="598" y="550" color="blue">
+            <display x="505" y="523" color="blue">
                 <pts>
-                    <pt x="567" y="550" />
-                    <pt x="629" y="550" />
+                    <pt x="474" y="523" />
+                    <pt x="536" y="523" />
                 </pts>
             </display>
         </flow>
@@ -161,30 +161,30 @@
             </dimensions>
             <eqn>1</eqn>
             <non_negative />
-            <display x="722" y="550" color="blue">
+            <display x="629" y="523" color="blue">
                 <pts>
-                    <pt x="673" y="550" />
-                    <pt x="771" y="550" />
+                    <pt x="580" y="523" />
+                    <pt x="678" y="523" />
                 </pts>
             </display>
         </flow>
         <stock name="NonAdopters">
             <eqn>0</eqn>
             <outflow>AdoptionRate</outflow>
-            <display x="218" y="588" color="blue" />
+            <display x="144" y="563" color="blue" />
         </stock>
         <stock name="CumulativeAdopters">
             <eqn>0</eqn>
             <inflow>AdoptionRate</inflow>
-            <display x="376" y="589" color="blue" />
+            <display x="302" y="564" color="blue" />
         </stock>
         <flow name="AdoptionRate">
             <eqn>0</eqn>
             <non_negative />
-            <display x="297" y="588" color="blue">
+            <display x="223" y="563" color="blue">
                 <pts>
-                    <pt x="240" y="588" />
-                    <pt x="354" y="588" />
+                    <pt x="166" y="563" />
+                    <pt x="280" y="563" />
                 </pts>
             </display>
         </flow>
@@ -195,7 +195,7 @@
             <eqn>0</eqn>
             <inflow>Shipments</inflow>
             <outflow>DiscardRate</outflow>
-            <display x="793" y="553" color="blue" />
+            <display x="700" y="526" color="blue" />
         </stock>
         <flow name="DiscardRate">
             <dimensions>
@@ -203,10 +203,10 @@
             </dimensions>
             <eqn>1</eqn>
             <non_negative />
-            <display x="858" y="552" color="blue">
+            <display x="765" y="525" color="blue">
                 <pts>
-                    <pt x="815" y="552" />
-                    <pt x="901" y="552" />
+                    <pt x="722" y="525" />
+                    <pt x="808" y="525" />
                 </pts>
             </display>
         </flow>
@@ -216,77 +216,111 @@
             </dimensions>
             <eqn>0</eqn>
             <inflow>ChangeInPrice</inflow>
-            <display x="1132" y="561" color="blue" />
+            <display x="1042" y="546" color="blue" />
         </stock>
         <flow name="ChangeInPrice">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <non_negative />
-            <display x="1068" y="560" color="blue">
+            <display x="978" y="545" color="blue">
                 <pts>
-                    <pt x="1027" y="560" />
-                    <pt x="1110" y="560" />
+                    <pt x="937" y="545" />
+                    <pt x="1020" y="545" />
                 </pts>
             </display>
         </flow>
+        <stock name="CumulativeProduction">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0</eqn>
+            <inflow>Production</inflow>
+            <display x="1059" y="108" color="blue" />
+        </stock>
+        <flow name="Production">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>1</eqn>
+            <display x="974" y="109" color="blue">
+                <pts>
+                    <pt x="911" y="109" />
+                    <pt x="1037" y="109" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="Capacitys">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <display x="218" y="799" color="blue" />
+        </aux>
+        <group name="Net_Income_Sector">
+            <display locked="true" x="64" y="36" width="565" height="323" color="red" />
+        </group>
+        <group name="Learning_Curve_Sector">
+            <entity name="Production" />
+            <entity name="CumulativeProduction" />
+            <display x="855" y="30" width="303" height="187" color="red" />
+        </group>
+        <group name="Capacity_Sector">
+            <entity name="Capacitys" />
+            <display x="70" y="742" width="300" height="150" color="red" />
+        </group>
+        <group name="Target_Capacity_Sector">
+            <display x="439" y="730" width="298" height="165" color="red" />
+        </group>
+        <group name="Expected_Industry_Demand_Sector">
+            <display x="827" y="737" width="305" height="157" color="red" />
+        </group>
         <group name="Diffusion_Sector">
-            <entity name="NonAdopters" />
-            <entity name="AdoptionRate" />
-            <entity name="CumulativeAdopters" />
-            <display x="146" y="472" width="330" height="225" color="red" />
+            <display locked="true" x="62" y="439" width="330" height="225" color="red" />
         </group>
         <group name="Orders_Sector">
-            <entity name="Orders_1" />
-            <entity name="Shipments" />
-            <entity name="Backlog" />
-            <entity name="DiscardRate" />
-            <entity name="InstalledBase" />
-            <display x="538" y="464" width="396" height="235" color="red" />
+            <display locked="true" x="445" y="437" width="396" height="235" color="red" />
         </group>
         <group name="Price_Sector">
-            <entity name="ChangeInPrice" />
-            <entity name="Price_1" />
-            <display x="979" y="453" width="301" height="245" color="red" />
+            <display locked="true" x="861" y="434" width="309" height="239" color="red" />
         </group>
         <display page_width="595" page_height="842" page_cols="3" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed">
-            <connector x="513" y="210" uid="0" color="#FF007F">
+            <connector x="475" y="229" uid="0" color="#FF007F">
                 <from>Cost</from>
-                <to>NetIncome_1</to>
+                <to>NetIncome</to>
             </connector>
-            <connector x="334" y="244" uid="1" color="#FF007F">
+            <connector x="296" y="263" uid="1" color="#FF007F">
                 <from>ValueOfBacklog</from>
                 <to>AveragePriceofOrderBook</to>
             </connector>
-            <connector x="568" y="273" uid="2" color="#FF007F">
+            <connector x="530" y="292" uid="2" color="#FF007F">
                 <from>FixedCost</from>
                 <to>Cost</to>
             </connector>
-            <connector x="256" y="144" uid="3" color="#FF007F">
+            <connector x="218" y="163" uid="3" color="#FF007F">
                 <from>DiscountRate</from>
                 <to>DiscountFactor</to>
             </connector>
-            <connector x="334" y="112" uid="4" color="#FF007F">
+            <connector x="296" y="131" uid="4" color="#FF007F">
                 <from>DiscountFactor</from>
                 <to>NPVProfitChange</to>
             </connector>
-            <connector x="489" y="275" uid="5" color="#FF007F">
+            <connector x="451" y="294" uid="5" color="#FF007F">
                 <from>VariableCost</from>
                 <to>Cost</to>
             </connector>
-            <connector x="459" y="66" uid="6" color="#FF007F">
+            <connector x="421" y="85" uid="6" color="#FF007F">
                 <from>NPVProfit</from>
                 <to>NPVIndustryProfits</to>
             </connector>
-            <connector x="422" y="144" uid="7" color="#FF007F">
-                <from>NetIncome_1</from>
+            <connector x="384" y="163" uid="7" color="#FF007F">
+                <from>NetIncome</from>
                 <to>NPVProfitChange</to>
             </connector>
-            <connector x="395" y="219" uid="8" color="#FF007F">
+            <connector x="357" y="238" uid="8" color="#FF007F">
                 <from>Revenue</from>
-                <to>NetIncome_1</to>
+                <to>NetIncome</to>
             </connector>
-            <connector x="376" y="267" uid="9" color="#FF007F">
+            <connector x="338" y="286" uid="9" color="#FF007F">
                 <from>AveragePriceofOrderBook</from>
                 <to>Revenue</to>
             </connector>
