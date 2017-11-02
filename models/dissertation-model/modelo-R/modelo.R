@@ -6,11 +6,12 @@ START<-0; FINISH<-20; STEP<-0.25
 simtime <- seq(START, FINISH, by=STEP)
 
 # Criando Estoques (na mão em um primeiro momento).
-auxs    <- c(aDiscountRate = 0.04)
-
+auxs    <- list(aDiscountRate = 0.04
+                ,fNetIncome = c(10,10)
+                )
 
 # Variaveis definidas de modo independente (porque são vetorizadas)
-fNetIncome = c(10,10)
+
 
 # Os aux devem ser um vetor normal
 
