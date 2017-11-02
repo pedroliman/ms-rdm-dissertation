@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xmile version="1.0" level="3" xmlns="http://www.systemdynamics.org/XMILE" xmlns:isee="http://iseesystems.com/XMILE">
+    <header>
+        <smile version="1.0" namespace="std, isee">
+            <uses_arrays>1</uses_arrays>
+        </smile>
+        <name>growth-and-investment</name>
+        <uuid>783cd918-e2cc-4e2c-a710-313fa46f4b51</uuid>
+        <vendor>isee systems, inc.</vendor>
+        <product version="10.0.3" lang="en">iThink</product>
+    </header>
+    <style>
+        <model font-family="Arial" font-size="10" />
+        <interface font-family="Arial" font-size="9" />
+    </style>
+    <sim_specs method="Euler" time_units="Months">
+        <start>0</start>
+        <stop>96</stop>
+        <dt>0.5</dt>
+        <isee:analyze_mode>false</isee:analyze_mode>
+    </sim_specs>
+    <dimensions>
+        <dim name="Dim_Name_1" size="1" />
+    </dimensions>
+    <model_units />
+    <isee:prefs layer="interface" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
+        <isee:window width="1366" height="685" />
+        <isee:security />
+        <isee:print_setup width="576" height="756" />
+    </isee:prefs>
+    <isee:equation_prefs order_by="sector" show_documentation="true" />
+    <model>
+        <aux name="Delivery_Delay\nIndicated" flow_concept="true">
+            <eqn>Order_Backlog/Order_Fill_Rate {months}</eqn>
+            <display x="337" y="236" color="blue" />
+        </aux>
+        <aux name="Authorized_\nSales_Force">
+            <eqn> Budget_to_Sales_Force/Sales_Force_Salary </eqn>
+            <display x="216" y="175" color="blue" label_side="right" label_angle="356">
+                <scale min="0" max="400" />
+            </display>
+        </aux>
+        <aux name="Average\nOrder_Fill_Rate" flow_concept="true">
+            <eqn> SMTH1(Order_Fill_Rate,TimeTo_Average_Orders)</eqn>
+            <display x="249" y="396" color="blue" label_angle="283" />
+        </aux>
+        <aux name="Budget_to\nSales_Force">
+            <eqn> Fraction_of_Revenue_to_Sales_Force*Reported_Sales_Revenue  {£ per month}</eqn>
+            <display x="225" y="236" color="blue" label_side="right" label_angle="340" />
+        </aux>
+        <aux name="Delivery_Delay\nRecognized">
+            <eqn> SMTH1(Delivery_Delay_Indicated,Time_to_Recognize_Delivery_Delay,2)    {months}</eqn>
+            <display x="389" y="187" color="blue" />
+        </aux>
+        <flow name="Net_Sales_Force\nHiring">
+            <eqn> (Authorized__Sales_Force-Sales_Force)/Time_To_Adjust_Sales_Force</eqn>
+            <display x="280" y="88" color="blue" label_side="top">
+                <pts>
+                    <pt x="228" y="88" />
+                    <pt x="332" y="88" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="Fraction_of_Revenue\nto_Sales_Force">
+            <eqn> .1</eqn>
+            <display x="146" y="248" color="blue" label_side="left" label_angle="192" />
+        </aux>
+        <aux name="Sales_Force\nSalary">
+            <eqn> 4000  {salary expressed in £ per month per salesman, including overhead and support}</eqn>
+            <display x="147" y="175" color="blue" label_side="left" label_angle="200" />
+        </aux>
+        <flow name="Order\nFill\nRate">
+            <eqn>Production_Capacity*Utilization_of_Capacity   {systems per month}</eqn>
+            <non_negative />
+            <display x="399" y="324" color="blue">
+                <scale min="0" max="40000000" />
+                <pts>
+                    <pt x="444" y="324" />
+                    <pt x="354" y="324" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="Normal\nSales_Force\nProductivity">
+            <eqn> 10 {system orders per salesperson per month}</eqn>
+            <display x="570" y="390" color="blue" />
+        </aux>
+        <flow name="Customer\nOrders">
+            <eqn>Sales_Force*Normal_Sales_Force_Productivity*Effect_of_Delivery_Delay_on_Orders&#x0D;{systems per month}</eqn>
+            <non_negative />
+            <display x="533" y="326" color="blue">
+                <scale min="0" max="40000000" />
+                <pts>
+                    <pt x="578" y="326" />
+                    <pt x="488" y="326" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="Product\nPrice">
+            <eqn> 9600  {£ per system}</eqn>
+            <display x="147" y="319" color="blue" label_side="left" label_angle="203" />
+        </aux>
+        <aux name="Time_To\nAdjust\nSales_Force">
+            <eqn> 12  {months}</eqn>
+            <display x="195" y="124" color="blue" label_side="left" label_angle="221" />
+        </aux>
+        <aux name="TimeTo\nAverage_Orders">
+            <eqn> 1  {month}&#x0D;&#x0D;</eqn>
+            <display x="157" y="396" color="blue" />
+        </aux>
+        <stock name="Order\nBacklog">
+            <eqn> 160  {systems on order}</eqn>
+            <inflow>Customer_Orders</inflow>
+            <outflow>Order_Fill_Rate</outflow>
+            <display x="466" y="326" color="blue" />
+        </stock>
+        <stock name="Sales\nForce">
+            <eqn> 4  {sales people}</eqn>
+            <inflow>Net_Sales_Force_Hiring</inflow>
+            <display x="352" y="88" color="blue">
+                <scale min="0" max="400" />
+            </display>
+        </stock>
+        <aux name="Reported\nSales\nRevenue">
+            <eqn>Average_Order_Fill_Rate*Product_Price   {£ per month}</eqn>
+            <display x="236" y="319" color="blue" label_side="right" label_angle="315" />
+        </aux>
+        <aux name="Time_to_Recognize\nDelivery_Delay">
+            <eqn> 10  {months}&#x0D;&#x0D;</eqn>
+            <display x="402" y="140" color="blue" label_side="right" label_angle="322" />
+        </aux>
+        <aux name="Effect_of\nDelivery_Delay\non_Orders">
+            <eqn>Delivery_Delay_Recognized</eqn>
+            <gf>
+                <yscale min="0" max="1" />
+                <xpts>0,1,2,3,4,5,6,7,8,9,10</xpts>
+                <ypts>1,0.96999999999999997,0.87,0.72999999999999998,0.53000000000000003,0.38,0.25,0.14999999999999999,0.080000000000000002,0.029999999999999999,0.02</ypts>
+            </gf>
+            <display x="454" y="218" color="blue" label_side="right" label_angle="45" />
+        </aux>
+        <aux name="Delivery\nDelay_Minimum">
+            <eqn> Order_Backlog/Production_Capacity&#x0D;{the minimum time to fill an order if capacity were 100% utilized, expressed in months}</eqn>
+            <display x="460" y="471" color="blue" />
+        </aux>
+        <aux name="Utilization\nof_Capacity">
+            <eqn>Delivery_Delay_Minimum</eqn>
+            <gf>
+                <yscale min="0" max="1" />
+                <xpts>0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5</xpts>
+                <ypts>0,0.25,0.5,0.67000000000000004,0.80000000000000004,0.87,0.93000000000000005,0.94999999999999996,0.96999999999999997,0.97999999999999998,1</ypts>
+            </gf>
+            <display x="416" y="403" color="blue" />
+        </aux>
+        <flow name="Capacity\nArrival_Rate">
+            <eqn> Capacity_Being_Built/Capacity_Lead_Time  {systems/month/month}</eqn>
+            <display x="425" y="1072" color="blue">
+                <pts>
+                    <pt x="352" y="1072" />
+                    <pt x="498" y="1072" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="Capacity\nOrder_Rate">
+            <eqn> Production_Capacity*Capacity_Expansion_Fraction  {systems/month/month)}</eqn>
+            <display x="235" y="1072" color="blue">
+                <pts>
+                    <pt x="160" y="1072" />
+                    <pt x="310" y="1072" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="Capacity\nLead_Time">
+            <eqn> 12   {months}</eqn>
+            <display x="412" y="1019" color="blue" label_side="top" />
+        </aux>
+        <aux name="Delivery_Delay\nBias">
+            <eqn> 0.3   {dimensionless}</eqn>
+            <display x="100" y="947" color="blue" />
+        </aux>
+        <aux name="Delivery_Delay\nCondition">
+            <eqn>Delivery_Delay_Recognized_by_Factory/Delivery_Delay_Operating_Goal   {dimensionless}</eqn>
+            <display x="236" y="927" color="blue" />
+        </aux>
+        <aux name="Delivery_Delay\nManagement_Goal">
+            <eqn> 2 {months}</eqn>
+            <display x="444" y="890" color="blue" label_side="right" label_angle="344" />
+        </aux>
+        <aux name="Delivery_Delay\nOperating_Goal">
+            <eqn>Delivery_Delay_Tradition*Delivery_Delay_Weight+Delivery_Delay_Management_Goal*(1-Delivery_Delay_Weight)    {months}</eqn>
+            <display x="368" y="930" color="blue" label_angle="209" />
+        </aux>
+        <aux name="Delivery_Delay\nPressure">
+            <eqn> Delivery_Delay_Condition-Delivery_Delay_Bias  {dimensionless}</eqn>
+            <display x="160" y="947" color="blue" label_side="top" />
+        </aux>
+        <aux name="Delivery_Delay\nTradition">
+            <eqn> SMTH1(Delivery_Delay_Recognized_by_Factory,Time_For_Delivery_Delay_Tradition,2)   {months}</eqn>
+            <display x="368" y="854" color="blue" label_side="right" label_angle="344" />
+        </aux>
+        <aux name="Delivery_Delay\nWeight">
+            <eqn> 1 { dimensionless; delivery delay weight =1 puts all the weight onto tradition, =0 puts all the weight onto the fixed management goal} </eqn>
+            <display x="448" y="962" color="blue" label_side="right" label_angle="344" />
+        </aux>
+        <aux name="Time_For_Delivery_Delay_Tradition">
+            <eqn> 12  {months}</eqn>
+            <display x="369" y="801" color="blue" label_side="right" label_angle="348" />
+        </aux>
+        <stock name="Production\nCapacity">
+            <eqn>120   {systems/month}</eqn>
+            <inflow>Capacity_Arrival_Rate</inflow>
+            <display x="520" y="1077" color="blue" />
+        </stock>
+        <stock name="Capacity\nBeing_Built">
+            <eqn> Capacity_Order_Rate*Capacity_Lead_Time  {systems per month}</eqn>
+            <inflow>Capacity_Order_Rate</inflow>
+            <outflow>Capacity_Arrival_Rate</outflow>
+            <display x="332" y="1073" color="blue" />
+        </stock>
+        <aux name="Capacity_Expansion\nFraction">
+            <eqn>Delivery_Delay_Pressure</eqn>
+            <gf>
+                <yscale min="-0.1" max="0.15" />
+                <xpts>0,0.5,1,1.5,2,2.5</xpts>
+                <ypts>-0.070000000000000007,-0.02,0,0.02,0.070000000000000007,0.14999999999999999</ypts>
+            </gf>
+            <display x="244" y="1019" color="blue" label_side="top" />
+        </aux>
+        <aux name="Sketch_of_Customer_Orders">
+            <eqn>TIME</eqn>
+            <gf>
+                <yscale min="-1" max="0" />
+                <xpts>0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,10.5,11,11.5,12,12.5,13,13.5,14,14.5,15,15.5,16,16.5,17,17.5,18,18.5,19,19.5,20,20.5,21,21.5,22,22.5,23,23.5,24,24.5,25,25.5,26,26.5,27,27.5,28,28.5,29,29.5,30,30.5,31,31.5,32,32.5,33,33.5,34,34.5,35,35.5,36,36.5,37,37.5,38,38.5,39,39.5,40,40.5,41,41.5,42,42.5,43,43.5,44,44.5,45,45.5,46,46.5,47,47.5,48,48.5,49,49.5,50,50.5,51,51.5,52,52.5,53,53.5,54,54.5,55,55.5,56,56.5,57,57.5,58,58.5,59,59.5,60,60.5,61,61.5,62,62.5,63,63.5,64,64.5,65,65.5,66,66.5,67,67.5,68,68.5,69,69.5,70,70.5,71,71.5,72,72.5,73,73.5,74,74.5,75,75.5,76,76.5,77,77.5,78,78.5,79,79.5,80,80.5,81,81.5,82,82.5,83,83.5,84,84.5,85,85.5,86,86.5,87,87.5,88,88.5,89,89.5,90,90.5,91,91.5,92,92.5,93,93.5,94,94.5,95,95.5,96</xpts>
+                <ypts>38.443935926773456,38.443935926773456,36.61327231121281,38.443935926773456,42.105263157894733,42.105263157894733,42.105263157894733,42.105263157894733,42.105263157894733,42.105263157894733,42.105263157894733,43.935926773455378,45.766590389016017,45.766590389016017,47.597254004576655,47.597254004576655,49.427917620137301,49.427917620137301,51.258581235697939,51.258581235697939,51.258581235697939,51.258581235697939,53.089244851258577,53.089244851258577,54.919908466819223,56.750572082379861,56.750572082379861,60.411899313501145,60.411899313501145,62.242562929061783,64.073226544622429,65.903890160183067,67.734553775743706,69.565217391304344,71.395881006864983,71.395881006864983,76.887871853546912,78.71853546910755,78.71853546910755,82.379862700228827,86.041189931350118,86.041189931350118,87.871853546910756,89.702517162471395,91.533180778032033,93.363844393592672,95.19450800915331,97.025171624713963,97.025171624713963,97.025171624713963,100.68649885583524,100.68649885583524,102.51716247139588,104.34782608695652,108.00915331807781,109.83981693363845,111.67048054919908,111.67048054919908,111.67048054919908,113.50114416475972,115.33180778032036,118.99313501144165,118.99313501144165,126.31578947368421,126.31578947368421,126.31578947368421,126.31578947368421,129.9771167048055,131.80778032036613,133.63844393592677,137.29977116704805,140.96109839816933,144.6224256292906,146.45308924485124,148.28375286041191,148.28375286041191,148.28375286041191,148.28375286041191,150.11441647597255,151.94508009153319,155.60640732265446,155.60640732265446,157.4370709382151,159.26773455377574,161.09839816933638,162.92906178489702,166.59038901601829,166.59038901601829,168.42105263157893,170.2517162471396,173.91304347826087,175.74370709382151,179.40503432494279,181.23569794050343,184.8970251716247,186.72768878718534,188.55835240274598,190.38901601830662,192.21967963386726,194.05034324942793,195.88100686498856,199.54233409610984,201.37299771167048,203.20366132723112,206.86498855835239,206.86498855835239,208.69565217391303,210.52631578947367,212.35697940503431,214.18764302059495,217.84897025171625,219.67963386727689,223.34096109839817,219.67963386727689,228.83295194508008,228.83295194508008,234.324942791762,239.81693363844394,243.47826086956522,247.1395881006865,250.80091533180777,254.46224256292905,256.29290617848972,258.12356979405035,258.12356979405035,258.12356979405035,261.78489702517163,263.61556064073227,269.10755148741418,270.93821510297482,272.76887871853546,276.43020594965674,280.09153318077801,281.92219679633865,285.58352402745993,287.41418764302057,289.24485125858121,291.07551487414185,292.90617848970248,296.56750572082382,300.22883295194509,303.89016018306637,305.72082379862701,307.55148741418765,309.38215102974829,311.21281464530892,313.04347826086956,314.8741418764302,316.70480549199084,316.70480549199084,324.02745995423339,324.02745995423339,327.68878718535467,333.18077803203659,335.01144164759722,336.84210526315786,338.6727688787185,344.16475972540047,347.82608695652175,351.48741418764303,353.31807780320366,353.31807780320366,353.31807780320366,355.1487414187643,356.97940503432494,360.64073226544622,364.30205949656749,366.13272311212813,367.96338672768877,367.96338672768877,375.28604118993132,378.9473684210526,380.77803203661324,380.77803203661324,382.60869565217388,382.60869565217388,382.60869565217388,384.43935926773452,386.27002288329521,386.27002288329521,386.27002288329521,389.93135011441649,393.59267734553777,393.59267734553777,395.4233409610984,395.4233409610984,395.4233409610984,397.25400457665904,399.08466819221968,400.91533180778032,400.91533180778032,400.91533180778032,400.91533180778032</ypts>
+            </gf>
+            <display x="557" y="225" color="blue" />
+        </aux>
+        <aux name="Delivery_Delay_Recognized_by_Factory">
+            <eqn>SMTH1(Delivery_Delay_Indicated, Time_for_Factory_to_Recognize_Delivery_Delay, 2)</eqn>
+            <display x="248" y="839" color="blue" label_angle="340" />
+        </aux>
+        <aux name="Time_for_Factory_to_Recognize_Delivery_Delay">
+            <eqn>2  {months}</eqn>
+            <display x="160" y="825" color="blue" />
+        </aux>
+        <group name="SALES_FORCE__AND__CUSTOMER__ORDERS">
+            <entity name="Authorized__Sales_Force" />
+            <entity name="Budget_to_Sales_Force" />
+            <entity name="Net_Sales_Force_Hiring" />
+            <entity name="Fraction_of_Revenue_to_Sales_Force" />
+            <entity name="Sales_Force_Salary" />
+            <entity name="Order_Fill_Rate" />
+            <entity name="Product_Price" />
+            <entity name="Time_To_Adjust_Sales_Force" />
+            <entity name="Sales_Force" />
+            <entity name="Delivery_Delay_Indicated" />
+            <entity name="Reported_Sales_Revenue" />
+            <entity name="Customer_Orders" />
+            <entity name="Order_Backlog" />
+            <entity name="Delivery_Delay_Recognized" />
+            <entity name="Time_to_Recognize_Delivery_Delay" />
+            <entity name="Effect_of_Delivery_Delay_on_Orders" />
+            <entity name="Sketch_of_Customer_Orders" />
+            <entity name="Average_Order_Fill_Rate" />
+            <entity name="TimeTo_Average_Orders" />
+            <entity name="Normal_Sales_Force_Productivity" />
+            <entity name="Delivery_Delay_Minimum" />
+            <entity name="Utilization_of_Capacity" />
+            <display locked="true" x="18" y="30" width="603" height="563" color="red">
+                <item uid="0" />
+                <item uid="1" />
+                <item uid="2" />
+                <item uid="3" />
+                <item uid="4" />
+                <item uid="5" />
+                <item uid="6" />
+                <item uid="7" />
+                <item uid="8" />
+                <item uid="9" />
+                <item uid="10" />
+                <item uid="11" />
+                <item uid="12" />
+                <item uid="13" />
+                <item uid="14" />
+                <item uid="15" />
+                <item uid="16" />
+                <item uid="17" />
+                <item uid="18" />
+                <item uid="19" />
+                <item uid="20" />
+                <item uid="21" />
+                <item uid="22" />
+                <item uid="23" />
+                <item uid="24" />
+                <item uid="25" />
+                <item uid="26" />
+                <item uid="27" />
+                <item uid="28" />
+            </display>
+        </group>
+        <group name="CAPACITY__PLANNING__AND__EXPANSION">
+            <entity name="Capacity_Arrival_Rate" />
+            <entity name="Capacity_Order_Rate" />
+            <entity name="Delivery_Delay_Bias" />
+            <entity name="Delivery_Delay_Condition" />
+            <entity name="Delivery_Delay_Operating_Goal" />
+            <entity name="Delivery_Delay_Pressure" />
+            <entity name="Capacity_Being_Built" />
+            <entity name="Capacity_Expansion_Fraction" />
+            <entity name="Delivery_Delay_Recognized_by_Factory" />
+            <entity name="Time_for_Factory_to_Recognize_Delivery_Delay" />
+            <entity name="Capacity_Lead_Time" />
+            <entity name="Delivery_Delay_Management_Goal" />
+            <entity name="Delivery_Delay_Tradition" />
+            <entity name="Delivery_Delay_Weight" />
+            <entity name="Time_For_Delivery_Delay_Tradition" />
+            <entity name="Production_Capacity" />
+            <display locked="true" x="52" y="759" width="562" height="385" color="red">
+                <item uid="29" />
+                <item uid="30" />
+                <item uid="31" />
+                <item uid="32" />
+                <item uid="33" />
+                <item uid="34" />
+                <item uid="35" />
+                <item uid="36" />
+                <item uid="37" />
+                <item uid="38" />
+                <item uid="39" />
+                <item uid="40" />
+                <item uid="41" />
+                <item uid="42" />
+                <item uid="43" />
+                <item uid="44" />
+                <item uid="45" />
+                <item uid="46" />
+            </display>
+        </group>
+        <display page_width="576" page_height="756" page_order="column" page_cols="3" page_rows="2" isee:show_values_on_hover="true" isee:converter_size="medium" zoom="150" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.5" report_every_dt="true" report_flows="summed">
+            <connector x="373" y="83" uid="17" color="#FF007F">
+                <from>Sales_Force</from>
+                <to>Customer_Orders</to>
+            </connector>
+            <connector x="390" y="320" uid="3" type="info" color="#FF007F">
+                <from>Order_Fill_Rate</from>
+                <to>Delivery_Delay_Indicated</to>
+            </connector>
+            <connector x="218" y="166" uid="4" type="info" color="#FF007F">
+                <from>Authorized__Sales_Force</from>
+                <to>Net_Sales_Force_Hiring</to>
+            </connector>
+            <connector x="202" y="118" uid="5" type="info" color="#FF007F">
+                <from>Time_To_Adjust_Sales_Force</from>
+                <to>Net_Sales_Force_Hiring</to>
+            </connector>
+            <connector x="452" y="308" uid="6" type="info" color="#FF007F">
+                <from>Order_Backlog</from>
+                <to>Delivery_Delay_Indicated</to>
+            </connector>
+            <connector x="416" y="394" uid="21" color="#FF007F">
+                <from>Utilization_of_Capacity</from>
+                <to>Order_Fill_Rate</to>
+            </connector>
+            <connector x="570" y="381" uid="22" color="#FF007F">
+                <from>Normal_Sales_Force_Productivity</from>
+                <to>Customer_Orders</to>
+            </connector>
+            <connector x="220" y="228" uid="7" type="info" color="#FF007F">
+                <from>Budget_to_Sales_Force</from>
+                <to>Authorized__Sales_Force</to>
+            </connector>
+            <connector x="155" y="251" uid="8" type="info" color="#FF007F">
+                <from>Fraction_of_Revenue_to_Sales_Force</from>
+                <to>Budget_to_Sales_Force</to>
+            </connector>
+            <connector x="155" y="180" uid="9" type="info" color="#FF007F">
+                <from>Sales_Force_Salary</from>
+                <to>Authorized__Sales_Force</to>
+            </connector>
+            <connector x="341" y="105" uid="10" type="info" color="#FF007F">
+                <from>Sales_Force</from>
+                <to>Net_Sales_Force_Hiring</to>
+            </connector>
+            <connector x="166" y="395" uid="24" type="info" color="#FF007F">
+                <from>TimeTo_Average_Orders</from>
+                <to>Average_Order_Fill_Rate</to>
+            </connector>
+            <connector x="394" y="331" uid="11" type="info" color="#FF007F">
+                <from>Order_Fill_Rate</from>
+                <to>Average_Order_Fill_Rate</to>
+            </connector>
+            <connector x="156" y="319" uid="12" color="#FF007F">
+                <from>Product_Price</from>
+                <to>Reported_Sales_Revenue</to>
+            </connector>
+            <connector x="245" y="389" uid="13" color="#FF007F">
+                <from>Average_Order_Fill_Rate</from>
+                <to>Reported_Sales_Revenue</to>
+            </connector>
+            <connector x="233" y="311" uid="14" type="info" color="#FF007F">
+                <from>Reported_Sales_Revenue</from>
+                <to>Budget_to_Sales_Force</to>
+            </connector>
+            <connector x="338" y="227" uid="15" type="info" color="#FF007F">
+                <from>Delivery_Delay_Indicated</from>
+                <to>Delivery_Delay_Recognized</to>
+            </connector>
+            <connector x="396" y="147" uid="18" type="info" color="#FF007F">
+                <from>Time_to_Recognize_Delivery_Delay</from>
+                <to>Delivery_Delay_Recognized</to>
+            </connector>
+            <connector x="398" y="188" uid="19" type="info" color="#FF007F">
+                <from>Delivery_Delay_Recognized</from>
+                <to>Effect_of_Delivery_Delay_on_Orders</to>
+            </connector>
+            <connector x="461" y="222" uid="20" type="info" color="#FF007F">
+                <from>Effect_of_Delivery_Delay_on_Orders</from>
+                <to>Customer_Orders</to>
+            </connector>
+            <connector x="375" y="489" uid="27" type="info" color="#FF007F">
+                <from>
+                    <alias uid="25" />
+                </from>
+                <to>Delivery_Delay_Minimum</to>
+            </connector>
+            <connector x="352" y="465" uid="16" color="#FF007F">
+                <from>
+                    <alias uid="25" />
+                </from>
+                <to>Order_Fill_Rate</to>
+            </connector>
+            <connector x="475" y="343" uid="23" type="info" color="#FF007F">
+                <from>Order_Backlog</from>
+                <to>Delivery_Delay_Minimum</to>
+            </connector>
+            <connector x="453" y="466" uid="28" type="info" color="#FF007F">
+                <from>Delivery_Delay_Minimum</from>
+                <to>Utilization_of_Capacity</to>
+            </connector>
+            <connector x="368" y="810" uid="40" type="info" color="#FF007F">
+                <from>Time_For_Delivery_Delay_Tradition</from>
+                <to>Delivery_Delay_Tradition</to>
+            </connector>
+            <connector x="237" y="1025" uid="30" type="info" color="#FF007F">
+                <from>Capacity_Expansion_Fraction</from>
+                <to>Capacity_Order_Rate</to>
+            </connector>
+            <connector x="347" y="1090" uid="45" color="#FF007F">
+                <from>Capacity_Being_Built</from>
+                <to>Capacity_Arrival_Rate</to>
+            </connector>
+            <connector x="417" y="1027" uid="41" color="#FF007F">
+                <from>Capacity_Lead_Time</from>
+                <to>Capacity_Arrival_Rate</to>
+            </connector>
+            <connector x="499" y="1090" uid="46" type="info" color="#FF007F">
+                <from>Production_Capacity</from>
+                <to>Capacity_Order_Rate</to>
+            </connector>
+            <connector x="241" y="845" uid="31" type="info" color="#FF007F">
+                <from>Delivery_Delay_Recognized_by_Factory</from>
+                <to>Delivery_Delay_Condition</to>
+            </connector>
+            <connector x="360" y="926" uid="33" type="info" color="#FF007F">
+                <from>Delivery_Delay_Operating_Goal</from>
+                <to>Delivery_Delay_Condition</to>
+            </connector>
+            <connector x="368" y="863" uid="42" type="info" color="#FF007F">
+                <from>Delivery_Delay_Tradition</from>
+                <to>Delivery_Delay_Operating_Goal</to>
+            </connector>
+            <connector x="434" y="892" uid="43" type="info" color="#FF007F">
+                <from>Delivery_Delay_Management_Goal</from>
+                <to>Delivery_Delay_Operating_Goal</to>
+            </connector>
+            <connector x="439" y="962" uid="44" type="info" color="#FF007F">
+                <from>Delivery_Delay_Weight</from>
+                <to>Delivery_Delay_Operating_Goal</to>
+            </connector>
+            <alias x="353" y="484" uid="25">
+                <of>Production_Capacity</of>
+                <label_side>left</label_side>
+                <label_angle>193</label_angle>
+            </alias>
+            <connector x="258" y="836" uid="34" type="info" color="#FF007F">
+                <from>Delivery_Delay_Recognized_by_Factory</from>
+                <to>Delivery_Delay_Tradition</to>
+            </connector>
+            <connector x="227" y="927" uid="35" type="info" color="#FF007F">
+                <from>Delivery_Delay_Condition</from>
+                <to>Delivery_Delay_Pressure</to>
+            </connector>
+            <connector x="164" y="956" uid="32" type="info" color="#FF007F">
+                <from>Delivery_Delay_Pressure</from>
+                <to>Capacity_Expansion_Fraction</to>
+            </connector>
+            <connector x="108" y="944" uid="36" type="info" color="#FF007F">
+                <from>Delivery_Delay_Bias</from>
+                <to>Delivery_Delay_Pressure</to>
+            </connector>
+            <alias x="197" y="788" uid="37">
+                <of>Delivery_Delay_Indicated</of>
+                <label_side>left</label_side>
+                <label_angle>210</label_angle>
+            </alias>
+            <connector x="206" y="790" uid="38" type="info" color="#FF007F">
+                <from>
+                    <alias uid="37" />
+                </from>
+                <to>Delivery_Delay_Recognized_by_Factory</to>
+            </connector>
+            <connector x="168" y="822" uid="39" type="info" color="#FF007F">
+                <from>Time_for_Factory_to_Recognize_Delivery_Delay</from>
+                <to>Delivery_Delay_Recognized_by_Factory</to>
+            </connector>
+            <stacked_container x="650" y="38" height="299" width="532" visible_index="4" uid="47">
+                <graph type="time_series" title="" background="#E0E0E0" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="0" from="0" to="96">
+                    <plot index="0" pen_width="3" color="blue" precision="0" show_y_axis="true">
+                        <scale min="0" max="200" />
+                        <entity name="Customer_Orders" />
+                    </plot>
+                    <plot index="1" pen_width="3" color="#008F44" precision="0" show_y_axis="true">
+                        <scale min="0" max="200" />
+                        <entity name="Order_Fill_Rate" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="" background="#E0E0E0" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="0" from="0" to="96">
+                    <plot index="0" pen_width="3" color="red" precision="0" show_y_axis="true">
+                        <scale min="0" max="40" />
+                        <entity name="Authorized__Sales_Force" />
+                    </plot>
+                    <plot index="1" pen_width="3" color="blue" precision="0" show_y_axis="true">
+                        <scale min="0" max="40" />
+                        <entity name="Sales_Force" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="" background="#E0E0E0" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="0" from="0" to="96">
+                    <plot index="0" pen_width="3" color="blue" precision="0" show_y_axis="true">
+                        <scale min="0" max="200" />
+                        <entity name="Production_Capacity" />
+                    </plot>
+                    <plot index="1" pen_width="3" color="#008F44" precision="1" show_y_axis="true">
+                        <scale min="0.4" max="1.2" />
+                        <entity name="Utilization_of_Capacity" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="" background="#E0E0E0" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="0" from="0" to="96">
+                    <plot index="0" pen_width="3" color="blue" precision="1" show_y_axis="true">
+                        <scale min="0" max="8" />
+                        <entity name="Delivery_Delay_Indicated" />
+                    </plot>
+                    <plot index="1" pen_width="3" color="red" precision="1" show_y_axis="true">
+                        <scale min="0" max="8" />
+                        <entity name="Delivery_Delay_Recognized" />
+                    </plot>
+                    <plot index="2" pen_width="3" color="#008F44" precision="0" show_y_axis="true">
+                        <scale min="0" max="8" />
+                        <entity name="Delivery_Delay_Operating_Goal" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="" background="#E0E0E0" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="0" from="0" to="96">
+                    <plot index="0" pen_width="3" color="blue" precision="0" show_y_axis="true">
+                        <scale min="0" max="400" />
+                        <entity name="Customer_Orders" />
+                    </plot>
+                    <plot index="1" pen_width="3" color="red" precision="0" show_y_axis="true">
+                        <entity name="Sketch_of_Customer_Orders" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="842" y="157" width="26" height="22" color="#0CA0FF" label_side="bottom" label="Graph 1" type="graph" icon_of="47" />
+            <button x="65" y="45" width="34" height="34" uid="0" appearance="opaque" background="black" color="white" style="square" label="Graph" font-family="Arial" font-size="8" text-align="center">
+                <link target="model" x="590" y="0" zoom="150" />
+            </button>
+            <button x="665" y="98" width="34" height="34" uid="48" appearance="opaque" background="black" color="white" style="square" label="Run" font-family="Arial" font-size="8" text-align="center">
+                <menu_action>run</menu_action>
+            </button>
+            <button x="665" y="199" width="34" height="34" uid="49" appearance="opaque" background="black" color="white" style="square" label="Model" font-family="Arial" font-size="8" text-align="center">
+                <link target="model" x="0" y="0" zoom="150" />
+            </button>
+            <button x="59" y="123" width="52" height="26" uid="1" appearance="opaque" background="black" color="white" style="square" label="Capacity" font-family="Arial" font-size="8" text-align="center">
+                <link target="model" x="0" y="734" zoom="150" />
+            </button>
+            <button x="79" y="875" width="34" height="34" uid="29" appearance="opaque" background="black" color="white" style="square" label="Sales" font-family="Arial" font-size="8" text-align="center">
+                <link target="model" x="0" y="0" zoom="150" />
+            </button>
+            <button x="59" y="88" width="52" height="26" uid="2" appearance="opaque" background="black" color="white" style="square" label="Order Fulfillment" font-family="Arial" font-size="8" text-align="center">
+                <link target="model" x="0" y="251" zoom="150" />
+            </button>
+            <button x="541" y="487" width="34" height="34" uid="26" appearance="opaque" background="black" color="white" style="square" label="Sales" font-family="Arial" font-size="8" text-align="center">
+                <link target="model" x="0" y="0" zoom="150" />
+            </button>
+        </display>
+        <interface page_order="column" page_width="788" page_height="528">
+            <simulation_delay>0.25</simulation_delay>
+            <pages />
+            <stacked_container x="66" y="48" height="398" width="692" visible_index="0" uid="50">
+                <graph type="time_series" title="" background="#C8C8C8" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="2" from="0" to="96">
+                    <plot index="0" pen_width="3" color="blue" precision="0" show_y_axis="true">
+                        <scale min="0" max="400" />
+                        <entity name="Customer_Orders" />
+                    </plot>
+                    <plot index="1" pen_width="3" color="red" precision="0" show_y_axis="true">
+                        <scale min="0" max="400" />
+                        <entity name="Order_Fill_Rate" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="" background="#C8C8C8" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="2" from="0" to="96">
+                    <plot index="0" pen_width="3" color="blue" precision="0" show_y_axis="true">
+                        <scale min="0" max="80" />
+                        <entity name="Authorized__Sales_Force" />
+                    </plot>
+                    <plot index="1" pen_width="3" color="red" precision="0" show_y_axis="true">
+                        <scale min="0" max="80" />
+                        <entity name="Sales_Force" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="" background="#C8C8C8" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="2" from="0" to="96">
+                    <plot index="0" pen_width="3" color="blue" precision="0" show_y_axis="true">
+                        <scale min="0" max="400" />
+                        <entity name="Production_Capacity" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="" background="#C8C8C8" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:hide_detail="true" time_precision="2" from="0" to="96">
+                    <plot index="0" pen_width="3" color="blue" precision="0" show_y_axis="true">
+                        <scale min="0" max="8" />
+                        <entity name="Delivery_Delay_Indicated" />
+                    </plot>
+                    <plot index="1" pen_width="3" color="red" precision="0" show_y_axis="true">
+                        <scale min="0" max="8" />
+                        <entity name="Delivery_Delay_Management_Goal" />
+                    </plot>
+                    <plot index="2" pen_width="3" color="black" precision="0" show_y_axis="true">
+                        <scale min="0" max="8" />
+                        <entity name="Delivery_Delay_Recognized" />
+                    </plot>
+                    <plot index="3" pen_width="3" color="#008F44" precision="0" show_y_axis="true">
+                        <scale min="0" max="8" />
+                        <entity name="Delivery_Delay_Tradition" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="243" y="199" width="26" height="22" color="fuchsia" label_side="bottom" label="Graph 1" type="graph" icon_of="50" />
+            <slider x="190" y="510" color="red" width="197" height="43" min="0" max="1" increment="0.1">
+                <entity name="Delivery_Delay_Weight" />
+            </slider>
+            <slider x="415" y="510" color="red" width="197" height="43" min="1" max="5" increment="1">
+                <entity name="Delivery_Delay_Management_Goal" />
+            </slider>
+            <slider x="631" y="510" color="red" width="197" height="43" min="-0.1" max="0.3" increment="0.1">
+                <entity name="Delivery_Delay_Bias" />
+            </slider>
+            <button x="110" y="140" width="34" height="34" uid="51" appearance="opaque" background="black" color="white" style="square" label="Run" font-family="Arial" font-size="10" text-align="center">
+                <menu_action>run</menu_action>
+            </button>
+            <button x="103" y="195" width="52" height="26" uid="52" appearance="opaque" background="black" color="white" style="square" label="Restore" font-family="Arial" font-size="10" text-align="center">
+                <menu_action>restore_graphs_tables</menu_action>
+            </button>
+        </interface>
+    </model>
+</xmile>

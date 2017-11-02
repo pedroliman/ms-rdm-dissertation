@@ -594,6 +594,16 @@ plot_taxa_adocao_uma_estrategia = function(dados, estrategia) {
 }
 
 
+#' grafico_whisker_por_lever
+#'
+#' Este grafico 
+#' 
+#' @param dados_regret dados resultantes da análise de regret.
+#' @param variavel nome da variável simulada a realizar o gráfico.
+#'
+#' @return grafico whisker do ggplot2
+#' @export
+#'
 grafico_whisker_por_lever = function(dados_regret, variavel) {
   dados_por_estrategia = dplyr::group_by(dados_regret, Lever)
   
@@ -609,6 +619,16 @@ grafico_whisker_por_lever = function(dados_regret, variavel) {
   p + geom_boxplot()
 }
 
+#' plot_fronteira_tradeoff_estrategia
+#' 
+#' Esta funcao ainda nao é completamente generalizada. estao dentro desta funcao a definicao do cenário a ser analisado.
+#'
+#' @param results list com os dados resultantes da funcao de simulacao e analise
+#' @param opcoes list de opcoes do modelo (as opcoes sao padronizadas.)
+#'
+#' @return grafico plotly com a fronteira de tradeoffs conforme um determinado cenário.
+#' @export
+#'
 plot_fronteira_tradeoff_estrategia = function(results, opcoes) {
   
   dados_cenario = results$DadosUltimoPeriodo %>% filter(AdvertisingCost  < 5.727e+04 & AverageTicket  >  1.789e+00 & AdoptionFraction  <  2.895e-02)

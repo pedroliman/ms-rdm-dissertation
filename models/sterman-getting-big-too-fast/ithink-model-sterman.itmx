@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xmile version="1.0" level="3" xmlns="http://www.systemdynamics.org/XMILE" xmlns:isee="http://iseesystems.com/XMILE">
+    <header>
+        <smile version="1.0" namespace="std, isee">
+            <uses_arrays>1</uses_arrays>
+            <uses_submodels />
+        </smile>
+        <name>ithink-model-sterman</name>
+        <uuid>095430c6-2224-462b-be0e-270670cd7d7c</uuid>
+        <vendor>isee systems, inc.</vendor>
+        <product version="10.0.3" lang="en">iThink</product>
+    </header>
+    <style>
+        <model font-family="Arial" font-size="9" />
+        <interface font-family="Arial" font-size="9" />
+    </style>
+    <sim_specs method="Euler" time_units="Months">
+        <start>0</start>
+        <stop>20</stop>
+        <dt>0.25</dt>
+    </sim_specs>
+    <dimensions>
+        <dim name="Company">
+            <elem name="Company1" />
+            <elem name="Company2" />
+        </dim>
+    </dimensions>
+    <model_units />
+    <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
+        <isee:window width="1366" height="685" />
+        <isee:security />
+        <isee:print_setup width="595" height="842" />
+    </isee:prefs>
+    <isee:equation_prefs order_by="module" />
+    <model>
+        <module name="Diffusion">
+            <display x="484" y="267" color="blue" />
+        </module>
+        <module name="IndustryDemand">
+            <display x="397" y="175" color="blue" />
+        </module>
+        <module name="Market">
+            <display x="219" y="220" color="blue" />
+        </module>
+        <module name="Orders">
+            <display x="312" y="313" color="blue" />
+        </module>
+        <module name="Price">
+            <display x="193" y="340" color="blue" />
+        </module>
+        <module name="LearningCurve">
+            <display x="314" y="393" color="blue" />
+        </module>
+        <module name="Capacity1">
+            <display x="183" y="457" color="blue" />
+        </module>
+        <module name="TargetCapacity">
+            <display x="306" y="474" color="blue" />
+        </module>
+        <module name="ExpectedIndustryDemand">
+            <display x="230" y="540" color="blue" />
+        </module>
+        <module name="NetIncome">
+            <display x="309" y="85" color="blue" />
+        </module>
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+    <model name="Capacity1">
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+    <model name="Diffusion">
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+    <model name="ExpectedIndustryDemand">
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+    <model name="IndustryDemand">
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+    <model name="LearningCurve">
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+    <model name="Market">
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+    <model name="NetIncome">
+        <stock name="NPVProfit">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0</eqn>
+            <inflow>Change_in_NPV_Profit</inflow>
+            <display x="329" y="102" color="blue" />
+        </stock>
+        <flow name="Change_in_NPV_Profit">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>NetIncome*DiscountFactor</eqn>
+            <non_negative />
+            <display x="244" y="103" color="blue">
+                <pts>
+                    <pt x="181" y="103" />
+                    <pt x="307" y="103" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="DiscountRate">
+            <eqn>0.04</eqn>
+            <display x="152" y="184" color="blue" />
+        </aux>
+        <aux name="DiscountFactor">
+            <eqn>EXP(-DiscountRate*Time)</eqn>
+            <display x="226" y="157" color="blue" />
+        </aux>
+        <aux name="NetIncome">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>10</eqn>
+            <display x="305" y="172" color="blue" />
+        </aux>
+        <aux name="NPVIndustryProfits">
+            <eqn>SUM(NPVProfit[*])</eqn>
+            <display x="442" y="100" color="blue" />
+        </aux>
+        <display page_width="595" page_height="842" page_cols="2" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed">
+            <connector x="226" y="148" uid="0" color="#FF007F">
+                <from>DiscountFactor</from>
+                <to>Change_in_NPV_Profit</to>
+            </connector>
+            <connector x="300" y="165" uid="1" color="#FF007F">
+                <from>NetIncome</from>
+                <to>Change_in_NPV_Profit</to>
+            </connector>
+            <connector x="158" y="178" uid="2" color="#FF007F">
+                <from>DiscountRate</from>
+                <to>DiscountFactor</to>
+            </connector>
+            <connector x="351" y="101" uid="3" color="#FF007F">
+                <from>NPVProfit</from>
+                <to>NPVIndustryProfits</to>
+            </connector>
+            <stacked_container x="636" y="50" height="270" width="475" visible_index="0" uid="4">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="111" orientation="vertical" report_interval="1" report_balances="ending" report_flows="summed" isee:date_time="-702479499">
+                    <item type="time" color="black" text-align="left" precision="3" width="100" />
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
+                        <entity name="NPVProfit" index="Company1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="1">
+                        <entity name="NPVProfit" index="Company2" />
+                    </item>
+                </table>
+            </stacked_container>
+            <pad_icon x="658" y="66" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="4" />
+        </display>
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+    <model name="Orders">
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+    <model name="Price">
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+    <model name="TargetCapacity">
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <interface page_width="788" page_height="528">
+            <simulation_delay>0.1</simulation_delay>
+            <pages />
+        </interface>
+    </model>
+</xmile>

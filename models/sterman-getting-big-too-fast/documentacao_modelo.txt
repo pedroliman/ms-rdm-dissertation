@@ -1,0 +1,1884 @@
+(001)	Adequacy of Capacity[i] = (Capacity[i] - Desired Shipments[i]/Normal Capacity Utilization
+	[i])/Capacity[i]
+	Units: Dimensionless
+	Difference between capacity and desired capacity, given normal 
+			utilization, as percent of capacity
+
+(002)	Adoption Rate = Nonadopters*(Innovator Adoption Fraction + WOM Strength
+	*Cumulative Adopters
+	/Population)
+	Units: Households/Year
+	The rate at which Households adopt the product
+
+(003)	Attractiveness[i] = Attractiveness from Price[i]*Attractiveness from Availability
+	[i]
+	Units: Dimensionless
+	Attractiveness of each firm is product of effects of price, 
+			availabilit
+
+(004)	Attractiveness from Availability[i] = EXP(Sens of Attract to Availability
+	*(Delivery Delay
+	[i]/Reference Delivery Delay))
+	Units: Dimensionless
+	Effect of availability depends on delivery delay
+
+(005)	Attractiveness from Price[i] = EXP(Sens of Attract to price*(Price[i]
+	/Reference Price
+	))
+	Units: Dimensionless
+	Effect of price on attractiveness of firm i
+
+(006)	Average Price of Order Book[i] = Value of Backlog[i]/Backlog[i]
+	Units: $/Unit
+	Customers pay the average price in effect at the time they 
+			placed their orders. The average value of the order book is the 
+			total value of the book divided by the backlog.
+
+(007)	Backlog[i]= INTEG (
+		Orders[i] - Shipments[i],
+			0.5*Industry Order Rate*Normal Delivery Delay
+			[i])
+	Units: Units
+	Backlog of unfilled orders for the firm's product
+
+(008)	Base Price[i]=
+		(1+Normal Profit Margin[i])*(Unit Variable Cost[i]+Unit Fixed Cost[i]/Normal Capacity Utilization
+	[i])
+	Units: $/Unit
+	The base price is give by total unit costs and the normal 
+			markup. Total unit costs is the sum of unit fixed and variable 
+			costs (fixed costs per unit of capacity are adjusted for normal 
+			capacity utilization).
+
+(009)	Capacity[i] = IF THEN ELSE(Switch For Perfect Capacity = 1, 
+		Desired Shipments[i]/Normal Capacity Utilization[i], 
+		SMOOTH3I(Target Capacity[i], Capacity Acquisition Delay[i], 0.5*Industry Order Rate
+	/
+	Normal Capacity Utilization[i]))
+	Units: Units/Year
+	Production Capacity of the firm.
+
+(010)	Capacity Acquisition Delay[i] = 1, 1
+	Units: Years
+	The average delay in acquiring or discharging capacity
+
+(011)	Capacity Utilization[i] = Shipments[i]/Capacity[i]
+	Units: Dimensionless
+	Ratio of shipments to capacity
+
+(012)	Change in NPV Profit[i] = Net Income[i]*Discount Factor
+	Units: $/Year
+	Current net income, discounted from the initial time, 
+			accumulates into the NPV of profit over the simulation.
+
+(013)	Change in Price[i] = (Target Price[i] - Price[i])/Price Adjustment Time
+	[i]
+	Units: $/Unit/Year
+	Change in price of product
+
+(014)	Competitor Capacity[i] = Industry Capacity - Capacity[i]
+	Units: Units/Year
+	The capacity of the competitor; calculated as total industry 
+			capacity less the firm's capacity
+
+(015)	Competitor Target Capacity[i]=
+		Industry Total Target Capacity-Target Capacity[i]
+	Units: Units/Year
+	The target capacity of a firm's rivals is given by total target 
+			capacity for all firms less the target of the firm itself.
+
+(016)	Cost[i] = Variable Cost[i] + Fixed Cost[i]
+	Units: $/Year
+	Total costs of firm
+
+(017)	Cumulative Adopters= INTEG (
+		Adoption Rate,
+			Initial Cumulative Adopters)
+	Units: Households
+	The cumulative number of adopters of the product
+
+(018)	Cumulative Production[i]= INTEG (
+		Production[i],
+			 Initial Production Experience[i])
+	Units: Units
+	Cumulative output of firm
+
+(019)	Delivery Delay[i] = Backlog[i]/Shipments[i]
+	Units: Years
+	Average Time between placing and receiving an order
+
+(020)	Demand Curve Slope = (-Reference Population*Reference Industry Demand Elasticity
+	)/(Reference Price
+	)
+	Units: Households/($/Unit)
+	The slope of the industry demand curve, as a function of the 
+			price elasticity at the reference price level
+
+(021)	DemandSupply Balance[i]=
+		Desired Shipments[i]/(Normal Capacity Utilization[i]*Capacity[i])
+	Units: Dimensionless
+	Ratio of desired shipments to capacity, adjusted for normal 
+			capacity utilization
+
+(022)	Desired Market Share[i] = 0.5, 0.5
+	Units: Dimensionless [0,1]
+	Share of Market firm seeks before considering competitor actions
+
+(023)	Desired Shipments[i] = Backlog[i]/Normal Delivery Delay[i]
+	Units: Units/Year
+	Rate of shipments needed to deliver orders with average delay 
+			equal to the normal delivery delay
+
+(024)	Discard Rate[i]=
+		Installed Base[i]*Fractional Discard Rate
+	Units: Units/Year
+	A fraction of the installed base is discarded and replaced each 
+			year. The average life of the products in the installed base is 
+			1/Fractional Discard Rate.
+
+(025)	Discount Factor = EXP(-Discount Rate*Time)
+	Units: Dimensionless
+	The ratio of future value to present value for a cash flow, 
+			beginning at time 0 in the simulation.
+
+(026)	Discount Rate = 0.04
+	Units: 1/Years [0,1]
+	Rate at which profit is discounted.
+
+(027)	Exp Growth in Volume[i] = LN(Reported Industry Volume[i]/Lagged Industry Volume
+	[i])/Time for Historical Volume
+	[i]
+	Units: 1/Years
+	Expected growth rate in Industry Volume, based on discrete delay 
+			(compound rate over last 1 year)
+
+(028)	Expected Comp Capacity[i] = Normal Capacity Utilization[i]*
+		(Weight on Supply Line[i]*Perceived Comp Target Capacity[i]+(1-Weight on Supply Line
+	[i])*Competitor Capacity[i])
+	Units: Units/Year
+	The capacity of the competitor expected by the firm
+
+(029)	Expected Industry Demand[i] = Reported Industry Volume[i]*EXP(Forecast Horizon
+	[i]*Capacity Acquisition Delay
+	[i]*Exp Growth in Volume[i])
+	Units: Units/Year
+	Firm's forecast of demand
+
+(030)	FINAL TIME  = 40
+	Units: Years
+	The final time for the simulation.
+
+(031)	Fixed Cost[i] = Capacity[i] * Unit Fixed Cost[i]
+	Units: $/Year
+	Fixed costs of firm (capacity costs)
+
+(032)	Forecast Error[i] = (Lagged Volume Forecast[i] - Industry Volume[i])/
+	(1e-009+Industry Volume
+	[i])
+	Units: Dimensionless
+	Error between actual and forecasted industry volume
+
+(033)	Forecast Horizon[i] = 1, 1
+	Units: Dimensionless
+	Firm's forecast horizion - how far ahead do they project demand 
+			as a fraction of the capacity acquisition delay?
+
+(034)	Fractional Discard Rate=
+		0.1
+	Units: 1/Years
+	The fractional discards from the insalled base. The average life 
+			of the product is 1/Fractional Discard Rate.
+
+(035)	i :  F1, F2 [8.40779e-045,?]
+	Index of firms in the industry
+
+(036)	Industry Capacity = SUM(Capacity[i!])
+	Units: Units/Year
+	Total industry capacity
+
+(037)	Industry Demand = MIN(Population,Reference Population*MAX(0,1+Demand Curve Slope
+	*(Lowest price
+	-Reference Price)/Reference Population))
+	Units: Households
+	The number of households in the population who will in 
+			equilibrium choose to purchase the product as a function of the 
+			minimum price available in the market. The demand curve is 
+			linear, with slope calculated by selecting a reference point for 
+			price and population, and the demand elasticity at that point.
+
+(038)	Industry Normal Production =  SUM(Normal Production[i!])
+	Units: Units/Year
+	Industry normal production given industry capacity and normal 
+			capacity utilization rate
+
+(039)	Industry Order Rate = Initial Order Rate + Reorder Rate
+	Units: Units/Year
+	total order rate for the product
+
+(040)	Industry Shipments = SUM(Shipments[i!])
+	Units: Units/Year
+	Total Rate of Industry Shipments
+
+(041)	Industry Total Target Capacity=
+		SUM(Target Capacity[i!])
+	Units: Units/Year
+	The total target capacity planned by all firms.
+
+(042)	Industry Volume[i] = MAX(Initial Demand Forecast[i],
+		Switch for Shipments in Forecasts*Industry Shipments+
+		(1-Switch for Shipments in Forecasts)*Industry Order Rate)
+	Units: Units/Year
+	Firm's estimate of industry volume, based either on shipments or 
+			orders
+
+(043)	Initial Cumulative Adopters = Initial Diffusion Fraction * Industry Demand
+	Units: Households
+	The initial cumulative number of adopters of the product
+
+(044)	Initial Demand Forecast[i] =Reorder Rate
+	Units: Units/Year
+	Firm's initial forecast of market demand
+
+(045)	Initial Diffusion Fraction = 0.001
+	Units: Dimensionless [0,1]
+	Initial fraction of Industry Demand who are adopters
+
+(046)	Initial Order Rate = Adoption Rate * Units per Household
+	Units: Units/Year
+	Rate of initial orders for product
+
+(047)	Initial Price[i] = 1000, 1000
+	Units: $/Unit
+	Initial price of product
+
+(048)	Initial Production Experience[i] = 1e+007
+	Units: Units
+	Initial cumulative output level for calibrating learning curve
+
+(049)	INITIAL TIME  = 0
+	Units: Years
+	The initial time for the simulation.
+
+(050)	Initial Unit Fixed Cost[i]=
+		(Initial Price[i]/(1+Normal Profit Margin[i]))*Ratio of fixed to var cost
+	[i]*(1/(1+Ratio of fixed to var cost[i]/Normal Capacity Utilization[i]))
+	Units: $/Unit
+	Initial fixed costs per unit are determined by a user specified 
+			ratio of fixed to variable costs, adjusted by normal capacity 
+			utilization and the normal profit margin.
+
+(051)	Initial Unit Variable Cost[i]=
+		(Initial Price[i]/(1+Normal Profit Margin[i]))*(1/(1+Ratio of fixed to var cost
+	[i]/Normal Capacity Utilization[i]))
+	Units: $/Unit
+	Initial unit variable costs are determined by a user specificed 
+			ratio of fixed to variable costs, adjusted for normal capacity 
+			utilization and by the normal profit margin.
+
+(052)	Innovator Adoption Fraction = 0.001
+	Units: 1/Years [0,0.1]
+	The fractional rate per year that nonadopters adopt independent 
+			of WOM
+
+(053)	Installed Base[i]= INTEG (
+		Shipments[i] - Discard Rate[i],
+			0.5*Units per Household*Cumulative Adopters)
+	Units: Units
+	
+(054)	Lagged Industry Volume[i] = DELAY INFORMATION(Reported Industry Volume
+	[i],Time for Historical Volume
+	[i],Reported Industry Volume[i])
+	Units: Units/Year
+	Industry volume lagged by the forecast horizon used to compute 
+			forecasted growth rate
+
+(055)	Lagged Volume Forecast[i] = DELAY INFORMATION(Expected Industry Demand
+	[i],Capacity Acquisition Delay
+	[i], Expected Industry Demand[i])
+	Units: Units/Year
+	Lagged forecast used to compute forecast error
+
+(056)	LC Exponent[i] = LN(LC Strength[i])/LN(2)
+	Units: Dimensionless
+	Exponent in the learning curve
+
+(057)	LC Strength[i]=
+		0.7, 0.7
+	Units: Dimensionless [0,1]
+	Strength of Learning Curve, expressed as fractional reduction in 
+			unit costs per doubling of cumulative production.
+
+(058)	Learning[i] = (Cumulative Production[i]/Initial Production Experience
+	[i])^LC Exponent
+	[i]
+	Units: Dimensionless
+	Fractional cost reduction from learning curve
+
+(059)	Lowest price = VMIN(Price[i!])
+	Units: $/Unit
+	The lowest price available in the market
+
+(060)	Market Share[i] = Shipments[i]/Industry Shipments
+	Units: Dimensionless
+	Share of shipments in units going to each firm
+
+(061)	Minimum Efficient Scale[i] = 100000, 100000
+	Units: Units/Year
+	Minimum efficient scale for operations
+
+(062)	Net Income[i] = Revenue[i] - Cost[i]
+	Units: $/Year
+	Net income of the firm is revenue less total cost.
+
+(063)	Nonadopters = Industry Demand - Cumulative Adopters
+	Units: Households
+	The number of Households in the population who have not adopted 
+			the product
+
+(064)	Normal Capacity Utilization[i] = 0.8, 0.8
+	Units: Dimensionless
+	
+(065)	Normal Delivery Delay[i] = 0.25, 0.25
+	Units: Years
+	
+(066)	Normal Production[i] = Capacity[i] * Normal Capacity Utilization[i]
+	Units: Units/Year
+	Normal rate of production, given capacity and normal rate of 
+			utilization
+
+(067)	Normal Profit Margin[i]=
+		0.2
+	Units: Dimensionless
+	The normal markup on unit costs. Used to determine the base 
+			price.
+
+(068)	NPV Industry Profits = SUM(NPV Profit[i!])
+	Units: $
+	The NPV of industry profits is the sum of firm profits over all 
+			firms in the industry.
+
+(069)	NPV Profit[i]= INTEG (
+		Change in NPV Profit[i],
+			 0)
+	Units: $
+	Net Present Value of cumulative profits accumulates discounted 
+			net income.
+
+(070)	Order Share[i] = Attractiveness[i]/Total Attractiveness
+	Units: Dimensionless
+	Fraction of orders going to firm i
+
+(071)	Orders[i] = Industry Order Rate*Order Share[i]
+	Units: Units/Year
+	
+(072)	Perceived Comp Target Capacity[i]=
+		SMOOTHI(Competitor Target Capacity[i],Time to Perceive Comp Target Capacity
+		[i],Competitor Capacity[i])
+	Units: Units/Year
+	Firm's perception of the competitor's target capacity
+
+(073)	Population = 1e+008
+	Units: Households
+	The total population of potential adopters
+
+(074)	Price[i]= INTEG (
+		Change in Price[i],
+			 Initial Price[i])
+	Units: $/Unit
+	
+(075)	Price Adjustment Time[i] = 0.25, 0.25
+	Units: Years
+	Time to adjust price to targe level
+
+(076)	Production[i] = Shipments[i]
+	Units: Units/Year
+	Production = Shipments as there are no inventories in this model
+
+(077)	Profit Margin[i] = (Price[i]/Unit Costs[i]) - 1
+	Units: Dimensionless
+	Profit margin assuming normal capacity utilization
+
+(078)	Ratio of fixed to var cost[i] = 3, 3
+	Units: Dimensionless
+	
+(079)	Reference Delivery Delay = 0.25
+	Units: Years
+	Reference value of delivery delay used in attractiveness 
+			formulation
+
+(080)	Reference Industry Demand Elasticity = 0.2
+	Units: Dimensionless
+	Demand elasticity at the reference price
+
+(081)	Reference Population = 6e+007
+	Units: Households [0,1.2e+008]
+	The reference household level is the number of households who 
+			would purchase the product at the reference price
+
+(082)	Reference Price = 1000
+	Units: $/Unit
+	Price at which the potential adopter population = the Reference 
+			Population
+
+(083)	Reorder Rate = SUM(Discard Rate[i!])
+	Units: Units/Year
+	Rate of reentry into the market
+
+(084)	Reported Industry Volume[i] = SMOOTH(Industry Volume[i], Volume Reporting Delay
+	)
+	Units: Units/Year
+	Reported industry volume is actual volume delayed by the time 
+			required for market researchers to gather and publish data
+
+(085)	Revenue[i] = Average Price of Order Book[i]*Shipments[i]
+	Units: $/Year
+	Revenue is recognized when orders are filled. Therefore revenue 
+			is determined by the average value of the orders filled.
+
+(086)	SAVEPER  = 
+	        TIME STEP
+	Units: Years
+	The frequency with which output is stored.
+
+(087)	Sens of Attract to Availability = -4
+	Units: Dimensionless
+	
+(088)	Sens of Attract to price=
+		-8
+	Units: Dimensionless
+	
+(089)	Sens of Price to Costs[i] = 1, 1
+	Units: Dmnl [0,1]
+	The sensitivity of price to unit costs. A value of 1 means that, 
+			ceteris paribus, a 1% reduction in unit costs causes a 1% 
+			reduction in price.
+
+(090)	Sens of Price to DS Balance[i] = 0.25, 0.25
+	Units: Dimensionless [0,1]
+	Sensitivity of Price to Demand/Supply Balance. The greater the 
+			ratio of demand to capacity the higher prices.
+
+(091)	Sens of Price to Share[i]=
+		-0.1, -0.1
+	Units: Dmnl
+	The sensitivity of target price to the gap between the firm's 
+			target and actual market share. Larger gaps cause lower prices, 
+			hence the sensitivity is negative.
+
+(092)	Shipments[i]=
+		Switch for Capacity*MIN(Desired Shipments[i],Capacity[i]) + (1-Switch for Capacity
+	)*Desired Shipments[i]
+	Units: Units/Year
+	Shipments are the minimum of desired shipments or capacity. 
+			Switch for capacity = 0 -> shipments = desired shipments at all 
+			times.
+
+(093)	Switch for Capacity = 1
+	Units: Dimensionless [0,1,1]
+	1 = Capacity constrains shipments; 0 = shipments = desired 
+			shipments
+
+(094)	Switch for Capacity Strategy[i] = 1, 1
+	Units: Dimensionless [0,4,1]
+	Switch to determine which capacity strategy is used
+
+(095)	Switch for Capacity Strategy 1[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 1,
+	 1, 0)
+	Units: Dmnl
+	
+(096)	Switch for Capacity Strategy 2[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 2,
+	 1, 0)
+	Units: Dmnl
+	
+(097)	Switch for Capacity Strategy 3[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 3,
+	 1, 0)
+	Units: Dmnl
+	
+(098)	Switch for Capacity Strategy 4[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 4,
+	 1, 0)
+	Units: Dmnl
+	Switches to select one of the four target capacity strategies
+
+(099)	Switch For Perfect Capacity = 0
+	Units: Dimensionless
+	1 -> Capacity always = desired shipments/normal utilization; 0 
+			-> capacity adjusts with lag to target
+
+(100)	Switch for Shipments in Forecasts = 0
+	Units: Dimensionless
+	1 -> Industry shipments used in demand forecasts; 0 -> Industry 
+			orders used in demand forecasts
+
+(101)	Target Capacity[i]=
+		MAX(Minimum Efficient Scale[i],Target Market Share[i]*Expected Industry Demand
+	[i]/Normal Capacity Utilization[i])
+	Units: Units/Year
+	Capacity Target of the firm is the minimum efficient scale or 
+			the firm's target market share applied to its forecast of 
+			industry demand, adjusted for normal capacity utilization.
+
+(102)	Target Market Share[i]=
+		Switch for Capacity Strategy 1[i]*MAX(Desired Market Share[i],Uncontested Market Share
+	[i])+
+		Switch for Capacity Strategy 2[i]*MIN(Desired Market Share[i],Uncontested Market Share
+	[i])+
+		Switch for Capacity Strategy 3[i]*Desired Market Share[i]+
+		Switch for Capacity Strategy 4[i]*Uncontested Market Share[i]
+	Units: Dimensionless
+	The demand forecast, adjusted by strategic considerations, used 
+			to determine target capacity. The aggressive strategy is 1, the 
+			conservative strategy is 2. Strategy 3 sets target market share 
+			to a constant, ignoring uncontested industry demand. Strategy 4 
+			sets target market share to uncontested demand, so the firm 
+			always cedes to avoid excess capacity.
+
+(103)	Target Normal Production[i] = Normal Capacity Utilization[i] * Target Capacity
+	[i]
+	Units: Units/Year
+	
+(104)	Target Price[i]=
+		MAX(Unit Variable Cost[i],Price[i]*
+		(1+Sens of Price to Costs[i]*((Base Price[i]/Price[i])-1))*
+		(1+Sens of Price to DS Balance[i]*(DemandSupply Balance[i]-1))*
+		(1+Sens of Price to Share[i]*((Target Market Share[i]-Market Share[i]))))
+	Units: $/Unit
+	Price indicated by costs, demand/supply balance, and market 
+			share.
+
+(105)	Time for Historical Volume[i] = 1, 1
+	Units: Years
+	Time horizon for smoothing past demand in calculating growth 
+			rate for forecasts
+
+(106)	TIME STEP  = 0.0625
+	Units: Years
+	The time step for the simulation.
+
+(107)	Time to Perceive Comp Target Capacity[i] = 0.25, 0.25
+	Units: Years
+	Time required to estimate competitor capacity plans
+
+(108)	Total Attractiveness = SUM(Attractiveness[i!])
+	Units: Dimensionless
+	Sum of attractiveness levels of all firms in market
+
+(109)	Uncontested Demand[i] = MAX(0,Expected Industry Demand[i]-Expected Comp Capacity
+	[i])
+	Units: Units/Year
+	Portion of expected industry demand firm believes competition is 
+			not planning to build capacity to serve
+
+(110)	Uncontested Market Share[i] = Uncontested Demand[i]/Expected Industry Demand
+	[i]
+	Units: Dimensionless
+	The share of the market the firm expects to be unconstested 
+			based on expected uncontested demand and forecasted industry 
+			capacity
+
+(111)	Unit Costs[i] = (Unit Variable Cost[i]+Unit Fixed Cost[i]/Normal Capacity Utilization
+	[i])
+	Units: $/Unit
+	Unit costs at normal capacity utilization
+
+(112)	Unit Fixed Cost[i] = Initial Unit Fixed Cost[i]*Learning[i]
+	Units: $/Unit
+	Fixed cost per unit of capacity
+
+(113)	Unit Variable Cost[i] = Initial Unit Variable Cost[i]*Learning[i]
+	Units: $/Unit
+	Variable cost per unit shipped
+
+(114)	Units per Household = 1
+	Units: Units/Household
+	
+(115)	Value of Backlog[i]= INTEG (
+		Value of New Orders[i] - Revenue[i],
+			Price[i]*Backlog[i])
+	Units: $
+	Value of the order backlog. Accumulates the value of new 
+			bookings less the value of orders filled (revenue). That is, 
+			revenue is recognized when product is shipped.
+
+(116)	Value of New Orders[i] = Orders[i]*Price[i]
+	Units: $/Year
+	$ Value of orders booked (the order rate).
+
+(117)	Variable Cost[i] = Shipments[i] * Unit Variable Cost[i]
+	Units: $/Year
+	Variable costs of firm
+
+(118)	Volume Reporting Delay = 0.25
+	Units: Years
+	Time required to gather and report information on industry volume
+
+(119)	Weight on Supply Line[i] = 1, 1
+	Units: Dimensionless [0,1]
+	Weight = 0 -> firm ignores/is unaware of competitor capacity 
+			goal; Weight = 1 -> firm knows competitor target capacity (with 
+			short perception delay and uses it to assess uncontested demand
+
+(120)	WOM Strength = 1
+	Units: 1/Years
+	The strength of the word of mouth effect; probability per year 
+			of adoption given an encounter with an adopter
+
+(001)	Adequacy of Capacity[i] = (Capacity[i] - Desired Shipments[i]/Normal Capacity Utilization
+	[i])/Capacity[i]
+	Units: Dimensionless
+	Difference between capacity and desired capacity, given normal 
+			utilization, as percent of capacity
+
+(002)	Adoption Rate = Nonadopters*(Innovator Adoption Fraction + WOM Strength
+	*Cumulative Adopters
+	/Population)
+	Units: Households/Year
+	The rate at which Households adopt the product
+
+(003)	Attractiveness[i] = Attractiveness from Price[i]*Attractiveness from Availability
+	[i]
+	Units: Dimensionless
+	Attractiveness of each firm is product of effects of price, 
+			availabilit
+
+(004)	Attractiveness from Availability[i] = EXP(Sens of Attract to Availability
+	*(Delivery Delay
+	[i]/Reference Delivery Delay))
+	Units: Dimensionless
+	Effect of availability depends on delivery delay
+
+(005)	Attractiveness from Price[i] = EXP(Sens of Attract to price*(Price[i]
+	/Reference Price
+	))
+	Units: Dimensionless
+	Effect of price on attractiveness of firm i
+
+(006)	Average Price of Order Book[i] = Value of Backlog[i]/Backlog[i]
+	Units: $/Unit
+	Customers pay the average price in effect at the time they 
+			placed their orders. The average value of the order book is the 
+			total value of the book divided by the backlog.
+
+(007)	Backlog[i]= INTEG (
+		Orders[i] - Shipments[i],
+			0.5*Industry Order Rate*Normal Delivery Delay
+			[i])
+	Units: Units
+	Backlog of unfilled orders for the firm's product
+
+(008)	Base Price[i]=
+		(1+Normal Profit Margin[i])*(Unit Variable Cost[i]+Unit Fixed Cost[i]/Normal Capacity Utilization
+	[i])
+	Units: $/Unit
+	The base price is give by total unit costs and the normal 
+			markup. Total unit costs is the sum of unit fixed and variable 
+			costs (fixed costs per unit of capacity are adjusted for normal 
+			capacity utilization).
+
+(009)	Capacity[i] = IF THEN ELSE(Switch For Perfect Capacity = 1, 
+		Desired Shipments[i]/Normal Capacity Utilization[i], 
+		SMOOTH3I(Target Capacity[i], Capacity Acquisition Delay[i], 0.5*Industry Order Rate
+	/
+	Normal Capacity Utilization[i]))
+	Units: Units/Year
+	Production Capacity of the firm.
+
+(010)	Capacity Acquisition Delay[i] = 1, 1
+	Units: Years
+	The average delay in acquiring or discharging capacity
+
+(011)	Capacity Utilization[i] = Shipments[i]/Capacity[i]
+	Units: Dimensionless
+	Ratio of shipments to capacity
+
+(012)	Change in NPV Profit[i] = Net Income[i]*Discount Factor
+	Units: $/Year
+	Current net income, discounted from the initial time, 
+			accumulates into the NPV of profit over the simulation.
+
+(013)	Change in Price[i] = (Target Price[i] - Price[i])/Price Adjustment Time
+	[i]
+	Units: $/Unit/Year
+	Change in price of product
+
+(014)	Competitor Capacity[i] = Industry Capacity - Capacity[i]
+	Units: Units/Year
+	The capacity of the competitor; calculated as total industry 
+			capacity less the firm's capacity
+
+(015)	Competitor Target Capacity[i]=
+		Industry Total Target Capacity-Target Capacity[i]
+	Units: Units/Year
+	The target capacity of a firm's rivals is given by total target 
+			capacity for all firms less the target of the firm itself.
+
+(016)	Cost[i] = Variable Cost[i] + Fixed Cost[i]
+	Units: $/Year
+	Total costs of firm
+
+(017)	Cumulative Adopters= INTEG (
+		Adoption Rate,
+			Initial Cumulative Adopters)
+	Units: Households
+	The cumulative number of adopters of the product
+
+(018)	Cumulative Production[i]= INTEG (
+		Production[i],
+			 Initial Production Experience[i])
+	Units: Units
+	Cumulative output of firm
+
+(019)	Delivery Delay[i] = Backlog[i]/Shipments[i]
+	Units: Years
+	Average Time between placing and receiving an order
+
+(020)	Demand Curve Slope = (-Reference Population*Reference Industry Demand Elasticity
+	)/(Reference Price
+	)
+	Units: Households/($/Unit)
+	The slope of the industry demand curve, as a function of the 
+			price elasticity at the reference price level
+
+(021)	DemandSupply Balance[i]=
+		Desired Shipments[i]/(Normal Capacity Utilization[i]*Capacity[i])
+	Units: Dimensionless
+	Ratio of desired shipments to capacity, adjusted for normal 
+			capacity utilization
+
+(022)	Desired Market Share[i] = 0.5, 0.5
+	Units: Dimensionless [0,1]
+	Share of Market firm seeks before considering competitor actions
+
+(023)	Desired Shipments[i] = Backlog[i]/Normal Delivery Delay[i]
+	Units: Units/Year
+	Rate of shipments needed to deliver orders with average delay 
+			equal to the normal delivery delay
+
+(024)	Discard Rate[i]=
+		Installed Base[i]*Fractional Discard Rate
+	Units: Units/Year
+	A fraction of the installed base is discarded and replaced each 
+			year. The average life of the products in the installed base is 
+			1/Fractional Discard Rate.
+
+(025)	Discount Factor = EXP(-Discount Rate*Time)
+	Units: Dimensionless
+	The ratio of future value to present value for a cash flow, 
+			beginning at time 0 in the simulation.
+
+(026)	Discount Rate = 0.04
+	Units: 1/Years [0,1]
+	Rate at which profit is discounted.
+
+(027)	Exp Growth in Volume[i] = LN(Reported Industry Volume[i]/Lagged Industry Volume
+	[i])/Time for Historical Volume
+	[i]
+	Units: 1/Years
+	Expected growth rate in Industry Volume, based on discrete delay 
+			(compound rate over last 1 year)
+
+(028)	Expected Comp Capacity[i] = Normal Capacity Utilization[i]*
+		(Weight on Supply Line[i]*Perceived Comp Target Capacity[i]+(1-Weight on Supply Line
+	[i])*Competitor Capacity[i])
+	Units: Units/Year
+	The capacity of the competitor expected by the firm
+
+(029)	Expected Industry Demand[i] = Reported Industry Volume[i]*EXP(Forecast Horizon
+	[i]*Capacity Acquisition Delay
+	[i]*Exp Growth in Volume[i])
+	Units: Units/Year
+	Firm's forecast of demand
+
+(030)	FINAL TIME  = 40
+	Units: Years
+	The final time for the simulation.
+
+(031)	Fixed Cost[i] = Capacity[i] * Unit Fixed Cost[i]
+	Units: $/Year
+	Fixed costs of firm (capacity costs)
+
+(032)	Forecast Error[i] = (Lagged Volume Forecast[i] - Industry Volume[i])/
+	(1e-009+Industry Volume
+	[i])
+	Units: Dimensionless
+	Error between actual and forecasted industry volume
+
+(033)	Forecast Horizon[i] = 1, 1
+	Units: Dimensionless
+	Firm's forecast horizion - how far ahead do they project demand 
+			as a fraction of the capacity acquisition delay?
+
+(034)	Fractional Discard Rate=
+		0.1
+	Units: 1/Years
+	The fractional discards from the insalled base. The average life 
+			of the product is 1/Fractional Discard Rate.
+
+(035)	i :  F1, F2 [8.40779e-045,?]
+	Index of firms in the industry
+
+(036)	Industry Capacity = SUM(Capacity[i!])
+	Units: Units/Year
+	Total industry capacity
+
+(037)	Industry Demand = MIN(Population,Reference Population*MAX(0,1+Demand Curve Slope
+	*(Lowest price
+	-Reference Price)/Reference Population))
+	Units: Households
+	The number of households in the population who will in 
+			equilibrium choose to purchase the product as a function of the 
+			minimum price available in the market. The demand curve is 
+			linear, with slope calculated by selecting a reference point for 
+			price and population, and the demand elasticity at that point.
+
+(038)	Industry Normal Production =  SUM(Normal Production[i!])
+	Units: Units/Year
+	Industry normal production given industry capacity and normal 
+			capacity utilization rate
+
+(039)	Industry Order Rate = Initial Order Rate + Reorder Rate
+	Units: Units/Year
+	total order rate for the product
+
+(040)	Industry Shipments = SUM(Shipments[i!])
+	Units: Units/Year
+	Total Rate of Industry Shipments
+
+(041)	Industry Total Target Capacity=
+		SUM(Target Capacity[i!])
+	Units: Units/Year
+	The total target capacity planned by all firms.
+
+(042)	Industry Volume[i] = MAX(Initial Demand Forecast[i],
+		Switch for Shipments in Forecasts*Industry Shipments+
+		(1-Switch for Shipments in Forecasts)*Industry Order Rate)
+	Units: Units/Year
+	Firm's estimate of industry volume, based either on shipments or 
+			orders
+
+(043)	Initial Cumulative Adopters = Initial Diffusion Fraction * Industry Demand
+	Units: Households
+	The initial cumulative number of adopters of the product
+
+(044)	Initial Demand Forecast[i] =Reorder Rate
+	Units: Units/Year
+	Firm's initial forecast of market demand
+
+(045)	Initial Diffusion Fraction = 0.001
+	Units: Dimensionless [0,1]
+	Initial fraction of Industry Demand who are adopters
+
+(046)	Initial Order Rate = Adoption Rate * Units per Household
+	Units: Units/Year
+	Rate of initial orders for product
+
+(047)	Initial Price[i] = 1000, 1000
+	Units: $/Unit
+	Initial price of product
+
+(048)	Initial Production Experience[i] = 1e+007
+	Units: Units
+	Initial cumulative output level for calibrating learning curve
+
+(049)	INITIAL TIME  = 0
+	Units: Years
+	The initial time for the simulation.
+
+(050)	Initial Unit Fixed Cost[i]=
+		(Initial Price[i]/(1+Normal Profit Margin[i]))*Ratio of fixed to var cost
+	[i]*(1/(1+Ratio of fixed to var cost[i]/Normal Capacity Utilization[i]))
+	Units: $/Unit
+	Initial fixed costs per unit are determined by a user specified 
+			ratio of fixed to variable costs, adjusted by normal capacity 
+			utilization and the normal profit margin.
+
+(051)	Initial Unit Variable Cost[i]=
+		(Initial Price[i]/(1+Normal Profit Margin[i]))*(1/(1+Ratio of fixed to var cost
+	[i]/Normal Capacity Utilization[i]))
+	Units: $/Unit
+	Initial unit variable costs are determined by a user specificed 
+			ratio of fixed to variable costs, adjusted for normal capacity 
+			utilization and by the normal profit margin.
+
+(052)	Innovator Adoption Fraction = 0.001
+	Units: 1/Years [0,0.1]
+	The fractional rate per year that nonadopters adopt independent 
+			of WOM
+
+(053)	Installed Base[i]= INTEG (
+		Shipments[i] - Discard Rate[i],
+			0.5*Units per Household*Cumulative Adopters)
+	Units: Units
+	
+(054)	Lagged Industry Volume[i] = DELAY INFORMATION(Reported Industry Volume
+	[i],Time for Historical Volume
+	[i],Reported Industry Volume[i])
+	Units: Units/Year
+	Industry volume lagged by the forecast horizon used to compute 
+			forecasted growth rate
+
+(055)	Lagged Volume Forecast[i] = DELAY INFORMATION(Expected Industry Demand
+	[i],Capacity Acquisition Delay
+	[i], Expected Industry Demand[i])
+	Units: Units/Year
+	Lagged forecast used to compute forecast error
+
+(056)	LC Exponent[i] = LN(LC Strength[i])/LN(2)
+	Units: Dimensionless
+	Exponent in the learning curve
+
+(057)	LC Strength[i]=
+		0.7, 0.7
+	Units: Dimensionless [0,1]
+	Strength of Learning Curve, expressed as fractional reduction in 
+			unit costs per doubling of cumulative production.
+
+(058)	Learning[i] = (Cumulative Production[i]/Initial Production Experience
+	[i])^LC Exponent
+	[i]
+	Units: Dimensionless
+	Fractional cost reduction from learning curve
+
+(059)	Lowest price = VMIN(Price[i!])
+	Units: $/Unit
+	The lowest price available in the market
+
+(060)	Market Share[i] = Shipments[i]/Industry Shipments
+	Units: Dimensionless
+	Share of shipments in units going to each firm
+
+(061)	Minimum Efficient Scale[i] = 100000, 100000
+	Units: Units/Year
+	Minimum efficient scale for operations
+
+(062)	Net Income[i] = Revenue[i] - Cost[i]
+	Units: $/Year
+	Net income of the firm is revenue less total cost.
+
+(063)	Nonadopters = Industry Demand - Cumulative Adopters
+	Units: Households
+	The number of Households in the population who have not adopted 
+			the product
+
+(064)	Normal Capacity Utilization[i] = 0.8, 0.8
+	Units: Dimensionless
+	
+(065)	Normal Delivery Delay[i] = 0.25, 0.25
+	Units: Years
+	
+(066)	Normal Production[i] = Capacity[i] * Normal Capacity Utilization[i]
+	Units: Units/Year
+	Normal rate of production, given capacity and normal rate of 
+			utilization
+
+(067)	Normal Profit Margin[i]=
+		0.2
+	Units: Dimensionless
+	The normal markup on unit costs. Used to determine the base 
+			price.
+
+(068)	NPV Industry Profits = SUM(NPV Profit[i!])
+	Units: $
+	The NPV of industry profits is the sum of firm profits over all 
+			firms in the industry.
+
+(069)	NPV Profit[i]= INTEG (
+		Change in NPV Profit[i],
+			 0)
+	Units: $
+	Net Present Value of cumulative profits accumulates discounted 
+			net income.
+
+(070)	Order Share[i] = Attractiveness[i]/Total Attractiveness
+	Units: Dimensionless
+	Fraction of orders going to firm i
+
+(071)	Orders[i] = Industry Order Rate*Order Share[i]
+	Units: Units/Year
+	
+(072)	Perceived Comp Target Capacity[i]=
+		SMOOTHI(Competitor Target Capacity[i],Time to Perceive Comp Target Capacity
+		[i],Competitor Capacity[i])
+	Units: Units/Year
+	Firm's perception of the competitor's target capacity
+
+(073)	Population = 1e+008
+	Units: Households
+	The total population of potential adopters
+
+(074)	Price[i]= INTEG (
+		Change in Price[i],
+			 Initial Price[i])
+	Units: $/Unit
+	
+(075)	Price Adjustment Time[i] = 0.25, 0.25
+	Units: Years
+	Time to adjust price to targe level
+
+(076)	Production[i] = Shipments[i]
+	Units: Units/Year
+	Production = Shipments as there are no inventories in this model
+
+(077)	Profit Margin[i] = (Price[i]/Unit Costs[i]) - 1
+	Units: Dimensionless
+	Profit margin assuming normal capacity utilization
+
+(078)	Ratio of fixed to var cost[i] = 3, 3
+	Units: Dimensionless
+	
+(079)	Reference Delivery Delay = 0.25
+	Units: Years
+	Reference value of delivery delay used in attractiveness 
+			formulation
+
+(080)	Reference Industry Demand Elasticity = 0.2
+	Units: Dimensionless
+	Demand elasticity at the reference price
+
+(081)	Reference Population = 6e+007
+	Units: Households [0,1.2e+008]
+	The reference household level is the number of households who 
+			would purchase the product at the reference price
+
+(082)	Reference Price = 1000
+	Units: $/Unit
+	Price at which the potential adopter population = the Reference 
+			Population
+
+(083)	Reorder Rate = SUM(Discard Rate[i!])
+	Units: Units/Year
+	Rate of reentry into the market
+
+(084)	Reported Industry Volume[i] = SMOOTH(Industry Volume[i], Volume Reporting Delay
+	)
+	Units: Units/Year
+	Reported industry volume is actual volume delayed by the time 
+			required for market researchers to gather and publish data
+
+(085)	Revenue[i] = Average Price of Order Book[i]*Shipments[i]
+	Units: $/Year
+	Revenue is recognized when orders are filled. Therefore revenue 
+			is determined by the average value of the orders filled.
+
+(086)	SAVEPER  = 
+	        TIME STEP
+	Units: Years
+	The frequency with which output is stored.
+
+(087)	Sens of Attract to Availability = -4
+	Units: Dimensionless
+	
+(088)	Sens of Attract to price=
+		-8
+	Units: Dimensionless
+	
+(089)	Sens of Price to Costs[i] = 1, 1
+	Units: Dmnl [0,1]
+	The sensitivity of price to unit costs. A value of 1 means that, 
+			ceteris paribus, a 1% reduction in unit costs causes a 1% 
+			reduction in price.
+
+(090)	Sens of Price to DS Balance[i] = 0.25, 0.25
+	Units: Dimensionless [0,1]
+	Sensitivity of Price to Demand/Supply Balance. The greater the 
+			ratio of demand to capacity the higher prices.
+
+(091)	Sens of Price to Share[i]=
+		-0.1, -0.1
+	Units: Dmnl
+	The sensitivity of target price to the gap between the firm's 
+			target and actual market share. Larger gaps cause lower prices, 
+			hence the sensitivity is negative.
+
+(092)	Shipments[i]=
+		Switch for Capacity*MIN(Desired Shipments[i],Capacity[i]) + (1-Switch for Capacity
+	)*Desired Shipments[i]
+	Units: Units/Year
+	Shipments are the minimum of desired shipments or capacity. 
+			Switch for capacity = 0 -> shipments = desired shipments at all 
+			times.
+
+(093)	Switch for Capacity = 1
+	Units: Dimensionless [0,1,1]
+	1 = Capacity constrains shipments; 0 = shipments = desired 
+			shipments
+
+(094)	Switch for Capacity Strategy[i] = 1, 1
+	Units: Dimensionless [0,4,1]
+	Switch to determine which capacity strategy is used
+
+(095)	Switch for Capacity Strategy 1[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 1,
+	 1, 0)
+	Units: Dmnl
+	
+(096)	Switch for Capacity Strategy 2[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 2,
+	 1, 0)
+	Units: Dmnl
+	
+(097)	Switch for Capacity Strategy 3[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 3,
+	 1, 0)
+	Units: Dmnl
+	
+(098)	Switch for Capacity Strategy 4[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 4,
+	 1, 0)
+	Units: Dmnl
+	Switches to select one of the four target capacity strategies
+
+(099)	Switch For Perfect Capacity = 0
+	Units: Dimensionless
+	1 -> Capacity always = desired shipments/normal utilization; 0 
+			-> capacity adjusts with lag to target
+
+(100)	Switch for Shipments in Forecasts = 0
+	Units: Dimensionless
+	1 -> Industry shipments used in demand forecasts; 0 -> Industry 
+			orders used in demand forecasts
+
+(101)	Target Capacity[i]=
+		MAX(Minimum Efficient Scale[i],Target Market Share[i]*Expected Industry Demand
+	[i]/Normal Capacity Utilization[i])
+	Units: Units/Year
+	Capacity Target of the firm is the minimum efficient scale or 
+			the firm's target market share applied to its forecast of 
+			industry demand, adjusted for normal capacity utilization.
+
+(102)	Target Market Share[i]=
+		Switch for Capacity Strategy 1[i]*MAX(Desired Market Share[i],Uncontested Market Share
+	[i])+
+		Switch for Capacity Strategy 2[i]*MIN(Desired Market Share[i],Uncontested Market Share
+	[i])+
+		Switch for Capacity Strategy 3[i]*Desired Market Share[i]+
+		Switch for Capacity Strategy 4[i]*Uncontested Market Share[i]
+	Units: Dimensionless
+	The demand forecast, adjusted by strategic considerations, used 
+			to determine target capacity. The aggressive strategy is 1, the 
+			conservative strategy is 2. Strategy 3 sets target market share 
+			to a constant, ignoring uncontested industry demand. Strategy 4 
+			sets target market share to uncontested demand, so the firm 
+			always cedes to avoid excess capacity.
+
+(103)	Target Normal Production[i] = Normal Capacity Utilization[i] * Target Capacity
+	[i]
+	Units: Units/Year
+	
+(104)	Target Price[i]=
+		MAX(Unit Variable Cost[i],Price[i]*
+		(1+Sens of Price to Costs[i]*((Base Price[i]/Price[i])-1))*
+		(1+Sens of Price to DS Balance[i]*(DemandSupply Balance[i]-1))*
+		(1+Sens of Price to Share[i]*((Target Market Share[i]-Market Share[i]))))
+	Units: $/Unit
+	Price indicated by costs, demand/supply balance, and market 
+			share.
+
+(105)	Time for Historical Volume[i] = 1, 1
+	Units: Years
+	Time horizon for smoothing past demand in calculating growth 
+			rate for forecasts
+
+(106)	TIME STEP  = 0.0625
+	Units: Years
+	The time step for the simulation.
+
+(107)	Time to Perceive Comp Target Capacity[i] = 0.25, 0.25
+	Units: Years
+	Time required to estimate competitor capacity plans
+
+(108)	Total Attractiveness = SUM(Attractiveness[i!])
+	Units: Dimensionless
+	Sum of attractiveness levels of all firms in market
+
+(109)	Uncontested Demand[i] = MAX(0,Expected Industry Demand[i]-Expected Comp Capacity
+	[i])
+	Units: Units/Year
+	Portion of expected industry demand firm believes competition is 
+			not planning to build capacity to serve
+
+(110)	Uncontested Market Share[i] = Uncontested Demand[i]/Expected Industry Demand
+	[i]
+	Units: Dimensionless
+	The share of the market the firm expects to be unconstested 
+			based on expected uncontested demand and forecasted industry 
+			capacity
+
+(111)	Unit Costs[i] = (Unit Variable Cost[i]+Unit Fixed Cost[i]/Normal Capacity Utilization
+	[i])
+	Units: $/Unit
+	Unit costs at normal capacity utilization
+
+(112)	Unit Fixed Cost[i] = Initial Unit Fixed Cost[i]*Learning[i]
+	Units: $/Unit
+	Fixed cost per unit of capacity
+
+(113)	Unit Variable Cost[i] = Initial Unit Variable Cost[i]*Learning[i]
+	Units: $/Unit
+	Variable cost per unit shipped
+
+(114)	Units per Household = 1
+	Units: Units/Household
+	
+(115)	Value of Backlog[i]= INTEG (
+		Value of New Orders[i] - Revenue[i],
+			Price[i]*Backlog[i])
+	Units: $
+	Value of the order backlog. Accumulates the value of new 
+			bookings less the value of orders filled (revenue). That is, 
+			revenue is recognized when product is shipped.
+
+(116)	Value of New Orders[i] = Orders[i]*Price[i]
+	Units: $/Year
+	$ Value of orders booked (the order rate).
+
+(117)	Variable Cost[i] = Shipments[i] * Unit Variable Cost[i]
+	Units: $/Year
+	Variable costs of firm
+
+(118)	Volume Reporting Delay = 0.25
+	Units: Years
+	Time required to gather and report information on industry volume
+
+(119)	Weight on Supply Line[i] = 1, 1
+	Units: Dimensionless [0,1]
+	Weight = 0 -> firm ignores/is unaware of competitor capacity 
+			goal; Weight = 1 -> firm knows competitor target capacity (with 
+			short perception delay and uses it to assess uncontested demand
+
+(120)	WOM Strength = 1
+	Units: 1/Years
+	The strength of the word of mouth effect; probability per year 
+			of adoption given an encounter with an adopter
+
+(001)	Adequacy of Capacity[i] = (Capacity[i] - Desired Shipments[i]/Normal Capacity Utilization
+	[i])/Capacity[i]
+	Units: Dimensionless
+	Difference between capacity and desired capacity, given normal 
+			utilization, as percent of capacity
+
+(002)	Adoption Rate = Nonadopters*(Innovator Adoption Fraction + WOM Strength
+	*Cumulative Adopters
+	/Population)
+	Units: Households/Year
+	The rate at which Households adopt the product
+
+(003)	Attractiveness[i] = Attractiveness from Price[i]*Attractiveness from Availability
+	[i]
+	Units: Dimensionless
+	Attractiveness of each firm is product of effects of price, 
+			availabilit
+
+(004)	Attractiveness from Availability[i] = EXP(Sens of Attract to Availability
+	*(Delivery Delay
+	[i]/Reference Delivery Delay))
+	Units: Dimensionless
+	Effect of availability depends on delivery delay
+
+(005)	Attractiveness from Price[i] = EXP(Sens of Attract to price*(Price[i]
+	/Reference Price
+	))
+	Units: Dimensionless
+	Effect of price on attractiveness of firm i
+
+(006)	Average Price of Order Book[i] = Value of Backlog[i]/Backlog[i]
+	Units: $/Unit
+	Customers pay the average price in effect at the time they 
+			placed their orders. The average value of the order book is the 
+			total value of the book divided by the backlog.
+
+(007)	Backlog[i]= INTEG (
+		Orders[i] - Shipments[i],
+			0.5*Industry Order Rate*Normal Delivery Delay
+			[i])
+	Units: Units
+	Backlog of unfilled orders for the firm's product
+
+(008)	Base Price[i]=
+		(1+Normal Profit Margin[i])*(Unit Variable Cost[i]+Unit Fixed Cost[i]/Normal Capacity Utilization
+	[i])
+	Units: $/Unit
+	The base price is give by total unit costs and the normal 
+			markup. Total unit costs is the sum of unit fixed and variable 
+			costs (fixed costs per unit of capacity are adjusted for normal 
+			capacity utilization).
+
+(009)	Capacity[i] = IF THEN ELSE(Switch For Perfect Capacity = 1, 
+		Desired Shipments[i]/Normal Capacity Utilization[i], 
+		SMOOTH3I(Target Capacity[i], Capacity Acquisition Delay[i], 0.5*Industry Order Rate
+	/
+	Normal Capacity Utilization[i]))
+	Units: Units/Year
+	Production Capacity of the firm.
+
+(010)	Capacity Acquisition Delay[i] = 1, 1
+	Units: Years
+	The average delay in acquiring or discharging capacity
+
+(011)	Capacity Utilization[i] = Shipments[i]/Capacity[i]
+	Units: Dimensionless
+	Ratio of shipments to capacity
+
+(012)	Change in NPV Profit[i] = Net Income[i]*Discount Factor
+	Units: $/Year
+	Current net income, discounted from the initial time, 
+			accumulates into the NPV of profit over the simulation.
+
+(013)	Change in Price[i] = (Target Price[i] - Price[i])/Price Adjustment Time
+	[i]
+	Units: $/Unit/Year
+	Change in price of product
+
+(014)	Competitor Capacity[i] = Industry Capacity - Capacity[i]
+	Units: Units/Year
+	The capacity of the competitor; calculated as total industry 
+			capacity less the firm's capacity
+
+(015)	Competitor Target Capacity[i]=
+		Industry Total Target Capacity-Target Capacity[i]
+	Units: Units/Year
+	The target capacity of a firm's rivals is given by total target 
+			capacity for all firms less the target of the firm itself.
+
+(016)	Cost[i] = Variable Cost[i] + Fixed Cost[i]
+	Units: $/Year
+	Total costs of firm
+
+(017)	Cumulative Adopters= INTEG (
+		Adoption Rate,
+			Initial Cumulative Adopters)
+	Units: Households
+	The cumulative number of adopters of the product
+
+(018)	Cumulative Production[i]= INTEG (
+		Production[i],
+			 Initial Production Experience[i])
+	Units: Units
+	Cumulative output of firm
+
+(019)	Delivery Delay[i] = Backlog[i]/Shipments[i]
+	Units: Years
+	Average Time between placing and receiving an order
+
+(020)	Demand Curve Slope = (-Reference Population*Reference Industry Demand Elasticity
+	)/(Reference Price
+	)
+	Units: Households/($/Unit)
+	The slope of the industry demand curve, as a function of the 
+			price elasticity at the reference price level
+
+(021)	DemandSupply Balance[i]=
+		Desired Shipments[i]/(Normal Capacity Utilization[i]*Capacity[i])
+	Units: Dimensionless
+	Ratio of desired shipments to capacity, adjusted for normal 
+			capacity utilization
+
+(022)	Desired Market Share[i] = 0.5, 0.5
+	Units: Dimensionless [0,1]
+	Share of Market firm seeks before considering competitor actions
+
+(023)	Desired Shipments[i] = Backlog[i]/Normal Delivery Delay[i]
+	Units: Units/Year
+	Rate of shipments needed to deliver orders with average delay 
+			equal to the normal delivery delay
+
+(024)	Discard Rate[i]=
+		Installed Base[i]*Fractional Discard Rate
+	Units: Units/Year
+	A fraction of the installed base is discarded and replaced each 
+			year. The average life of the products in the installed base is 
+			1/Fractional Discard Rate.
+
+(025)	Discount Factor = EXP(-Discount Rate*Time)
+	Units: Dimensionless
+	The ratio of future value to present value for a cash flow, 
+			beginning at time 0 in the simulation.
+
+(026)	Discount Rate = 0.04
+	Units: 1/Years [0,1]
+	Rate at which profit is discounted.
+
+(027)	Exp Growth in Volume[i] = LN(Reported Industry Volume[i]/Lagged Industry Volume
+	[i])/Time for Historical Volume
+	[i]
+	Units: 1/Years
+	Expected growth rate in Industry Volume, based on discrete delay 
+			(compound rate over last 1 year)
+
+(028)	Expected Comp Capacity[i] = Normal Capacity Utilization[i]*
+		(Weight on Supply Line[i]*Perceived Comp Target Capacity[i]+(1-Weight on Supply Line
+	[i])*Competitor Capacity[i])
+	Units: Units/Year
+	The capacity of the competitor expected by the firm
+
+(029)	Expected Industry Demand[i] = Reported Industry Volume[i]*EXP(Forecast Horizon
+	[i]*Capacity Acquisition Delay
+	[i]*Exp Growth in Volume[i])
+	Units: Units/Year
+	Firm's forecast of demand
+
+(030)	FINAL TIME  = 40
+	Units: Years
+	The final time for the simulation.
+
+(031)	Fixed Cost[i] = Capacity[i] * Unit Fixed Cost[i]
+	Units: $/Year
+	Fixed costs of firm (capacity costs)
+
+(032)	Forecast Error[i] = (Lagged Volume Forecast[i] - Industry Volume[i])/
+	(1e-009+Industry Volume
+	[i])
+	Units: Dimensionless
+	Error between actual and forecasted industry volume
+
+(033)	Forecast Horizon[i] = 1, 1
+	Units: Dimensionless
+	Firm's forecast horizion - how far ahead do they project demand 
+			as a fraction of the capacity acquisition delay?
+
+(034)	Fractional Discard Rate=
+		0.1
+	Units: 1/Years
+	The fractional discards from the insalled base. The average life 
+			of the product is 1/Fractional Discard Rate.
+
+(035)	i :  F1, F2 [8.40779e-045,?]
+	Index of firms in the industry
+
+(036)	Industry Capacity = SUM(Capacity[i!])
+	Units: Units/Year
+	Total industry capacity
+
+(037)	Industry Demand = MIN(Population,Reference Population*MAX(0,1+Demand Curve Slope
+	*(Lowest price
+	-Reference Price)/Reference Population))
+	Units: Households
+	The number of households in the population who will in 
+			equilibrium choose to purchase the product as a function of the 
+			minimum price available in the market. The demand curve is 
+			linear, with slope calculated by selecting a reference point for 
+			price and population, and the demand elasticity at that point.
+
+(038)	Industry Normal Production =  SUM(Normal Production[i!])
+	Units: Units/Year
+	Industry normal production given industry capacity and normal 
+			capacity utilization rate
+
+(039)	Industry Order Rate = Initial Order Rate + Reorder Rate
+	Units: Units/Year
+	total order rate for the product
+
+(040)	Industry Shipments = SUM(Shipments[i!])
+	Units: Units/Year
+	Total Rate of Industry Shipments
+
+(041)	Industry Total Target Capacity=
+		SUM(Target Capacity[i!])
+	Units: Units/Year
+	The total target capacity planned by all firms.
+
+(042)	Industry Volume[i] = MAX(Initial Demand Forecast[i],
+		Switch for Shipments in Forecasts*Industry Shipments+
+		(1-Switch for Shipments in Forecasts)*Industry Order Rate)
+	Units: Units/Year
+	Firm's estimate of industry volume, based either on shipments or 
+			orders
+
+(043)	Initial Cumulative Adopters = Initial Diffusion Fraction * Industry Demand
+	Units: Households
+	The initial cumulative number of adopters of the product
+
+(044)	Initial Demand Forecast[i] =Reorder Rate
+	Units: Units/Year
+	Firm's initial forecast of market demand
+
+(045)	Initial Diffusion Fraction = 0.001
+	Units: Dimensionless [0,1]
+	Initial fraction of Industry Demand who are adopters
+
+(046)	Initial Order Rate = Adoption Rate * Units per Household
+	Units: Units/Year
+	Rate of initial orders for product
+
+(047)	Initial Price[i] = 1000, 1000
+	Units: $/Unit
+	Initial price of product
+
+(048)	Initial Production Experience[i] = 1e+007
+	Units: Units
+	Initial cumulative output level for calibrating learning curve
+
+(049)	INITIAL TIME  = 0
+	Units: Years
+	The initial time for the simulation.
+
+(050)	Initial Unit Fixed Cost[i]=
+		(Initial Price[i]/(1+Normal Profit Margin[i]))*Ratio of fixed to var cost
+	[i]*(1/(1+Ratio of fixed to var cost[i]/Normal Capacity Utilization[i]))
+	Units: $/Unit
+	Initial fixed costs per unit are determined by a user specified 
+			ratio of fixed to variable costs, adjusted by normal capacity 
+			utilization and the normal profit margin.
+
+(051)	Initial Unit Variable Cost[i]=
+		(Initial Price[i]/(1+Normal Profit Margin[i]))*(1/(1+Ratio of fixed to var cost
+	[i]/Normal Capacity Utilization[i]))
+	Units: $/Unit
+	Initial unit variable costs are determined by a user specificed 
+			ratio of fixed to variable costs, adjusted for normal capacity 
+			utilization and by the normal profit margin.
+
+(052)	Innovator Adoption Fraction = 0.001
+	Units: 1/Years [0,0.1]
+	The fractional rate per year that nonadopters adopt independent 
+			of WOM
+
+(053)	Installed Base[i]= INTEG (
+		Shipments[i] - Discard Rate[i],
+			0.5*Units per Household*Cumulative Adopters)
+	Units: Units
+	
+(054)	Lagged Industry Volume[i] = DELAY INFORMATION(Reported Industry Volume
+	[i],Time for Historical Volume
+	[i],Reported Industry Volume[i])
+	Units: Units/Year
+	Industry volume lagged by the forecast horizon used to compute 
+			forecasted growth rate
+
+(055)	Lagged Volume Forecast[i] = DELAY INFORMATION(Expected Industry Demand
+	[i],Capacity Acquisition Delay
+	[i], Expected Industry Demand[i])
+	Units: Units/Year
+	Lagged forecast used to compute forecast error
+
+(056)	LC Exponent[i] = LN(LC Strength[i])/LN(2)
+	Units: Dimensionless
+	Exponent in the learning curve
+
+(057)	LC Strength[i]=
+		0.7, 0.7
+	Units: Dimensionless [0,1]
+	Strength of Learning Curve, expressed as fractional reduction in 
+			unit costs per doubling of cumulative production.
+
+(058)	Learning[i] = (Cumulative Production[i]/Initial Production Experience
+	[i])^LC Exponent
+	[i]
+	Units: Dimensionless
+	Fractional cost reduction from learning curve
+
+(059)	Lowest price = VMIN(Price[i!])
+	Units: $/Unit
+	The lowest price available in the market
+
+(060)	Market Share[i] = Shipments[i]/Industry Shipments
+	Units: Dimensionless
+	Share of shipments in units going to each firm
+
+(061)	Minimum Efficient Scale[i] = 100000, 100000
+	Units: Units/Year
+	Minimum efficient scale for operations
+
+(062)	Net Income[i] = Revenue[i] - Cost[i]
+	Units: $/Year
+	Net income of the firm is revenue less total cost.
+
+(063)	Nonadopters = Industry Demand - Cumulative Adopters
+	Units: Households
+	The number of Households in the population who have not adopted 
+			the product
+
+(064)	Normal Capacity Utilization[i] = 0.8, 0.8
+	Units: Dimensionless
+	
+(065)	Normal Delivery Delay[i] = 0.25, 0.25
+	Units: Years
+	
+(066)	Normal Production[i] = Capacity[i] * Normal Capacity Utilization[i]
+	Units: Units/Year
+	Normal rate of production, given capacity and normal rate of 
+			utilization
+
+(067)	Normal Profit Margin[i]=
+		0.2
+	Units: Dimensionless
+	The normal markup on unit costs. Used to determine the base 
+			price.
+
+(068)	NPV Industry Profits = SUM(NPV Profit[i!])
+	Units: $
+	The NPV of industry profits is the sum of firm profits over all 
+			firms in the industry.
+
+(069)	NPV Profit[i]= INTEG (
+		Change in NPV Profit[i],
+			 0)
+	Units: $
+	Net Present Value of cumulative profits accumulates discounted 
+			net income.
+
+(070)	Order Share[i] = Attractiveness[i]/Total Attractiveness
+	Units: Dimensionless
+	Fraction of orders going to firm i
+
+(071)	Orders[i] = Industry Order Rate*Order Share[i]
+	Units: Units/Year
+	
+(072)	Perceived Comp Target Capacity[i]=
+		SMOOTHI(Competitor Target Capacity[i],Time to Perceive Comp Target Capacity
+		[i],Competitor Capacity[i])
+	Units: Units/Year
+	Firm's perception of the competitor's target capacity
+
+(073)	Population = 1e+008
+	Units: Households
+	The total population of potential adopters
+
+(074)	Price[i]= INTEG (
+		Change in Price[i],
+			 Initial Price[i])
+	Units: $/Unit
+	
+(075)	Price Adjustment Time[i] = 0.25, 0.25
+	Units: Years
+	Time to adjust price to targe level
+
+(076)	Production[i] = Shipments[i]
+	Units: Units/Year
+	Production = Shipments as there are no inventories in this model
+
+(077)	Profit Margin[i] = (Price[i]/Unit Costs[i]) - 1
+	Units: Dimensionless
+	Profit margin assuming normal capacity utilization
+
+(078)	Ratio of fixed to var cost[i] = 3, 3
+	Units: Dimensionless
+	
+(079)	Reference Delivery Delay = 0.25
+	Units: Years
+	Reference value of delivery delay used in attractiveness 
+			formulation
+
+(080)	Reference Industry Demand Elasticity = 0.2
+	Units: Dimensionless
+	Demand elasticity at the reference price
+
+(081)	Reference Population = 6e+007
+	Units: Households [0,1.2e+008]
+	The reference household level is the number of households who 
+			would purchase the product at the reference price
+
+(082)	Reference Price = 1000
+	Units: $/Unit
+	Price at which the potential adopter population = the Reference 
+			Population
+
+(083)	Reorder Rate = SUM(Discard Rate[i!])
+	Units: Units/Year
+	Rate of reentry into the market
+
+(084)	Reported Industry Volume[i] = SMOOTH(Industry Volume[i], Volume Reporting Delay
+	)
+	Units: Units/Year
+	Reported industry volume is actual volume delayed by the time 
+			required for market researchers to gather and publish data
+
+(085)	Revenue[i] = Average Price of Order Book[i]*Shipments[i]
+	Units: $/Year
+	Revenue is recognized when orders are filled. Therefore revenue 
+			is determined by the average value of the orders filled.
+
+(086)	SAVEPER  = 
+	        TIME STEP
+	Units: Years
+	The frequency with which output is stored.
+
+(087)	Sens of Attract to Availability = -4
+	Units: Dimensionless
+	
+(088)	Sens of Attract to price=
+		-8
+	Units: Dimensionless
+	
+(089)	Sens of Price to Costs[i] = 1, 1
+	Units: Dmnl [0,1]
+	The sensitivity of price to unit costs. A value of 1 means that, 
+			ceteris paribus, a 1% reduction in unit costs causes a 1% 
+			reduction in price.
+
+(090)	Sens of Price to DS Balance[i] = 0.25, 0.25
+	Units: Dimensionless [0,1]
+	Sensitivity of Price to Demand/Supply Balance. The greater the 
+			ratio of demand to capacity the higher prices.
+
+(091)	Sens of Price to Share[i]=
+		-0.1, -0.1
+	Units: Dmnl
+	The sensitivity of target price to the gap between the firm's 
+			target and actual market share. Larger gaps cause lower prices, 
+			hence the sensitivity is negative.
+
+(092)	Shipments[i]=
+		Switch for Capacity*MIN(Desired Shipments[i],Capacity[i]) + (1-Switch for Capacity
+	)*Desired Shipments[i]
+	Units: Units/Year
+	Shipments are the minimum of desired shipments or capacity. 
+			Switch for capacity = 0 -> shipments = desired shipments at all 
+			times.
+
+(093)	Switch for Capacity = 1
+	Units: Dimensionless [0,1,1]
+	1 = Capacity constrains shipments; 0 = shipments = desired 
+			shipments
+
+(094)	Switch for Capacity Strategy[i] = 1, 1
+	Units: Dimensionless [0,4,1]
+	Switch to determine which capacity strategy is used
+
+(095)	Switch for Capacity Strategy 1[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 1,
+	 1, 0)
+	Units: Dmnl
+	
+(096)	Switch for Capacity Strategy 2[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 2,
+	 1, 0)
+	Units: Dmnl
+	
+(097)	Switch for Capacity Strategy 3[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 3,
+	 1, 0)
+	Units: Dmnl
+	
+(098)	Switch for Capacity Strategy 4[i] = IF THEN ELSE(Switch for Capacity Strategy
+	[i] = 4,
+	 1, 0)
+	Units: Dmnl
+	Switches to select one of the four target capacity strategies
+
+(099)	Switch For Perfect Capacity = 0
+	Units: Dimensionless
+	1 -> Capacity always = desired shipments/normal utilization; 0 
+			-> capacity adjusts with lag to target
+
+(100)	Switch for Shipments in Forecasts = 0
+	Units: Dimensionless
+	1 -> Industry shipments used in demand forecasts; 0 -> Industry 
+			orders used in demand forecasts
+
+(101)	Target Capacity[i]=
+		MAX(Minimum Efficient Scale[i],Target Market Share[i]*Expected Industry Demand
+	[i]/Normal Capacity Utilization[i])
+	Units: Units/Year
+	Capacity Target of the firm is the minimum efficient scale or 
+			the firm's target market share applied to its forecast of 
+			industry demand, adjusted for normal capacity utilization.
+
+(102)	Target Market Share[i]=
+		Switch for Capacity Strategy 1[i]*MAX(Desired Market Share[i],Uncontested Market Share
+	[i])+
+		Switch for Capacity Strategy 2[i]*MIN(Desired Market Share[i],Uncontested Market Share
+	[i])+
+		Switch for Capacity Strategy 3[i]*Desired Market Share[i]+
+		Switch for Capacity Strategy 4[i]*Uncontested Market Share[i]
+	Units: Dimensionless
+	The demand forecast, adjusted by strategic considerations, used 
+			to determine target capacity. The aggressive strategy is 1, the 
+			conservative strategy is 2. Strategy 3 sets target market share 
+			to a constant, ignoring uncontested industry demand. Strategy 4 
+			sets target market share to uncontested demand, so the firm 
+			always cedes to avoid excess capacity.
+
+(103)	Target Normal Production[i] = Normal Capacity Utilization[i] * Target Capacity
+	[i]
+	Units: Units/Year
+	
+(104)	Target Price[i]=
+		MAX(Unit Variable Cost[i],Price[i]*
+		(1+Sens of Price to Costs[i]*((Base Price[i]/Price[i])-1))*
+		(1+Sens of Price to DS Balance[i]*(DemandSupply Balance[i]-1))*
+		(1+Sens of Price to Share[i]*((Target Market Share[i]-Market Share[i]))))
+	Units: $/Unit
+	Price indicated by costs, demand/supply balance, and market 
+			share.
+
+(105)	Time for Historical Volume[i] = 1, 1
+	Units: Years
+	Time horizon for smoothing past demand in calculating growth 
+			rate for forecasts
+
+(106)	TIME STEP  = 0.0625
+	Units: Years
+	The time step for the simulation.
+
+(107)	Time to Perceive Comp Target Capacity[i] = 0.25, 0.25
+	Units: Years
+	Time required to estimate competitor capacity plans
+
+(108)	Total Attractiveness = SUM(Attractiveness[i!])
+	Units: Dimensionless
+	Sum of attractiveness levels of all firms in market
+
+(109)	Uncontested Demand[i] = MAX(0,Expected Industry Demand[i]-Expected Comp Capacity
+	[i])
+	Units: Units/Year
+	Portion of expected industry demand firm believes competition is 
+			not planning to build capacity to serve
+
+(110)	Uncontested Market Share[i] = Uncontested Demand[i]/Expected Industry Demand
+	[i]
+	Units: Dimensionless
+	The share of the market the firm expects to be unconstested 
+			based on expected uncontested demand and forecasted industry 
+			capacity
+
+(111)	Unit Costs[i] = (Unit Variable Cost[i]+Unit Fixed Cost[i]/Normal Capacity Utilization
+	[i])
+	Units: $/Unit
+	Unit costs at normal capacity utilization
+
+(112)	Unit Fixed Cost[i] = Initial Unit Fixed Cost[i]*Learning[i]
+	Units: $/Unit
+	Fixed cost per unit of capacity
+
+(113)	Unit Variable Cost[i] = Initial Unit Variable Cost[i]*Learning[i]
+	Units: $/Unit
+	Variable cost per unit shipped
+
+(114)	Units per Household = 1
+	Units: Units/Household
+	
+(115)	Value of Backlog[i]= INTEG (
+		Value of New Orders[i] - Revenue[i],
+			Price[i]*Backlog[i])
+	Units: $
+	Value of the order backlog. Accumulates the value of new 
+			bookings less the value of orders filled (revenue). That is, 
+			revenue is recognized when product is shipped.
+
+(116)	Value of New Orders[i] = Orders[i]*Price[i]
+	Units: $/Year
+	$ Value of orders booked (the order rate).
+
+(117)	Variable Cost[i] = Shipments[i] * Unit Variable Cost[i]
+	Units: $/Year
+	Variable costs of firm
+
+(118)	Volume Reporting Delay = 0.25
+	Units: Years
+	Time required to gather and report information on industry volume
+
+(119)	Weight on Supply Line[i] = 1, 1
+	Units: Dimensionless [0,1]
+	Weight = 0 -> firm ignores/is unaware of competitor capacity 
+			goal; Weight = 1 -> firm knows competitor target capacity (with 
+			short perception delay and uses it to assess uncontested demand
+
+(120)	WOM Strength = 1
+	Units: 1/Years
+	The strength of the word of mouth effect; probability per year 
+			of adoption given an encounter with an adopter
+
