@@ -65,7 +65,7 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>Revenue-Cost</eqn>
-            <display x="390" y="170" color="blue" />
+            <display x="390" y="161" color="blue" />
         </aux>
         <aux name="NPVIndustryProfits">
             <eqn>SUM(NPVProfit[*])</eqn>
@@ -76,21 +76,21 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>VariableCost+FixedCost</eqn>
-            <display x="484" y="231" color="blue" />
+            <display x="503" y="216" color="blue" />
         </aux>
         <aux name="FixedCost">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>10</eqn>
-            <display x="533" y="299" color="blue" />
+            <eqn>Capacitys*UnitFixedCost</eqn>
+            <display x="531" y="273" color="blue" />
         </aux>
         <aux name="VariableCost">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>10</eqn>
-            <display x="446" y="302" color="blue" />
+            <eqn>Shipments*UnitVariableCost</eqn>
+            <display x="467" y="275" color="blue" />
         </aux>
         <stock name="ValueOfBacklog">
             <dimensions>
@@ -105,6 +105,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
+            <eqn>Shipments*AveragePriceofOrderBook</eqn>
             <non_negative />
             <display x="356" y="247" color="blue">
                 <pts>
@@ -117,7 +118,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>10</eqn>
+            <eqn>Price*Orders</eqn>
             <non_negative />
             <display x="219" y="250" color="blue">
                 <pts>
@@ -130,19 +131,19 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>10</eqn>
-            <display x="332" y="293" color="blue" />
+            <eqn>ValueOfBacklog/Backlog</eqn>
+            <display x="325" y="300" color="blue" />
         </aux>
         <stock name="Backlog">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>0</eqn>
-            <inflow>Orders_1</inflow>
+            <eqn>1</eqn>
+            <inflow>Orders</inflow>
             <outflow>Shipments</outflow>
             <display x="558" y="522" color="blue" />
         </stock>
-        <flow name="Orders_1">
+        <flow name="Orders">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
@@ -210,11 +211,11 @@
                 </pts>
             </display>
         </flow>
-        <stock name="Price_1">
+        <stock name="Price">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>0</eqn>
+            <eqn>1</eqn>
             <inflow>ChangeInPrice</inflow>
             <display x="1042" y="546" color="blue" />
         </stock>
@@ -222,6 +223,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
+            <eqn>1</eqn>
             <non_negative />
             <display x="978" y="545" color="blue">
                 <pts>
@@ -254,14 +256,70 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
+            <eqn>1</eqn>
             <display x="218" y="799" color="blue" />
         </aux>
+        <aux name="UnitFixedCost">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>10</eqn>
+            <display x="972" y="163" color="blue" />
+        </aux>
+        <aux name="UnitVariableCost">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>10</eqn>
+            <display x="1063" y="167" color="blue" />
+        </aux>
         <group name="Net_Income_Sector">
-            <display locked="true" x="64" y="36" width="565" height="323" color="red" />
+            <entity name="ValueOfBacklog" />
+            <entity name="NPVProfitChange" />
+            <entity name="ValueOfNewOrders" />
+            <entity name="DiscountFactor" />
+            <entity name="DiscountRate" />
+            <entity name="Revenue" />
+            <entity name="AveragePriceofOrderBook" />
+            <entity name="NPVProfit" />
+            <entity name="NPVIndustryProfits" />
+            <entity name="Cost" />
+            <entity name="VariableCost" />
+            <entity name="NetIncome" />
+            <entity name="FixedCost" />
+            <display locked="true" x="64" y="36" width="565" height="323" color="red">
+                <item uid="0" />
+                <item uid="1" />
+                <item uid="2" />
+                <item uid="3" />
+                <item uid="4" />
+                <item uid="5" />
+                <item uid="6" />
+                <item uid="7" />
+                <item uid="8" />
+                <item uid="9" />
+                <item uid="10" />
+                <item uid="11" />
+                <item uid="12" />
+                <item uid="13" />
+                <item uid="14" />
+                <item uid="15" />
+                <item uid="16" />
+                <item uid="17" />
+                <item uid="18" />
+                <item uid="19" />
+                <item uid="20" />
+                <item uid="21" />
+                <item uid="22" />
+                <item uid="23" />
+                <item uid="24" />
+            </display>
         </group>
         <group name="Learning_Curve_Sector">
-            <entity name="Production" />
             <entity name="CumulativeProduction" />
+            <entity name="Production" />
+            <entity name="UnitFixedCost" />
+            <entity name="UnitVariableCost" />
             <display x="855" y="30" width="303" height="187" color="red" />
         </group>
         <group name="Capacity_Sector">
@@ -275,54 +333,133 @@
             <display x="827" y="737" width="305" height="157" color="red" />
         </group>
         <group name="Diffusion_Sector">
+            <entity name="NonAdopters" />
+            <entity name="CumulativeAdopters" />
+            <entity name="AdoptionRate" />
             <display locked="true" x="62" y="439" width="330" height="225" color="red" />
         </group>
         <group name="Orders_Sector">
+            <entity name="Backlog" />
+            <entity name="InstalledBase" />
+            <entity name="Orders" />
+            <entity name="Shipments" />
+            <entity name="DiscardRate" />
             <display locked="true" x="445" y="437" width="396" height="235" color="red" />
         </group>
         <group name="Price_Sector">
+            <entity name="Price" />
+            <entity name="ChangeInPrice" />
             <display locked="true" x="861" y="434" width="309" height="239" color="red" />
         </group>
         <display page_width="595" page_height="842" page_cols="3" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed">
-            <connector x="475" y="229" uid="0" color="#FF007F">
-                <from>Cost</from>
-                <to>NetIncome</to>
-            </connector>
-            <connector x="296" y="263" uid="1" color="#FF007F">
-                <from>ValueOfBacklog</from>
-                <to>AveragePriceofOrderBook</to>
-            </connector>
-            <connector x="530" y="292" uid="2" color="#FF007F">
-                <from>FixedCost</from>
-                <to>Cost</to>
-            </connector>
-            <connector x="218" y="163" uid="3" color="#FF007F">
-                <from>DiscountRate</from>
-                <to>DiscountFactor</to>
-            </connector>
-            <connector x="296" y="131" uid="4" color="#FF007F">
-                <from>DiscountFactor</from>
-                <to>NPVProfitChange</to>
-            </connector>
-            <connector x="451" y="294" uid="5" color="#FF007F">
-                <from>VariableCost</from>
-                <to>Cost</to>
-            </connector>
-            <connector x="421" y="85" uid="6" color="#FF007F">
+            <connector x="421" y="85" uid="11" color="#FF007F">
                 <from>NPVProfit</from>
                 <to>NPVIndustryProfits</to>
             </connector>
-            <connector x="384" y="163" uid="7" color="#FF007F">
-                <from>NetIncome</from>
+            <connector x="471" y="267" uid="14" color="#FF007F">
+                <from>VariableCost</from>
+                <to>Cost</to>
+            </connector>
+            <connector x="296" y="131" uid="0" color="#FF007F">
+                <from>DiscountFactor</from>
                 <to>NPVProfitChange</to>
             </connector>
-            <connector x="357" y="238" uid="8" color="#FF007F">
+            <connector x="499" y="207" uid="16" color="#FF007F">
+                <from>Cost</from>
+                <to>NetIncome</to>
+            </connector>
+            <connector x="303" y="263" uid="7" color="#FF007F">
+                <from>ValueOfBacklog</from>
+                <to>AveragePriceofOrderBook</to>
+            </connector>
+            <connector x="529" y="264" uid="22" color="#FF007F">
+                <from>FixedCost</from>
+                <to>Cost</to>
+            </connector>
+            <connector x="357" y="238" uid="15" color="#FF007F">
                 <from>Revenue</from>
                 <to>NetIncome</to>
             </connector>
-            <connector x="338" y="286" uid="9" color="#FF007F">
+            <connector x="383" y="155" uid="10" color="#FF007F">
+                <from>NetIncome</from>
+                <to>NPVProfitChange</to>
+            </connector>
+            <connector x="219" y="163" uid="1" color="#FF007F">
+                <from>DiscountRate</from>
+                <to>DiscountFactor</to>
+            </connector>
+            <connector x="329" y="292" uid="8" color="#FF007F">
                 <from>AveragePriceofOrderBook</from>
                 <to>Revenue</to>
+            </connector>
+            <alias x="114" y="287" uid="2">
+                <of>Price</of>
+            </alias>
+            <connector x="136" y="283" uid="3" color="#FF007F">
+                <from>
+                    <alias uid="2" />
+                </from>
+                <to>ValueOfNewOrders</to>
+            </connector>
+            <alias x="172" y="324" uid="4">
+                <of>Orders</of>
+            </alias>
+            <connector x="177" y="317" uid="5" color="#FF007F">
+                <from>
+                    <alias uid="4" />
+                </from>
+                <to>ValueOfNewOrders</to>
+            </connector>
+            <alias x="228" y="333" uid="6">
+                <of>Backlog</of>
+            </alias>
+            <alias x="394" y="278" uid="12">
+                <of>Shipments</of>
+            </alias>
+            <connector x="250" y="325" uid="9" color="#FF007F">
+                <from>
+                    <alias uid="6" />
+                </from>
+                <to>AveragePriceofOrderBook</to>
+            </connector>
+            <connector x="387" y="272" uid="13" color="#FF007F">
+                <from>
+                    <alias uid="12" />
+                </from>
+                <to>Revenue</to>
+            </connector>
+            <alias x="566" y="320" uid="21">
+                <of>UnitFixedCost</of>
+            </alias>
+            <alias x="459" y="320" uid="17">
+                <of>UnitVariableCost</of>
+            </alias>
+            <connector x="463" y="312" uid="18" color="#FF007F">
+                <from>
+                    <alias uid="17" />
+                </from>
+                <to>VariableCost</to>
+            </connector>
+            <connector x="563" y="312" uid="23" color="#FF007F">
+                <from>
+                    <alias uid="21" />
+                </from>
+                <to>FixedCost</to>
+            </connector>
+            <connector x="403" y="277" uid="19" color="#FF007F">
+                <from>
+                    <alias uid="12" />
+                </from>
+                <to>VariableCost</to>
+            </connector>
+            <alias x="589" y="266" uid="20">
+                <of>Capacitys</of>
+            </alias>
+            <connector x="580" y="267" uid="24" color="#FF007F">
+                <from>
+                    <alias uid="20" />
+                </from>
+                <to>FixedCost</to>
             </connector>
         </display>
         <interface page_width="788" page_height="528">
