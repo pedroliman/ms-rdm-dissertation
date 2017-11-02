@@ -5,21 +5,18 @@ START<-0; FINISH<-20; STEP<-0.25
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
 
+# Número de Players no modelo
+N_PLAYERS = 10
+
+
 # Criando Estoques (na mão em um primeiro momento).
 auxs    <- list(aDiscountRate = 0.04
-                ,fNetIncome = c(10,10)
+                ,fNetIncome = rep(10, times = N_PLAYERS)
                 )
 
-# Variaveis definidas de modo independente (porque são vetorizadas)
-
-
-# Os aux devem ser um vetor normal
-
-# Número de Players no modelo
-N_PLAYERS = 2
 
 # A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO!!!!!!!
-stocks  <- c(NPVProfit=c(0,0))
+stocks  <- c(NPVProfit = rep(0, times = N_PLAYERS))
 
 ##### Modelo de Dinâmica de Sistemas ####
 
