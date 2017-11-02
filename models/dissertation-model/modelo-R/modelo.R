@@ -6,14 +6,12 @@ START<-0; FINISH<-20; STEP<-0.25
 simtime <- seq(START, FINISH, by=STEP)
 
 # Número de Players no modelo
-N_PLAYERS = 10
-
+N_PLAYERS = 2
 
 # Criando Estoques (na mão em um primeiro momento).
 auxs    <- list(aDiscountRate = 0.04
                 ,fNetIncome = rep(10, times = N_PLAYERS)
                 )
-
 
 # A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO!!!!!!!
 stocks  <- c(NPVProfit = rep(0, times = N_PLAYERS))
