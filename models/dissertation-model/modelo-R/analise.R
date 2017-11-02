@@ -14,8 +14,7 @@ library(dplyr)
 # Carregando Funções Úteis
 source('funcoes.R', encoding = 'UTF-8')
 
-## Carregando o Modelo, e outros objetos
-source('modelo-difusao.R', encoding = 'UTF-8')
+
 
 opcoes = list(
   VarResposta = "Cash",
@@ -26,6 +25,14 @@ opcoes = list(
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
 )
+
+## Carregando o Modelo, e outros objetos
+source('modelo.R', encoding = 'UTF-8')
+
+# Simulando uma vez apenas
+resultado_unico <- data.frame(ode(y=stocks, times=simtime, func = modelo, 
+                  parms=auxs, method="euler"))
+
 
 results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 

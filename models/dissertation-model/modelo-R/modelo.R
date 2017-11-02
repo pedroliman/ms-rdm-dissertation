@@ -1,15 +1,15 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
-START<-2015; FINISH<-2020; STEP<-0.125
+START<-0; FINISH<-20; STEP<-0.25
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
 
 # Criando Estoques (na mão em um primeiro momento).
-auxs    <- c(aAdvertisingEffectiveness= 0.01, aContactRate= 100, aAdoptionFraction= 0.02, aTotalPopulation= 1000000, aAdvertisingON = 1, aAdvertisingIntensity = 1, aAverageTicket = 1, aAdvertisingCost = 1)
+auxs    <- c(aDiscountRate = 0.04, fNetIncome = 10)
 
 # A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO!!!!!!!
-stocks  <- c(sPotentialAdopters=999990, sAdopters=10, sCash=0)
+stocks  <- c(NPVProfit=0)
 
 ##### Modelo de Dinâmica de Sistemas ####
 
@@ -17,42 +17,25 @@ stocks  <- c(sPotentialAdopters=999990, sAdopters=10, sCash=0)
 modelo <- function(time, stocks, auxs){
   with(as.list(c(stocks, auxs)),{
     
-    aAdoption_from_Advertising = aAdvertisingEffectiveness * sPotentialAdopters * aAdvertisingON * aAdvertisingIntensity
+    # Fluxos
+    aDiscountFactor = exp(-aDiscountRate*time)
     
-    aAdoption_from_Word_of_Mouth = aContactRate * sAdopters *  ((sPotentialAdopters)/(aTotalPopulation)) * aAdoptionFraction  # {people/year}
+    fNPVProfitChange = fNetIncome * aDiscountFactor
     
-    fAdoption_Rate = min(aAdoption_from_Advertising + aAdoption_from_Word_of_Mouth, sPotentialAdopters) # {people/year}
     
-    fRevenue = sAdopters * aAverageTicket
+    # Estoques
+    d_NPVProfit_dt = fNPVProfitChange
     
-    fCosts = aAdvertisingIntensity * aAdvertisingCost
-    
-    d_sPotentialAdopters_dt = - fAdoption_Rate
-    
-    d_sAdopters_dt = fAdoption_Rate
-    
-    d_sCash_dt = fRevenue - fCosts
-    
-    return (list(c(d_sPotentialAdopters_dt, d_sAdopters_dt,  d_sCash_dt),
-                 Revenue = fRevenue,
-                 Costs = fCosts,
-                 AverageTicket = aAverageTicket,
-                 AdvertisingCost = aAdvertisingCost,
-                 AdvertisingEffectiveness = aAdvertisingEffectiveness,
-                 ContactRate = aContactRate,
-                 AdoptionFraction = aAdoptionFraction,
-                 TotalPopulation = aTotalPopulation,
-                 Adoption_from_Advertising = aAdoption_from_Advertising,
-                 Adoption_from_Word_of_Mouth = aAdoption_from_Word_of_Mouth,
-                 Adoption_Rate = fAdoption_Rate,
-                 AdvertisingON = aAdvertisingON,
-                 AdvertisingIntensity = aAdvertisingIntensity,
-                 Lever = Lever))   
+    return (list(c(d_NPVProfit_dt)
+                 ,aDiscountFactor = aDiscountFactor
+                 ,aDiscountRate = aDiscountRate
+                 ,fNPVProfitChange = fNPVProfitChange
+                 ,fNetIncome = fNetIncome))   
   })
 }
 
 # Nomeando o Dataframe de Saída
-nomes_variaveis = c("Tempo", "PotentialAdopters", "Adopters", "Cash", "Revenue", "Costs","AverageTicket","AdvertisingCost", "AdvEffectiveness", "ContactRate", "AdoptionFraction", "TotalPopulation", "Adoption_From_Advertising", "Adoption_From_Word_of_Mouth", "Adoption_Rate", "AdvON", "AdvIntensity", "Lever", "Scenario")
+nomes_variaveis = c("Tempo", "d_NPVProfit_dt", "aDiscountFactor", "aDiscountRate", "fNPVProfitChange", "fNetIncome")
 
 
 # Inicializando um list com Tudo o que é necessário

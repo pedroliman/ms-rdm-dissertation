@@ -27,7 +27,7 @@
     </dimensions>
     <model_units />
     <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
-        <isee:window width="1366" height="685" />
+        <isee:window width="1360" height="685" />
         <isee:security />
         <isee:print_setup width="595" height="842" />
     </isee:prefs>
@@ -63,49 +63,49 @@
         <module name="NetIncome">
             <display x="309" y="85" color="blue" />
         </module>
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
         </interface>
     </model>
     <model name="Capacity1">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
         </interface>
     </model>
     <model name="Diffusion">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
         </interface>
     </model>
     <model name="ExpectedIndustryDemand">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
         </interface>
     </model>
     <model name="IndustryDemand">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
         </interface>
     </model>
     <model name="LearningCurve">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
         </interface>
     </model>
     <model name="Market">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
@@ -117,15 +117,14 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>0</eqn>
-            <inflow>Change_in_NPV_Profit</inflow>
+            <inflow>NPVProfitChange</inflow>
             <display x="329" y="102" color="blue" />
         </stock>
-        <flow name="Change_in_NPV_Profit">
+        <flow name="NPVProfitChange">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>NetIncome*DiscountFactor</eqn>
-            <non_negative />
             <display x="244" y="103" color="blue">
                 <pts>
                     <pt x="181" y="103" />
@@ -135,7 +134,7 @@
         </flow>
         <aux name="DiscountRate">
             <eqn>0.04</eqn>
-            <display x="152" y="184" color="blue" />
+            <display x="141" y="184" color="blue" />
         </aux>
         <aux name="DiscountFactor">
             <eqn>EXP(-DiscountRate*Time)</eqn>
@@ -152,27 +151,27 @@
             <eqn>SUM(NPVProfit[*])</eqn>
             <display x="442" y="100" color="blue" />
         </aux>
-        <display page_width="595" page_height="842" page_cols="2" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed">
-            <connector x="226" y="148" uid="0" color="#FF007F">
-                <from>DiscountFactor</from>
-                <to>Change_in_NPV_Profit</to>
-            </connector>
-            <connector x="300" y="165" uid="1" color="#FF007F">
+        <display page_width="595" page_height="842" page_cols="2" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed">
+            <connector x="300" y="165" uid="0" color="#FF007F">
                 <from>NetIncome</from>
-                <to>Change_in_NPV_Profit</to>
+                <to>NPVProfitChange</to>
             </connector>
-            <connector x="158" y="178" uid="2" color="#FF007F">
-                <from>DiscountRate</from>
-                <to>DiscountFactor</to>
-            </connector>
-            <connector x="351" y="101" uid="3" color="#FF007F">
+            <connector x="351" y="101" uid="1" color="#FF007F">
                 <from>NPVProfit</from>
                 <to>NPVIndustryProfits</to>
             </connector>
+            <connector x="148" y="179" uid="2" color="#FF007F">
+                <from>DiscountRate</from>
+                <to>DiscountFactor</to>
+            </connector>
+            <connector x="226" y="148" uid="3" color="#FF007F">
+                <from>DiscountFactor</from>
+                <to>NPVProfitChange</to>
+            </connector>
             <stacked_container x="636" y="50" height="270" width="475" visible_index="0" uid="4">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="111" orientation="vertical" report_interval="1" report_balances="ending" report_flows="summed" isee:date_time="-702479499">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="111" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702477557">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="NPVProfit" index="Company1" />
                     </item>
                     <item color="black" text-align="left" precision="2" thousands_separator="true" index="1">
@@ -188,21 +187,21 @@
         </interface>
     </model>
     <model name="Orders">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
         </interface>
     </model>
     <model name="Price">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
         </interface>
     </model>
     <model name="TargetCapacity">
-        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" report_flows="summed" />
+        <display page_width="595" page_height="842" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" />
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
