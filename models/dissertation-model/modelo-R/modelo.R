@@ -18,14 +18,21 @@ stocks  <- c(NPVProfit = rep(0, times = N_PLAYERS))
 
 ##### Modelo de Dinâmica de Sistemas ####
 
+
 # Definindo o Modelo
 modelo <- function(time, stocks, auxs){
   with(as.list(c(stocks, auxs)),{
     
-    # Fluxos
+    #Estoques Vetorizados = substituindo estoques pela forma vetorizada (pra que seja possivel formular equações de forma mais simples).
+    # Esta implementação é temporária, e não parece uma boa solução definitiva.
+    NPVProfit = stocks[1:N_PLAYERS*1]
+    
+    # Fluxos / Auxiliares
     aDiscountFactor = exp(-aDiscountRate*time)
     
     fNPVProfitChange = fNetIncome * aDiscountFactor
+    
+    aNPVIndustryProfits = sum(NPVProfit)
     
     # Estoques
     d_NPVProfit_dt = fNPVProfitChange
@@ -34,13 +41,14 @@ modelo <- function(time, stocks, auxs){
                  ,aDiscountFactor = aDiscountFactor
                  ,aDiscountRate = aDiscountRate
                  ,fNPVProfitChange = fNPVProfitChange
-                 ,fNetIncome = fNetIncome))   
+                 ,fNetIncome = fNetIncome
+                 ,aNPVIndustryProfits = aNPVIndustryProfits))   
   })
 }
 
 
 # Nomeando o Dataframe de Saída
-nomes_variaveis = c("Tempo", "d_NPVProfit_dt", "aDiscountFactor", "aDiscountRate", "fNPVProfitChange", "fNetIncome")
+nomes_variaveis = c("Tempo", "d_NPVProfit_dt", "aDiscountFactor", "aDiscountRate", "fNPVProfitChange", "fNetIncome", "aNPVIndustryProfits")
 
 
 # Inicializando um list com Tudo o que é necessário
