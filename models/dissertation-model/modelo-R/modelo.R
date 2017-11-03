@@ -10,34 +10,62 @@ N_PLAYERS = 2
 
 # Criando Estoques (na mão em um primeiro momento).
 auxs    <- list(aDiscountRate = 0.04
-                ,fNetIncome = rep(10, times = N_PLAYERS)
+                ,fOrders = rep(1, times = N_PLAYERS)
+                ,fShipments = rep(1, times = N_PLAYERS)
+                ,sPrice = rep(1, times = N_PLAYERS) # Isso é estoque
+                ,sBacklog = rep(1, times = N_PLAYERS) # Isso é estoque
+                ,aUnitVariableCost = rep(10, times = N_PLAYERS)
+                ,aUnitFixedCost = rep(10, times = N_PLAYERS)
+                ,aCapacity = rep(1, times = N_PLAYERS)
                 )
 
 # A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO!!!!!!!
-stocks  <- c(NPVProfit = rep(0, times = N_PLAYERS))
+stocks  <- c(
+  sNPVProfit = rep(0, times = N_PLAYERS)
+  ,sValueOfBacklog = rep(0, times = N_PLAYERS)
+             )
 
 ##### Modelo de Dinâmica de Sistemas ####
-
 
 # Definindo o Modelo
 modelo <- function(time, stocks, auxs){
   with(as.list(c(stocks, auxs)),{
     
     #Estoques Vetorizados = substituindo estoques pela forma vetorizada (pra que seja possivel formular equações de forma mais simples).
-    # Esta implementação é temporária, e não parece uma boa solução definitiva.
-    NPVProfit = stocks[1:N_PLAYERS*1]
+    # Esta implementação tem por objetivo não gerar a necessidade de referenciar os estoque spelo seu nome único
+    sNPVProfit = stocks[(N_PLAYERS*0+1):(N_PLAYERS*1)]
+    sValueOfBacklog = stocks[(N_PLAYERS*1+1):(N_PLAYERS*2)]
     
-    # Fluxos / Auxiliares
+    ##### NET INCOME SECTOR  - Fluxos e Auxiliares #####
+    
     aDiscountFactor = exp(-aDiscountRate*time)
+    
+    fValueOfNewOrders = fOrders * sPrice
+    
+    aAveragePriceOfOrderBook = sValueOfBacklog / sBacklog
+    
+    fRevenue = fShipments * aAveragePriceOfOrderBook
+    
+    aVariableCost = fShipments * aUnitVariableCost
+    
+    aFixedCost = aCapacity * aUnitFixedCost
+    
+    fCost = aFixedCost + aVariableCost
+    
+    fNetIncome = fRevenue - fCost
     
     fNPVProfitChange = fNetIncome * aDiscountFactor
     
-    aNPVIndustryProfits = sum(NPVProfit)
+    aNPVIndustryProfits = sum(sNPVProfit)
     
     # Estoques
+    #Profit
     d_NPVProfit_dt = fNPVProfitChange
     
-    return (list(c(d_NPVProfit_dt)
+    d_ValueOfBacklog_dt = fRevenue - fValueOfNewOrders
+    
+    
+    return (list(c(d_NPVProfit_dt, d_ValueOfBacklog_dt)
                  ,aDiscountFactor = aDiscountFactor
                  ,aDiscountRate = aDiscountRate
                  ,fNPVProfitChange = fNPVProfitChange
