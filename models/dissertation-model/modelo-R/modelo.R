@@ -28,6 +28,11 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aPopulation = 100000000
                 )
 
+
+
+
+
+
 ##### VARIÁVEIS DE ENTRADA - ESTOQUES #####
 stocks  <- c(
    sNPVProfit = rep(0, times = N_PLAYERS)
