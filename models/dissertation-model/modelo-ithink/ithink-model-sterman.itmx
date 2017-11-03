@@ -16,7 +16,7 @@
     <sim_specs method="Euler" time_units="Months">
         <start>0</start>
         <stop>20</stop>
-        <dt>0.25</dt>
+        <dt>1</dt>
     </sim_specs>
     <dimensions>
         <dim name="Company">
@@ -96,7 +96,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>0</eqn>
+            <eqn>1</eqn>
             <inflow>ValueOfNewOrders</inflow>
             <outflow>Revenue</outflow>
             <display x="265" y="209" color="blue" />
@@ -224,7 +224,6 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>1</eqn>
-            <non_negative />
             <display x="978" y="545" color="blue">
                 <pts>
                     <pt x="937" y="545" />
@@ -351,7 +350,7 @@
             <entity name="ChangeInPrice" />
             <display locked="true" x="861" y="434" width="309" height="239" color="red" />
         </group>
-        <display page_width="595" page_height="842" page_cols="3" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed">
+        <display page_width="595" page_height="842" page_cols="3" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true" report_balances="ending" report_flows="summed" scroll_y="64">
             <alias x="92" y="250" uid="0">
                 <of>Price</of>
             </alias>
@@ -461,14 +460,20 @@
                 </from>
                 <to>ValueOfNewOrders</to>
             </connector>
-            <stacked_container x="530" y="44" height="270" width="475" visible_index="0" uid="25">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="63" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702418027">
+            <stacked_container x="527" y="77" height="270" width="319" visible_index="0" uid="25">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="97" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702417033">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="NPVProfit" index="Company1" />
                     </item>
                     <item color="black" text-align="left" precision="2" thousands_separator="true" index="1">
                         <entity name="NPVProfit" index="Company2" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="2">
+                        <entity name="ValueOfBacklog" index="Company1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="3">
+                        <entity name="ValueOfBacklog" index="Company2" />
                     </item>
                 </table>
             </stacked_container>

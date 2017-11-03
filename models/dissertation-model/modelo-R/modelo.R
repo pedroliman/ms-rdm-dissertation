@@ -1,6 +1,6 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
-START<-0; FINISH<-20; STEP<-0.25
+START<-0; FINISH<-20; STEP<-1
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
@@ -12,17 +12,20 @@ N_PLAYERS = 2
 auxs    <- list(aDiscountRate = 0.04
                 ,fOrders = rep(1, times = N_PLAYERS)
                 ,fShipments = rep(1, times = N_PLAYERS)
-                ,sPrice = rep(1, times = N_PLAYERS) # Isso é estoque
-                ,sBacklog = rep(1, times = N_PLAYERS) # Isso é estoque
+                ,fDiscardRate = rep(1, times = N_PLAYERS)
+                ,fChangeInPrice = rep(1, times = N_PLAYERS)
                 ,aUnitVariableCost = rep(10, times = N_PLAYERS)
                 ,aUnitFixedCost = rep(10, times = N_PLAYERS)
                 ,aCapacity = rep(1, times = N_PLAYERS)
                 )
 
-# A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO!!!!!!!
+# A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO!!!!
 stocks  <- c(
-  sNPVProfit = rep(0, times = N_PLAYERS)
-  ,sValueOfBacklog = rep(0, times = N_PLAYERS)
+   sNPVProfit = rep(0, times = N_PLAYERS)
+  ,sValueOfBacklog = rep(1, times = N_PLAYERS)
+  ,sBacklog = rep(1, times = N_PLAYERS)
+  ,sInstalledBase = rep(1, times = N_PLAYERS)
+  ,sPrice = rep(1, times = N_PLAYERS)
              )
 
 ##### Modelo de Dinâmica de Sistemas ####
@@ -35,6 +38,10 @@ modelo <- function(time, stocks, auxs){
     # Esta implementação tem por objetivo não gerar a necessidade de referenciar os estoque spelo seu nome único
     sNPVProfit = stocks[(N_PLAYERS*0+1):(N_PLAYERS*1)]
     sValueOfBacklog = stocks[(N_PLAYERS*1+1):(N_PLAYERS*2)]
+    sBacklog = stocks[(N_PLAYERS*2+1):(N_PLAYERS*3)]
+    sInstalledBase = stocks[(N_PLAYERS*3+1):(N_PLAYERS*4)]
+    sPrice = stocks[(N_PLAYERS*4+1):(N_PLAYERS*5)]
+    
     
     ##### NET INCOME SECTOR  - Fluxos e Auxiliares #####
     
@@ -62,10 +69,22 @@ modelo <- function(time, stocks, auxs){
     #Profit
     d_NPVProfit_dt = fNPVProfitChange
     
-    d_ValueOfBacklog_dt = fRevenue - fValueOfNewOrders
+    d_ValueOfBacklog_dt = fValueOfNewOrders - fRevenue
+    
+    d_Backlog_dt = fOrders - fShipments
+    
+    d_InstalledBase_dt = fShipments - fDiscardRate
+    
+    d_Price_dt = fChangeInPrice
     
     
-    return (list(c(d_NPVProfit_dt, d_ValueOfBacklog_dt)
+    return (list(c(
+                   d_NPVProfit_dt
+                   ,d_ValueOfBacklog_dt
+                   ,d_Backlog_dt
+                   ,d_InstalledBase_dt
+                   ,d_Price_dt
+                   )
                  ,aDiscountFactor = aDiscountFactor
                  ,aDiscountRate = aDiscountRate
                  ,fNPVProfitChange = fNPVProfitChange
