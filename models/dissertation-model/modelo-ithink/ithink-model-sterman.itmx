@@ -16,7 +16,7 @@
     <sim_specs method="Euler" time_units="Months">
         <start>0</start>
         <stop>20</stop>
-        <dt>1</dt>
+        <dt>0.25</dt>
     </sim_specs>
     <dimensions>
         <dim name="Company">
@@ -26,7 +26,7 @@
     </dimensions>
     <model_units />
     <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
-        <isee:window width="1362" height="685" />
+        <isee:window width="1360" height="685" />
         <isee:security />
         <isee:print_setup width="595" height="842" />
     </isee:prefs>
@@ -177,10 +177,10 @@
         <flow name="AdoptionRate">
             <eqn>NonAdopters*&#x0A;(InnovatorAdoptionFraction + WOMStrength*CumulativeAdopters/Population)</eqn>
             <non_negative />
-            <display x="226" y="591" color="blue">
+            <display x="226" y="589" color="blue">
                 <pts>
-                    <pt x="173" y="591" />
-                    <pt x="280" y="591" />
+                    <pt x="173" y="589" />
+                    <pt x="280" y="589" />
                 </pts>
             </display>
         </flow>
@@ -210,7 +210,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>30</eqn>
+            <eqn>9000</eqn>
             <inflow>ChangeInPrice</inflow>
             <display x="1042" y="546" color="blue" />
         </stock>
@@ -354,12 +354,12 @@
             <display x="362" y="488" color="blue" />
         </aux>
         <aux name="InitialCumulativeAdopters">
-            <eqn>InitialDiffusionFraction*IndustryDemand</eqn>
-            <display x="365" y="528" color="blue" />
+            <eqn>InitialDiffusionFraction*IndustryDemand&#x0A;&#x0A;{No R, este valor é difícil de calcular na &quot;largada&quot; do modelo. Calibrar com os dados, e inserir valor manualmente, pelo menos por enquanto. Um cuidado especial é que as incertezas teoricamente não podem interferir neste calculo.}</eqn>
+            <display x="343" y="530" color="red" />
         </aux>
         <aux name="NonAdopters">
-            <eqn>IndustryDemand - CumulativeAdopters</eqn>
-            <display x="98" y="585" color="red" />
+            <eqn>IndustryDemand - CumulativeAdopters&#x0A;&#x0A;{Esta Variável está modelada no modelo original como um estoque. Verificar se há diferenca de calculo devido a ela.}</eqn>
+            <display x="101" y="585" color="red" />
         </aux>
         <group name="Net_Income_Sector">
             <entity name="NPVProfit" />
@@ -423,18 +423,18 @@
         <group name="Diffusion_Sector">
             <entity name="CumulativeAdopters" />
             <entity name="IndustryDemand" />
-            <entity name="InitialCumulativeAdopters" />
             <entity name="InnovatorAdoptionFraction" />
             <entity name="LowestPrice" />
             <entity name="ReferenceIndustryDemandElasticity" />
             <entity name="ReferencePopulation" />
             <entity name="ReferencePrice" />
             <entity name="WOMStrength" />
-            <entity name="AdoptionRate" />
             <entity name="InitialDiffusionFraction" />
-            <entity name="NonAdopters" />
             <entity name="DemandCurveSlope" />
             <entity name="Population" />
+            <entity name="InitialCumulativeAdopters" />
+            <entity name="NonAdopters" />
+            <entity name="AdoptionRate" />
             <display locked="true" x="29" y="398" width="403" height="266" color="red">
                 <item uid="25" />
                 <item uid="26" />
@@ -498,7 +498,7 @@
             <entity name="OrderShare" />
             <display x="438" y="941" width="300" height="150" color="red" />
         </group>
-        <display page_width="595" page_height="842" page_cols="3" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true" report_balances="ending" report_flows="summed" scroll_y="48">
+        <display page_width="595" page_height="842" page_cols="3" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" scroll_y="224">
             <alias x="90" y="225" uid="0">
                 <of>Price</of>
             </alias>
@@ -540,35 +540,35 @@
                 <from>LowestPrice</from>
                 <to>IndustryDemand</to>
             </connector>
-            <connector x="248" y="514" uid="27" color="#FF007F">
+            <connector x="248" y="514" uid="35" color="#FF007F">
                 <from>IndustryDemand</from>
                 <to>InitialCumulativeAdopters</to>
             </connector>
-            <connector x="355" y="494" uid="28" color="#FF007F">
+            <connector x="355" y="494" uid="36" color="#FF007F">
                 <from>InitialDiffusionFraction</from>
                 <to>InitialCumulativeAdopters</to>
             </connector>
-            <connector x="151" y="526" uid="42" color="#FF007F">
+            <connector x="151" y="526" uid="34" color="#FF007F">
                 <from>Population</from>
                 <to>IndustryDemand</to>
             </connector>
-            <connector x="187" y="485" uid="38" color="#FF007F">
+            <connector x="187" y="485" uid="30" color="#FF007F">
                 <from>DemandCurveSlope</from>
                 <to>IndustryDemand</to>
             </connector>
-            <connector x="216" y="447" uid="39" color="#FF007F">
+            <connector x="216" y="447" uid="31" color="#FF007F">
                 <from>ReferencePrice</from>
                 <to>DemandCurveSlope</to>
             </connector>
-            <connector x="121" y="456" uid="40" color="#FF007F">
+            <connector x="121" y="456" uid="32" color="#FF007F">
                 <from>ReferenceIndustryDemandElasticity</from>
                 <to>DemandCurveSlope</to>
             </connector>
-            <connector x="88" y="498" uid="41" color="#FF007F">
+            <connector x="88" y="498" uid="33" color="#FF007F">
                 <from>ReferencePopulation</from>
                 <to>DemandCurveSlope</to>
             </connector>
-            <connector x="349" y="435" uid="29" color="#FF007F">
+            <connector x="349" y="435" uid="27" color="#FF007F">
                 <from>
                     <alias uid="25" />
                 </from>
@@ -580,7 +580,7 @@
                 </from>
                 <to>Orders</to>
             </connector>
-            <connector x="90" y="503" uid="30" color="#FF007F">
+            <connector x="90" y="503" uid="28" color="#FF007F">
                 <from>ReferencePopulation</from>
                 <to>IndustryDemand</to>
             </connector>
@@ -630,7 +630,7 @@
                 </from>
                 <to>FixedCost</to>
             </connector>
-            <connector x="229" y="454" uid="31" color="#FF007F">
+            <connector x="229" y="454" uid="29" color="#FF007F">
                 <from>ReferencePrice</from>
                 <to>IndustryDemand</to>
             </connector>
@@ -664,7 +664,7 @@
                 </from>
                 <to>Revenue</to>
             </connector>
-            <connector x="152" y="539" uid="43" color="#FF007F">
+            <connector x="152" y="539" uid="39" color="#FF007F">
                 <from>Population</from>
                 <to>AdoptionRate</to>
             </connector>
@@ -724,32 +724,32 @@
                 <from>DiscountRate</from>
                 <to>DiscountFactor</to>
             </connector>
-            <connector x="105" y="581" uid="35" color="#FF007F">
+            <connector x="109" y="581" uid="40" color="#FF007F">
                 <from>NonAdopters</from>
                 <to>AdoptionRate</to>
             </connector>
-            <connector x="135" y="622" uid="32" color="#FF007F">
+            <connector x="135" y="622" uid="41" color="#FF007F">
                 <from>InnovatorAdoptionFraction</from>
                 <to>AdoptionRate</to>
             </connector>
-            <connector x="299" y="626" uid="33" color="#FF007F">
+            <connector x="300" y="624" uid="42" color="#FF007F">
                 <from>WOMStrength</from>
                 <to>AdoptionRate</to>
             </connector>
-            <connector x="280" y="579" uid="34" color="#FF007F">
+            <connector x="280" y="580" uid="43" color="#FF007F">
                 <from>CumulativeAdopters</from>
                 <to>AdoptionRate</to>
             </connector>
-            <connector x="280" y="577" uid="36" color="#FF007F">
+            <connector x="280" y="577" uid="37" color="#FF007F">
                 <from>CumulativeAdopters</from>
                 <to>NonAdopters</to>
             </connector>
-            <connector x="231" y="517" uid="37" color="#FF007F">
+            <connector x="231" y="517" uid="38" color="#FF007F">
                 <from>IndustryDemand</from>
                 <to>NonAdopters</to>
             </connector>
             <stacked_container x="527" y="77" height="270" width="319" visible_index="0" uid="58">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="97" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702388344">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="97" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702386797">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="NPVProfit" index="Company1" />
@@ -774,6 +774,18 @@
                     </item>
                     <item color="black" text-align="left" precision="2" thousands_separator="true" index="7">
                         <entity name="Shipments" index="Company2" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="8">
+                        <entity name="CumulativeAdopters" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="9">
+                        <entity name="AdoptionRate" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="10">
+                        <entity name="IndustryDemand" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="11">
+                        <entity name="InitialCumulativeAdopters" />
                     </item>
                 </table>
             </stacked_container>

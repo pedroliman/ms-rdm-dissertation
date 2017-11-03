@@ -1,6 +1,6 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
-START<-0; FINISH<-20; STEP<-1
+START<-0; FINISH<-20; STEP<-0.25
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
@@ -19,6 +19,13 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aNormalDeliveryDelay = rep(0.25, times = N_PLAYERS)
                 ,aSwitchForCapacity = 1
                 ,aFractionalDiscardRate = 0.1
+                ,aInitialDiffusionFraction = 0.001
+                ,aReferencePrice = 1000
+                ,aReferenceIndustryDemandElasticity = 1000
+                ,aReferencePopulation = 60000000
+                ,aInnovatorAdoptionFraction = 0.001
+                ,aWOMStrength = 1
+                ,aPopulation = 100000000
                 )
 
 ##### VARIÁVEIS DE ENTRADA - ESTOQUES #####
@@ -27,7 +34,8 @@ stocks  <- c(
   ,sValueOfBacklog = rep(1, times = N_PLAYERS)
   ,sBacklog = rep(1, times = N_PLAYERS)
   ,sInstalledBase = rep(1, times = N_PLAYERS)
-  ,sPrice = rep(30, times = N_PLAYERS)
+  ,sPrice = rep(9000, times = N_PLAYERS)
+  ,sCumulativeAdopters = 100000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
              )
 
 ##### Modelo de Dinâmica de Sistemas ####
@@ -45,7 +53,26 @@ modelo <- function(time, stocks, auxs){
     sBacklog = stocks[(N_PLAYERS*2+1):(N_PLAYERS*3)]
     sInstalledBase = stocks[(N_PLAYERS*3+1):(N_PLAYERS*4)]
     sPrice = stocks[(N_PLAYERS*4+1):(N_PLAYERS*5)]
+    sCumulativeAdopters = stocks[(N_PLAYERS*5+1)]
     
+    ##### DIFFUSION SECTOR #####
+    aDemandCurveSlope = (aReferencePopulation*aReferenceIndustryDemandElasticity)/(aReferencePrice)
+    
+    aLowestPrice = min(sPrice)
+    
+    aIndustryDemand = min(
+      aPopulation,
+      aReferencePopulation * max(
+        0,
+        1 + aDemandCurveSlope * (aLowestPrice - aReferencePrice) / aReferencePopulation
+      )
+    )
+    
+    aInitialCumulativeAdopters = aInitialDiffusionFraction * aIndustryDemand
+    
+    aNonAdopters = aIndustryDemand - sCumulativeAdopters
+    
+    fAdoptionRate = aNonAdopters * (aInnovatorAdoptionFraction + aWOMStrength*sCumulativeAdopters/aPopulation)
     
     ##### ORDERS SECTOR #####
     
@@ -94,6 +121,7 @@ modelo <- function(time, stocks, auxs){
     
     d_Price_dt = fChangeInPrice
     
+    d_CumulativeAdopters_dt = fAdoptionRate
     
     ##### VARIÁVEIS RETORNADAS #####
     
@@ -103,6 +131,7 @@ modelo <- function(time, stocks, auxs){
                    ,d_Backlog_dt
                    ,d_InstalledBase_dt
                    ,d_Price_dt
+                   ,d_CumulativeAdopters_dt
                    )
                  ,aDiscountFactor = aDiscountFactor
                  ,aDiscountRate = aDiscountRate
