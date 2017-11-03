@@ -8,18 +8,20 @@ simtime <- seq(START, FINISH, by=STEP)
 # Número de Players no modelo
 N_PLAYERS = 2
 
-# Criando Estoques (na mão em um primeiro momento).
+##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
 auxs    <- list(aDiscountRate = 0.04
-                ,fOrders = rep(1, times = N_PLAYERS)
-                ,fShipments = rep(1, times = N_PLAYERS)
-                ,fDiscardRate = rep(1, times = N_PLAYERS)
                 ,fChangeInPrice = rep(0, times = N_PLAYERS)
                 ,aUnitVariableCost = rep(10, times = N_PLAYERS)
                 ,aUnitFixedCost = rep(10, times = N_PLAYERS)
-                ,aCapacity = rep(1, times = N_PLAYERS)
+                ,aCapacity = rep(3, times = N_PLAYERS)
+                ,aOrderShare = rep(0.5, times = N_PLAYERS)
+                ,fIndustryOrderRate = 10
+                ,aNormalDeliveryDelay = rep(0.25, times = N_PLAYERS)
+                ,aSwitchForCapacity = 1
+                ,aFractionalDiscardRate = 0.1
                 )
 
-# A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO.
+##### VARIÁVEIS DE ENTRADA - ESTOQUES #####
 stocks  <- c(
    sNPVProfit = rep(0, times = N_PLAYERS)
   ,sValueOfBacklog = rep(1, times = N_PLAYERS)
@@ -34,6 +36,8 @@ stocks  <- c(
 modelo <- function(time, stocks, auxs){
   with(as.list(c(stocks, auxs)),{
     
+    ##### VETORIZANDO ESTOQUES #####
+    
     #Estoques Vetorizados = substituindo estoques pela forma vetorizada (pra que seja possivel formular equações de forma mais simples).
     # Esta implementação tem por objetivo não gerar a necessidade de referenciar os estoque spelo seu nome único
     sNPVProfit = stocks[(N_PLAYERS*0+1):(N_PLAYERS*1)]
@@ -43,7 +47,20 @@ modelo <- function(time, stocks, auxs){
     sPrice = stocks[(N_PLAYERS*4+1):(N_PLAYERS*5)]
     
     
-    ##### NET INCOME SECTOR  - Fluxos e Auxiliares #####
+    ##### ORDERS SECTOR #####
+    
+    fOrders = fIndustryOrderRate * aOrderShare
+    
+    aDesiredShipments = sBacklog/aNormalDeliveryDelay
+    
+    fShipments = aSwitchForCapacity * min(aDesiredShipments, aCapacity) + (1-aSwitchForCapacity) * aDesiredShipments
+    
+    aDeliveryDelay = sBacklog/fShipments
+    
+    fDiscardRate = sInstalledBase * aFractionalDiscardRate
+    
+    
+    ##### NET INCOME SECTOR #####
     
     aDiscountFactor = exp(-aDiscountRate*time)
     
@@ -65,8 +82,8 @@ modelo <- function(time, stocks, auxs){
     
     aNPVIndustryProfits = sum(sNPVProfit)
     
-    # Estoques
-    #Profit
+    ##### ESTOQUES #####
+    
     d_NPVProfit_dt = fNPVProfitChange
     
     d_ValueOfBacklog_dt = fValueOfNewOrders - fRevenue
@@ -77,6 +94,8 @@ modelo <- function(time, stocks, auxs){
     
     d_Price_dt = fChangeInPrice
     
+    
+    ##### VARIÁVEIS RETORNADAS #####
     
     return (list(c(
                    d_NPVProfit_dt

@@ -26,7 +26,7 @@
     </dimensions>
     <model_units />
     <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
-        <isee:window width="1280" height="941" />
+        <isee:window width="1366" height="685" />
         <isee:security />
         <isee:print_setup width="595" height="842" />
     </isee:prefs>
@@ -149,10 +149,10 @@
             </dimensions>
             <eqn>IndustryOrderRate*OrderShare</eqn>
             <non_negative />
-            <display x="505" y="523" color="blue">
+            <display x="505" y="524" color="blue">
                 <pts>
-                    <pt x="474" y="523" />
-                    <pt x="536" y="523" />
+                    <pt x="474" y="524" />
+                    <pt x="536" y="524" />
                 </pts>
             </display>
         </flow>
@@ -295,11 +295,11 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>Backlog/NormalDeliveryDelay</eqn>
-            <display x="603" y="567" color="blue" />
+            <display x="597" y="569" color="blue" />
         </aux>
         <aux name="SwitchForCapacity">
             <eqn>1</eqn>
-            <display x="679" y="585" color="blue" label_angle="261" />
+            <display x="675" y="595" color="blue" label_angle="261" />
         </aux>
         <flow name="IndustryOrderRate">
             <eqn>10</eqn>
@@ -386,12 +386,12 @@
         <group name="Orders_Sector">
             <entity name="Backlog" />
             <entity name="InstalledBase" />
-            <entity name="Orders" />
             <entity name="Shipments" />
-            <entity name="SwitchForCapacity" />
-            <entity name="DesiredShipments" />
             <entity name="NormalDeliveryDelay" />
             <entity name="DeliveryDelay" />
+            <entity name="DesiredShipments" />
+            <entity name="SwitchForCapacity" />
+            <entity name="Orders" />
             <entity name="DiscardRate" />
             <entity name="FractionalDiscardRate" />
             <display locked="true" x="445" y="437" width="396" height="235" color="red">
@@ -424,7 +424,7 @@
             <entity name="OrderShare" />
             <display x="438" y="941" width="300" height="150" color="red" />
         </group>
-        <display page_width="595" page_height="842" page_cols="3" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true" report_balances="ending" report_flows="summed">
+        <display page_width="595" page_height="842" page_cols="3" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true" report_balances="ending" report_flows="summed" scroll_y="32">
             <alias x="92" y="250" uid="0">
                 <of>Price</of>
             </alias>
@@ -534,11 +534,11 @@
                 </from>
                 <to>ValueOfNewOrders</to>
             </connector>
-            <connector x="580" y="508" uid="31" color="#FF007F">
+            <connector x="580" y="508" uid="26" color="#FF007F">
                 <from>Backlog</from>
                 <to>DeliveryDelay</to>
             </connector>
-            <connector x="630" y="514" uid="32" color="#FF007F">
+            <connector x="630" y="514" uid="27" color="#FF007F">
                 <from>Shipments</from>
                 <to>DeliveryDelay</to>
             </connector>
@@ -550,55 +550,55 @@
                 <from>InstalledBase</from>
                 <to>DiscardRate</to>
             </connector>
-            <connector x="515" y="573" uid="30" color="#FF007F">
+            <connector x="515" y="574" uid="30" color="#FF007F">
                 <from>NormalDeliveryDelay</from>
                 <to>DesiredShipments</to>
             </connector>
-            <connector x="673" y="580" uid="26" color="#FF007F">
+            <connector x="670" y="587" uid="35" color="#FF007F">
                 <from>SwitchForCapacity</from>
                 <to>Shipments</to>
             </connector>
-            <connector x="580" y="539" uid="27" color="#FF007F">
+            <connector x="572" y="539" uid="31" color="#FF007F">
                 <from>Backlog</from>
                 <to>DesiredShipments</to>
             </connector>
-            <connector x="612" y="565" uid="28" color="#FF007F">
+            <connector x="606" y="566" uid="32" color="#FF007F">
                 <from>DesiredShipments</from>
                 <to>Shipments</to>
             </connector>
             <alias x="716" y="568" uid="25">
                 <of>Capacitys</of>
             </alias>
-            <connector x="709" y="563" uid="29" color="#FF007F">
+            <connector x="708" y="564" uid="36" color="#FF007F">
                 <from>
                     <alias uid="25" />
                 </from>
                 <to>Shipments</to>
             </connector>
-            <alias x="541" y="472" uid="35">
+            <alias x="541" y="472" uid="29">
                 <of>IndustryOrderRate</of>
                 <label_side>top</label_side>
                 <label_angle>99</label_angle>
             </alias>
-            <alias x="478" y="491" uid="33">
+            <alias x="478" y="491" uid="28">
                 <of>OrderShare</of>
                 <label_side>top</label_side>
                 <label_angle>99</label_angle>
             </alias>
-            <connector x="487" y="493" uid="34" color="#FF007F">
+            <connector x="487" y="494" uid="33" color="#FF007F">
                 <from>
-                    <alias uid="33" />
+                    <alias uid="28" />
                 </from>
                 <to>Orders</to>
             </connector>
-            <connector x="532" y="475" uid="36" color="#FF007F">
+            <connector x="532" y="475" uid="34" color="#FF007F">
                 <from>
-                    <alias uid="35" />
+                    <alias uid="29" />
                 </from>
                 <to>Orders</to>
             </connector>
             <stacked_container x="527" y="77" height="270" width="319" visible_index="0" uid="39">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="97" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702413234">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="97" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702412014">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="NPVProfit" index="Company1" />
@@ -611,6 +611,18 @@
                     </item>
                     <item color="black" text-align="left" precision="2" thousands_separator="true" index="3">
                         <entity name="ValueOfBacklog" index="Company2" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="4">
+                        <entity name="Orders" index="Company1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="5">
+                        <entity name="Orders" index="Company2" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="6">
+                        <entity name="Shipments" index="Company1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="7">
+                        <entity name="Shipments" index="Company2" />
                     </item>
                 </table>
             </stacked_container>
