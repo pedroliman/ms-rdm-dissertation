@@ -13,19 +13,19 @@ auxs    <- list(aDiscountRate = 0.04
                 ,fOrders = rep(1, times = N_PLAYERS)
                 ,fShipments = rep(1, times = N_PLAYERS)
                 ,fDiscardRate = rep(1, times = N_PLAYERS)
-                ,fChangeInPrice = rep(1, times = N_PLAYERS)
+                ,fChangeInPrice = rep(0, times = N_PLAYERS)
                 ,aUnitVariableCost = rep(10, times = N_PLAYERS)
                 ,aUnitFixedCost = rep(10, times = N_PLAYERS)
                 ,aCapacity = rep(1, times = N_PLAYERS)
                 )
 
-# A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO!!!!
+# A ORDEM AQUI DEVE SER A MESMA DA ORDEM DE SAÍDA DO MODELO.
 stocks  <- c(
    sNPVProfit = rep(0, times = N_PLAYERS)
   ,sValueOfBacklog = rep(1, times = N_PLAYERS)
   ,sBacklog = rep(1, times = N_PLAYERS)
   ,sInstalledBase = rep(1, times = N_PLAYERS)
-  ,sPrice = rep(1, times = N_PLAYERS)
+  ,sPrice = rep(30, times = N_PLAYERS)
              )
 
 ##### Modelo de Dinâmica de Sistemas ####

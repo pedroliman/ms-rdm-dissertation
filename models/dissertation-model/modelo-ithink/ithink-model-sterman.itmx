@@ -26,7 +26,7 @@
     </dimensions>
     <model_units />
     <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
-        <isee:window width="1366" height="685" />
+        <isee:window width="1280" height="941" />
         <isee:security />
         <isee:print_setup width="595" height="842" />
     </isee:prefs>
@@ -90,7 +90,7 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>Shipments*UnitVariableCost</eqn>
-            <display x="402" y="147" color="blue" />
+            <display x="405" y="142" color="blue" />
         </aux>
         <stock name="ValueOfBacklog">
             <dimensions>
@@ -131,8 +131,8 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>ValueOfBacklog/Backlog</eqn>
-            <display x="310" y="265" color="blue" />
+            <eqn>ValueOfBacklog/Backlog&#x0A;&#x0A;</eqn>
+            <display x="318" y="255" color="blue" />
         </aux>
         <stock name="Backlog">
             <dimensions>
@@ -147,7 +147,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>1</eqn>
+            <eqn>IndustryOrderRate*OrderShare</eqn>
             <non_negative />
             <display x="505" y="523" color="blue">
                 <pts>
@@ -160,7 +160,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>1</eqn>
+            <eqn>{Se o Switch esta ligado}&#x0A;SwitchForCapacity*MIN(DesiredShipments,Capacitys) + &#x0A;{Se nao esta ligado}&#x0A;(1-SwitchForCapacity)*DesiredShipments</eqn>
             <non_negative />
             <display x="629" y="523" color="blue">
                 <pts>
@@ -202,7 +202,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>1</eqn>
+            <eqn>InstalledBase*FractionalDiscardRate</eqn>
             <non_negative />
             <display x="765" y="525" color="blue">
                 <pts>
@@ -215,7 +215,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>1</eqn>
+            <eqn>30</eqn>
             <inflow>ChangeInPrice</inflow>
             <display x="1042" y="546" color="blue" />
         </stock>
@@ -223,7 +223,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>1</eqn>
+            <eqn>0</eqn>
             <display x="978" y="545" color="blue">
                 <pts>
                     <pt x="937" y="545" />
@@ -255,7 +255,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>1</eqn>
+            <eqn>3</eqn>
             <display x="218" y="799" color="blue" />
         </aux>
         <aux name="UnitFixedCost">
@@ -271,6 +271,52 @@
             </dimensions>
             <eqn>10</eqn>
             <display x="1063" y="167" color="blue" />
+        </aux>
+        <aux name="DeliveryDelay">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Backlog/Shipments</eqn>
+            <display x="634" y="475" color="blue" label_side="top" label_angle="94" />
+        </aux>
+        <aux name="FractionalDiscardRate">
+            <eqn>0.1</eqn>
+            <display x="767" y="483" color="blue" label_side="top" label_angle="99" />
+        </aux>
+        <aux name="NormalDeliveryDelay">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0.25</eqn>
+            <display x="506" y="575" color="blue" />
+        </aux>
+        <aux name="DesiredShipments">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Backlog/NormalDeliveryDelay</eqn>
+            <display x="603" y="567" color="blue" />
+        </aux>
+        <aux name="SwitchForCapacity">
+            <eqn>1</eqn>
+            <display x="679" y="585" color="blue" label_angle="261" />
+        </aux>
+        <flow name="IndustryOrderRate">
+            <eqn>10</eqn>
+            <non_negative />
+            <display x="222" y="1048" color="blue">
+                <pts>
+                    <pt x="173" y="1048" />
+                    <pt x="272" y="1048" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="OrderShare">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0.5</eqn>
+            <display x="574" y="1034" color="blue" />
         </aux>
         <group name="Net_Income_Sector">
             <entity name="NPVProfit" />
@@ -342,126 +388,217 @@
             <entity name="InstalledBase" />
             <entity name="Orders" />
             <entity name="Shipments" />
+            <entity name="SwitchForCapacity" />
+            <entity name="DesiredShipments" />
+            <entity name="NormalDeliveryDelay" />
+            <entity name="DeliveryDelay" />
             <entity name="DiscardRate" />
-            <display locked="true" x="445" y="437" width="396" height="235" color="red" />
+            <entity name="FractionalDiscardRate" />
+            <display locked="true" x="445" y="437" width="396" height="235" color="red">
+                <item uid="25" />
+                <item uid="26" />
+                <item uid="27" />
+                <item uid="28" />
+                <item uid="29" />
+                <item uid="30" />
+                <item uid="31" />
+                <item uid="32" />
+                <item uid="33" />
+                <item uid="34" />
+                <item uid="35" />
+                <item uid="36" />
+                <item uid="37" />
+                <item uid="38" />
+            </display>
         </group>
         <group name="Price_Sector">
             <entity name="Price" />
             <entity name="ChangeInPrice" />
             <display locked="true" x="861" y="434" width="309" height="239" color="red" />
         </group>
-        <display page_width="595" page_height="842" page_cols="3" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true" report_balances="ending" report_flows="summed" scroll_y="64">
+        <group name="Industry_Demand_Sector">
+            <entity name="IndustryOrderRate" />
+            <display x="68" y="945" width="300" height="150" color="red" />
+        </group>
+        <group name="Market_Sector">
+            <entity name="OrderShare" />
+            <display x="438" y="941" width="300" height="150" color="red" />
+        </group>
+        <display page_width="595" page_height="842" page_cols="3" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true" report_balances="ending" report_flows="summed">
             <alias x="92" y="250" uid="0">
                 <of>Price</of>
             </alias>
             <alias x="150" y="287" uid="1">
                 <of>Orders</of>
             </alias>
-            <alias x="206" y="296" uid="2">
+            <alias x="215" y="286" uid="13">
                 <of>Backlog</of>
             </alias>
             <alias x="472" y="134" uid="18">
                 <of>UnitFixedCost</of>
             </alias>
-            <alias x="444" y="182" uid="19">
+            <alias x="450" y="176" uid="23">
                 <of>UnitVariableCost</of>
             </alias>
-            <alias x="458" y="84" uid="20">
+            <alias x="458" y="84" uid="19">
                 <of>Capacitys</of>
             </alias>
-            <alias x="356" y="171" uid="13">
+            <alias x="366" y="172" uid="15">
                 <of>Shipments</of>
             </alias>
-            <connector x="349" y="177" uid="14" color="#FF007F">
+            <connector x="357" y="175" uid="16" color="#FF007F">
                 <from>
-                    <alias uid="13" />
+                    <alias uid="15" />
                 </from>
                 <to>Revenue</to>
             </connector>
-            <connector x="228" y="289" uid="15" color="#FF007F">
-                <from>
-                    <alias uid="2" />
-                </from>
-                <to>AveragePriceOfOrderBook</to>
-            </connector>
-            <connector x="358" y="162" uid="24" color="#FF007F">
+            <connector x="238" y="273" uid="14" color="#FF007F">
                 <from>
                     <alias uid="13" />
                 </from>
+                <to>AveragePriceOfOrderBook</to>
+            </connector>
+            <connector x="368" y="163" uid="22" color="#FF007F">
+                <from>
+                    <alias uid="15" />
+                </from>
                 <to>VariableCost</to>
             </connector>
-            <connector x="265" y="128" uid="3" color="#FF007F">
+            <connector x="265" y="128" uid="2" color="#FF007F">
                 <from>NetIncome</from>
                 <to>NPVProfitChange</to>
             </connector>
-            <connector x="329" y="203" uid="4" color="#FF007F">
+            <connector x="329" y="203" uid="3" color="#FF007F">
                 <from>Revenue</from>
                 <to>NetIncome</to>
             </connector>
-            <connector x="464" y="131" uid="21" color="#FF007F">
+            <connector x="464" y="131" uid="20" color="#FF007F">
                 <from>
                     <alias uid="18" />
                 </from>
                 <to>FixedCost</to>
             </connector>
-            <connector x="276" y="226" uid="16" color="#FF007F">
+            <connector x="283" y="226" uid="11" color="#FF007F">
                 <from>ValueOfBacklog</from>
                 <to>AveragePriceOfOrderBook</to>
             </connector>
-            <connector x="318" y="130" uid="5" color="#FF007F">
+            <connector x="318" y="130" uid="4" color="#FF007F">
                 <from>Cost</from>
                 <to>NetIncome</to>
             </connector>
-            <connector x="393" y="147" uid="6" color="#FF007F">
+            <connector x="396" y="144" uid="17" color="#FF007F">
                 <from>VariableCost</from>
                 <to>Cost</to>
             </connector>
-            <connector x="283" y="97" uid="7" color="#FF007F">
+            <connector x="283" y="97" uid="5" color="#FF007F">
                 <from>NPVProfit</from>
                 <to>NPVIndustryProfits</to>
             </connector>
-            <connector x="130" y="128" uid="8" color="#FF007F">
+            <connector x="130" y="128" uid="6" color="#FF007F">
                 <from>DiscountRate</from>
                 <to>DiscountFactor</to>
             </connector>
-            <connector x="315" y="257" uid="17" color="#FF007F">
+            <connector x="321" y="247" uid="12" color="#FF007F">
                 <from>AveragePriceOfOrderBook</from>
                 <to>Revenue</to>
             </connector>
-            <connector x="449" y="86" uid="22" color="#FF007F">
-                <from>
-                    <alias uid="20" />
-                </from>
-                <to>FixedCost</to>
-            </connector>
-            <connector x="392" y="106" uid="9" color="#FF007F">
-                <from>FixedCost</from>
-                <to>Cost</to>
-            </connector>
-            <connector x="186" y="114" uid="10" color="#FF007F">
-                <from>DiscountFactor</from>
-                <to>NPVProfitChange</to>
-            </connector>
-            <connector x="438" y="175" uid="23" color="#FF007F">
+            <connector x="449" y="86" uid="21" color="#FF007F">
                 <from>
                     <alias uid="19" />
                 </from>
+                <to>FixedCost</to>
+            </connector>
+            <connector x="392" y="106" uid="7" color="#FF007F">
+                <from>FixedCost</from>
+                <to>Cost</to>
+            </connector>
+            <connector x="186" y="114" uid="8" color="#FF007F">
+                <from>DiscountFactor</from>
+                <to>NPVProfitChange</to>
+            </connector>
+            <connector x="449" y="167" uid="24" color="#FF007F">
+                <from>
+                    <alias uid="23" />
+                </from>
                 <to>VariableCost</to>
             </connector>
-            <connector x="114" y="246" uid="11" color="#FF007F">
+            <connector x="114" y="246" uid="9" color="#FF007F">
                 <from>
                     <alias uid="0" />
                 </from>
                 <to>ValueOfNewOrders</to>
             </connector>
-            <connector x="155" y="280" uid="12" color="#FF007F">
+            <connector x="155" y="280" uid="10" color="#FF007F">
                 <from>
                     <alias uid="1" />
                 </from>
                 <to>ValueOfNewOrders</to>
             </connector>
-            <stacked_container x="527" y="77" height="270" width="319" visible_index="0" uid="25">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="97" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702417033">
+            <connector x="580" y="508" uid="31" color="#FF007F">
+                <from>Backlog</from>
+                <to>DeliveryDelay</to>
+            </connector>
+            <connector x="630" y="514" uid="32" color="#FF007F">
+                <from>Shipments</from>
+                <to>DeliveryDelay</to>
+            </connector>
+            <connector x="768" y="492" uid="38" color="#FF007F">
+                <from>FractionalDiscardRate</from>
+                <to>DiscardRate</to>
+            </connector>
+            <connector x="722" y="515" uid="37" color="#FF007F">
+                <from>InstalledBase</from>
+                <to>DiscardRate</to>
+            </connector>
+            <connector x="515" y="573" uid="30" color="#FF007F">
+                <from>NormalDeliveryDelay</from>
+                <to>DesiredShipments</to>
+            </connector>
+            <connector x="673" y="580" uid="26" color="#FF007F">
+                <from>SwitchForCapacity</from>
+                <to>Shipments</to>
+            </connector>
+            <connector x="580" y="539" uid="27" color="#FF007F">
+                <from>Backlog</from>
+                <to>DesiredShipments</to>
+            </connector>
+            <connector x="612" y="565" uid="28" color="#FF007F">
+                <from>DesiredShipments</from>
+                <to>Shipments</to>
+            </connector>
+            <alias x="716" y="568" uid="25">
+                <of>Capacitys</of>
+            </alias>
+            <connector x="709" y="563" uid="29" color="#FF007F">
+                <from>
+                    <alias uid="25" />
+                </from>
+                <to>Shipments</to>
+            </connector>
+            <alias x="541" y="472" uid="35">
+                <of>IndustryOrderRate</of>
+                <label_side>top</label_side>
+                <label_angle>99</label_angle>
+            </alias>
+            <alias x="478" y="491" uid="33">
+                <of>OrderShare</of>
+                <label_side>top</label_side>
+                <label_angle>99</label_angle>
+            </alias>
+            <connector x="487" y="493" uid="34" color="#FF007F">
+                <from>
+                    <alias uid="33" />
+                </from>
+                <to>Orders</to>
+            </connector>
+            <connector x="532" y="475" uid="36" color="#FF007F">
+                <from>
+                    <alias uid="35" />
+                </from>
+                <to>Orders</to>
+            </connector>
+            <stacked_container x="527" y="77" height="270" width="319" visible_index="0" uid="39">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="97" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702413234">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="NPVProfit" index="Company1" />
@@ -477,7 +614,7 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="581" y="41" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="25" />
+            <pad_icon x="581" y="41" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="39" />
         </display>
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
