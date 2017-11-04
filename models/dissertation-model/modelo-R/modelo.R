@@ -175,3 +175,9 @@ sdmodel = list(
   Modelo = modelo,
   Variaveis = nomes_variaveis
 )
+
+
+pedro.smooth1 = function(input, delay, valor_inicial) {
+  change_smooth = (input - 
+}
+
