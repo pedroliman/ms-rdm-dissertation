@@ -1,6 +1,6 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
-START<-0; FINISH<-20; STEP<-0.03125
+START<-0; FINISH<-20; STEP<-0.25
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
@@ -27,6 +27,11 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aWOMStrength = 1
                 ,aPopulation = 100000000
                 ,aUnitsPerHousehold = 1
+                ,aSwitchForShipmentsInForecast = 1
+                ,aVolumeReportingDelay = rep(0.25, times = N_PLAYERS)
+                ,aForecastHorizon = rep(1, times = N_PLAYERS)
+                ,aCapacityAcquisitionDelay = 1
+                ,aTimeForHistoricalVolume = 1
                 )
 
 
@@ -38,11 +43,11 @@ auxs    <- list(aDiscountRate = 0.04
 stocks  <- c(
    sNPVProfit = rep(0, times = N_PLAYERS)
   ,sValueOfBacklog = rep(1, times = N_PLAYERS)
-  ,sBacklog = rep(1, times = N_PLAYERS)
-  ,sInstalledBase = rep(1, times = N_PLAYERS)
+  ,sBacklog = rep(1, times = N_PLAYERS) 
+  ,sInstalledBase = rep(50000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
   ,sPrice = rep(9000, times = N_PLAYERS)
   ,sCumulativeAdopters = 100000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-             )
+  ,sReportedIndustryVolume = rep(10000, times = N_PLAYERS)            )
 
 ##### Modelo de Dinâmica de Sistemas ####
 
@@ -60,6 +65,7 @@ modelo <- function(time, stocks, auxs){
     sInstalledBase = stocks[(N_PLAYERS*3+1):(N_PLAYERS*4)]
     sPrice = stocks[(N_PLAYERS*4+1):(N_PLAYERS*5)]
     sCumulativeAdopters = stocks[(N_PLAYERS*5+1)]
+    sReportedIndustryVolume = stocks[(N_PLAYERS*6):(N_PLAYERS*6+1)]
     
     ##### DIFFUSION SECTOR #####
     aDemandCurveSlope = (aReferencePopulation*aReferenceIndustryDemandElasticity)/(aReferencePrice)
@@ -100,10 +106,54 @@ modelo <- function(time, stocks, auxs){
     
     fShipments = aSwitchForCapacity * min(aDesiredShipments, aCapacity) + (1-aSwitchForCapacity) * aDesiredShipments
     
+    aIndustryShipments = sum(fShipments)
+    
     aDeliveryDelay = sBacklog/fShipments
     
+    ##### EXPECTED INDUSTRY DEMAND SECTOR #####
+    
+    aInitialDemandForecast = fReorderRate
+    
+    aIndustryVolume = max(aInitialDemandForecast,
+                          aSwitchForShipmentsInForecast*aIndustryShipments+
+                            (1-aSwitchForShipmentsInForecast)*fIndustryOrderRate)
     
     
+    # Variavel com SMOOTH - Primeira Ordem:
+    fsmooth_ReportedIndustryVolume = ((aIndustryVolume - sReportedIndustryVolume) / aVolumeReportingDelay) * STEP # Multiplicando pelo step para ajustar o calculo.
+    
+    
+    # Variavel com DELAY - A definição das constantes aqui devem ser alteradas se as condicoes iniciais do modelo mudarem
+    # Esta implementacao considera que os delays sempre serao iguais. Se os delays nao forem iguais, deve-se encontrar outra forma de implementar os delays (talvez com a equacao multiplicativa 1*(time > tempodelay)
+    if(time > aTimeForHistoricalVolume) {
+      aLaggedIndustryVolume = lagvalue(time - aTimeForHistoricalVolume)[(N_PLAYERS*6):(N_PLAYERS*6+1)]
+    } else {
+      aLaggedIndustryVolume = 10000
+    }
+    
+    browser()
+    
+    aExpGrowthInVolume =  log(sReportedIndustryVolume/aLaggedIndustryVolume)/aTimeForHistoricalVolume
+    
+    
+    aExpectedIndustryDemand = sReportedIndustryVolume*exp(aForecastHorizon*aCapacityAcquisitionDelay*aExpGrowthInVolume)
+  
+    #### Continuar daqui - Expected Industry Demand com delay pode necessitar de um estoque).
+    
+    ## Transformando o Expected Industry Demand em um estoque...
+    ainExpectedIndustryDemand = aExpectedIndustryDemand
+    aoutExpectedIndustryDemand = sExpectedIndustryDemand
+    
+    
+    # Mais uma Variável com Delay
+    # Vou ter que transferir o calculo do aExpectedIndustryDemand para dentro do if
+    if(time > aCapacityAcquisitionDelay) {
+      temp_aExpectedIndustryDemand
+      
+      aLaggedVolumeForecast = lagvalue(time - aCapacityAcquisitionDelay)[(N_PLAYERS*6):(N_PLAYERS*6+1)]
+    } else {
+      aLaggedIndustryVolume = 10000
+    }
     
     ##### NET INCOME SECTOR #####
     
@@ -141,6 +191,8 @@ modelo <- function(time, stocks, auxs){
     
     d_CumulativeAdopters_dt = fAdoptionRate
     
+    d_sReportedIndustryVolume_dt = fsmooth_ReportedIndustryVolume
+    
     ##### VARIÁVEIS RETORNADAS #####
     
     return (list(c(
@@ -150,6 +202,7 @@ modelo <- function(time, stocks, auxs){
                    ,d_InstalledBase_dt
                    ,d_Price_dt
                    ,d_CumulativeAdopters_dt
+                   ,d_sReportedIndustryVolume_dt
                    )
                  ,aDiscountFactor = aDiscountFactor
                  ,aDiscountRate = aDiscountRate

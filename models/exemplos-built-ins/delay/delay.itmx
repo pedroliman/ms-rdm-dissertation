@@ -2,7 +2,7 @@
 <xmile version="1.0" level="3" xmlns="http://www.systemdynamics.org/XMILE" xmlns:isee="http://iseesystems.com/XMILE">
     <header>
         <smile version="1.0" namespace="std, isee" />
-        <name>smooth1</name>
+        <name>delay</name>
         <uuid>cde49368-6954-47f1-9b1a-9383555ce76e</uuid>
         <vendor>isee systems, inc.</vendor>
         <product version="10.0.3" lang="en">iThink</product>
@@ -11,92 +11,88 @@
         <model font-family="Arial" font-size="9" />
         <interface font-family="Arial" font-size="9" />
     </style>
-    <sim_specs method="Euler" time_units="Years">
+    <sim_specs method="RK4" time_units="Years">
         <start>0</start>
         <stop>20</stop>
         <dt>0.25</dt>
     </sim_specs>
     <model_units />
     <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
-        <isee:window width="1366" height="685" />
+        <isee:window width="1360" height="685" />
         <isee:security />
         <isee:print_setup width="595" height="842" />
     </isee:prefs>
     <isee:equation_prefs order_by="module" />
     <model>
-        <stock name="Smooth">
-            <eqn>0</eqn>
-            <inflow>changesmooth</inflow>
-            <display x="293" y="83" color="blue" />
+        <stock name="stock">
+            <eqn>10</eqn>
+            <inflow>flow</inflow>
+            <display x="269" y="80" color="blue" />
         </stock>
-        <flow name="changesmooth">
-            <eqn>(input - Smooth) * tempodelay</eqn>
-            <display x="222" y="79" color="blue">
+        <flow name="flow">
+            <eqn>inputx*stock</eqn>
+            <display x="198" y="79" color="blue">
                 <pts>
-                    <pt x="173" y="79" />
-                    <pt x="271" y="79" />
+                    <pt x="150" y="79" />
+                    <pt x="247" y="79" />
                 </pts>
             </display>
         </flow>
-        <aux name="tempodelay">
-            <eqn>1</eqn>
-            <display x="269" y="135" color="blue" />
+        <aux name="inputx">
+            <eqn>0.1</eqn>
+            <display x="160" y="22" color="blue" />
         </aux>
-        <aux name="input">
-            <eqn>10</eqn>
-            <display x="184" y="137" color="blue" />
+        <aux name="DelayedMoney">
+            <eqn>DELAY(stock, timedelay)</eqn>
+            <display x="272" y="140" color="blue" />
         </aux>
-        <aux name="SmoothBuiltin">
-            <eqn>SMTH1(input,tempodelay,0)</eqn>
-            <display x="225" y="184" color="blue" />
+        <aux name="timedelay">
+            <eqn>2</eqn>
+            <display x="336" y="119" color="blue" />
         </aux>
         <display page_width="595" page_height="842" page_cols="2" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed">
-            <connector x="271" y="99" uid="0" color="#FF007F">
-                <from>Smooth</from>
-                <to>changesmooth</to>
+            <connector x="169" y="22" uid="0" color="#FF007F">
+                <from>inputx</from>
+                <to>flow</to>
             </connector>
-            <connector x="190" y="144" uid="1" color="#FF007F">
-                <from>input</from>
-                <to>SmoothBuiltin</to>
+            <connector x="264" y="97" uid="1" color="#FF007F">
+                <from>stock</from>
+                <to>DelayedMoney</to>
             </connector>
-            <connector x="188" y="129" uid="2" color="#FF007F">
-                <from>input</from>
-                <to>changesmooth</to>
+            <connector x="255" y="63" uid="2" color="#FF007F">
+                <from>stock</from>
+                <to>flow</to>
             </connector>
-            <connector x="264" y="128" uid="3" color="#FF007F">
-                <from>tempodelay</from>
-                <to>changesmooth</to>
+            <connector x="327" y="122" uid="3" color="#FF007F">
+                <from>timedelay</from>
+                <to>DelayedMoney</to>
             </connector>
-            <connector x="264" y="143" uid="4" color="#FF007F">
-                <from>tempodelay</from>
-                <to>SmoothBuiltin</to>
-            </connector>
-            <stacked_container x="86" y="301" height="282" width="492" visible_index="0" uid="5">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702316639" time_precision="2" from="0" to="20">
+            <stacked_container x="86" y="301" height="282" width="492" visible_index="0" uid="4">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702312452" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
-                        <entity name="Smooth" />
+                        <entity name="stock" />
                     </plot>
                     <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
-                        <entity name="SmoothBuiltin" />
+                        <entity name="DelayedMoney" />
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="108" y="317" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="5" />
-            <stacked_container x="432" y="31" height="270" width="475" visible_index="0" uid="6">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="98" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702316639">
+            <pad_icon x="108" y="317" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="4" />
+            <stacked_container x="432" y="31" height="270" width="475" visible_index="0" uid="5">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="98" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702312452">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
-                        <entity name="Smooth" />
+                        <entity name="stock" />
                     </item>
-                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="1">
-                        <entity name="SmoothBuiltin" />
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="1">
+                        <entity name="flow" />
                     </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="2">
-                        <entity name="changesmooth" />
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="2">
+                        <entity name="DelayedMoney" />
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="454" y="47" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="6" />
+            <pad_icon x="454" y="47" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="5" />
         </display>
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
