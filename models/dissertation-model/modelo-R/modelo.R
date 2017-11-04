@@ -1,6 +1,6 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
-START<-0; FINISH<-20; STEP<-0.25
+START<-0; FINISH<-20; STEP<-0.03125
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
@@ -177,7 +177,4 @@ sdmodel = list(
 )
 
 
-pedro.smooth1 = function(input, delay, valor_inicial) {
-  change_smooth = (input - 
-}
 
