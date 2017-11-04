@@ -26,6 +26,7 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aInnovatorAdoptionFraction = 0.001
                 ,aWOMStrength = 1
                 ,aPopulation = 100000000
+                ,aUnitsPerHousehold = 1
                 )
 
 
@@ -79,7 +80,19 @@ modelo <- function(time, stocks, auxs){
     
     fAdoptionRate = aNonAdopters * (aInnovatorAdoptionFraction + aWOMStrength*sCumulativeAdopters/aPopulation)
     
-    ##### ORDERS SECTOR #####
+    ##### ORDERS SECTOR - PT 1 #####
+    
+    fDiscardRate = sInstalledBase * aFractionalDiscardRate
+    
+    ##### INDUSTRY DEMAND SECTOR #####
+    
+    fReorderRate = sum(fDiscardRate)
+    
+    aInitialOrderRate = aUnitsPerHousehold * fAdoptionRate
+    
+    fIndustryOrderRate = fReorderRate + aInitialOrderRate
+    
+    ##### ORDERS SECTOR - PT 2 #####
     
     fOrders = fIndustryOrderRate * aOrderShare
     
@@ -89,7 +102,7 @@ modelo <- function(time, stocks, auxs){
     
     aDeliveryDelay = sBacklog/fShipments
     
-    fDiscardRate = sInstalledBase * aFractionalDiscardRate
+    
     
     
     ##### NET INCOME SECTOR #####
