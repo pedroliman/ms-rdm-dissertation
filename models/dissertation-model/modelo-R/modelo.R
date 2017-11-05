@@ -237,7 +237,8 @@ modelo <- function(time, stocks, auxs){
                  ,fNetIncome = fNetIncome
                  ,aNPVIndustryProfits = aNPVIndustryProfits
                  ,aInitialDemandForecast = aInitialDemandForecast
-                 ,aLaggedVolumeForecast = aLaggedVolumeForecast))   
+                 ,aLaggedVolumeForecast = aLaggedVolumeForecast
+                 ,aForecastError = aForecastError))   
   })
 }
 
