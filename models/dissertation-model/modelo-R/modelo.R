@@ -53,6 +53,7 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aForecastHorizon = rep(1, times = N_PLAYERS)
                 ,aCapacityAcquisitionDelay = 1
                 ,aTimeForHistoricalVolume = 1
+                ,aLCStrength = rep(0.7, times = N_PLAYERS)
                 )
 
 
@@ -64,7 +65,8 @@ stocks  <- c(
   ,sInstalledBase = rep(50000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
   ,sPrice = rep(9000, times = N_PLAYERS)
   ,sCumulativeAdopters = 100000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-  ,sReportedIndustryVolume = rep(10000, times = N_PLAYERS)            )
+  ,sReportedIndustryVolume = rep(10000, times = N_PLAYERS)
+  ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS)) # Este estoque possui formula
 
 ##### Modelo de Dinâmica de Sistemas ####
 
@@ -83,6 +85,8 @@ modelo <- function(time, stocks, auxs){
     sPrice = stocks[(N_PLAYERS*4+1):(N_PLAYERS*5)]
     sCumulativeAdopters = stocks[(N_PLAYERS*5+1)]
     sReportedIndustryVolume = stocks[(N_PLAYERS*6):(N_PLAYERS*6+1)]
+    sCumulativeProduction = stocks[(N_PLAYERS*7):(N_PLAYERS*7+1)]
+    
     
     #Obtendo o número da linha no qual estou
     linha = (time * (n_tempo - 1)) / FINISH + 1
@@ -172,6 +176,13 @@ modelo <- function(time, stocks, auxs){
     
     aForecastError = (aLaggedVolumeForecast - aIndustryVolume)/(1e-009+aIndustryVolume)
     
+    ##### LEARNING CURVE SECTOR #####
+    fProduction = fShipments
+    
+    browser()
+    
+    aLCExponent = log(aLC)
+    
     ##### NET INCOME SECTOR #####
     
     aDiscountFactor = exp(-aDiscountRate*time)
@@ -209,6 +220,8 @@ modelo <- function(time, stocks, auxs){
     d_CumulativeAdopters_dt = fAdoptionRate
     
     d_sReportedIndustryVolume_dt = fsmooth_ReportedIndustryVolume
+    
+    d_CumulativeProduction_dt = fProduction
     
     ##### VARIÁVEIS RETORNADAS #####
     
