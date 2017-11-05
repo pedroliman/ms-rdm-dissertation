@@ -32,11 +32,7 @@ list.variaveis.globais = list(
 ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
 auxs    <- list(aDiscountRate = 0.04
                 ,fChangeInPrice = rep(0, times = N_PLAYERS)
-                #,aUnitVariableCost = rep(10, times = N_PLAYERS)
-                #,aUnitFixedCost = rep(10, times = N_PLAYERS)
-                ,aCapacity = rep(3, times = N_PLAYERS)
-                ,aOrderShare = rep(0.5, times = N_PLAYERS)
-                #,fIndustryOrderRate = 10
+                ,aCapacity = rep(10000000, times = N_PLAYERS)
                 ,aNormalDeliveryDelay = rep(0.25, times = N_PLAYERS)
                 ,aSwitchForCapacity = 1
                 ,aFractionalDiscardRate = 0.1
@@ -53,6 +49,10 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aForecastHorizon = rep(1, times = N_PLAYERS)
                 ,aCapacityAcquisitionDelay = 1
                 ,aTimeForHistoricalVolume = 1
+                # Market Sector
+                ,aReferenceDeliveryDelay = 0.25
+                ,aSensOfAttractToAvailability = -4
+                ,aSensOfAttractToPrice = -8
                 # Learning Curve Params
                 ,aLCStrength = rep(0.7, times = N_PLAYERS)
                 ,aInitialProductionExperience = rep(1e+007, times = N_PLAYERS)
@@ -120,6 +120,8 @@ modelo <- function(time, stocks, auxs){
     
     fAdoptionRate = aNonAdopters * (aInnovatorAdoptionFraction + aWOMStrength*sCumulativeAdopters/aPopulation)
     
+   
+    
     ##### ORDERS SECTOR - PT 1 #####
     
     fDiscardRate = sInstalledBase * aFractionalDiscardRate
@@ -134,15 +136,32 @@ modelo <- function(time, stocks, auxs){
     
     ##### ORDERS SECTOR - PT 2 #####
     
-    fOrders = fIndustryOrderRate * aOrderShare
-    
     aDesiredShipments = sBacklog/aNormalDeliveryDelay
     
     fShipments = aSwitchForCapacity * min(aDesiredShipments, aCapacity) + (1-aSwitchForCapacity) * aDesiredShipments
     
     aIndustryShipments = sum(fShipments)
     
+    aMarketShare = fShipments / aIndustryShipments
+    
     aDeliveryDelay = sBacklog/fShipments
+    
+    ##### MARKET SECTOR #####
+    
+    aAttractivenessFromAvailability = exp(aSensOfAttractToAvailability*(aDeliveryDelay/aReferenceDeliveryDelay))
+    
+    aAttractivenessFromPrice = exp(aSensOfAttractToPrice*(sPrice/aReferencePrice))
+    
+    aAttractiveness = aAttractivenessFromAvailability * aAttractivenessFromPrice
+    
+    aTotalAttractiveness = sum(aAttractiveness)
+    
+    aOrderShare = aAttractiveness / aTotalAttractiveness
+    
+    ##### ORDERS SECTOR - PT 3 #####
+    
+    fOrders = fIndustryOrderRate * aOrderShare
+    
     
     ##### EXPECTED INDUSTRY DEMAND SECTOR #####
     
