@@ -213,6 +213,11 @@ modelo <- function(time, stocks, auxs){
     
     ##### VARIÁVEIS RETORNADAS #####
     
+    ## Parar se o tempo chegou ao fim.
+    if(time == FINISH){
+     # browser()
+    }
+    
     return (list(c(
                    d_NPVProfit_dt
                    ,d_ValueOfBacklog_dt
@@ -222,6 +227,11 @@ modelo <- function(time, stocks, auxs){
                    ,d_CumulativeAdopters_dt
                    ,d_sReportedIndustryVolume_dt
                    )
+                 ,fReorderRate = fReorderRate
+                 ,aIndustryShipments = aIndustryShipments
+                 ,fIndustryOrderRate = fIndustryOrderRate
+                 ,aIndustryVolume = aIndustryVolume
+                 ,fDiscardRate = fDiscardRate
                  ,aDiscountFactor = aDiscountFactor
                  ,aDiscountRate = aDiscountRate
                  ,fNPVProfitChange = fNPVProfitChange

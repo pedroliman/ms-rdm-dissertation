@@ -26,6 +26,7 @@ opcoes = list(
   SentidoCriterio = "min"
 )
 
+
 ## Carregando o Modelo, e outros objetos
 source('modelo.R', encoding = 'UTF-8')
 
