@@ -32,8 +32,8 @@ list.variaveis.globais = list(
 ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
 auxs    <- list(aDiscountRate = 0.04
                 ,fChangeInPrice = rep(0, times = N_PLAYERS)
-                ,aUnitVariableCost = rep(10, times = N_PLAYERS)
-                ,aUnitFixedCost = rep(10, times = N_PLAYERS)
+                #,aUnitVariableCost = rep(10, times = N_PLAYERS)
+                #,aUnitFixedCost = rep(10, times = N_PLAYERS)
                 ,aCapacity = rep(3, times = N_PLAYERS)
                 ,aOrderShare = rep(0.5, times = N_PLAYERS)
                 #,fIndustryOrderRate = 10
@@ -53,7 +53,13 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aForecastHorizon = rep(1, times = N_PLAYERS)
                 ,aCapacityAcquisitionDelay = 1
                 ,aTimeForHistoricalVolume = 1
+                # Learning Curve Params
                 ,aLCStrength = rep(0.7, times = N_PLAYERS)
+                ,aInitialProductionExperience = rep(1e+007, times = N_PLAYERS)
+                ,aRatioOfFixedToVarCost = rep(0.3, times = N_PLAYERS)
+                ,aInitialPrice = rep(1000, times = N_PLAYERS)
+                ,aNormalProfitMargin = rep(0.2, times = N_PLAYERS)
+                ,aNormalCapacityUtilization = rep(0.8, times = N_PLAYERS)
                 )
 
 
@@ -179,9 +185,17 @@ modelo <- function(time, stocks, auxs){
     ##### LEARNING CURVE SECTOR #####
     fProduction = fShipments
     
-    browser()
+    aLCExponent = log(aLCStrength)/log(2)
     
-    aLCExponent = log(aLC)
+    aLearning = (sCumulativeProduction/aInitialProductionExperience)^aLCExponent
+    
+    aInitialUnitFixedCost = (aInitialPrice/(1+aNormalProfitMargin))*aRatioOfFixedToVarCost*(1/(1+aRatioOfFixedToVarCost/aNormalCapacityUtilization))
+    
+    aInitialUnitVariableCost = (aInitialPrice/(1+aNormalProfitMargin))*(1/(1+aRatioOfFixedToVarCost/aNormalCapacityUtilization))
+    
+    aUnitFixedCost = aLearning * aInitialUnitFixedCost
+    
+    aUnitVariableCost = aLearning * aInitialUnitVariableCost
     
     ##### NET INCOME SECTOR #####
     
@@ -238,6 +252,7 @@ modelo <- function(time, stocks, auxs){
                    ,d_Price_dt
                    ,d_CumulativeAdopters_dt
                    ,d_sReportedIndustryVolume_dt
+                   ,d_CumulativeProduction_dt
                    )
                  ,fReorderRate = fReorderRate
                  ,aIndustryShipments = aIndustryShipments

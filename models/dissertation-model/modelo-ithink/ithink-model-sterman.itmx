@@ -26,7 +26,7 @@
     </dimensions>
     <model_units />
     <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
-        <isee:window width="1366" height="685" />
+        <isee:window width="1360" height="685" />
         <isee:security />
         <isee:print_setup width="595" height="842" />
     </isee:prefs>
@@ -522,7 +522,7 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>0.7</eqn>
-            <display x="1056" y="66" color="blue" />
+            <display x="1038" y="57" color="blue" />
         </aux>
         <aux name="LCExponent">
             <dimensions>
@@ -593,8 +593,8 @@
         <group name="Learning_Curve_Sector">
             <entity name="CumulativeProduction" />
             <entity name="Production" />
-            <entity name="LCStrength" />
             <entity name="InitialProductionExperience" />
+            <entity name="LCStrength" />
             <entity name="UnitFixedCost" />
             <entity name="RatioOfFixedToVarCost" />
             <entity name="InitialPrice" />
@@ -699,7 +699,7 @@
             <entity name="OrderShare" />
             <display x="438" y="941" width="300" height="150" color="red" />
         </group>
-        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" scroll_x="330">
+        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" scroll_x="579">
             <alias x="90" y="225" uid="47">
                 <of>Price</of>
             </alias>
@@ -1137,7 +1137,7 @@
                 </from>
                 <to>Production</to>
             </connector>
-            <connector x="1064" y="69" uid="2" color="#FF007F">
+            <connector x="1046" y="62" uid="2" color="#FF007F">
                 <from>LCStrength</from>
                 <to>LCExponent</to>
             </connector>
@@ -1202,7 +1202,7 @@
                 <to>InitialUnitFixedCost</to>
             </connector>
             <stacked_container x="1341" y="735" height="282" width="492" visible_index="0" uid="119">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702232506" time_precision="2" from="0" to="20">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702231529" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="InitialDemandForecast" index="Company1" />
                     </plot>
@@ -1219,7 +1219,7 @@
             </stacked_container>
             <pad_icon x="1429" y="782" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="119" />
             <stacked_container x="527" y="77" height="270" width="319" visible_index="0" uid="120">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="97" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702232731">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="97" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702231529">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="NPVProfit" index="Company1" />
