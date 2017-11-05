@@ -8,6 +8,27 @@ simtime <- seq(START, FINISH, by=STEP)
 # Número de Players no modelo
 N_PLAYERS = 2
 
+
+
+# Matriz de Variáveis que possuem valores no tempo global
+matriz.variaveis.globais = matrix(simtime)
+
+n_tempo = length(simtime)
+
+nlinhas_matriz = nrow(matriz.variaveis.globais)
+
+# Adcionando variável sReportedIndustryVolume
+matriz.variaveis.globais = cbind(matriz.variaveis.globais, NA)
+
+colnames(matriz.variaveis.globais) = c("Tempo", "sReportedIndustryVolume")
+
+list.variaveis.globais = list(
+  sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
+  aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
+)
+
+
+
 ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
 auxs    <- list(aDiscountRate = 0.04
                 ,fChangeInPrice = rep(0, times = N_PLAYERS)
@@ -33,10 +54,6 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aCapacityAcquisitionDelay = 1
                 ,aTimeForHistoricalVolume = 1
                 )
-
-
-
-
 
 
 ##### VARIÁVEIS DE ENTRADA - ESTOQUES #####
@@ -66,6 +83,13 @@ modelo <- function(time, stocks, auxs){
     sPrice = stocks[(N_PLAYERS*4+1):(N_PLAYERS*5)]
     sCumulativeAdopters = stocks[(N_PLAYERS*5+1)]
     sReportedIndustryVolume = stocks[(N_PLAYERS*6):(N_PLAYERS*6+1)]
+    
+    #Obtendo o número da linha no qual estou
+    linha = (time * (n_tempo - 1)) / FINISH + 1
+    
+    list.variaveis.globais$sReportedIndustryVolume[linha,] <<- sReportedIndustryVolume
+    
+    # Gravando a Variável sReportedIndustryVolume no vetor global
     
     ##### DIFFUSION SECTOR #####
     aDemandCurveSlope = (aReferencePopulation*aReferenceIndustryDemandElasticity)/(aReferencePrice)
@@ -126,34 +150,28 @@ modelo <- function(time, stocks, auxs){
     # Variavel com DELAY - A definição das constantes aqui devem ser alteradas se as condicoes iniciais do modelo mudarem
     # Esta implementacao considera que os delays sempre serao iguais. Se os delays nao forem iguais, deve-se encontrar outra forma de implementar os delays (talvez com a equacao multiplicativa 1*(time > tempodelay)
     if(time > aTimeForHistoricalVolume) {
-      aLaggedIndustryVolume = lagvalue(time - aTimeForHistoricalVolume)[(N_PLAYERS*6):(N_PLAYERS*6+1)]
+      nlinhas_delay = aTimeForHistoricalVolume / STEP
+      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[linha-nlinhas_delay,]
     } else {
-      aLaggedIndustryVolume = 10000
+      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[linha,]
     }
-    
-    browser()
     
     aExpGrowthInVolume =  log(sReportedIndustryVolume/aLaggedIndustryVolume)/aTimeForHistoricalVolume
     
     
     aExpectedIndustryDemand = sReportedIndustryVolume*exp(aForecastHorizon*aCapacityAcquisitionDelay*aExpGrowthInVolume)
-  
-    #### Continuar daqui - Expected Industry Demand com delay pode necessitar de um estoque).
     
-    ## Transformando o Expected Industry Demand em um estoque...
-    ainExpectedIndustryDemand = aExpectedIndustryDemand
-    aoutExpectedIndustryDemand = sExpectedIndustryDemand
+    list.variaveis.globais$aExpectedIndustryDemand[linha,] <<- aExpectedIndustryDemand
     
-    
-    # Mais uma Variável com Delay
-    # Vou ter que transferir o calculo do aExpectedIndustryDemand para dentro do if
+    # Mais uma variável com delay
     if(time > aCapacityAcquisitionDelay) {
-      temp_aExpectedIndustryDemand
-      
-      aLaggedVolumeForecast = lagvalue(time - aCapacityAcquisitionDelay)[(N_PLAYERS*6):(N_PLAYERS*6+1)]
+      nlinhas_delay = aCapacityAcquisitionDelay / STEP
+      aLaggedVolumeForecast = list.variaveis.globais$aExpectedIndustryDemand[linha-nlinhas_delay,]
     } else {
-      aLaggedIndustryVolume = 10000
+      aLaggedVolumeForecast = list.variaveis.globais$aExpectedIndustryDemand[linha,]
     }
+    
+    aForecastError = (aLaggedVolumeForecast - aIndustryVolume)/(1e-009+aIndustryVolume)
     
     ##### NET INCOME SECTOR #####
     
@@ -208,7 +226,9 @@ modelo <- function(time, stocks, auxs){
                  ,aDiscountRate = aDiscountRate
                  ,fNPVProfitChange = fNPVProfitChange
                  ,fNetIncome = fNetIncome
-                 ,aNPVIndustryProfits = aNPVIndustryProfits))   
+                 ,aNPVIndustryProfits = aNPVIndustryProfits
+                 ,aInitialDemandForecast = aInitialDemandForecast
+                 ,aLaggedVolumeForecast = aLaggedVolumeForecast))   
   })
 }
 

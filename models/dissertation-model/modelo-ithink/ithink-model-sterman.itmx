@@ -598,14 +598,14 @@
                 <label_side>top</label_side>
                 <label_angle>99</label_angle>
             </alias>
-            <alias x="811" y="584" uid="35">
-                <of>InitialCumulativeAdopters</of>
-            </alias>
-            <alias x="794" y="640" uid="36">
+            <alias x="794" y="640" uid="35">
                 <of>UnitsPerHousehold</of>
             </alias>
             <alias x="1172" y="531" uid="38">
                 <of>AdoptionRate</of>
+            </alias>
+            <alias x="811" y="584" uid="36">
+                <of>InitialCumulativeAdopters</of>
             </alias>
             <alias x="1029" y="419" uid="37">
                 <of>DiscardRate</of>
@@ -616,14 +616,17 @@
             <alias x="470" y="164" uid="3">
                 <of>UnitVariableCost</of>
             </alias>
-            <alias x="931" y="686" uid="7">
+            <alias x="924" y="642" uid="7">
+                <of>ReorderRate</of>
+            </alias>
+            <alias x="372" y="177" uid="4">
+                <of>Shipments</of>
+            </alias>
+            <alias x="931" y="686" uid="8">
                 <of>IndustryShipments</of>
             </alias>
             <alias x="929" y="726" uid="20">
                 <of>IndustryOrderRate</of>
-            </alias>
-            <alias x="458" y="69" uid="4">
-                <of>Capacitys</of>
             </alias>
             <alias x="471" y="115" uid="5">
                 <of>UnitFixedCost</of>
@@ -633,51 +636,172 @@
                 <label_side>top</label_side>
                 <label_angle>99</label_angle>
             </alias>
-            <alias x="924" y="642" uid="8">
-                <of>ReorderRate</of>
+            <alias x="458" y="69" uid="6">
+                <of>Capacitys</of>
             </alias>
-            <alias x="372" y="177" uid="6">
-                <of>Shipments</of>
-            </alias>
-            <connector x="321" y="247" uid="39" color="#FF007F">
-                <from>AveragePriceOfOrderBook</from>
-                <to>Revenue</to>
-            </connector>
-            <connector x="385" y="104" uid="40" color="#FF007F">
-                <from>FixedCost</from>
-                <to>Cost</to>
-            </connector>
-            <connector x="696" y="561" uid="41" color="#FF007F">
-                <from>
-                    <alias uid="32" />
-                </from>
-                <to>Shipments</to>
-            </connector>
-            <connector x="283" y="97" uid="42" color="#FF007F">
-                <from>NPVProfit</from>
-                <to>NPVIndustryProfits</to>
-            </connector>
-            <connector x="325" y="129" uid="43" color="#FF007F">
-                <from>Cost</from>
-                <to>NetIncome</to>
-            </connector>
-            <connector x="1023" y="694" uid="9" color="#FF007F">
-                <from>IndustryVolume</from>
+            <connector x="1208" y="682" uid="16" color="#FF007F">
+                <from>LaggedVolumeForecast</from>
                 <to>ForecastError</to>
             </connector>
-            <connector x="1168" y="785" uid="16" color="#FF007F">
-                <from>ExpectedIndustryDemand</from>
-                <to>LaggedVolumeForecast</to>
+            <connector x="231" y="517" uid="39" color="#FF007F">
+                <from>IndustryDemand</from>
+                <to>NonAdopters</to>
             </connector>
-            <connector x="1192" y="822" uid="17" color="#FF007F">
-                <from>CapacityAcquisitionDelay</from>
-                <to>LaggedVolumeForecast</to>
+            <connector x="933" y="639" uid="9" color="#FF007F">
+                <from>
+                    <alias uid="7" />
+                </from>
+                <to>InitialDemandForecast</to>
             </connector>
-            <connector x="1177" y="830" uid="27" color="#FF007F">
-                <from>CapacityAcquisitionDelay</from>
+            <connector x="940" y="687" uid="10" color="#FF007F">
+                <from>
+                    <alias uid="8" />
+                </from>
+                <to>IndustryVolume</to>
+            </connector>
+            <connector x="1098" y="698" uid="17" color="#FF007F">
+                <from>VolumeReportingDelay</from>
+                <to>ReportedIndustryVolume</to>
+            </connector>
+            <connector x="1022" y="704" uid="11" color="#FF007F">
+                <from>IndustryVolume</from>
+                <to>ReportedIndustryVolume</to>
+            </connector>
+            <connector x="960" y="824" uid="21" color="#FF007F">
+                <from>TimeForHistoricalVolume</from>
+                <to>LaggedIndustryVolume</to>
+            </connector>
+            <connector x="502" y="493" uid="40" color="#FF007F">
+                <from>
+                    <alias uid="31" />
+                </from>
+                <to>Orders</to>
+            </connector>
+            <connector x="335" y="204" uid="41" color="#FF007F">
+                <from>Revenue</from>
+                <to>NetIncome</to>
+            </connector>
+            <connector x="1049" y="736" uid="22" color="#FF007F">
+                <from>ReportedIndustryVolume</from>
+                <to>LaggedIndustryVolume</to>
+            </connector>
+            <connector x="646" y="513" uid="42" color="#FF007F">
+                <from>Shipments</from>
+                <to>DeliveryDelay</to>
+            </connector>
+            <connector x="152" y="539" uid="43" color="#FF007F">
+                <from>Population</from>
+                <to>AdoptionRate</to>
+            </connector>
+            <connector x="1057" y="747" uid="25" color="#FF007F">
+                <from>ReportedIndustryVolume</from>
+                <to>ExpGrowthInVolume</to>
+            </connector>
+            <connector x="363" y="176" uid="44" color="#FF007F">
+                <from>
+                    <alias uid="4" />
+                </from>
+                <to>Revenue</to>
+            </connector>
+            <connector x="238" y="272" uid="45" color="#FF007F">
+                <from>
+                    <alias uid="2" />
+                </from>
+                <to>AveragePriceOfOrderBook</to>
+            </connector>
+            <connector x="984" y="780" uid="23" color="#FF007F">
+                <from>LaggedIndustryVolume</from>
+                <to>ExpGrowthInVolume</to>
+            </connector>
+            <connector x="461" y="118" uid="46" color="#FF007F">
+                <from>
+                    <alias uid="5" />
+                </from>
+                <to>FixedCost</to>
+            </connector>
+            <connector x="596" y="507" uid="47" color="#FF007F">
+                <from>Backlog</from>
+                <to>DeliveryDelay</to>
+            </connector>
+            <connector x="587" y="538" uid="48" color="#FF007F">
+                <from>Backlog</from>
+                <to>DesiredShipments</to>
+            </connector>
+            <connector x="90" y="503" uid="49" color="#FF007F">
+                <from>ReferencePopulation</from>
+                <to>IndustryDemand</to>
+            </connector>
+            <connector x="349" y="435" uid="50" color="#FF007F">
+                <from>
+                    <alias uid="30" />
+                </from>
+                <to>LowestPrice</to>
+            </connector>
+            <connector x="661" y="582" uid="51" color="#FF007F">
+                <from>SwitchForCapacity</from>
+                <to>Shipments</to>
+            </connector>
+            <connector x="786" y="635" uid="52" color="#FF007F">
+                <from>
+                    <alias uid="35" />
+                </from>
+                <to>InitialInstalledBase</to>
+            </connector>
+            <connector x="287" y="226" uid="53" color="#FF007F">
+                <from>ValueOfBacklog</from>
+                <to>AveragePriceOfOrderBook</to>
+            </connector>
+            <connector x="687" y="641" uid="54" color="#FF007F">
+                <from>InitialSharePlayers</from>
+                <to>InitialInstalledBase</to>
+            </connector>
+            <connector x="805" y="479" uid="55" color="#FF007F">
+                <from>FractionalDiscardRate</from>
+                <to>DiscardRate</to>
+            </connector>
+            <connector x="547" y="474" uid="56" color="#FF007F">
+                <from>
+                    <alias uid="33" />
+                </from>
+                <to>Orders</to>
+            </connector>
+            <connector x="89" y="498" uid="57" color="#FF007F">
+                <from>ReferencePopulation</from>
+                <to>DemandCurveSlope</to>
+            </connector>
+            <connector x="990" y="471" uid="58" color="#FF007F">
+                <from>ReorderRate</from>
+                <to>IndustryOrderRate</to>
+            </connector>
+            <connector x="803" y="587" uid="59" color="#FF007F">
+                <from>
+                    <alias uid="36" />
+                </from>
+                <to>InitialInstalledBase</to>
+            </connector>
+            <connector x="121" y="456" uid="60" color="#FF007F">
+                <from>ReferenceIndustryDemandElasticity</from>
+                <to>DemandCurveSlope</to>
+            </connector>
+            <connector x="463" y="158" uid="61" color="#FF007F">
+                <from>
+                    <alias uid="3" />
+                </from>
+                <to>VariableCost</to>
+            </connector>
+            <connector x="530" y="573" uid="62" color="#FF007F">
+                <from>NormalDeliveryDelay</from>
+                <to>DesiredShipments</to>
+            </connector>
+            <connector x="1064" y="793" uid="26" color="#FF007F">
+                <from>ExpGrowthInVolume</from>
                 <to>ExpectedIndustryDemand</to>
             </connector>
-            <connector x="1166" y="741" uid="29" color="#FF007F">
+            <connector x="1161" y="463" uid="63" color="#FF007F">
+                <from>UnitsPerHousehold</from>
+                <to>InitialOrderRate</to>
+            </connector>
+            <connector x="1166" y="741" uid="27" color="#FF007F">
                 <from>ForecastHorizon</from>
                 <to>ExpectedIndustryDemand</to>
             </connector>
@@ -685,305 +809,181 @@
                 <from>ReportedIndustryVolume</from>
                 <to>ExpectedIndustryDemand</to>
             </connector>
-            <connector x="1064" y="793" uid="25" color="#FF007F">
-                <from>ExpGrowthInVolume</from>
-                <to>ExpectedIndustryDemand</to>
-            </connector>
-            <connector x="463" y="158" uid="44" color="#FF007F">
-                <from>
-                    <alias uid="3" />
-                </from>
-                <to>VariableCost</to>
-            </connector>
-            <connector x="984" y="780" uid="21" color="#FF007F">
-                <from>LaggedIndustryVolume</from>
-                <to>ExpGrowthInVolume</to>
-            </connector>
-            <connector x="1057" y="747" uid="26" color="#FF007F">
-                <from>ReportedIndustryVolume</from>
-                <to>ExpGrowthInVolume</to>
-            </connector>
-            <connector x="1049" y="736" uid="22" color="#FF007F">
-                <from>ReportedIndustryVolume</from>
-                <to>LaggedIndustryVolume</to>
-            </connector>
-            <connector x="960" y="824" uid="23" color="#FF007F">
-                <from>TimeForHistoricalVolume</from>
-                <to>LaggedIndustryVolume</to>
-            </connector>
-            <connector x="1022" y="704" uid="10" color="#FF007F">
-                <from>IndustryVolume</from>
-                <to>ReportedIndustryVolume</to>
-            </connector>
-            <connector x="1098" y="698" uid="18" color="#FF007F">
-                <from>VolumeReportingDelay</from>
-                <to>ReportedIndustryVolume</to>
-            </connector>
-            <connector x="231" y="517" uid="45" color="#FF007F">
-                <from>IndustryDemand</from>
-                <to>NonAdopters</to>
-            </connector>
-            <connector x="1207" y="682" uid="19" color="#FF007F">
-                <from>LaggedVolumeForecast</from>
-                <to>ForecastError</to>
-            </connector>
-            <connector x="940" y="687" uid="11" color="#FF007F">
-                <from>
-                    <alias uid="7" />
-                </from>
-                <to>IndustryVolume</to>
-            </connector>
-            <connector x="1012" y="654" uid="12" color="#FF007F">
-                <from>InitialDemandForecast</from>
-                <to>IndustryVolume</to>
-            </connector>
-            <connector x="1080" y="656" uid="13" color="#FF007F">
-                <from>SwitchForShipmentsInForecast</from>
-                <to>IndustryVolume</to>
-            </connector>
-            <connector x="650" y="515" uid="34" color="#FF007F">
-                <from>Shipments</from>
-                <to>IndustryShipments</to>
-            </connector>
-            <connector x="932" y="639" uid="14" color="#FF007F">
-                <from>
-                    <alias uid="8" />
-                </from>
-                <to>InitialDemandForecast</to>
-            </connector>
-            <connector x="150" y="526" uid="46" color="#FF007F">
-                <from>Population</from>
-                <to>IndustryDemand</to>
-            </connector>
-            <connector x="216" y="447" uid="47" color="#FF007F">
-                <from>ReferencePrice</from>
-                <to>DemandCurveSlope</to>
-            </connector>
-            <connector x="381" y="176" uid="48" color="#FF007F">
+            <connector x="450" y="74" uid="64" color="#FF007F">
                 <from>
                     <alias uid="6" />
                 </from>
-                <to>VariableCost</to>
+                <to>FixedCost</to>
             </connector>
-            <connector x="130" y="128" uid="49" color="#FF007F">
-                <from>DiscountRate</from>
-                <to>DiscountFactor</to>
-            </connector>
-            <connector x="621" y="565" uid="50" color="#FF007F">
-                <from>DesiredShipments</from>
-                <to>Shipments</to>
-            </connector>
-            <connector x="109" y="581" uid="51" color="#FF007F">
-                <from>NonAdopters</from>
-                <to>AdoptionRate</to>
-            </connector>
-            <connector x="186" y="114" uid="52" color="#FF007F">
-                <from>DiscountFactor</from>
-                <to>NPVProfitChange</to>
-            </connector>
-            <connector x="229" y="454" uid="53" color="#FF007F">
-                <from>ReferencePrice</from>
-                <to>IndustryDemand</to>
-            </connector>
-            <connector x="400" y="144" uid="54" color="#FF007F">
-                <from>VariableCost</from>
-                <to>Cost</to>
-            </connector>
-            <connector x="296" y="460" uid="55" color="#FF007F">
-                <from>LowestPrice</from>
-                <to>IndustryDemand</to>
-            </connector>
-            <connector x="248" y="514" uid="56" color="#FF007F">
-                <from>IndustryDemand</from>
-                <to>InitialCumulativeAdopters</to>
-            </connector>
-            <connector x="355" y="494" uid="57" color="#FF007F">
-                <from>InitialDiffusionFraction</from>
-                <to>InitialCumulativeAdopters</to>
-            </connector>
-            <connector x="187" y="485" uid="58" color="#FF007F">
-                <from>DemandCurveSlope</from>
-                <to>IndustryDemand</to>
-            </connector>
-            <connector x="265" y="129" uid="59" color="#FF007F">
-                <from>NetIncome</from>
-                <to>NPVProfitChange</to>
-            </connector>
-            <connector x="135" y="623" uid="60" color="#FF007F">
-                <from>InnovatorAdoptionFraction</from>
-                <to>AdoptionRate</to>
-            </connector>
-            <connector x="966" y="831" uid="24" color="#FF007F">
-                <from>TimeForHistoricalVolume</from>
-                <to>ExpGrowthInVolume</to>
-            </connector>
-            <connector x="300" y="624" uid="61" color="#FF007F">
-                <from>WOMStrength</from>
-                <to>AdoptionRate</to>
-            </connector>
-            <connector x="737" y="514" uid="62" color="#FF007F">
-                <from>InstalledBase</from>
-                <to>DiscardRate</to>
-            </connector>
-            <connector x="280" y="576" uid="63" color="#FF007F">
-                <from>CumulativeAdopters</from>
-                <to>NonAdopters</to>
-            </connector>
-            <connector x="280" y="580" uid="64" color="#FF007F">
-                <from>CumulativeAdopters</from>
-                <to>AdoptionRate</to>
-            </connector>
-            <connector x="155" y="279" uid="65" color="#FF007F">
-                <from>
-                    <alias uid="1" />
-                </from>
-                <to>ValueOfNewOrders</to>
-            </connector>
-            <connector x="112" y="233" uid="66" color="#FF007F">
+            <connector x="112" y="233" uid="65" color="#FF007F">
                 <from>
                     <alias uid="0" />
                 </from>
                 <to>ValueOfNewOrders</to>
             </connector>
-            <connector x="450" y="74" uid="67" color="#FF007F">
+            <connector x="155" y="279" uid="66" color="#FF007F">
                 <from>
-                    <alias uid="4" />
+                    <alias uid="1" />
                 </from>
-                <to>FixedCost</to>
+                <to>ValueOfNewOrders</to>
             </connector>
-            <connector x="938" y="726" uid="15" color="#FF007F">
-                <from>
-                    <alias uid="20" />
-                </from>
+            <connector x="239" y="67" uid="67" color="#FF007F">
+                <from>NPVProfit</from>
+                <to>NPLAYERS</to>
+            </connector>
+            <connector x="280" y="576" uid="68" color="#FF007F">
+                <from>CumulativeAdopters</from>
+                <to>NonAdopters</to>
+            </connector>
+            <connector x="737" y="514" uid="69" color="#FF007F">
+                <from>InstalledBase</from>
+                <to>DiscardRate</to>
+            </connector>
+            <connector x="300" y="624" uid="70" color="#FF007F">
+                <from>WOMStrength</from>
+                <to>AdoptionRate</to>
+            </connector>
+            <connector x="135" y="623" uid="71" color="#FF007F">
+                <from>InnovatorAdoptionFraction</from>
+                <to>AdoptionRate</to>
+            </connector>
+            <connector x="187" y="485" uid="72" color="#FF007F">
+                <from>DemandCurveSlope</from>
+                <to>IndustryDemand</to>
+            </connector>
+            <connector x="1177" y="830" uid="29" color="#FF007F">
+                <from>CapacityAcquisitionDelay</from>
+                <to>ExpectedIndustryDemand</to>
+            </connector>
+            <connector x="1190" y="823" uid="18" color="#FF007F">
+                <from>CapacityAcquisitionDelay</from>
+                <to>LaggedVolumeForecast</to>
+            </connector>
+            <connector x="400" y="144" uid="73" color="#FF007F">
+                <from>VariableCost</from>
+                <to>Cost</to>
+            </connector>
+            <connector x="1023" y="694" uid="12" color="#FF007F">
+                <from>IndustryVolume</from>
+                <to>ForecastError</to>
+            </connector>
+            <connector x="1168" y="785" uid="19" color="#FF007F">
+                <from>ExpectedIndustryDemand</from>
+                <to>LaggedVolumeForecast</to>
+            </connector>
+            <connector x="186" y="114" uid="74" color="#FF007F">
+                <from>DiscountFactor</from>
+                <to>NPVProfitChange</to>
+            </connector>
+            <connector x="108" y="581" uid="75" color="#FF007F">
+                <from>NonAdopters</from>
+                <to>AdoptionRate</to>
+            </connector>
+            <connector x="621" y="565" uid="76" color="#FF007F">
+                <from>DesiredShipments</from>
+                <to>Shipments</to>
+            </connector>
+            <connector x="1112" y="504" uid="77" color="#FF007F">
+                <from>InitialOrderRate</from>
+                <to>IndustryOrderRate</to>
+            </connector>
+            <connector x="1080" y="656" uid="13" color="#FF007F">
+                <from>SwitchForShipmentsInForecast</from>
                 <to>IndustryVolume</to>
             </connector>
-            <connector x="1161" y="463" uid="68" color="#FF007F">
-                <from>UnitsPerHousehold</from>
-                <to>InitialOrderRate</to>
+            <connector x="283" y="97" uid="78" color="#FF007F">
+                <from>NPVProfit</from>
+                <to>NPVIndustryProfits</to>
             </connector>
-            <connector x="1163" y="531" uid="69" color="#FF007F">
-                <from>
-                    <alias uid="38" />
-                </from>
-                <to>InitialOrderRate</to>
+            <connector x="325" y="129" uid="79" color="#FF007F">
+                <from>Cost</from>
+                <to>NetIncome</to>
             </connector>
-            <connector x="1021" y="422" uid="70" color="#FF007F">
+            <connector x="1021" y="422" uid="80" color="#FF007F">
                 <from>
                     <alias uid="37" />
                 </from>
                 <to>ReorderRate</to>
             </connector>
-            <connector x="1112" y="504" uid="71" color="#FF007F">
-                <from>InitialOrderRate</from>
-                <to>IndustryOrderRate</to>
-            </connector>
-            <connector x="121" y="456" uid="72" color="#FF007F">
-                <from>ReferenceIndustryDemandElasticity</from>
-                <to>DemandCurveSlope</to>
-            </connector>
-            <connector x="803" y="587" uid="73" color="#FF007F">
+            <connector x="1163" y="531" uid="81" color="#FF007F">
                 <from>
-                    <alias uid="35" />
+                    <alias uid="38" />
                 </from>
-                <to>InitialInstalledBase</to>
+                <to>InitialOrderRate</to>
             </connector>
-            <connector x="990" y="471" uid="74" color="#FF007F">
-                <from>ReorderRate</from>
-                <to>IndustryOrderRate</to>
-            </connector>
-            <connector x="89" y="498" uid="75" color="#FF007F">
-                <from>ReferencePopulation</from>
-                <to>DemandCurveSlope</to>
-            </connector>
-            <connector x="547" y="474" uid="76" color="#FF007F">
+            <connector x="938" y="726" uid="14" color="#FF007F">
                 <from>
-                    <alias uid="33" />
+                    <alias uid="20" />
                 </from>
-                <to>Orders</to>
+                <to>IndustryVolume</to>
             </connector>
-            <connector x="805" y="479" uid="77" color="#FF007F">
-                <from>FractionalDiscardRate</from>
-                <to>DiscardRate</to>
+            <connector x="385" y="104" uid="82" color="#FF007F">
+                <from>FixedCost</from>
+                <to>Cost</to>
             </connector>
-            <connector x="687" y="641" uid="78" color="#FF007F">
-                <from>InitialSharePlayers</from>
-                <to>InitialInstalledBase</to>
-            </connector>
-            <connector x="238" y="67" uid="79" color="#FF007F">
-                <from>NPVProfit</from>
-                <to>NPLAYERS</to>
-            </connector>
-            <connector x="286" y="226" uid="80" color="#FF007F">
-                <from>ValueOfBacklog</from>
-                <to>AveragePriceOfOrderBook</to>
-            </connector>
-            <connector x="786" y="635" uid="81" color="#FF007F">
+            <connector x="696" y="561" uid="83" color="#FF007F">
                 <from>
-                    <alias uid="36" />
+                    <alias uid="32" />
                 </from>
-                <to>InitialInstalledBase</to>
-            </connector>
-            <connector x="661" y="582" uid="82" color="#FF007F">
-                <from>SwitchForCapacity</from>
                 <to>Shipments</to>
             </connector>
-            <connector x="349" y="435" uid="83" color="#FF007F">
-                <from>
-                    <alias uid="30" />
-                </from>
-                <to>LowestPrice</to>
-            </connector>
-            <connector x="90" y="503" uid="84" color="#FF007F">
-                <from>ReferencePopulation</from>
-                <to>IndustryDemand</to>
-            </connector>
-            <connector x="587" y="538" uid="85" color="#FF007F">
-                <from>Backlog</from>
-                <to>DesiredShipments</to>
-            </connector>
-            <connector x="530" y="573" uid="86" color="#FF007F">
-                <from>NormalDeliveryDelay</from>
-                <to>DesiredShipments</to>
-            </connector>
-            <connector x="596" y="507" uid="87" color="#FF007F">
-                <from>Backlog</from>
-                <to>DeliveryDelay</to>
-            </connector>
-            <connector x="462" y="118" uid="88" color="#FF007F">
-                <from>
-                    <alias uid="5" />
-                </from>
-                <to>FixedCost</to>
-            </connector>
-            <connector x="238" y="272" uid="89" color="#FF007F">
-                <from>
-                    <alias uid="2" />
-                </from>
-                <to>AveragePriceOfOrderBook</to>
-            </connector>
-            <connector x="363" y="176" uid="90" color="#FF007F">
-                <from>
-                    <alias uid="6" />
-                </from>
-                <to>Revenue</to>
-            </connector>
-            <connector x="152" y="539" uid="91" color="#FF007F">
-                <from>Population</from>
+            <connector x="280" y="580" uid="84" color="#FF007F">
+                <from>CumulativeAdopters</from>
                 <to>AdoptionRate</to>
             </connector>
-            <connector x="646" y="513" uid="92" color="#FF007F">
-                <from>Shipments</from>
-                <to>DeliveryDelay</to>
+            <connector x="321" y="247" uid="85" color="#FF007F">
+                <from>AveragePriceOfOrderBook</from>
+                <to>Revenue</to>
             </connector>
-            <connector x="335" y="204" uid="93" color="#FF007F">
-                <from>Revenue</from>
-                <to>NetIncome</to>
+            <connector x="966" y="831" uid="24" color="#FF007F">
+                <from>TimeForHistoricalVolume</from>
+                <to>ExpGrowthInVolume</to>
             </connector>
-            <connector x="502" y="493" uid="94" color="#FF007F">
+            <connector x="265" y="129" uid="86" color="#FF007F">
+                <from>NetIncome</from>
+                <to>NPVProfitChange</to>
+            </connector>
+            <connector x="355" y="494" uid="87" color="#FF007F">
+                <from>InitialDiffusionFraction</from>
+                <to>InitialCumulativeAdopters</to>
+            </connector>
+            <connector x="248" y="514" uid="88" color="#FF007F">
+                <from>IndustryDemand</from>
+                <to>InitialCumulativeAdopters</to>
+            </connector>
+            <connector x="296" y="460" uid="89" color="#FF007F">
+                <from>LowestPrice</from>
+                <to>IndustryDemand</to>
+            </connector>
+            <connector x="229" y="454" uid="90" color="#FF007F">
+                <from>ReferencePrice</from>
+                <to>IndustryDemand</to>
+            </connector>
+            <connector x="130" y="128" uid="91" color="#FF007F">
+                <from>DiscountRate</from>
+                <to>DiscountFactor</to>
+            </connector>
+            <connector x="381" y="176" uid="92" color="#FF007F">
                 <from>
-                    <alias uid="31" />
+                    <alias uid="4" />
                 </from>
-                <to>Orders</to>
+                <to>VariableCost</to>
+            </connector>
+            <connector x="216" y="447" uid="93" color="#FF007F">
+                <from>ReferencePrice</from>
+                <to>DemandCurveSlope</to>
+            </connector>
+            <connector x="150" y="526" uid="94" color="#FF007F">
+                <from>Population</from>
+                <to>IndustryDemand</to>
+            </connector>
+            <connector x="650" y="515" uid="34" color="#FF007F">
+                <from>Shipments</from>
+                <to>IndustryShipments</to>
+            </connector>
+            <connector x="1012" y="654" uid="15" color="#FF007F">
+                <from>InitialDemandForecast</from>
+                <to>IndustryVolume</to>
             </connector>
             <stacked_container x="1341" y="735" height="282" width="492" visible_index="0" uid="95">
                 <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702307319" cleared="true" time_precision="2" from="0" to="20" />

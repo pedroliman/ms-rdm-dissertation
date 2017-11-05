@@ -29,6 +29,7 @@ opcoes = list(
 ## Carregando o Modelo, e outros objetos
 source('modelo.R', encoding = 'UTF-8')
 
+
 # Simulando uma vez apenas
 resultado_unico <- data.frame(ode(y=stocks, times=simtime, func = modelo, 
                   parms=auxs, method="euler"))
