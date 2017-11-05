@@ -36,7 +36,7 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aUnitFixedCost = rep(10, times = N_PLAYERS)
                 ,aCapacity = rep(3, times = N_PLAYERS)
                 ,aOrderShare = rep(0.5, times = N_PLAYERS)
-                ,fIndustryOrderRate = 10
+                #,fIndustryOrderRate = 10
                 ,aNormalDeliveryDelay = rep(0.25, times = N_PLAYERS)
                 ,aSwitchForCapacity = 1
                 ,aFractionalDiscardRate = 0.1
@@ -143,9 +143,8 @@ modelo <- function(time, stocks, auxs){
                             (1-aSwitchForShipmentsInForecast)*fIndustryOrderRate)
     
     
-    # Variavel com SMOOTH - Primeira Ordem:
-    fsmooth_ReportedIndustryVolume = ((aIndustryVolume - sReportedIndustryVolume) / aVolumeReportingDelay) * STEP # Multiplicando pelo step para ajustar o calculo.
-    
+    # Variavel com SMOOTH - Primeira Ordem: - Retirando o DT, o calculo funcionou corretamente!
+    fsmooth_ReportedIndustryVolume = ((aIndustryVolume - sReportedIndustryVolume) / aVolumeReportingDelay) # * STEP # Multiplicando pelo step para ajustar o calculo.
     
     # Variavel com DELAY - A definição das constantes aqui devem ser alteradas se as condicoes iniciais do modelo mudarem
     # Esta implementacao considera que os delays sempre serao iguais. Se os delays nao forem iguais, deve-se encontrar outra forma de implementar os delays (talvez com a equacao multiplicativa 1*(time > tempodelay)

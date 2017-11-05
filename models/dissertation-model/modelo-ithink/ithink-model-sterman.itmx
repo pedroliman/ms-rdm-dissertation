@@ -435,21 +435,21 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>DELAY(ReportedIndustryVolume,TimeForHistoricalVolume,ReportedIndustryVolume)</eqn>
-            <display x="972" y="849" color="#008F44" />
+            <display x="945" y="876" color="#008F44" />
         </aux>
         <aux name="TimeForHistoricalVolume" flow_concept="true">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>1</eqn>
-            <display x="972" y="892" color="#008F44" />
+            <display x="999" y="909" color="#008F44" />
         </aux>
         <aux name="ExpGrowthInVolume" flow_concept="true">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>LN(ReportedIndustryVolume[Company]/LaggedIndustryVolume[Company])&#x0A;/&#x0A;TimeForHistoricalVolume</eqn>
-            <display x="1073" y="860" color="blue" />
+            <display x="1080" y="867" color="blue" />
         </aux>
         <aux name="ForecastHorizon" flow_concept="true">
             <dimensions>
@@ -499,10 +499,10 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>(IndustryVolume-SmoothReportedIndustryVolume)/VolumeReportingDelay</eqn>
-            <display x="1078" y="759" color="blue">
+            <display x="1078" y="758" color="blue">
                 <pts>
-                    <pt x="1036" y="759" />
-                    <pt x="1121" y="759" />
+                    <pt x="1036" y="758" />
+                    <pt x="1121" y="758" />
                 </pts>
             </display>
         </flow>
@@ -542,12 +542,12 @@
             <entity name="ForecastError" />
             <entity name="LaggedVolumeForecast" />
             <entity name="VolumeReportingDelay" />
-            <entity name="ExpGrowthInVolume" />
-            <entity name="TimeForHistoricalVolume" />
             <entity name="ReportedIndustryVolume" />
             <entity name="BuiltinReportedIndustryVolume" />
             <entity name="ConfigBuiltinSmooth" />
+            <entity name="TimeForHistoricalVolume" />
             <entity name="LaggedIndustryVolume" />
+            <entity name="ExpGrowthInVolume" />
             <entity name="CapacityAcquisitionDelay" />
             <entity name="ExpectedIndustryDemand" />
             <entity name="ForecastHorizon" />
@@ -600,7 +600,7 @@
             <entity name="OrderShare" />
             <display x="438" y="941" width="300" height="150" color="red" />
         </group>
-        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" scroll_x="677" scroll_y="376">
+        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true" report_balances="ending" report_flows="summed">
             <alias x="90" y="225" uid="29">
                 <of>Price</of>
             </alias>
@@ -679,7 +679,7 @@
                 </from>
                 <to>IndustryVolume</to>
             </connector>
-            <connector x="974" y="883" uid="19" color="#FF007F">
+            <connector x="991" y="905" uid="18" color="#FF007F">
                 <from>TimeForHistoricalVolume</from>
                 <to>LaggedIndustryVolume</to>
             </connector>
@@ -693,7 +693,7 @@
                 <from>Revenue</from>
                 <to>NetIncome</to>
             </connector>
-            <connector x="1060" y="815" uid="20" color="#FF007F">
+            <connector x="1060" y="814" uid="19" color="#FF007F">
                 <from>ReportedIndustryVolume</from>
                 <to>LaggedIndustryVolume</to>
             </connector>
@@ -705,7 +705,7 @@
                 <from>Population</from>
                 <to>AdoptionRate</to>
             </connector>
-            <connector x="1072" y="819" uid="25" color="#FF007F">
+            <connector x="1072" y="819" uid="26" color="#FF007F">
                 <from>ReportedIndustryVolume</from>
                 <to>ExpGrowthInVolume</to>
             </connector>
@@ -721,7 +721,7 @@
                 </from>
                 <to>AveragePriceOfOrderBook</to>
             </connector>
-            <connector x="981" y="848" uid="21" color="#FF007F">
+            <connector x="953" y="872" uid="20" color="#FF007F">
                 <from>LaggedIndustryVolume</from>
                 <to>ExpGrowthInVolume</to>
             </connector>
@@ -805,7 +805,7 @@
                 <from>NormalDeliveryDelay</from>
                 <to>DesiredShipments</to>
             </connector>
-            <connector x="1079" y="853" uid="22" color="#FF007F">
+            <connector x="1085" y="859" uid="27" color="#FF007F">
                 <from>ExpGrowthInVolume</from>
                 <to>ExpectedIndustryDemand</to>
             </connector>
@@ -813,11 +813,11 @@
                 <from>UnitsPerHousehold</from>
                 <to>InitialOrderRate</to>
             </connector>
-            <connector x="1184" y="789" uid="24" color="#FF007F">
+            <connector x="1184" y="789" uid="23" color="#FF007F">
                 <from>ForecastHorizon</from>
                 <to>ExpectedIndustryDemand</to>
             </connector>
-            <connector x="1076" y="814" uid="26" color="#FF007F">
+            <connector x="1076" y="814" uid="24" color="#FF007F">
                 <from>ReportedIndustryVolume</from>
                 <to>ExpectedIndustryDemand</to>
             </connector>
@@ -863,7 +863,7 @@
                 <from>DemandCurveSlope</from>
                 <to>IndustryDemand</to>
             </connector>
-            <connector x="1192" y="890" uid="23" color="#FF007F">
+            <connector x="1192" y="890" uid="22" color="#FF007F">
                 <from>CapacityAcquisitionDelay</from>
                 <to>ExpectedIndustryDemand</to>
             </connector>
@@ -947,7 +947,7 @@
                 <from>AveragePriceOfOrderBook</from>
                 <to>Revenue</to>
             </connector>
-            <connector x="981" y="891" uid="15" color="#FF007F">
+            <connector x="1006" y="902" uid="21" color="#FF007F">
                 <from>TimeForHistoricalVolume</from>
                 <to>ExpGrowthInVolume</to>
             </connector>
@@ -997,7 +997,7 @@
                 <from>InitialDemandForecast</from>
                 <to>IndustryVolume</to>
             </connector>
-            <connector x="1099" y="699" uid="13" color="#FF007F">
+            <connector x="1099" y="698" uid="13" color="#FF007F">
                 <from>VolumeReportingDelay</from>
                 <to>change</to>
             </connector>
@@ -1005,23 +1005,23 @@
                 <from>SmoothReportedIndustryVolume</from>
                 <to>change</to>
             </connector>
-            <connector x="1022" y="704" uid="9" color="#FF007F">
+            <connector x="1021" y="704" uid="9" color="#FF007F">
                 <from>IndustryVolume</from>
                 <to>change</to>
             </connector>
-            <connector x="954" y="804" uid="18" color="#FF007F">
+            <connector x="954" y="804" uid="17" color="#FF007F">
                 <from>ConfigBuiltinSmooth</from>
                 <to>ReportedIndustryVolume</to>
             </connector>
-            <connector x="1121" y="777" uid="27" color="#FF007F">
+            <connector x="1121" y="777" uid="25" color="#FF007F">
                 <from>SmoothReportedIndustryVolume</from>
                 <to>ReportedIndustryVolume</to>
             </connector>
-            <connector x="1005" y="769" uid="16" color="#FF007F">
+            <connector x="1005" y="769" uid="15" color="#FF007F">
                 <from>BuiltinReportedIndustryVolume</from>
                 <to>ReportedIndustryVolume</to>
             </connector>
-            <connector x="1014" y="707" uid="17" color="#FF007F">
+            <connector x="1014" y="707" uid="16" color="#FF007F">
                 <from>IndustryVolume</from>
                 <to>BuiltinReportedIndustryVolume</to>
             </connector>
@@ -1030,7 +1030,7 @@
                 <to>BuiltinReportedIndustryVolume</to>
             </connector>
             <stacked_container x="1341" y="735" height="282" width="492" visible_index="0" uid="101">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702238631" time_precision="2" from="0" to="20">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702237734" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="InitialDemandForecast" index="Company1" />
                     </plot>
@@ -1047,7 +1047,7 @@
             </stacked_container>
             <pad_icon x="1429" y="782" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="101" />
             <stacked_container x="527" y="77" height="270" width="319" visible_index="0" uid="102">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="97" orientation="vertical" report_every_dt="true" report_balances="ending" isee:date_time="-702238631">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="97" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702237734">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="NPVProfit" index="Company1" />
@@ -1088,45 +1088,6 @@
                 </table>
             </stacked_container>
             <pad_icon x="581" y="41" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="102" />
-            <stacked_container x="1364" y="388" height="270" width="475" visible_index="0" uid="103">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="96" orientation="vertical" report_every_dt="true" report_balances="ending" isee:date_time="-702238631" cleared="true">
-                    <item type="time" color="black" text-align="left" precision="3" width="100" />
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
-                        <entity name="ReorderRate" />
-                    </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="1">
-                        <entity name="InstalledBase" index="Company1" />
-                    </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="2">
-                        <entity name="InstalledBase" index="Company2" />
-                    </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="3">
-                        <entity name="DiscardRate" index="Company1" />
-                    </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="4">
-                        <entity name="DiscardRate" index="Company2" />
-                    </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="5">
-                        <entity name="ReportedIndustryVolume" index="Company1" />
-                    </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="6">
-                        <entity name="ReportedIndustryVolume" index="Company2" />
-                    </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="7">
-                        <entity name="IndustryVolume" index="Company1" />
-                    </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="8">
-                        <entity name="SmoothReportedIndustryVolume" index="Company1" />
-                    </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="9">
-                        <entity name="SmoothReportedIndustryVolume" index="Company2" />
-                    </item>
-                    <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="10">
-                        <entity name="BuiltinReportedIndustryVolume" index="Company1" />
-                    </item>
-                </table>
-            </stacked_container>
-            <pad_icon x="1386" y="404" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="103" />
         </display>
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>

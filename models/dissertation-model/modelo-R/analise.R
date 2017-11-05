@@ -30,13 +30,11 @@ opcoes = list(
 ## Carregando o Modelo, e outros objetos
 source('modelo.R', encoding = 'UTF-8')
 
-
 # Simulando uma vez apenas
 resultado_unico <- data.frame(ode(y=stocks, times=simtime, func = modelo, 
                   parms=auxs, method="euler"))
 
-resultado_unico <- data.frame(dede(y=stocks, times=simtime, func = modelo, 
-                                  parms=auxs))
+
 
 results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
