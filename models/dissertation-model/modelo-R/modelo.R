@@ -9,7 +9,6 @@ simtime <- seq(START, FINISH, by=STEP)
 N_PLAYERS = 2
 
 
-
 # Matriz de Variáveis que possuem valores no tempo global
 matriz.variaveis.globais = matrix(simtime)
 
@@ -146,7 +145,7 @@ modelo <- function(time, stocks, auxs){
     
     aDesiredShipments = sBacklog/aNormalDeliveryDelay
     
-    fShipments = aSwitchForCapacity * min(aDesiredShipments, aCapacity) + (1-aSwitchForCapacity) * aDesiredShipments
+    fShipments = aSwitchForCapacity * pmin(aDesiredShipments, aCapacity) + (1-aSwitchForCapacity) * aDesiredShipments
     
     aIndustryShipments = sum(fShipments)
     
