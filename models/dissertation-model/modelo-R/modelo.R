@@ -211,6 +211,8 @@ modelo <- function(time, stocks, auxs){
     
     ##### TARGET CAPACITY SECTOR #####
     
+    
+    
     aIndustryCapacity = sum(aCapacity)
     
     aCompetitorCapacity = aIndustryCapacity - aCapacity
@@ -242,7 +244,6 @@ modelo <- function(time, stocks, auxs){
     aCompetitorTargetCapacity = aIndustryTotalTargetCapacity - aTargetCapacity
     
     fChangePerceivedCompTargetCapacity = (aCompetitorTargetCapacity - sPerceivedCompTargetCapacity) / aTimeToPerceiveCompTargetCapacity
-    
     
     ##### LEARNING CURVE SECTOR #####
     fProduction = fShipments
