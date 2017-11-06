@@ -1,13 +1,12 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
-START<-0; FINISH<-20; STEP<-0.25
+START<-0; FINISH<-20; STEP<-0.125
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
 
 # Número de Players no modelo
 N_PLAYERS = 2
-
 
 # Matriz de Variáveis que possuem valores no tempo global
 matriz.variaveis.globais = matrix(simtime)
@@ -306,7 +305,7 @@ modelo <- function(time, stocks, auxs){
     
     ## Parar se o tempo chegou ao fim.
     if(time == FINISH){
-     # browser()
+     browser()
     }
     
     return (list(c(
@@ -332,7 +331,9 @@ modelo <- function(time, stocks, auxs){
                  ,aNPVIndustryProfits = aNPVIndustryProfits
                  ,aInitialDemandForecast = aInitialDemandForecast
                  ,aLaggedVolumeForecast = aLaggedVolumeForecast
-                 ,aForecastError = aForecastError))   
+                 ,aForecastError = aForecastError
+                 ,aTargetCapacity = aTargetCapacity
+                 ,aCompetitorTargetCapacity = aCompetitorTargetCapacity))   
   })
 }
 
@@ -352,6 +353,3 @@ sdmodel = list(
   Modelo = modelo,
   Variaveis = nomes_variaveis
 )
-
-
-

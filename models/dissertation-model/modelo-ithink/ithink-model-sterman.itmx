@@ -16,7 +16,7 @@
     <sim_specs method="Euler" time_units="Months">
         <start>0</start>
         <stop>20</stop>
-        <dt>0.25</dt>
+        <dt>0.125</dt>
     </sim_specs>
     <dimensions>
         <dim name="Company">
@@ -25,8 +25,8 @@
         </dim>
     </dimensions>
     <model_units />
-    <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
-        <isee:window width="1366" height="685" />
+    <isee:prefs layer="interface" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
+        <isee:window width="1280" height="941" />
         <isee:security />
         <isee:print_setup width="595" height="842" />
     </isee:prefs>
@@ -1068,7 +1068,7 @@
                 <item uid="157" />
             </display>
         </group>
-        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed">
+        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true" report_balances="ending" report_flows="summed" scroll_y="562">
             <alias x="90" y="225" uid="0">
                 <of>Price</of>
             </alias>
@@ -1785,7 +1785,7 @@
                 <to>InitialUnitVariableCost</to>
             </connector>
             <stacked_container x="1341" y="735" height="282" width="492" visible_index="0" uid="169">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702150504" time_precision="2" from="0" to="20">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702143455" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="InitialDemandForecast" index="Company1" />
                     </plot>
@@ -1802,7 +1802,7 @@
             </stacked_container>
             <pad_icon x="1429" y="782" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="169" />
             <stacked_container x="527" y="77" height="270" width="319" visible_index="0" uid="170">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="106" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702154124">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="106" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702143455">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" units="currency" index="0">
                         <entity name="NPVProfit" index="Company1" />
@@ -1847,6 +1847,39 @@
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
+            <stacked_container x="57" y="46" height="468" width="705" visible_index="0" uid="171">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="165" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702143293">
+                    <item type="time" color="black" text-align="left" precision="3" width="100" />
+                    <item color="black" text-align="left" precision="0" thousands_separator="true" index="0">
+                        <entity name="NPVProfit" index="Company1" />
+                    </item>
+                    <item color="black" text-align="left" precision="0" thousands_separator="true" index="1">
+                        <entity name="ValueOfBacklog" index="Company1" />
+                    </item>
+                    <item color="black" text-align="left" precision="0" thousands_separator="true" index="2">
+                        <entity name="Backlog" index="Company1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="3">
+                        <entity name="InstalledBase" index="Company1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="4">
+                        <entity name="Price" index="Company1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="5">
+                        <entity name="CumulativeAdopters" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="6">
+                        <entity name="SmoothReportedIndustryVolume" index="Company1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="7">
+                        <entity name="CumulativeProduction" index="Company1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="8">
+                        <entity name="PerceivedCompTargetCapacity" index="Company1" />
+                    </item>
+                </table>
+            </stacked_container>
+            <pad_icon x="74" y="57" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="171" />
         </interface>
     </model>
 </xmile>
