@@ -174,7 +174,7 @@ modelo <- function(time, stocks, auxs){
     
     aInitialDemandForecast = fReorderRate
     
-    aIndustryVolume = max(aInitialDemandForecast,
+    aIndustryVolume = pmax(aInitialDemandForecast,
                           aSwitchForShipmentsInForecast*aIndustryShipments+
                             (1-aSwitchForShipmentsInForecast)*fIndustryOrderRate)
     
