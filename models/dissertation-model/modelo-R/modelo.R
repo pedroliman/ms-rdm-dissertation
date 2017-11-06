@@ -29,7 +29,6 @@ list.variaveis.globais = list(
 
 ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
 auxs    <- list(aDiscountRate = 0.04
-                ,fChangeInPrice = rep(0, times = N_PLAYERS)
                 ,aCapacity = rep(10000000, times = N_PLAYERS)
                 ,aNormalDeliveryDelay = rep(0.25, times = N_PLAYERS)
                 ,aSwitchForCapacity = 1
@@ -64,6 +63,11 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aWeightOnSupplyLine= rep(1, times = N_PLAYERS)
                 ,aSwitchForCapacityStrategy = rep(1, times = N_PLAYERS)
                 ,aTimeToPerceiveCompTargetCapacity = rep(0.25, times = N_PLAYERS)
+                # Price Sector
+                ,aPriceAdjustmentTime = 0.25
+                ,aSensOfPriceToCosts = rep(1, times = N_PLAYERS)
+                ,aSensOfPriceToDSBalance = rep(0.25, times = N_PLAYERS)
+                ,aSensOfPriceToShare = rep(-0.1, times = N_PLAYERS)
                 )
 
 
@@ -260,6 +264,21 @@ modelo <- function(time, stocks, auxs){
     
     aUnitVariableCost = aLearning * aInitialUnitVariableCost
     
+    ##### PRICE SECTOR #####
+    
+    aBasePrice = (1+aNormalProfitMargin)*(aUnitVariableCost+aUnitFixedCost/aNormalCapacityUtilization)
+    
+    aDemandSupplyBalance = aDesiredShipments/(aNormalCapacityUtilization*aCapacity)
+    
+    aTargetPrice = 
+      pmax(aUnitVariableCost,
+          sPrice*
+            (1+aSensOfPriceToCosts*((aBasePrice/sPrice)-1))*
+            (1+aSensOfPriceToDSBalance*(aDemandSupplyBalance-1))*
+            (1+aSensOfPriceToShare*((aTargetMarketShare-aMarketShare))))
+    
+    fChangeInPrice = (aTargetPrice - sPrice) / aPriceAdjustmentTime
+    
     ##### NET INCOME SECTOR #####
     
     aDiscountFactor = exp(-aDiscountRate*time)
@@ -306,7 +325,7 @@ modelo <- function(time, stocks, auxs){
     
     ## Parar se o tempo chegou ao fim.
     if(time == FINISH){
-     browser()
+    # browser()
     }
     
     return (list(c(
