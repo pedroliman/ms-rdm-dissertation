@@ -1121,13 +1121,32 @@
             </display>
         </group>
         <group name="Market_Sector">
-            <display locked="true" x="444" y="1103" width="353" height="274" color="red">
+            <entity name="Attractiveness" />
+            <entity name="AttractivenessFromAvailability" />
+            <entity name="AttractivenessFromPrice" />
+            <entity name="OrderShare" />
+            <entity name="ReferenceDeliveryDelay" />
+            <entity name="SensOfAttractToAvailability" />
+            <entity name="SensOfAttractToPrice" />
+            <entity name="TotalAttractiveness" />
+            <display locked="true" x="383" y="1081" width="429" height="296" color="red">
                 <item uid="177" />
                 <item uid="178" />
                 <item uid="179" />
+                <item uid="180" />
+                <item uid="181" />
+                <item uid="182" />
+                <item uid="183" />
+                <item uid="184" />
+                <item uid="185" />
+                <item uid="186" />
+                <item uid="187" />
+                <item uid="188" />
+                <item uid="189" />
+                <item uid="190" />
             </display>
         </group>
-        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending" scroll_x="136" scroll_y="1031">
+        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" zoom="75" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_balances="ending">
             <alias x="90" y="225" uid="0">
                 <of>Price</of>
             </alias>
@@ -1152,10 +1171,10 @@
             <alias x="931" y="686" uid="78">
                 <of>IndustryShipments</of>
             </alias>
-            <alias x="751" y="1191" uid="178">
+            <alias x="751" y="1191" uid="189">
                 <of>ReferencePrice</of>
             </alias>
-            <alias x="734" y="1153" uid="179">
+            <alias x="734" y="1153" uid="190">
                 <of>Price</of>
             </alias>
             <alias x="929" y="726" uid="90">
@@ -1291,13 +1310,13 @@
                 <from>NormalProfitMargin</from>
                 <to>InitialUnitVariableCost</to>
             </connector>
-            <connector x="743" y="1195" uid="180" color="#FF007F">
+            <connector x="743" y="1195" uid="178" color="#FF007F">
                 <from>
-                    <alias uid="178" />
+                    <alias uid="189" />
                 </from>
                 <to>AttractivenessFromPrice</to>
             </connector>
-            <connector x="519" y="1248" uid="181" color="#FF007F">
+            <connector x="519" y="1248" uid="179" color="#FF007F">
                 <from>SensOfAttractToAvailability</from>
                 <to>AttractivenessFromAvailability</to>
             </connector>
@@ -1305,7 +1324,7 @@
                 <from>ReferencePrice</from>
                 <to>DemandCurveSlope</to>
             </connector>
-            <connector x="615" y="1269" uid="182" color="#FF007F">
+            <connector x="615" y="1269" uid="180" color="#FF007F">
                 <from>Attractiveness</from>
                 <to>TotalAttractiveness</to>
             </connector>
@@ -1313,7 +1332,7 @@
                 <from>Shipments</from>
                 <to>IndustryShipments</to>
             </connector>
-            <connector x="581" y="1209" uid="183" color="#FF007F">
+            <connector x="581" y="1209" uid="181" color="#FF007F">
                 <from>AttractivenessFromAvailability</from>
                 <to>Attractiveness</to>
             </connector>
@@ -1325,9 +1344,9 @@
                 <from>InitialDemandForecast</from>
                 <to>IndustryVolume</to>
             </connector>
-            <connector x="724" y="1170" uid="184" color="#FF007F">
+            <connector x="724" y="1170" uid="182" color="#FF007F">
                 <from>
-                    <alias uid="179" />
+                    <alias uid="190" />
                 </from>
                 <to>AttractivenessFromPrice</to>
             </connector>
@@ -1335,19 +1354,19 @@
                 <from>ReferencePopulation</from>
                 <to>DemandCurveSlope</to>
             </connector>
-            <connector x="516" y="1191" uid="185" color="#FF007F">
+            <connector x="516" y="1191" uid="183" color="#FF007F">
                 <from>ReferenceDeliveryDelay</from>
                 <to>AttractivenessFromAvailability</to>
             </connector>
-            <connector x="678" y="1225" uid="186" color="#FF007F">
+            <connector x="678" y="1225" uid="184" color="#FF007F">
                 <from>AttractivenessFromPrice</from>
                 <to>Attractiveness</to>
             </connector>
-            <connector x="626" y="1271" uid="187" color="#FF007F">
+            <connector x="626" y="1271" uid="185" color="#FF007F">
                 <from>Attractiveness</from>
                 <to>OrderShare</to>
             </connector>
-            <connector x="540" y="1310" uid="188" color="#FF007F">
+            <connector x="540" y="1310" uid="186" color="#FF007F">
                 <from>TotalAttractiveness</from>
                 <to>OrderShare</to>
             </connector>
@@ -1405,7 +1424,7 @@
                 <from>IndustryVolume</from>
                 <to>ForecastError</to>
             </connector>
-            <connector x="515" y="1144" uid="189" color="#FF007F">
+            <connector x="515" y="1144" uid="187" color="#FF007F">
                 <from>
                     <alias uid="177" />
                 </from>
@@ -1761,7 +1780,7 @@
                 <from>DiscountFactor</from>
                 <to>NPVProfitChange</to>
             </connector>
-            <connector x="733" y="1259" uid="190" color="#FF007F">
+            <connector x="733" y="1259" uid="188" color="#FF007F">
                 <from>SensOfAttractToPrice</from>
                 <to>AttractivenessFromPrice</to>
             </connector>
@@ -1960,7 +1979,15 @@
                 </graph>
             </stacked_container>
             <pad_icon x="1429" y="782" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="191" />
-            <stacked_container x="527" y="77" height="270" width="319" visible_index="0" uid="192">
+            <stacked_container x="853" y="1418" height="282" width="492" visible_index="0" uid="192">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702139382" time_precision="2" from="0" to="20">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="Price" index="Company1" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="875" y="1434" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 2" type="graph" icon_of="192" />
+            <stacked_container x="527" y="77" height="270" width="319" visible_index="0" uid="193">
                 <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="106" orientation="vertical" report_interval="1" report_balances="ending" isee:date_time="-702139536">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" units="currency" index="0">
@@ -2001,12 +2028,12 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="581" y="41" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="192" />
+            <pad_icon x="581" y="41" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="193" />
         </display>
         <interface page_width="788" page_height="528">
             <simulation_delay>0.1</simulation_delay>
             <pages />
-            <stacked_container x="57" y="46" height="468" width="705" visible_index="0" uid="193">
+            <stacked_container x="57" y="46" height="468" width="705" visible_index="0" uid="194">
                 <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="100" orientation="horizontal" report_interval="1" report_balances="ending" isee:date_time="-702139536">
                     <item type="time" color="black" text-align="left" precision="3" width="165" />
                     <item color="black" text-align="left" precision="0" thousands_separator="true" index="0">
@@ -2038,7 +2065,7 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="74" y="57" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="193" />
+            <pad_icon x="74" y="57" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="194" />
         </interface>
     </model>
 </xmile>
