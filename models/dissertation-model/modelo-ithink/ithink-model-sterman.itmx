@@ -26,7 +26,7 @@
     </dimensions>
     <model_units />
     <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
-        <isee:window width="1366" height="685" />
+        <isee:window width="1280" height="941" />
         <isee:security />
         <isee:print_setup width="595" height="842" />
     </isee:prefs>
@@ -636,85 +636,85 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>0.25</eqn>
-            <display x="472" y="907" color="blue" label_angle="279" />
+            <display x="464" y="902" color="blue" label_angle="279" />
         </aux>
         <aux name="CompetitorTargetCapacity">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>IndustryTotalTargetCapacity-TargetCapacity</eqn>
-            <display x="497" y="782" color="blue" />
+            <display x="489" y="777" color="blue" />
         </aux>
         <aux name="ExpectedCompCapacity">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>NormalCapacityUtilization * WeightOnSupplyLine* PerceivedCompTargetCapacity + ( 1 - WeightOnSupplyLine* CompetitorCapacity)</eqn>
-            <display x="597" y="998" color="blue" />
+            <eqn>NormalCapacityUtilization*(WeightOnSupplyLine*PerceivedCompTargetCapacity+(1-WeightOnSupplyLine)*CompetitorCapacity)</eqn>
+            <display x="589" y="993" color="blue" />
         </aux>
         <aux name="UncontestedDemand">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>MAX(0,ExpectedIndustryDemand[Company] - ExpectedCompCapacity[Company])</eqn>
-            <display x="813" y="960" color="blue" />
+            <display x="779" y="953" color="blue" />
         </aux>
         <aux name="CompetitorCapacity">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>IndustryCapacity-Capacitys</eqn>
-            <display x="533" y="961" color="blue" />
+            <display x="525" y="956" color="blue" />
         </aux>
         <aux name="IndustryCapacity">
             <eqn>SUM(Capacitys)</eqn>
-            <display x="478" y="1014" color="blue" />
+            <display x="470" y="1009" color="blue" />
         </aux>
         <aux name="WeightOnSupplyLine">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>1</eqn>
-            <display x="817" y="1008" color="blue" />
+            <display x="794" y="1008" color="blue" />
         </aux>
         <aux name="UncontestedMarketShare">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>UncontestedDemand/ExpectedIndustryDemand</eqn>
-            <display x="807" y="897" color="blue" />
+            <display x="799" y="885" color="blue" />
         </aux>
         <aux name="TargetMarketShare">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>SwitchforCapacityStrategy1*MAX(DesiredMarketShare,UncontestedMarketShare) +&#x0A;SwitchforCapacityStrategy2*MIN(DesiredMarketShare,UncontestedMarketShare) +&#x0A;SwitchforCapacityStrategy3*DesiredMarketShare +&#x0A;SwitchforCapacityStrategy4*UncontestedMarketShare</eqn>
-            <display x="816" y="813" color="blue" />
+            <display x="803" y="806" color="blue" />
         </aux>
         <aux name="DesiredMarketShare">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>0.25</eqn>
-            <display x="751" y="752" color="blue" />
+            <eqn>0.5</eqn>
+            <display x="743" y="747" color="blue" />
         </aux>
         <aux name="TargetCapacity">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>MAX(MinimumEfficientScale,&#x0A;TargetMarketShare[Company]*ExpectedIndustryDemand[Company]/NormalCapacityUtilization[Company])</eqn>
-            <display x="612" y="731" color="blue" />
+            <display x="604" y="726" color="blue" />
         </aux>
         <aux name="MinimumEfficientScale">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>0.25</eqn>
-            <display x="731" y="717" color="blue" />
+            <eqn>100000</eqn>
+            <display x="723" y="712" color="blue" />
         </aux>
         <aux name="IndustryTotalTargetCapacity">
             <eqn>SUM(TargetCapacity)</eqn>
-            <display x="505" y="735" color="blue" label_side="top" label_angle="107" />
+            <display x="497" y="730" color="blue" label_side="top" label_angle="107" />
         </aux>
         <stock name="PerceivedCompTargetCapacity">
             <dimensions>
@@ -722,7 +722,7 @@
             </dimensions>
             <eqn>CompetitorCapacity</eqn>
             <inflow>changePerceivedCompTargetCapacity</inflow>
-            <display x="548" y="864" color="blue" />
+            <display x="540" y="859" color="blue" />
         </stock>
         <flow name="changePerceivedCompTargetCapacity">
             <dimensions>
@@ -730,10 +730,10 @@
             </dimensions>
             <eqn>(CompetitorTargetCapacity-PerceivedCompTargetCapacity)/TimeToPerceiveCompTargetCapacity</eqn>
             <non_negative />
-            <display x="476" y="862" color="blue">
+            <display x="468" y="857" color="blue">
                 <pts>
-                    <pt x="426" y="862" />
-                    <pt x="526" y="862" />
+                    <pt x="418" y="857" />
+                    <pt x="518" y="857" />
                 </pts>
             </display>
         </flow>
@@ -742,35 +742,35 @@
                 <dim name="Company" />
             </dimensions>
             <eqn>1</eqn>
-            <display x="638" y="860" color="blue" />
+            <display x="630" y="855" color="blue" />
         </aux>
         <aux name="SwitchForCapacityStrategy1">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>IF SwitchForCapacityStrategy = 1 THEN 1 ELSE 0</eqn>
-            <display x="719" y="796" color="blue" />
+            <display x="711" y="791" color="blue" />
         </aux>
         <aux name="SwitchForCapacityStrategy2">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>IF SwitchForCapacityStrategy = 2 THEN 1 ELSE 0</eqn>
-            <display x="716" y="837" color="blue" />
+            <display x="708" y="832" color="blue" />
         </aux>
         <aux name="SwitchForCapacityStrategy3">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>IF SwitchForCapacityStrategy = 3 THEN 1 ELSE 0</eqn>
-            <display x="718" y="876" color="blue" />
+            <display x="710" y="871" color="blue" />
         </aux>
         <aux name="SwitchForCapacityStrategy4">
             <dimensions>
                 <dim name="Company" />
             </dimensions>
             <eqn>IF SwitchForCapacityStrategy = 4 THEN 1 ELSE 0</eqn>
-            <display x="720" y="922" color="blue" />
+            <display x="712" y="917" color="blue" />
         </aux>
         <group name="Net_Income_Sector">
             <display locked="true" x="52" y="40" width="460" height="288" color="red" />
@@ -813,12 +813,12 @@
         </group>
         <group name="Capacity_Sector">
             <entity name="Capacitys" />
-            <display x="35" y="705" width="389" height="187" color="red" />
+            <display x="35" y="705" width="337" height="201" color="red" />
         </group>
         <group name="Target_Capacity_Sector">
+            <entity name="changePerceivedCompTargetCapacity" />
             <entity name="IndustryCapacity" />
             <entity name="CompetitorCapacity" />
-            <entity name="changePerceivedCompTargetCapacity" />
             <entity name="PerceivedCompTargetCapacity" />
             <entity name="CompetitorTargetCapacity" />
             <entity name="IndustryTotalTargetCapacity" />
@@ -831,12 +831,12 @@
             <entity name="SwitchForCapacityStrategy3" />
             <entity name="SwitchForCapacityStrategy4" />
             <entity name="TimeToPerceiveCompTargetCapacity" />
-            <entity name="WeightOnSupplyLine" />
-            <entity name="TargetMarketShare" />
             <entity name="DesiredMarketShare" />
-            <entity name="UncontestedMarketShare" />
+            <entity name="WeightOnSupplyLine" />
             <entity name="UncontestedDemand" />
-            <display x="444" y="705" width="428" height="333" color="red">
+            <entity name="TargetMarketShare" />
+            <entity name="UncontestedMarketShare" />
+            <display locked="true" x="382" y="700" width="493" height="345" color="red">
                 <item uid="18" />
                 <item uid="19" />
                 <item uid="20" />
@@ -938,7 +938,7 @@
         <group name="Market_Sector">
             <display locked="true" x="444" y="1103" width="353" height="274" color="red" />
         </group>
-        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" zoom="150" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" scroll_x="328" scroll_y="680">
+        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.25" report_every_dt="true" report_balances="ending" report_flows="summed" scroll_y="488">
             <alias x="90" y="225" uid="81">
                 <of>Price</of>
             </alias>
@@ -1507,155 +1507,155 @@
                 <from>NPVProfit</from>
                 <to>NPLAYERS</to>
             </connector>
-            <alias x="820" y="736" uid="42">
+            <alias x="822" y="732" uid="42">
                 <of>ExpectedIndustryDemand</of>
             </alias>
-            <alias x="472" y="964" uid="18">
+            <alias x="464" y="959" uid="19">
                 <of>Capacitys</of>
             </alias>
-            <connector x="544" y="881" uid="31" color="#FF007F">
+            <connector x="536" y="876" uid="24" color="#FF007F">
                 <from>PerceivedCompTargetCapacity</from>
                 <to>ExpectedCompCapacity</to>
             </connector>
-            <connector x="605" y="1001" uid="39" color="#FF007F">
+            <connector x="597" y="996" uid="40" color="#FF007F">
                 <from>ExpectedCompCapacity</from>
                 <to>UncontestedDemand</to>
             </connector>
-            <connector x="481" y="963" uid="20" color="#FF007F">
+            <connector x="473" y="958" uid="20" color="#FF007F">
                 <from>
-                    <alias uid="18" />
+                    <alias uid="19" />
                 </from>
                 <to>CompetitorCapacity</to>
             </connector>
-            <connector x="498" y="740" uid="24" color="#FF007F">
+            <connector x="490" y="735" uid="26" color="#FF007F">
                 <from>IndustryTotalTargetCapacity</from>
                 <to>CompetitorTargetCapacity</to>
             </connector>
-            <connector x="479" y="971" uid="19" color="#FF007F">
+            <connector x="471" y="966" uid="21" color="#FF007F">
                 <from>
-                    <alias uid="18" />
+                    <alias uid="19" />
                 </from>
                 <to>IndustryCapacity</to>
             </connector>
-            <connector x="486" y="1010" uid="21" color="#FF007F">
+            <connector x="478" y="1005" uid="18" color="#FF007F">
                 <from>IndustryCapacity</from>
                 <to>CompetitorCapacity</to>
             </connector>
-            <connector x="808" y="1010" uid="29" color="#FF007F">
+            <connector x="785" y="1009" uid="39" color="#FF007F">
                 <from>WeightOnSupplyLine</from>
                 <to>ExpectedCompCapacity</to>
             </connector>
-            <alias x="597" y="798" uid="26">
+            <alias x="589" y="793" uid="29">
                 <of>NormalCapacityUtilization</of>
             </alias>
-            <connector x="598" y="807" uid="30" color="#FF007F">
+            <connector x="590" y="802" uid="30" color="#FF007F">
                 <from>
-                    <alias uid="26" />
+                    <alias uid="29" />
                 </from>
                 <to>ExpectedCompCapacity</to>
             </connector>
-            <connector x="758" y="758" uid="43" color="#FF007F">
+            <connector x="750" y="753" uid="44" color="#FF007F">
                 <from>DesiredMarketShare</from>
                 <to>TargetMarketShare</to>
             </connector>
-            <connector x="810" y="888" uid="48" color="#FF007F">
+            <connector x="799" y="876" uid="49" color="#FF007F">
                 <from>UncontestedMarketShare</from>
                 <to>TargetMarketShare</to>
             </connector>
-            <connector x="824" y="745" uid="49" color="#FF007F">
+            <connector x="825" y="741" uid="50" color="#FF007F">
                 <from>
                     <alias uid="42" />
                 </from>
                 <to>UncontestedMarketShare</to>
             </connector>
-            <connector x="821" y="954" uid="50" color="#FF007F">
+            <connector x="788" y="955" uid="51" color="#FF007F">
                 <from>UncontestedDemand</from>
                 <to>UncontestedMarketShare</to>
             </connector>
-            <connector x="811" y="736" uid="34" color="#FF007F">
+            <connector x="813" y="732" uid="38" color="#FF007F">
                 <from>
                     <alias uid="42" />
                 </from>
                 <to>TargetCapacity</to>
             </connector>
-            <connector x="808" y="810" uid="32" color="#FF007F">
+            <connector x="795" y="803" uid="41" color="#FF007F">
                 <from>TargetMarketShare</from>
                 <to>TargetCapacity</to>
             </connector>
-            <connector x="722" y="718" uid="33" color="#FF007F">
+            <connector x="714" y="713" uid="32" color="#FF007F">
                 <from>MinimumEfficientScale</from>
                 <to>TargetCapacity</to>
             </connector>
-            <connector x="594" y="790" uid="27" color="#FF007F">
+            <connector x="586" y="785" uid="31" color="#FF007F">
                 <from>
-                    <alias uid="26" />
+                    <alias uid="29" />
                 </from>
                 <to>TargetCapacity</to>
             </connector>
-            <connector x="604" y="727" uid="28" color="#FF007F">
+            <connector x="596" y="722" uid="27" color="#FF007F">
                 <from>TargetCapacity</from>
                 <to>IndustryTotalTargetCapacity</to>
             </connector>
-            <connector x="602" y="731" uid="25" color="#FF007F">
+            <connector x="594" y="726" uid="28" color="#FF007F">
                 <from>TargetCapacity</from>
                 <to>CompetitorTargetCapacity</to>
             </connector>
-            <connector x="477" y="900" uid="40" color="#FF007F">
+            <connector x="469" y="895" uid="37" color="#FF007F">
                 <from>TimeToPerceiveCompTargetCapacity</from>
                 <to>changePerceivedCompTargetCapacity</to>
             </connector>
-            <connector x="494" y="791" uid="23" color="#FF007F">
+            <connector x="486" y="786" uid="25" color="#FF007F">
                 <from>CompetitorTargetCapacity</from>
                 <to>changePerceivedCompTargetCapacity</to>
             </connector>
-            <connector x="529" y="847" uid="22" color="#FF007F">
+            <connector x="521" y="842" uid="23" color="#FF007F">
                 <from>PerceivedCompTargetCapacity</from>
                 <to>changePerceivedCompTargetCapacity</to>
             </connector>
-            <connector x="642" y="854" uid="35" color="#FF007F">
+            <connector x="634" y="849" uid="33" color="#FF007F">
                 <from>SwitchForCapacityStrategy</from>
                 <to>SwitchForCapacityStrategy1</to>
             </connector>
-            <connector x="647" y="857" uid="36" color="#FF007F">
+            <connector x="639" y="852" uid="34" color="#FF007F">
                 <from>SwitchForCapacityStrategy</from>
                 <to>SwitchForCapacityStrategy2</to>
             </connector>
-            <connector x="647" y="862" uid="37" color="#FF007F">
+            <connector x="639" y="857" uid="35" color="#FF007F">
                 <from>SwitchForCapacityStrategy</from>
                 <to>SwitchForCapacityStrategy3</to>
             </connector>
-            <connector x="645" y="866" uid="38" color="#FF007F">
+            <connector x="637" y="861" uid="36" color="#FF007F">
                 <from>SwitchForCapacityStrategy</from>
                 <to>SwitchForCapacityStrategy4</to>
             </connector>
-            <connector x="728" y="798" uid="47" color="#FF007F">
+            <connector x="720" y="793" uid="45" color="#FF007F">
                 <from>SwitchForCapacityStrategy1</from>
                 <to>TargetMarketShare</to>
             </connector>
-            <connector x="725" y="835" uid="46" color="#FF007F">
+            <connector x="717" y="830" uid="46" color="#FF007F">
                 <from>SwitchForCapacityStrategy2</from>
                 <to>TargetMarketShare</to>
             </connector>
-            <connector x="726" y="871" uid="45" color="#FF007F">
+            <connector x="718" y="866" uid="47" color="#FF007F">
                 <from>SwitchForCapacityStrategy3</from>
                 <to>TargetMarketShare</to>
             </connector>
-            <connector x="725" y="915" uid="44" color="#FF007F">
+            <connector x="718" y="910" uid="48" color="#FF007F">
                 <from>SwitchForCapacityStrategy4</from>
                 <to>TargetMarketShare</to>
             </connector>
-            <connector x="826" y="743" uid="51" color="#FF007F">
+            <connector x="827" y="739" uid="43" color="#FF007F">
                 <from>
                     <alias uid="42" />
                 </from>
                 <to>UncontestedDemand</to>
             </connector>
-            <connector x="541" y="965" uid="41" color="#FF007F">
+            <connector x="533" y="960" uid="22" color="#FF007F">
                 <from>CompetitorCapacity</from>
                 <to>ExpectedCompCapacity</to>
             </connector>
             <stacked_container x="1341" y="735" height="282" width="492" visible_index="0" uid="169">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702162364" time_precision="2" from="0" to="20">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-702154124" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="InitialDemandForecast" index="Company1" />
                     </plot>
@@ -1672,7 +1672,7 @@
             </stacked_container>
             <pad_icon x="1429" y="782" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="169" />
             <stacked_container x="527" y="77" height="270" width="319" visible_index="0" uid="170">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="106" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702162364">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="106" orientation="vertical" report_every_dt="true" report_balances="ending" report_flows="summed" isee:date_time="-702154124">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" units="currency" index="0">
                         <entity name="NPVProfit" index="Company1" />

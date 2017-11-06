@@ -60,6 +60,12 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aInitialPrice = rep(1000, times = N_PLAYERS)
                 ,aNormalProfitMargin = rep(0.2, times = N_PLAYERS)
                 ,aNormalCapacityUtilization = rep(0.8, times = N_PLAYERS)
+                #Target Capacity Sector
+                ,aMinimumEfficientScale = rep(100000, times = N_PLAYERS)
+                ,aDesiredMarketShare = rep(0.5, times = N_PLAYERS)
+                ,aWeightOnSupplyLine= rep(1, times = N_PLAYERS)
+                ,aSwitchForCapacityStrategy = rep(1, times = N_PLAYERS)
+                ,aTimeToPerceiveCompTargetCapacity = rep(0.25, times = N_PLAYERS)
                 )
 
 
@@ -72,7 +78,9 @@ stocks  <- c(
   ,sPrice = rep(9000, times = N_PLAYERS)
   ,sCumulativeAdopters = 100000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
   ,sReportedIndustryVolume = rep(10000, times = N_PLAYERS)
-  ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS)) # Este estoque possui formula
+  ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
+  ,sPerceivedCompTargetCapacity = rep(10000000, times = N_PLAYERS) # Este estoque possui formula
+  ) 
 
 ##### Modelo de Dinâmica de Sistemas ####
 
@@ -92,7 +100,7 @@ modelo <- function(time, stocks, auxs){
     sCumulativeAdopters = stocks[(N_PLAYERS*5+1)]
     sReportedIndustryVolume = stocks[(N_PLAYERS*6):(N_PLAYERS*6+1)]
     sCumulativeProduction = stocks[(N_PLAYERS*7):(N_PLAYERS*7+1)]
-    
+    sPerceivedCompTargetCapacity = stocks[(N_PLAYERS*8):(N_PLAYERS*8+1)]
     
     #Obtendo o número da linha no qual estou
     linha = (time * (n_tempo - 1)) / FINISH + 1
@@ -201,6 +209,43 @@ modelo <- function(time, stocks, auxs){
     
     aForecastError = (aLaggedVolumeForecast - aIndustryVolume)/(1e-009+aIndustryVolume)
     
+    
+    
+    ##### TARGET CAPACITY SECTOR #####
+    
+    aIndustryCapacity = sum(aCapacity)
+    
+    aCompetitorCapacity = aIndustryCapacity - aCapacity
+    
+    aExpectedCompCapacity = aNormalCapacityUtilization*(aWeightOnSupplyLine*sPerceivedCompTargetCapacity+(1-aWeightOnSupplyLine)*aCompetitorCapacity)
+    
+    aUncontestedDemand = pmax(0, aExpectedIndustryDemand - aExpectedCompCapacity)
+    
+    aUncontestedMarketShare = aUncontestedDemand / aExpectedIndustryDemand
+    
+    aSwitchForCapacityStrategy1 = ifelse(aSwitchForCapacityStrategy == 1, 1, 0)
+    aSwitchForCapacityStrategy2 = ifelse(aSwitchForCapacityStrategy == 2, 1, 0)
+    aSwitchForCapacityStrategy3 = ifelse(aSwitchForCapacityStrategy == 3, 1, 0)
+    aSwitchForCapacityStrategy4 = ifelse(aSwitchForCapacityStrategy == 4, 1, 0)
+    
+    aTargetMarketShare = {
+        aSwitchForCapacityStrategy1*pmax(aDesiredMarketShare,aUncontestedMarketShare) +
+        aSwitchForCapacityStrategy2*pmin(aDesiredMarketShare,aUncontestedMarketShare) +
+        aSwitchForCapacityStrategy3*aDesiredMarketShare +
+        aSwitchForCapacityStrategy4*aUncontestedMarketShare
+    }
+    
+    
+    aTargetCapacity = pmax(aMinimumEfficientScale,
+                           aTargetMarketShare*aExpectedIndustryDemand/aNormalCapacityUtilization)
+    
+    aIndustryTotalTargetCapacity = sum(aTargetCapacity)
+    
+    aCompetitorTargetCapacity = aIndustryTotalTargetCapacity - aTargetCapacity
+    
+    fChangePerceivedCompTargetCapacity = (aCompetitorTargetCapacity - sPerceivedCompTargetCapacity) / aTimeToPerceiveCompTargetCapacity
+    
+    
     ##### LEARNING CURVE SECTOR #####
     fProduction = fShipments
     
@@ -256,6 +301,8 @@ modelo <- function(time, stocks, auxs){
     
     d_CumulativeProduction_dt = fProduction
     
+    d_PerceivedCompTargetCapacity_dt = fChangePerceivedCompTargetCapacity
+    
     ##### VARIÁVEIS RETORNADAS #####
     
     ## Parar se o tempo chegou ao fim.
@@ -272,6 +319,7 @@ modelo <- function(time, stocks, auxs){
                    ,d_CumulativeAdopters_dt
                    ,d_sReportedIndustryVolume_dt
                    ,d_CumulativeProduction_dt
+                   ,d_PerceivedCompTargetCapacity_dt
                    )
                  ,fReorderRate = fReorderRate
                  ,aIndustryShipments = aIndustryShipments
