@@ -249,6 +249,7 @@ modelo <- function(time, stocks, auxs){
     
     fChangePerceivedCompTargetCapacity = (aCompetitorTargetCapacity - sPerceivedCompTargetCapacity) / aTimeToPerceiveCompTargetCapacity
     
+    
     ##### LEARNING CURVE SECTOR #####
     fProduction = fShipments
     
@@ -300,6 +301,7 @@ modelo <- function(time, stocks, auxs){
     fNPVProfitChange = fNetIncome * aDiscountFactor
     
     aNPVIndustryProfits = sum(sNPVProfit)
+    
     
     ##### ESTOQUES #####
     
