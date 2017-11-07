@@ -27,7 +27,7 @@ opcoes = list(
 )
 
 
-## Carregando o Modelo, e outros objetos
+## Carregando Modelo, e outros objetos
 source('modelo.R', encoding = 'UTF-8')
 
 # Simulando uma vez apenas

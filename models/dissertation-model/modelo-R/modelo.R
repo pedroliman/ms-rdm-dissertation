@@ -29,7 +29,7 @@ list.variaveis.globais = list(
 
 ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
 auxs    <- list(aDiscountRate = 0.04
-                ,aCapacity = rep(10000000, times = N_PLAYERS)
+                ,aCapacity = rep(1000000, times = N_PLAYERS)
                 ,aNormalDeliveryDelay = rep(0.25, times = N_PLAYERS)
                 ,aSwitchForCapacity = 1
                 ,aFractionalDiscardRate = 0.1
@@ -76,12 +76,12 @@ stocks  <- c(
    sNPVProfit = rep(0, times = N_PLAYERS)
   ,sValueOfBacklog = rep(1, times = N_PLAYERS)
   ,sBacklog = rep(1, times = N_PLAYERS) 
-  ,sInstalledBase = rep(50000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-  ,sPrice = rep(9000, times = N_PLAYERS)
-  ,sCumulativeAdopters = 100000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-  ,sReportedIndustryVolume = rep(10000, times = N_PLAYERS)
+  ,sInstalledBase = rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+  ,sPrice = rep(1000, times = N_PLAYERS)
+  ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+  ,sReportedIndustryVolume = rep(6000, times = N_PLAYERS)
   ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
-  ,sPerceivedCompTargetCapacity = rep(10000000, times = N_PLAYERS) # Este estoque possui formula
+  ,sPerceivedCompTargetCapacity = rep(1000000, times = N_PLAYERS) # Este estoque possui formula
   ) 
 
 ##### Modelo de Dinâmica de Sistemas ####
