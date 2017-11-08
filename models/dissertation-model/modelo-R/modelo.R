@@ -145,6 +145,8 @@ modelo <- function(time, stocks, auxs){
       )
     )
     
+    checkIndustryDemand = aIndustryDemand
+    
     aInitialCumulativeAdopters = aInitialDiffusionFraction * aIndustryDemand
     
     aNonAdopters = aIndustryDemand - sCumulativeAdopters
@@ -340,9 +342,13 @@ modelo <- function(time, stocks, auxs){
     
     fValueOfNewOrders = fOrders * sPrice
     
+    checkValueOfNewOrders1 = fValueOfNewOrders[1]
+    
     aAveragePriceOfOrderBook = sValueOfBacklog / sBacklog
     
     fRevenue = fShipments * aAveragePriceOfOrderBook
+    
+    checkRevenue1 = fRevenue[1]
     
     aVariableCost = fShipments * aUnitVariableCost
     
@@ -385,7 +391,7 @@ modelo <- function(time, stocks, auxs){
     
     d_SmoothCapacity3_dt = fchangeSmoothCapacity3
     
-    ##### VERIFICAR ESTOQUES COM RESULTADOS DO ITHINK #####
+    ##### COMPARAR RESULTADOS COM O ITHINK #####
     
     if(VERIFICAR_STOCKS){
       for (variavel in variaveis_ithink_stocks) {
@@ -404,8 +410,8 @@ modelo <- function(time, stocks, auxs){
         
         diferenca = valor_variavel_R - valor_variavel_ithink
         
-        if (abs(x = diferenca) > 0.1){
-          message(paste("Diferenca: Linha", linha, variavel, diferenca, sep = " - "))
+        if (abs(x = diferenca) > 1){
+          message(paste("Estoque Diff:", time, linha, variavel, diferenca, sep = " - "))
           #browser()
         }
       }  
@@ -430,9 +436,10 @@ modelo <- function(time, stocks, auxs){
         diferenca = valor_variavel_R - valor_variavel_ithink
         
         if(!is.na(diferenca)){
-          if (abs(x = diferenca) > 0.1){
-            message(paste("Diferenca: Linha", linha, variavel, diferenca, sep = " - "))
-            #browser()
+          
+          if (abs(x = diferenca) > 0.01){
+            message(paste("Check Diff:", time, linha, variavel, diferenca, sep = " - "))
+            # browser()
           }  
         }
         
