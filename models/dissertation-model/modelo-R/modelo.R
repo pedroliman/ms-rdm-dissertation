@@ -1,6 +1,6 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
-START<-0; FINISH<-20; STEP<-0.125
+START<-0; FINISH<-4; STEP<-0.125
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
@@ -24,6 +24,13 @@ list.variaveis.globais = list(
   sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
   aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
 )
+
+arquivo_excel = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
+
+dados_ithink  = arquivo_excel$ResultadosIthink %>% dplyr::select(-Months)
+
+variaveis_ithink = names(dados_ithink)
+
 
 
 
@@ -127,10 +134,11 @@ modelo <- function(time, stocks, auxs){
     aInitialCumulativeAdopters = aInitialDiffusionFraction * aIndustryDemand
     
     aNonAdopters = aIndustryDemand - sCumulativeAdopters
-     
-    fAdoptionRate = aNonAdopters * (aInnovatorAdoptionFraction + aWOMStrength * sCumulativeAdopters/aPopulation)
     
-   
+    # Ajuste temporário: Colocar o adoption Rate como Fluxo apenas positivo.
+     
+    fAdoptionRate = max(0, 
+                        aNonAdopters * (aInnovatorAdoptionFraction + aWOMStrength * sCumulativeAdopters/aPopulation)) 
     
     ##### ORDERS SECTOR - PT 1 #####
     
@@ -143,6 +151,8 @@ modelo <- function(time, stocks, auxs){
     aInitialOrderRate = aUnitsPerHousehold * fAdoptionRate
     
     fIndustryOrderRate = fReorderRate + aInitialOrderRate
+    
+    browser()
     
     ##### ORDERS SECTOR - PT 2 #####
     
@@ -323,8 +333,28 @@ modelo <- function(time, stocks, auxs){
     
     d_PerceivedCompTargetCapacity_dt = fChangePerceivedCompTargetCapacity
     
-    
-    browser()
+
+    for (variavel in variaveis_ithink) {
+      # Definir o tipo de variavel
+      # Variavel é um estoque?
+      variavel_ithink_alterada = gsub(pattern = "\\[", replacement = "", x = variavel, ignore.case = TRUE)
+      variavel_ithink_alterada = gsub(pattern = "\\]", replacement = "", x = variavel_ithink_alterada, ignore.case = TRUE)
+      
+      # Verificar apenas Estoques:
+      variavel_ithink_alterada = paste("s", variavel_ithink_alterada, sep = "")
+      
+      # Valor da Variavel Calculada
+      valor_variavel_R = eval(parse(text = variavel_ithink_alterada))
+      
+      valor_variavel_ithink = dados_ithink[[linha,variavel]]
+      
+      diferenca = valor_variavel_R - valor_variavel_ithink
+      
+      if (abs(x = diferenca) > 0.001){
+        message(paste("Diferenca: Linha", linha, variavel, diferenca, sep = " - "))
+        browser()
+      }
+    }
     ##### VARIÁVEIS RETORNADAS #####
     
     ## Parar se o tempo chegou ao fim.
