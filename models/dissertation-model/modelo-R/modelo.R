@@ -140,6 +140,8 @@ modelo <- function(time, stocks, auxs){
     fAdoptionRate = max(0, 
                         aNonAdopters * (aInnovatorAdoptionFraction + aWOMStrength * sCumulativeAdopters/aPopulation)) 
     
+    checkAdoptionRate = fAdoptionRate
+    
     ##### ORDERS SECTOR - PT 1 #####
     
     fDiscardRate = sInstalledBase * aFractionalDiscardRate
@@ -152,11 +154,11 @@ modelo <- function(time, stocks, auxs){
     
     fIndustryOrderRate = fReorderRate + aInitialOrderRate
     
-    browser()
+    checkIndustryOrderRate = fIndustryOrderRate
     
     ##### ORDERS SECTOR - PT 2 #####
     
-    aDesiredShipments = sBacklog/aNormalDeliveryDelay
+    aDesiredShipments = sBacklog / aNormalDeliveryDelay
     
     fShipments = aSwitchForCapacity * pmin(aDesiredShipments, aCapacity) + (1-aSwitchForCapacity) * aDesiredShipments
     
@@ -164,7 +166,9 @@ modelo <- function(time, stocks, auxs){
     
     aMarketShare = fShipments / aIndustryShipments
     
-    aDeliveryDelay = sBacklog/fShipments
+    aDeliveryDelay = sBacklog / fShipments
+    
+    checkIndustryShipments = aIndustryShipments
     
     ##### MARKET SECTOR #####
     
@@ -182,6 +186,7 @@ modelo <- function(time, stocks, auxs){
     
     fOrders = fIndustryOrderRate * aOrderShare
     
+    checkOrders = sum(fOrders)
     
     ##### EXPECTED INDUSTRY DEMAND SECTOR #####
     
@@ -221,11 +226,9 @@ modelo <- function(time, stocks, auxs){
     
     aForecastError = (aLaggedVolumeForecast - aIndustryVolume)/(1e-009+aIndustryVolume)
     
-    
+    checkLaggedVolumeForecast = mean(aLaggedVolumeForecast)
     
     ##### TARGET CAPACITY SECTOR #####
-    
-    
     
     aIndustryCapacity = sum(aCapacity)
     
@@ -259,6 +262,8 @@ modelo <- function(time, stocks, auxs){
     
     fChangePerceivedCompTargetCapacity = (aCompetitorTargetCapacity - sPerceivedCompTargetCapacity) / aTimeToPerceiveCompTargetCapacity
     
+    checkCompetitorTargetCapacity = mean(aCompetitorTargetCapacity)
+    
     
     ##### LEARNING CURVE SECTOR #####
     fProduction = fShipments
@@ -275,6 +280,10 @@ modelo <- function(time, stocks, auxs){
     
     aUnitVariableCost = aLearning * aInitialUnitVariableCost
     
+    checkUnitFixedCost = mean(aUnitFixedCost)
+    
+    checkUnitVariableCost = mean(aUnitVariableCost)
+    
     ##### PRICE SECTOR #####
     
     aBasePrice = (1+aNormalProfitMargin)*(aUnitVariableCost+aUnitFixedCost/aNormalCapacityUtilization)
@@ -287,6 +296,9 @@ modelo <- function(time, stocks, auxs){
             (1+aSensOfPriceToCosts*((aBasePrice/sPrice)-1))*
             (1+aSensOfPriceToDSBalance*(aDemandSupplyBalance-1))*
             (1+aSensOfPriceToShare*((aTargetMarketShare-aMarketShare))))
+    
+    checkTargetPrice = mean(aTargetPrice)
+    
     
     fChangeInPrice = (aTargetPrice - sPrice) / aPriceAdjustmentTime
     
@@ -309,6 +321,8 @@ modelo <- function(time, stocks, auxs){
     fNetIncome = fRevenue - fCost
     
     fNPVProfitChange = fNetIncome * aDiscountFactor
+    
+    checkNPVProfitChange = mean(fNPVProfitChange)
     
     aNPVIndustryProfits = sum(sNPVProfit)
     
