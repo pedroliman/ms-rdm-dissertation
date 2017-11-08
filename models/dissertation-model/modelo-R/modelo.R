@@ -1,7 +1,7 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
 library(dplyr)
-START<-0; FINISH<-4; STEP<-0.125
+START<-0; FINISH<-10; STEP<-0.125
 
 VERIFICAR_STOCKS = TRUE
 
@@ -43,7 +43,6 @@ variaveis_ithink_checks = names(dados_ithink_checks)
 
 ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
 auxs    <- list(aDiscountRate = 0.04
-                ,aCapacity = rep(1000000, times = N_PLAYERS)
                 ,aNormalDeliveryDelay = rep(0.25, times = N_PLAYERS)
                 ,aSwitchForCapacity = 1
                 ,aFractionalDiscardRate = 0.1
@@ -82,6 +81,8 @@ auxs    <- list(aDiscountRate = 0.04
                 ,aSensOfPriceToCosts = rep(1, times = N_PLAYERS)
                 ,aSensOfPriceToDSBalance = rep(0.25, times = N_PLAYERS)
                 ,aSensOfPriceToShare = rep(-0.1, times = N_PLAYERS)
+                # Capacity Sector
+                ,aSwitchForPerfectCapacity = 0
                 )
 
 
@@ -95,7 +96,10 @@ stocks  <- c(
   ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
   ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
   ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
-  ,sPerceivedCompTargetCapacity = rep(1000000, times = N_PLAYERS) # Este estoque possui formula
+  ,sPerceivedCompTargetCapacity = rep(50952, times = N_PLAYERS) # Este estoque possui formula
+  ,sSmoothCapacity1 = rep(50952, times = N_PLAYERS) # Este estoque possui formula
+  ,sSmoothCapacity2 = rep(50952, times = N_PLAYERS) # Este estoque possui formula
+  ,sSmoothCapacity3 = rep(50952, times = N_PLAYERS) # Este estoque possui formula
   ) 
 
 ##### Modelo de Dinâmica de Sistemas ####
@@ -117,6 +121,9 @@ modelo <- function(time, stocks, auxs){
     sReportedIndustryVolume = stocks[(N_PLAYERS*6):(N_PLAYERS*6+1)]
     sCumulativeProduction = stocks[(N_PLAYERS*7):(N_PLAYERS*7+1)]
     sPerceivedCompTargetCapacity = stocks[(N_PLAYERS*8):(N_PLAYERS*8+1)]
+    sSmoothCapacity1 = stocks[(N_PLAYERS*9):(N_PLAYERS*9+1)]
+    sSmoothCapacity2 = stocks[(N_PLAYERS*10):(N_PLAYERS*10+1)]
+    sSmoothCapacity3 = stocks[(N_PLAYERS*11):(N_PLAYERS*11+1)]
     
     #Obtendo o número da linha no qual estou
     linha = (time * (n_tempo - 1)) / FINISH + 1
@@ -167,7 +174,19 @@ modelo <- function(time, stocks, auxs){
     
     aDesiredShipments = sBacklog / aNormalDeliveryDelay
     
+    ### CAPACITY SECTOR - PT 1 ####
+    
+    aCapacity = aSwitchForPerfectCapacity * (aDesiredShipments / aNormalCapacityUtilization) + (1-aSwitchForPerfectCapacity) * sSmoothCapacity3
+    
+    aNormalProduction = aCapacity * aNormalCapacityUtilization
+    
+    aIndustryNormalProduction = sum(aNormalProduction)
+    
+    ##### ORDERS SECTOR - PT 3 #####
+    
     fShipments = aSwitchForCapacity * pmin(aDesiredShipments, aCapacity) + (1-aSwitchForCapacity) * aDesiredShipments
+    
+    aCapacityUtilization = fShipments / aCapacity
     
     aIndustryShipments = sum(fShipments)
     
@@ -262,6 +281,8 @@ modelo <- function(time, stocks, auxs){
     aTargetCapacity = pmax(aMinimumEfficientScale,
                            aTargetMarketShare*aExpectedIndustryDemand/aNormalCapacityUtilization)
     
+    aTargetNormalProduction = aTargetCapacity * aNormalCapacityUtilization
+    
     aIndustryTotalTargetCapacity = sum(aTargetCapacity)
     
     aCompetitorTargetCapacity = aIndustryTotalTargetCapacity - aTargetCapacity
@@ -269,6 +290,11 @@ modelo <- function(time, stocks, auxs){
     fChangePerceivedCompTargetCapacity = (aCompetitorTargetCapacity - sPerceivedCompTargetCapacity) / aTimeToPerceiveCompTargetCapacity
     
     checkCompetitorTargetCapacity = mean(aCompetitorTargetCapacity)
+    
+    ##### CAPACITY SECTOR  - PT 2 - FLUXOS #####
+    fchangeSmoothCapacity1 = (aTargetCapacity - sSmoothCapacity1) / (aCapacityAcquisitionDelay / 3)
+    fchangeSmoothCapacity2 = (sSmoothCapacity1 - sSmoothCapacity2) / (aCapacityAcquisitionDelay / 3)
+    fchangeSmoothCapacity3 = (sSmoothCapacity2 - sSmoothCapacity3) / (aCapacityAcquisitionDelay / 3)
     
     
     ##### LEARNING CURVE SECTOR #####
@@ -353,9 +379,13 @@ modelo <- function(time, stocks, auxs){
     
     d_PerceivedCompTargetCapacity_dt = fChangePerceivedCompTargetCapacity
     
+    d_SmoothCapacity1_dt = fchangeSmoothCapacity1
+    
+    d_SmoothCapacity2_dt = fchangeSmoothCapacity2
+    
+    d_SmoothCapacity3_dt = fchangeSmoothCapacity3
     
     ##### VERIFICAR ESTOQUES COM RESULTADOS DO ITHINK #####
-    
     
     if(VERIFICAR_STOCKS){
       for (variavel in variaveis_ithink_stocks) {
@@ -374,9 +404,9 @@ modelo <- function(time, stocks, auxs){
         
         diferenca = valor_variavel_R - valor_variavel_ithink
         
-        if (abs(x = diferenca) > 0.001){
+        if (abs(x = diferenca) > 0.1){
           message(paste("Diferenca: Linha", linha, variavel, diferenca, sep = " - "))
-          browser()
+          #browser()
         }
       }  
     }
@@ -400,9 +430,9 @@ modelo <- function(time, stocks, auxs){
         diferenca = valor_variavel_R - valor_variavel_ithink
         
         if(!is.na(diferenca)){
-          if (abs(x = diferenca) > 0.001){
+          if (abs(x = diferenca) > 0.1){
             message(paste("Diferenca: Linha", linha, variavel, diferenca, sep = " - "))
-            browser()
+            #browser()
           }  
         }
         
@@ -426,6 +456,9 @@ modelo <- function(time, stocks, auxs){
                    ,d_sReportedIndustryVolume_dt
                    ,d_CumulativeProduction_dt
                    ,d_PerceivedCompTargetCapacity_dt
+                   ,d_SmoothCapacity1_dt
+                   ,d_SmoothCapacity2_dt
+                   ,d_SmoothCapacity3_dt
                    )
                  ,fReorderRate = fReorderRate
                  ,aIndustryShipments = aIndustryShipments
