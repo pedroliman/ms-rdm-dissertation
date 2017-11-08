@@ -15,8 +15,8 @@
     </style>
     <sim_specs method="Euler" time_units="Months">
         <start>0</start>
-        <stop>10</stop>
-        <dt>0.125</dt>
+        <stop>20</stop>
+        <dt>0.0625</dt>
     </sim_specs>
     <dimensions>
         <dim name="Company" size="2" />
@@ -101,10 +101,10 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>1</eqn>
+            <eqn>Price*Backlog</eqn>
             <inflow>ValueOfNewOrders</inflow>
             <outflow>Revenue</outflow>
-            <display x="265" y="209" color="blue" />
+            <display x="258" y="213" color="blue" />
         </stock>
         <flow name="Revenue">
             <dimensions>
@@ -112,9 +112,9 @@
             </dimensions>
             <eqn>Shipments*AveragePriceofOrderBook</eqn>
             <non_negative />
-            <display x="341" y="210" color="blue">
+            <display x="337" y="210" color="blue">
                 <pts>
-                    <pt x="287" y="210" />
+                    <pt x="280" y="210" />
                     <pt x="395" y="210" />
                 </pts>
             </display>
@@ -125,10 +125,10 @@
             </dimensions>
             <eqn>Price*Orders</eqn>
             <non_negative />
-            <display x="203" y="212" color="blue">
+            <display x="199" y="212" color="blue">
                 <pts>
                     <pt x="163" y="212" />
-                    <pt x="243" y="212" />
+                    <pt x="236" y="212" />
                 </pts>
             </display>
         </flow>
@@ -947,9 +947,7 @@
         </aux>
         <group name="Net_Income_Sector">
             <entity name="NPVProfit" />
-            <entity name="ValueOfBacklog" />
             <entity name="NPVProfitChange" />
-            <entity name="Revenue" />
             <entity name="aCheckProfitChange" />
             <entity name="AveragePriceOfOrderBook" />
             <entity name="Cost" />
@@ -958,8 +956,10 @@
             <entity name="NetIncome" />
             <entity name="NPLAYERS" />
             <entity name="NPVIndustryProfits" />
-            <entity name="ValueOfNewOrders" />
             <entity name="checkValueOfNewOrders1" />
+            <entity name="ValueOfBacklog" />
+            <entity name="ValueOfNewOrders" />
+            <entity name="Revenue" />
             <entity name="FixedCost" />
             <entity name="VariableCost" />
             <entity name="checkRevenue1" />
@@ -1249,7 +1249,7 @@
                 <item uid="166" />
             </display>
         </group>
-        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true">
+        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.0625" report_every_dt="true" scroll_y="635">
             <alias x="90" y="225" uid="0">
                 <of>Price</of>
             </alias>
@@ -1326,7 +1326,7 @@
             <alias x="924" y="642" uid="78">
                 <of>ReorderRate</of>
             </alias>
-            <alias x="175" y="310" uid="17">
+            <alias x="175" y="310" uid="11">
                 <of>Backlog</of>
             </alias>
             <alias x="1276" y="1162" uid="153">
@@ -1469,7 +1469,7 @@
                 </from>
                 <to>Production</to>
             </connector>
-            <connector x="335" y="203" uid="12" color="#FF007F">
+            <connector x="331" y="203" uid="17" color="#FF007F">
                 <from>Revenue</from>
                 <to>NetIncome</to>
             </connector>
@@ -1493,7 +1493,7 @@
                 <from>NormalDeliveryDelay</from>
                 <to>DesiredShipments</to>
             </connector>
-            <connector x="115" y="297" uid="15" color="#FF007F">
+            <connector x="115" y="297" uid="14" color="#FF007F">
                 <from>
                     <alias uid="1" />
                 </from>
@@ -1519,9 +1519,9 @@
                 <from>WeightOnSupplyLine</from>
                 <to>ExpectedCompCapacity</to>
             </connector>
-            <connector x="186" y="292" uid="18" color="#FF007F">
+            <connector x="186" y="292" uid="12" color="#FF007F">
                 <from>
-                    <alias uid="17" />
+                    <alias uid="11" />
                 </from>
                 <to>AveragePriceOfOrderBook</to>
             </connector>
@@ -1647,7 +1647,7 @@
                 <from>UnitsPerHousehold</from>
                 <to>InitialOrderRate</to>
             </connector>
-            <connector x="333" y="244" uid="13" color="#FF007F">
+            <connector x="331" y="244" uid="18" color="#FF007F">
                 <from>AveragePriceOfOrderBook</from>
                 <to>Revenue</to>
             </connector>
@@ -1657,7 +1657,7 @@
                 </from>
                 <to>TargetCapacity</to>
             </connector>
-            <connector x="112" y="233" uid="16" color="#FF007F">
+            <connector x="112" y="233" uid="15" color="#FF007F">
                 <from>
                     <alias uid="0" />
                 </from>
@@ -1879,7 +1879,7 @@
                 <from>TargetCapacity</from>
                 <to>CompetitorTargetCapacity</to>
             </connector>
-            <connector x="363" y="176" uid="14" color="#FF007F">
+            <connector x="363" y="176" uid="19" color="#FF007F">
                 <from>
                     <alias uid="23" />
                 </from>
@@ -2011,7 +2011,7 @@
                 </from>
                 <to>CompetitorCapacity</to>
             </connector>
-            <connector x="287" y="226" uid="9" color="#FF007F">
+            <connector x="279" y="218" uid="13" color="#FF007F">
                 <from>ValueOfBacklog</from>
                 <to>AveragePriceOfOrderBook</to>
             </connector>
@@ -2069,7 +2069,7 @@
                 <from>ForecastHorizon</from>
                 <to>ExpectedIndustryDemand</to>
             </connector>
-            <connector x="265" y="128" uid="10" color="#FF007F">
+            <connector x="265" y="128" uid="9" color="#FF007F">
                 <from>NetIncome</from>
                 <to>NPVProfitChange</to>
             </connector>
@@ -2097,7 +2097,7 @@
                 </from>
                 <to>IndustryCapacity</to>
             </connector>
-            <connector x="385" y="104" uid="11" color="#FF007F">
+            <connector x="385" y="104" uid="10" color="#FF007F">
                 <from>FixedCost</from>
                 <to>Cost</to>
             </connector>
@@ -2231,16 +2231,16 @@
                 <from>IndustryDemand</from>
                 <to>checkIndustryDemand</to>
             </connector>
-            <connector x="206" y="222" uid="19" color="#FF007F">
+            <connector x="202" y="220" uid="16" color="#FF007F">
                 <from>ValueOfNewOrders</from>
                 <to>checkValueOfNewOrders1</to>
             </connector>
-            <connector x="346" y="217" uid="20" color="#FF007F">
+            <connector x="342" y="218" uid="20" color="#FF007F">
                 <from>Revenue</from>
                 <to>checkRevenue1</to>
             </connector>
             <stacked_container x="1433" y="1077" height="270" width="475" visible_index="0" uid="230">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="96" orientation="vertical" report_every_dt="true" isee:date_time="-701949730">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="96" orientation="vertical" report_every_dt="true" isee:date_time="-701947976">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
                         <entity name="BasePrice" index="1" />
@@ -2258,7 +2258,7 @@
             </stacked_container>
             <pad_icon x="1455" y="1093" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="230" />
             <stacked_container x="839" y="1421" height="270" width="475" visible_index="0" uid="231">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="87" orientation="vertical" report_every_dt="true" isee:date_time="-701949730">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="87" orientation="vertical" report_every_dt="true" isee:date_time="-701947976">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="TargetPrice" index="1" />
@@ -2273,7 +2273,7 @@
             </stacked_container>
             <pad_icon x="861" y="1437" width="26" height="22" color="#008F44" label_side="bottom" label="Table 3" type="table" icon_of="231" />
             <stacked_container x="1465" y="13" height="344" width="486" visible_index="0" uid="232">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="123" orientation="vertical" report_every_dt="true" isee:date_time="-701949730">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="123" orientation="vertical" report_every_dt="true" isee:date_time="-701947976">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="UnitFixedCost" index="1" />
@@ -2285,7 +2285,7 @@
             </stacked_container>
             <pad_icon x="1482" y="24" width="26" height="22" color="#008F44" label_side="bottom" label="Table 5" type="table" icon_of="232" />
             <stacked_container x="1342" y="595" height="270" width="475" visible_index="0" uid="233">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="103" orientation="vertical" report_every_dt="true" isee:date_time="-701949730">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="103" orientation="vertical" report_every_dt="true" isee:date_time="-701947976">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="0">
                         <entity name="LaggedIndustryVolume" index="1" />
@@ -2303,7 +2303,7 @@
             </stacked_container>
             <pad_icon x="1364" y="611" width="26" height="22" color="#008F44" label_side="bottom" label="Table 6" type="table" icon_of="233" />
             <stacked_container x="530" y="21" height="270" width="475" visible_index="0" uid="234">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="90" orientation="vertical" report_every_dt="true" isee:date_time="-701949730">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="90" orientation="vertical" report_every_dt="true" isee:date_time="-701947976">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
                         <entity name="ValueOfNewOrders" index="1" />
@@ -2318,11 +2318,11 @@
             </stacked_container>
             <pad_icon x="552" y="37" width="26" height="22" color="#008F44" label_side="bottom" label="Table 7" type="table" icon_of="234" />
         </display>
-        <interface page_rows="3" page_width="788" page_height="528" scroll_y="523">
+        <interface page_cols="2" page_rows="3" page_width="788" page_height="528">
             <simulation_delay>0.01</simulation_delay>
             <pages />
             <stacked_container x="189" y="923" height="282" width="492" visible_index="0" uid="235">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701949730" time_precision="2" from="0" to="10">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701947976" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="Orders" index="1" />
                     </plot>
@@ -2339,7 +2339,7 @@
             </stacked_container>
             <pad_icon x="211" y="939" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="235" />
             <stacked_container x="173" y="1287" height="282" width="492" visible_index="0" uid="236">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701949730" time_precision="2" from="0" to="10">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701947976" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="Price" index="1" />
                     </plot>
@@ -2355,8 +2355,19 @@
                 </graph>
             </stacked_container>
             <pad_icon x="195" y="1303" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 2" type="graph" icon_of="236" />
-            <stacked_container x="57" y="46" height="468" width="705" visible_index="0" uid="237">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="107" orientation="vertical" report_every_dt="true" isee:date_time="-701949730">
+            <stacked_container x="819" y="71" height="282" width="492" visible_index="0" uid="237">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701947976" time_precision="2" from="0" to="20">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="NPVProfit" index="1" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="NPVProfitChange" index="1" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="908" y="104" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 3" type="graph" icon_of="237" />
+            <stacked_container x="57" y="46" height="468" width="705" visible_index="0" uid="238">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="107" orientation="vertical" report_every_dt="true" isee:date_time="-701947976">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="NPVProfit" index="1" />
@@ -2396,9 +2407,9 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="74" y="57" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="237" />
-            <stacked_container x="44" y="546" height="283" width="712" visible_index="0" uid="238">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="200" orientation="vertical" report_every_dt="true" isee:date_time="-701949730">
+            <pad_icon x="74" y="57" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="238" />
+            <stacked_container x="44" y="546" height="283" width="712" visible_index="0" uid="239">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="200" orientation="vertical" report_every_dt="true" isee:date_time="-701947976">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" flow_concept="true" index="0">
                         <entity name="checkAdoptionRate" />
@@ -2438,7 +2449,7 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="61" y="557" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="238" />
+            <pad_icon x="61" y="557" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="239" />
         </interface>
     </model>
 </xmile>

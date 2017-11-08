@@ -89,7 +89,7 @@ auxs    <- list(aDiscountRate = 0.04
 ##### VARIÁVEIS DE ENTRADA - ESTOQUES #####
 stocks  <- c(
    sNPVProfit = rep(0, times = N_PLAYERS)
-  ,sValueOfBacklog = rep(1, times = N_PLAYERS)
+  ,sValueOfBacklog = rep(12738000, times = N_PLAYERS)
   ,sBacklog = rep(12738, times = N_PLAYERS) 
   ,sInstalledBase = rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
   ,sPrice = rep(1000, times = N_PLAYERS)
