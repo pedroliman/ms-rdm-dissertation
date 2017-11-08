@@ -1,6 +1,12 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
+library(dplyr)
 START<-0; FINISH<-4; STEP<-0.125
+
+VERIFICAR_STOCKS = TRUE
+
+VERIFICAR_CHECKS = TRUE
+
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
@@ -25,14 +31,15 @@ list.variaveis.globais = list(
   aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
 )
 
-arquivo_excel = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
+# Carregando Variáveis de Output do Ithink para Comparação
+arquivo_excel_stocks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_stocks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
+arquivo_excel_checks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_checks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
 
-dados_ithink  = arquivo_excel$ResultadosIthink %>% dplyr::select(-Months)
+dados_ithink_stocks  = arquivo_excel_stocks$ResultadosIthink %>% dplyr::select(-Months)
+dados_ithink_checks  = arquivo_excel_checks$ResultadosIthink %>% dplyr::select(-Months)
 
-variaveis_ithink = names(dados_ithink)
-
-
-
+variaveis_ithink_stocks = names(dados_ithink_stocks)
+variaveis_ithink_checks = names(dados_ithink_checks)
 
 ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
 auxs    <- list(aDiscountRate = 0.04
@@ -204,13 +211,12 @@ modelo <- function(time, stocks, auxs){
     # Esta implementacao considera que os delays sempre serao iguais. Se os delays nao forem iguais, deve-se encontrar outra forma de implementar os delays (talvez com a equacao multiplicativa 1*(time > tempodelay)
     if(time > aTimeForHistoricalVolume) {
       nlinhas_delay = aTimeForHistoricalVolume / STEP
-      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[linha-nlinhas_delay,]
+      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[linha - nlinhas_delay,]
     } else {
-      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[linha,]
+      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[1,]
     }
     
     aExpGrowthInVolume =  log(sReportedIndustryVolume/aLaggedIndustryVolume)/aTimeForHistoricalVolume
-    
     
     aExpectedIndustryDemand = sReportedIndustryVolume*exp(aForecastHorizon*aCapacityAcquisitionDelay*aExpGrowthInVolume)
     
@@ -221,7 +227,7 @@ modelo <- function(time, stocks, auxs){
       nlinhas_delay = aCapacityAcquisitionDelay / STEP
       aLaggedVolumeForecast = list.variaveis.globais$aExpectedIndustryDemand[linha-nlinhas_delay,]
     } else {
-      aLaggedVolumeForecast = list.variaveis.globais$aExpectedIndustryDemand[linha,]
+      aLaggedVolumeForecast = list.variaveis.globais$aExpectedIndustryDemand[1,]
     }
     
     aForecastError = (aLaggedVolumeForecast - aIndustryVolume)/(1e-009+aIndustryVolume)
@@ -347,28 +353,62 @@ modelo <- function(time, stocks, auxs){
     
     d_PerceivedCompTargetCapacity_dt = fChangePerceivedCompTargetCapacity
     
-
-    for (variavel in variaveis_ithink) {
-      # Definir o tipo de variavel
-      # Variavel é um estoque?
-      variavel_ithink_alterada = gsub(pattern = "\\[", replacement = "", x = variavel, ignore.case = TRUE)
-      variavel_ithink_alterada = gsub(pattern = "\\]", replacement = "", x = variavel_ithink_alterada, ignore.case = TRUE)
-      
-      # Verificar apenas Estoques:
-      variavel_ithink_alterada = paste("s", variavel_ithink_alterada, sep = "")
-      
-      # Valor da Variavel Calculada
-      valor_variavel_R = eval(parse(text = variavel_ithink_alterada))
-      
-      valor_variavel_ithink = dados_ithink[[linha,variavel]]
-      
-      diferenca = valor_variavel_R - valor_variavel_ithink
-      
-      if (abs(x = diferenca) > 0.001){
-        message(paste("Diferenca: Linha", linha, variavel, diferenca, sep = " - "))
-        browser()
+    
+    ##### VERIFICAR ESTOQUES COM RESULTADOS DO ITHINK #####
+    
+    
+    if(VERIFICAR_STOCKS){
+      for (variavel in variaveis_ithink_stocks) {
+        # Definir o tipo de variavel
+        # Variavel é um estoque?
+        variavel_ithink_alterada = gsub(pattern = "\\[", replacement = "", x = variavel, ignore.case = TRUE)
+        variavel_ithink_alterada = gsub(pattern = "\\]", replacement = "", x = variavel_ithink_alterada, ignore.case = TRUE)
+        
+        # Verificar apenas Estoques:
+        variavel_ithink_alterada = paste("s", variavel_ithink_alterada, sep = "")
+        
+        # Valor da Variavel Calculada
+        valor_variavel_R = eval(parse(text = variavel_ithink_alterada))
+        
+        valor_variavel_ithink = dados_ithink_stocks[[linha,variavel]]
+        
+        diferenca = valor_variavel_R - valor_variavel_ithink
+        
+        if (abs(x = diferenca) > 0.001){
+          message(paste("Diferenca: Linha", linha, variavel, diferenca, sep = " - "))
+          browser()
+        }
+      }  
+    }
+    
+    
+    if(VERIFICAR_CHECKS){
+      for (variavel in variaveis_ithink_checks) {
+        # Definir o tipo de variavel
+        # Variavel é um estoque?
+        variavel_ithink_alterada = gsub(pattern = "\\[", replacement = "", x = variavel, ignore.case = TRUE)
+        variavel_ithink_alterada = gsub(pattern = "\\]", replacement = "", x = variavel_ithink_alterada, ignore.case = TRUE)
+        
+        # Verificar apenas Estoques:
+        #variavel_ithink_alterada = paste("s", variavel_ithink_alterada, sep = "")
+        
+        # Valor da Variavel Calculada
+        valor_variavel_R = eval(parse(text = variavel_ithink_alterada))
+        
+        valor_variavel_ithink = dados_ithink_checks[[linha,variavel]]
+        
+        diferenca = valor_variavel_R - valor_variavel_ithink
+        
+        if(!is.na(diferenca)){
+          if (abs(x = diferenca) > 0.001){
+            message(paste("Diferenca: Linha", linha, variavel, diferenca, sep = " - "))
+            browser()
+          }  
+        }
+        
       }
     }
+    
     ##### VARIÁVEIS RETORNADAS #####
     
     ## Parar se o tempo chegou ao fim.
@@ -405,10 +445,8 @@ modelo <- function(time, stocks, auxs){
   })
 }
 
-
 # Nomeando o Dataframe de Saída
 nomes_variaveis = c("Tempo", "d_NPVProfit_dt", "aDiscountFactor", "aDiscountRate", "fNPVProfitChange", "fNetIncome", "aNPVIndustryProfits")
-
 
 # Inicializando um list com Tudo o que é necessário
 sdmodel = list(

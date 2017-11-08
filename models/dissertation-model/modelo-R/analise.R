@@ -74,9 +74,6 @@ grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel =
 
 
 
-
-
-
 # Considerando o último ano
 
 # + guides(color=FALSE) +
