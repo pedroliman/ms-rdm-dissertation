@@ -1,11 +1,11 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
 library(dplyr)
-START<-0; FINISH<-40; STEP<-0.0625
+START<-0; FINISH<-10; STEP<-0.125
 
-VERIFICAR_STOCKS = FALSE
+VERIFICAR_STOCKS = TRUE
 
-VERIFICAR_CHECKS = FALSE
+VERIFICAR_CHECKS = TRUE
 
 
 # Vetor de Tempos
@@ -66,7 +66,7 @@ auxs    <- list(aDiscountRate = 0.04
                 # Learning Curve Params
                 ,aLCStrength = rep(0.7, times = N_PLAYERS)
                 ,aInitialProductionExperience = rep(1e+007, times = N_PLAYERS)
-                ,aRatioOfFixedToVarCost = rep(3, times = N_PLAYERS)
+                ,aRatioOfFixedToVarCost = rep(0.3, times = N_PLAYERS)
                 ,aInitialPrice = rep(1000, times = N_PLAYERS)
                 ,aNormalProfitMargin = rep(0.2, times = N_PLAYERS)
                 ,aNormalCapacityUtilization = rep(0.8, times = N_PLAYERS)
@@ -89,17 +89,17 @@ auxs    <- list(aDiscountRate = 0.04
 ##### VARIÁVEIS DE ENTRADA - ESTOQUES #####
 stocks  <- c(
    sNPVProfit = rep(0, times = N_PLAYERS)
-  ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
-  ,sBacklog = rep(12738.00098, times = N_PLAYERS) 
-  ,sInstalledBase = rep(30000.00195, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+  ,sValueOfBacklog = rep(12738000, times = N_PLAYERS)
+  ,sBacklog = rep(12738, times = N_PLAYERS) 
+  ,sInstalledBase = rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
   ,sPrice = rep(1000, times = N_PLAYERS)
-  ,sCumulativeAdopters = 60000.00391 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-  ,sReportedIndustryVolume = rep(101904.00781, times = N_PLAYERS)
-  ,sCumulativeProduction = rep(10000000, times = N_PLAYERS) # Este estoque possui formula
-  ,sPerceivedCompTargetCapacity = rep(63690.00391, times = N_PLAYERS) # Este estoque possui formula
-  ,sSmoothCapacity1 = rep(63690.00391, times = N_PLAYERS) # Este estoque possui formula
-  ,sSmoothCapacity2 = rep(63690.00391, times = N_PLAYERS) # Este estoque possui formula
-  ,sSmoothCapacity3 = rep(63690.00391, times = N_PLAYERS) # Este estoque possui formula
+  ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+  ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
+  ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
+  ,sPerceivedCompTargetCapacity = rep(50952, times = N_PLAYERS) # Este estoque possui formula
+  ,sSmoothCapacity1 = rep(50952, times = N_PLAYERS) # Este estoque possui formula
+  ,sSmoothCapacity2 = rep(50952, times = N_PLAYERS) # Este estoque possui formula
+  ,sSmoothCapacity3 = rep(50952, times = N_PLAYERS) # Este estoque possui formula
   ) 
 
 ##### Modelo de Dinâmica de Sistemas ####
