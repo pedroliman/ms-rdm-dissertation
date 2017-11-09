@@ -516,7 +516,7 @@
             <dimensions>
                 <dim name="Company" />
             </dimensions>
-            <eqn>LN(LCStrength)/LN(2)</eqn>
+            <eqn>LN(LCStrength[Company])/LN(2)</eqn>
             <display x="209" y="2062" color="blue" />
         </aux>
         <aux name="Learning">
@@ -1369,7 +1369,7 @@
                 <item uid="227" />
             </display>
         </group>
-        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true" scroll_y="1488">
+        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true">
             <connector x="728" y="666" uid="173" color="#FF007F">
                 <from>DiscardRate</from>
                 <to>ReorderRate</to>
@@ -1393,7 +1393,7 @@
             <alias x="88" y="2805" uid="7">
                 <of>Price</of>
             </alias>
-            <alias x="457" y="2431" uid="195">
+            <alias x="457" y="2431" uid="196">
                 <of>NormalCapacityUtilization</of>
             </alias>
             <alias x="114" y="1025" uid="213">
@@ -1443,7 +1443,7 @@
             <alias x="70" y="1364" uid="120">
                 <of>IndustryOrderRate</of>
             </alias>
-            <alias x="480" y="2384" uid="197">
+            <alias x="480" y="2384" uid="198">
                 <of>UnitFixedCost</of>
             </alias>
             <alias x="456" y="2649" uid="22">
@@ -1458,7 +1458,7 @@
             <alias x="275" y="2889" uid="26">
                 <of>Backlog</of>
             </alias>
-            <alias x="476" y="2346" uid="198">
+            <alias x="476" y="2346" uid="199">
                 <of>UnitVariableCost</of>
             </alias>
             <alias x="346" y="2346" uid="182">
@@ -1478,7 +1478,7 @@
             <alias x="75" y="2166" uid="40">
                 <of>Shipments</of>
             </alias>
-            <alias x="148" y="2460" uid="199">
+            <alias x="164" y="2426" uid="194">
                 <of>MarketShare</of>
             </alias>
             <alias x="468" y="2744" uid="24">
@@ -1556,9 +1556,9 @@
                 <from>LaggedVolumeForecast</from>
                 <to>checkLaggedVolumeForecast</to>
             </connector>
-            <connector x="471" y="2385" uid="191" color="#FF007F">
+            <connector x="471" y="2385" uid="190" color="#FF007F">
                 <from>
-                    <alias uid="197" />
+                    <alias uid="198" />
                 </from>
                 <to>BasePrice</to>
             </connector>
@@ -1688,9 +1688,9 @@
                 <from>SwitchForCapacityStrategy2</from>
                 <to>TargetMarketShare</to>
             </connector>
-            <connector x="469" y="2352" uid="192" color="#FF007F">
+            <connector x="469" y="2352" uid="191" color="#FF007F">
                 <from>
-                    <alias uid="198" />
+                    <alias uid="199" />
                 </from>
                 <to>TargetPrice</to>
             </connector>
@@ -1850,9 +1850,9 @@
                 <from>SwitchForCapacityStrategy1</from>
                 <to>TargetMarketShare</to>
             </connector>
-            <connector x="157" y="2460" uid="186" color="#FF007F">
+            <connector x="170" y="2432" uid="195" color="#FF007F">
                 <from>
-                    <alias uid="199" />
+                    <alias uid="194" />
                 </from>
                 <to>TargetPrice</to>
             </connector>
@@ -1868,9 +1868,9 @@
                 <from>TargetMarketShare</from>
                 <to>TargetCapacity</to>
             </connector>
-            <connector x="449" y="2434" uid="196" color="#FF007F">
+            <connector x="449" y="2434" uid="197" color="#FF007F">
                 <from>
-                    <alias uid="195" />
+                    <alias uid="196" />
                 </from>
                 <to>DemandSupplyBalance</to>
             </connector>
@@ -1886,9 +1886,9 @@
                 <from>CumulativeAdopters</from>
                 <to>AdoptionRate</to>
             </connector>
-            <connector x="449" y="2427" uid="190" color="#FF007F">
+            <connector x="449" y="2427" uid="189" color="#FF007F">
                 <from>
-                    <alias uid="195" />
+                    <alias uid="196" />
                 </from>
                 <to>BasePrice</to>
             </connector>
@@ -2184,7 +2184,7 @@
                 <from>UnitFixedCost</from>
                 <to>checkUnitFixedCost</to>
             </connector>
-            <connector x="83" y="2395" uid="194" color="#FF007F">
+            <connector x="83" y="2395" uid="193" color="#FF007F">
                 <from>PriceAdjustmentTime</from>
                 <to>ChangeInPrice</to>
             </connector>
@@ -2222,7 +2222,7 @@
                 <from>RatioOfFixedToVarCost</from>
                 <to>InitialUnitFixedCost</to>
             </connector>
-            <connector x="249" y="2463" uid="187" color="#FF007F">
+            <connector x="249" y="2463" uid="186" color="#FF007F">
                 <from>TargetPrice</from>
                 <to>ChangeInPrice</to>
             </connector>
@@ -2256,7 +2256,7 @@
                 <from>ReferenceIndustryDemandElasticity</from>
                 <to>DemandCurveSlope</to>
             </connector>
-            <connector x="257" y="2460" uid="188" color="#FF007F">
+            <connector x="257" y="2460" uid="187" color="#FF007F">
                 <from>TargetPrice</from>
                 <to>checkTargetPrice</to>
             </connector>
@@ -2272,7 +2272,7 @@
                 <from>Cost</from>
                 <to>NetIncome</to>
             </connector>
-            <connector x="336" y="2397" uid="189" color="#FF007F">
+            <connector x="336" y="2397" uid="188" color="#FF007F">
                 <from>BasePrice</from>
                 <to>TargetPrice</to>
             </connector>
@@ -2310,9 +2310,9 @@
                 <from>PerceivedCompTargetCapacity</from>
                 <to>ExpectedCompCapacity</to>
             </connector>
-            <connector x="468" y="2350" uid="193" color="#FF007F">
+            <connector x="468" y="2350" uid="192" color="#FF007F">
                 <from>
-                    <alias uid="198" />
+                    <alias uid="199" />
                 </from>
                 <to>BasePrice</to>
             </connector>
