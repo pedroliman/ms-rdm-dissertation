@@ -181,12 +181,12 @@
             <display x="348" y="230" color="blue" />
         </stock>
         <flow name="AdoptionRate">
-            <eqn>(NonAdopters) *&#x0A;(InnovatorAdoptionFraction + WOMStrength*CumulativeAdopters/Population)</eqn>
+            <eqn>(NonAdoptersTheoretical) *&#x0A;(InnovatorAdoptionFraction + WOMStrength*CumulativeAdopters/Population)</eqn>
             <non_negative />
-            <display x="267" y="230" color="blue">
+            <display x="273" y="225" color="blue">
                 <pts>
-                    <pt x="208" y="230" />
-                    <pt x="326" y="230" />
+                    <pt x="221" y="225" />
+                    <pt x="326" y="225" />
                 </pts>
             </display>
         </flow>
@@ -365,7 +365,7 @@
         </aux>
         <aux name="NonAdoptersTheoretical">
             <eqn>IndustryDemand - CumulativeAdopters&#x0A;&#x0A;{Esta Variável está modelada no modelo original como um estoque. Verificar se há diferenca de calculo devido a ela.}</eqn>
-            <display x="100" y="173" color="red" />
+            <display x="94" y="169" color="red" />
         </aux>
         <aux name="UnitsPerHousehold">
             <eqn>1</eqn>
@@ -951,14 +951,14 @@
             <inflow>newNonAdopters</inflow>
             <outflow>AdoptionRate</outflow>
             <non_negative />
-            <display x="186" y="230" color="blue" />
+            <display x="199" y="223" color="blue" />
         </stock>
         <flow name="newNonAdopters">
-            <eqn>(IndustryDemand) - (CumulativeAdopters + NonAdopters)</eqn>
-            <display x="122" y="229" color="blue">
+            <eqn>NonAdoptersTheoretical - NonAdopters</eqn>
+            <display x="148" y="226" color="blue">
                 <pts>
-                    <pt x="80" y="229" />
-                    <pt x="164" y="229" />
+                    <pt x="119" y="226" />
+                    <pt x="177" y="226" />
                 </pts>
             </display>
         </flow>
@@ -1200,10 +1200,7 @@
             </display>
         </group>
         <group name="Diffusion_Sector">
-            <entity name="NonAdopters" />
             <entity name="CumulativeAdopters" />
-            <entity name="newNonAdopters" />
-            <entity name="AdoptionRate" />
             <entity name="checkAdoptionRate" />
             <entity name="checkIndustryDemand" />
             <entity name="DemandCurveSlope" />
@@ -1212,11 +1209,14 @@
             <entity name="InitialDiffusionFraction" />
             <entity name="InnovatorAdoptionFraction" />
             <entity name="LowestPrice" />
-            <entity name="NonAdoptersTheoretical" />
             <entity name="Population" />
             <entity name="ReferenceIndustryDemandElasticity" />
             <entity name="ReferencePopulation" />
             <entity name="ReferencePrice" />
+            <entity name="NonAdoptersTheoretical" />
+            <entity name="NonAdopters" />
+            <entity name="AdoptionRate" />
+            <entity name="newNonAdopters" />
             <entity name="WOMStrength" />
             <display locked="true" x="31" y="28" width="411" height="272" color="red">
                 <item uid="136" />
@@ -1243,7 +1243,6 @@
                 <item uid="157" />
                 <item uid="158" />
                 <item uid="159" />
-                <item uid="160" />
             </display>
         </group>
         <group name="Orders_Sector">
@@ -1264,6 +1263,7 @@
             <entity name="NormalDeliveryDelay" />
             <entity name="SwitchForCapacity" />
             <display locked="true" x="403" y="552" width="430" height="265" color="red">
+                <item uid="160" />
                 <item uid="161" />
                 <item uid="162" />
                 <item uid="163" />
@@ -1282,7 +1282,6 @@
                 <item uid="176" />
                 <item uid="177" />
                 <item uid="178" />
-                <item uid="179" />
             </display>
         </group>
         <group name="Price_Sector">
@@ -1297,6 +1296,7 @@
             <entity name="SensOfPriceToShare" />
             <entity name="TargetPrice" />
             <display locked="true" x="29" y="2313" width="485" height="251" color="red">
+                <item uid="179" />
                 <item uid="180" />
                 <item uid="181" />
                 <item uid="182" />
@@ -1324,7 +1324,6 @@
                 <item uid="204" />
                 <item uid="205" />
                 <item uid="206" />
-                <item uid="207" />
             </display>
         </group>
         <group name="Industry_Demand_Sector">
@@ -1334,11 +1333,11 @@
             <entity name="InitialOrderRate" />
             <entity name="UnitsPerHousehold" />
             <display locked="true" x="32" y="341" width="306" height="165" color="red">
+                <item uid="207" />
                 <item uid="208" />
                 <item uid="209" />
                 <item uid="210" />
                 <item uid="211" />
-                <item uid="212" />
             </display>
         </group>
         <group name="Market_Sector">
@@ -1351,6 +1350,7 @@
             <entity name="SensOfAttractToPrice" />
             <entity name="TotalAttractiveness" />
             <display locked="true" x="28" y="993" width="346" height="231" color="red">
+                <item uid="212" />
                 <item uid="213" />
                 <item uid="214" />
                 <item uid="215" />
@@ -1365,7 +1365,6 @@
                 <item uid="224" />
                 <item uid="225" />
                 <item uid="226" />
-                <item uid="227" />
             </display>
         </group>
         <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_interval="0.0625" report_every_dt="true">
@@ -1375,24 +1374,24 @@
             <alias x="260" y="2893" uid="26">
                 <of>Backlog</of>
             </alias>
-            <alias x="476" y="2346" uid="196">
+            <alias x="476" y="2346" uid="195">
                 <of>UnitVariableCost</of>
             </alias>
-            <alias x="346" y="2346" uid="180">
+            <alias x="346" y="2346" uid="179">
                 <of>NormalProfitMargin</of>
                 <label_side>top</label_side>
                 <label_angle>81</label_angle>
             </alias>
-            <alias x="455" y="2519" uid="204">
+            <alias x="455" y="2519" uid="203">
                 <of>DesiredShipments</of>
             </alias>
             <alias x="101" y="1859" uid="101">
                 <of>Capacitys</of>
             </alias>
-            <alias x="457" y="2431" uid="197">
+            <alias x="457" y="2431" uid="196">
                 <of>NormalCapacityUtilization</of>
             </alias>
-            <alias x="89" y="2456" uid="181">
+            <alias x="89" y="2456" uid="180">
                 <of>TargetMarketShare</of>
                 <label_side>top</label_side>
                 <label_angle>107</label_angle>
@@ -1400,7 +1399,7 @@
             <alias x="325" y="790" uid="61">
                 <of>IndustryOrderRate</of>
             </alias>
-            <alias x="457" y="2474" uid="205">
+            <alias x="457" y="2474" uid="204">
                 <of>Capacitys</of>
             </alias>
             <alias x="96" y="806" uid="62">
@@ -1418,7 +1417,7 @@
             <alias x="68" y="572" uid="49">
                 <of>TargetCapacity</of>
             </alias>
-            <alias x="114" y="1025" uid="213">
+            <alias x="114" y="1025" uid="212">
                 <of>DeliveryDelay</of>
             </alias>
             <alias x="469" y="2695" uid="19">
@@ -1433,19 +1432,19 @@
             <alias x="70" y="1364" uid="112">
                 <of>IndustryOrderRate</of>
             </alias>
-            <alias x="480" y="2384" uid="198">
+            <alias x="480" y="2384" uid="197">
                 <of>UnitFixedCost</of>
             </alias>
             <alias x="456" y="2649" uid="20">
                 <of>Capacitys</of>
             </alias>
-            <alias x="387" y="67" uid="159">
+            <alias x="387" y="67" uid="158">
                 <of>Price</of>
             </alias>
-            <alias x="164" y="2426" uid="182">
+            <alias x="164" y="2426" uid="181">
                 <of>MarketShare</of>
             </alias>
-            <alias x="335" y="1071" uid="218">
+            <alias x="335" y="1071" uid="217">
                 <of>ReferencePrice</of>
             </alias>
             <alias x="75" y="2166" uid="40">
@@ -1460,19 +1459,19 @@
             <alias x="238" y="1693" uid="76">
                 <of>NormalCapacityUtilization</of>
             </alias>
-            <alias x="769" y="732" uid="178">
+            <alias x="769" y="732" uid="177">
                 <of>InitialCumulativeAdopters</of>
             </alias>
             <alias x="468" y="2744" uid="21">
                 <of>UnitVariableCost</of>
             </alias>
-            <alias x="300" y="1037" uid="214">
+            <alias x="300" y="1037" uid="213">
                 <of>Price</of>
             </alias>
             <alias x="141" y="929" uid="64">
                 <of>Shipments</of>
             </alias>
-            <alias x="752" y="788" uid="179">
+            <alias x="752" y="788" uid="178">
                 <of>UnitsPerHousehold</of>
             </alias>
             <connector x="475" y="1641" uid="93" color="#FF007F">
@@ -1493,7 +1492,7 @@
                 <from>UnitFixedCost</from>
                 <to>checkUnitFixedCost</to>
             </connector>
-            <connector x="83" y="2395" uid="183" color="#FF007F">
+            <connector x="83" y="2395" uid="182" color="#FF007F">
                 <from>PriceAdjustmentTime</from>
                 <to>ChangeInPrice</to>
             </connector>
@@ -1525,15 +1524,15 @@
                 <from>RatioOfFixedToVarCost</from>
                 <to>InitialUnitFixedCost</to>
             </connector>
-            <connector x="249" y="2463" uid="184" color="#FF007F">
+            <connector x="249" y="2463" uid="183" color="#FF007F">
                 <from>TargetPrice</from>
                 <to>ChangeInPrice</to>
             </connector>
-            <connector x="170" y="2382" uid="185" color="#FF007F">
+            <connector x="170" y="2382" uid="184" color="#FF007F">
                 <from>Price</from>
                 <to>ChangeInPrice</to>
             </connector>
-            <connector x="303" y="2514" uid="200" color="#FF007F">
+            <connector x="303" y="2514" uid="199" color="#FF007F">
                 <from>SensOfPriceToShare</from>
                 <to>TargetPrice</to>
             </connector>
@@ -1551,15 +1550,15 @@
                 </from>
                 <to>FixedCost</to>
             </connector>
-            <connector x="372" y="266" uid="136" color="#FF007F">
+            <connector x="373" y="266" uid="149" color="#FF007F">
                 <from>WOMStrength</from>
                 <to>AdoptionRate</to>
             </connector>
-            <connector x="117" y="85" uid="137" color="#FF007F">
+            <connector x="117" y="85" uid="136" color="#FF007F">
                 <from>ReferenceIndustryDemandElasticity</from>
                 <to>DemandCurveSlope</to>
             </connector>
-            <connector x="257" y="2460" uid="186" color="#FF007F">
+            <connector x="257" y="2460" uid="185" color="#FF007F">
                 <from>TargetPrice</from>
                 <to>checkTargetPrice</to>
             </connector>
@@ -1571,11 +1570,11 @@
                 <from>NormalProfitMargin</from>
                 <to>InitialUnitFixedCost</to>
             </connector>
-            <connector x="336" y="2397" uid="187" color="#FF007F">
+            <connector x="336" y="2397" uid="186" color="#FF007F">
                 <from>BasePrice</from>
                 <to>TargetPrice</to>
             </connector>
-            <connector x="272" y="238" uid="138" color="#FF007F">
+            <connector x="277" y="233" uid="150" color="#FF007F">
                 <from>AdoptionRate</from>
                 <to>checkAdoptionRate</to>
             </connector>
@@ -1589,7 +1588,7 @@
                 <from>SwitchForShipmentsInForecast</from>
                 <to>IndustryVolume</to>
             </connector>
-            <connector x="645" y="789" uid="175" color="#FF007F">
+            <connector x="645" y="789" uid="174" color="#FF007F">
                 <from>InitialSharePlayers</from>
                 <to>InitialInstalledBase</to>
             </connector>
@@ -1621,13 +1620,13 @@
                 <from>PerceivedCompTargetCapacity</from>
                 <to>ExpectedCompCapacity</to>
             </connector>
-            <connector x="468" y="2350" uid="188" color="#FF007F">
+            <connector x="468" y="2350" uid="187" color="#FF007F">
                 <from>
-                    <alias uid="196" />
+                    <alias uid="195" />
                 </from>
                 <to>BasePrice</to>
             </connector>
-            <connector x="222" y="136" uid="139" color="#FF007F">
+            <connector x="223" y="136" uid="147" color="#FF007F">
                 <from>IndustryDemand</from>
                 <to>NonAdoptersTheoretical</to>
             </connector>
@@ -1641,15 +1640,15 @@
                 </from>
                 <to>IndustryVolume</to>
             </connector>
-            <connector x="602" y="668" uid="161" color="#FF007F">
+            <connector x="602" y="668" uid="160" color="#FF007F">
                 <from>Shipments</from>
                 <to>MarketShare</to>
             </connector>
-            <connector x="165" y="1089" uid="219" color="#FF007F">
+            <connector x="165" y="1089" uid="218" color="#FF007F">
                 <from>AttractivenessFromAvailability</from>
                 <to>Attractiveness</to>
             </connector>
-            <connector x="108" y="401" uid="208" color="#FF007F">
+            <connector x="108" y="401" uid="207" color="#FF007F">
                 <from>ReorderRate</from>
                 <to>IndustryOrderRate</to>
             </connector>
@@ -1657,13 +1656,13 @@
                 <from>InitialUnitFixedCost</from>
                 <to>UnitFixedCost</to>
             </connector>
-            <connector x="504" y="744" uid="162" color="#FF007F">
+            <connector x="504" y="744" uid="161" color="#FF007F">
                 <from>NormalDeliveryDelay</from>
                 <to>DesiredShipments</to>
             </connector>
-            <connector x="347" y="2355" uid="189" color="#FF007F">
+            <connector x="347" y="2355" uid="188" color="#FF007F">
                 <from>
-                    <alias uid="180" />
+                    <alias uid="179" />
                 </from>
                 <to>BasePrice</to>
             </connector>
@@ -1671,9 +1670,9 @@
                 <from>PerceivedCompTargetCapacity</from>
                 <to>changePerceivedCompTargetCapacity</to>
             </connector>
-            <connector x="170" y="2432" uid="190" color="#FF007F">
+            <connector x="170" y="2432" uid="189" color="#FF007F">
                 <from>
-                    <alias uid="182" />
+                    <alias uid="181" />
                 </from>
                 <to>TargetPrice</to>
             </connector>
@@ -1683,13 +1682,13 @@
                 </from>
                 <to>changeSmoothCapacity1</to>
             </connector>
-            <connector x="682" y="615" uid="163" color="#FF007F">
+            <connector x="682" y="615" uid="162" color="#FF007F">
                 <from>IndustryShipments</from>
                 <to>MarketShare</to>
             </connector>
-            <connector x="327" y="1075" uid="220" color="#FF007F">
+            <connector x="327" y="1075" uid="219" color="#FF007F">
                 <from>
-                    <alias uid="218" />
+                    <alias uid="217" />
                 </from>
                 <to>AttractivenessFromPrice</to>
             </connector>
@@ -1697,13 +1696,13 @@
                 <from>CumulativeProduction</from>
                 <to>Learning</to>
             </connector>
-            <connector x="448" y="2475" uid="206" color="#FF007F">
+            <connector x="448" y="2475" uid="205" color="#FF007F">
                 <from>
-                    <alias uid="205" />
+                    <alias uid="204" />
                 </from>
                 <to>DemandSupplyBalance</to>
             </connector>
-            <connector x="130" y="2506" uid="201" color="#FF007F">
+            <connector x="130" y="2506" uid="200" color="#FF007F">
                 <from>SensOfPriceToCosts</from>
                 <to>TargetPrice</to>
             </connector>
@@ -1711,7 +1710,7 @@
                 <from>InitialProductionExperience</from>
                 <to>Learning</to>
             </connector>
-            <connector x="472" y="678" uid="164" color="#FF007F">
+            <connector x="472" y="678" uid="163" color="#FF007F">
                 <from>Orders</from>
                 <to>checkOrders</to>
             </connector>
@@ -1733,7 +1732,7 @@
                 </from>
                 <to>TargetCapacity</to>
             </connector>
-            <connector x="729" y="663" uid="165" color="#FF007F">
+            <connector x="729" y="663" uid="164" color="#FF007F">
                 <from>DiscardRate</from>
                 <to>ReorderRate</to>
             </connector>
@@ -1741,11 +1740,11 @@
                 <from>Cost</from>
                 <to>NetIncome</to>
             </connector>
-            <connector x="224" y="1184" uid="215" color="#FF007F">
+            <connector x="224" y="1184" uid="214" color="#FF007F">
                 <from>OrderShare</from>
                 <to>Orders</to>
             </connector>
-            <connector x="123" y="458" uid="209" color="#FF007F">
+            <connector x="123" y="458" uid="208" color="#FF007F">
                 <from>IndustryOrderRate</from>
                 <to>Orders</to>
             </connector>
@@ -1779,7 +1778,7 @@
                 </from>
                 <to>TargetCapacity</to>
             </connector>
-            <connector x="238" y="138" uid="140" color="#FF007F">
+            <connector x="238" y="138" uid="137" color="#FF007F">
                 <from>IndustryDemand</from>
                 <to>checkIndustryDemand</to>
             </connector>
@@ -1797,11 +1796,11 @@
                 <from>SwitchForCapacityStrategy</from>
                 <to>SwitchForCapacityStrategy3</to>
             </connector>
-            <connector x="545" y="686" uid="166" color="#FF007F">
+            <connector x="545" y="686" uid="165" color="#FF007F">
                 <from>Backlog</from>
                 <to>DesiredShipments</to>
             </connector>
-            <connector x="104" y="110" uid="141" color="#FF007F">
+            <connector x="104" y="110" uid="138" color="#FF007F">
                 <from>ReferencePopulation</from>
                 <to>IndustryDemand</to>
             </connector>
@@ -1873,7 +1872,7 @@
                 <from>NormalCapacityUtilization</from>
                 <to>InitialUnitFixedCost</to>
             </connector>
-            <connector x="365" y="2484" uid="202" color="#FF007F">
+            <connector x="365" y="2484" uid="201" color="#FF007F">
                 <from>DemandSupplyBalance</from>
                 <to>TargetPrice</to>
             </connector>
@@ -1881,13 +1880,13 @@
                 <from>UncontestedDemand</from>
                 <to>UncontestedMarketShare</to>
             </connector>
-            <connector x="338" y="213" uid="142" color="#FF007F">
+            <connector x="338" y="213" uid="151" color="#FF007F">
                 <from>CumulativeAdopters</from>
                 <to>AdoptionRate</to>
             </connector>
-            <connector x="449" y="2427" uid="191" color="#FF007F">
+            <connector x="449" y="2427" uid="190" color="#FF007F">
                 <from>
-                    <alias uid="197" />
+                    <alias uid="196" />
                 </from>
                 <to>BasePrice</to>
             </connector>
@@ -1897,7 +1896,7 @@
                 </from>
                 <to>changeSmoothCapacity2</to>
             </connector>
-            <connector x="99" y="1071" uid="221" color="#FF007F">
+            <connector x="99" y="1071" uid="220" color="#FF007F">
                 <from>ReferenceDeliveryDelay</from>
                 <to>AttractivenessFromAvailability</to>
             </connector>
@@ -1909,7 +1908,7 @@
                 <from>SmoothCapacity2</from>
                 <to>changeSmoothCapacity2</to>
             </connector>
-            <connector x="262" y="1105" uid="222" color="#FF007F">
+            <connector x="262" y="1105" uid="221" color="#FF007F">
                 <from>AttractivenessFromPrice</from>
                 <to>Attractiveness</to>
             </connector>
@@ -1917,7 +1916,7 @@
                 <from>SmoothCapacity3</from>
                 <to>Capacitys</to>
             </connector>
-            <connector x="205" y="2384" uid="192" color="#FF007F">
+            <connector x="205" y="2384" uid="191" color="#FF007F">
                 <from>Price</from>
                 <to>TargetPrice</to>
             </connector>
@@ -1925,7 +1924,7 @@
                 <from>NetIncome</from>
                 <to>NPVProfitChange</to>
             </connector>
-            <connector x="579" y="714" uid="167" color="#FF007F">
+            <connector x="579" y="714" uid="166" color="#FF007F">
                 <from>DesiredShipments</from>
                 <to>Shipments</to>
             </connector>
@@ -1933,7 +1932,7 @@
                 <from>VariableCost</from>
                 <to>Cost</to>
             </connector>
-            <connector x="240" y="135" uid="143" color="#FF007F">
+            <connector x="240" y="135" uid="139" color="#FF007F">
                 <from>IndustryDemand</from>
                 <to>InitialCumulativeAdopters</to>
             </connector>
@@ -1951,21 +1950,21 @@
                 <from>RatioOfFixedToVarCost</from>
                 <to>InitialUnitVariableCost</to>
             </connector>
-            <connector x="601" y="666" uid="168" color="#FF007F">
+            <connector x="601" y="666" uid="167" color="#FF007F">
                 <from>Shipments</from>
                 <to>IndustryShipments</to>
             </connector>
-            <connector x="98" y="2455" uid="193" color="#FF007F">
+            <connector x="98" y="2455" uid="192" color="#FF007F">
                 <from>
-                    <alias uid="181" />
+                    <alias uid="180" />
                 </from>
                 <to>TargetPrice</to>
             </connector>
-            <connector x="103" y="1128" uid="223" color="#FF007F">
+            <connector x="103" y="1128" uid="222" color="#FF007F">
                 <from>SensOfAttractToAvailability</from>
                 <to>AttractivenessFromAvailability</to>
             </connector>
-            <connector x="256" y="72" uid="144" color="#FF007F">
+            <connector x="256" y="72" uid="140" color="#FF007F">
                 <from>ReferencePrice</from>
                 <to>IndustryDemand</to>
             </connector>
@@ -1985,15 +1984,15 @@
                 <from>ForecastHorizon</from>
                 <to>ExpectedIndustryDemand</to>
             </connector>
-            <connector x="103" y="110" uid="145" color="#FF007F">
+            <connector x="103" y="110" uid="141" color="#FF007F">
                 <from>ReferencePopulation</from>
                 <to>DemandCurveSlope</to>
             </connector>
-            <connector x="164" y="147" uid="146" color="#FF007F">
+            <connector x="164" y="146" uid="152" color="#FF007F">
                 <from>Population</from>
                 <to>AdoptionRate</to>
             </connector>
-            <connector x="656" y="657" uid="169" color="#FF007F">
+            <connector x="656" y="657" uid="168" color="#FF007F">
                 <from>InstalledBase</from>
                 <to>DiscardRate</to>
             </connector>
@@ -2015,7 +2014,7 @@
                 </from>
                 <to>changeSmoothCapacity3</to>
             </connector>
-            <connector x="325" y="212" uid="147" color="#FF007F">
+            <connector x="326" y="213" uid="148" color="#FF007F">
                 <from>CumulativeAdopters</from>
                 <to>NonAdoptersTheoretical</to>
             </connector>
@@ -2029,7 +2028,7 @@
                 <from>CompetitorTargetCapacity</from>
                 <to>changePerceivedCompTargetCapacity</to>
             </connector>
-            <connector x="212" y="2524" uid="203" color="#FF007F">
+            <connector x="212" y="2524" uid="202" color="#FF007F">
                 <from>SensOfPriceToDSBalance</from>
                 <to>TargetPrice</to>
             </connector>
@@ -2037,19 +2036,19 @@
                 <from>LaggedIndustryVolume</from>
                 <to>ExpGrowthInVolume</to>
             </connector>
-            <connector x="447" y="2516" uid="207" color="#FF007F">
+            <connector x="447" y="2516" uid="206" color="#FF007F">
                 <from>
-                    <alias uid="204" />
+                    <alias uid="203" />
                 </from>
                 <to>DemandSupplyBalance</to>
             </connector>
-            <connector x="326" y="248" uid="148" color="#FF007F">
-                <from>CumulativeAdopters</from>
+            <connector x="101" y="175" uid="157" color="#FF007F">
+                <from>NonAdoptersTheoretical</from>
                 <to>newNonAdopters</to>
             </connector>
-            <connector x="469" y="2352" uid="194" color="#FF007F">
+            <connector x="469" y="2352" uid="193" color="#FF007F">
                 <from>
-                    <alias uid="196" />
+                    <alias uid="195" />
                 </from>
                 <to>TargetPrice</to>
             </connector>
@@ -2057,7 +2056,7 @@
                 <from>AveragePriceOfOrderBook</from>
                 <to>Revenue</to>
             </connector>
-            <connector x="287" y="401" uid="210" color="#FF007F">
+            <connector x="287" y="401" uid="209" color="#FF007F">
                 <from>UnitsPerHousehold</from>
                 <to>InitialOrderRate</to>
             </connector>
@@ -2091,7 +2090,7 @@
                 <from>NormalProduction</from>
                 <to>IndustryNormalProduction</to>
             </connector>
-            <connector x="192" y="97" uid="149" color="#FF007F">
+            <connector x="192" y="97" uid="142" color="#FF007F">
                 <from>DemandCurveSlope</from>
                 <to>IndustryDemand</to>
             </connector>
@@ -2099,25 +2098,25 @@
                 <from>TimeForHistoricalVolume</from>
                 <to>ExpGrowthInVolume</to>
             </connector>
-            <connector x="119" y="1032" uid="216" color="#FF007F">
+            <connector x="119" y="1032" uid="215" color="#FF007F">
                 <from>
-                    <alias uid="213" />
+                    <alias uid="212" />
                 </from>
                 <to>AttractivenessFromAvailability</to>
             </connector>
-            <connector x="553" y="655" uid="170" color="#FF007F">
+            <connector x="553" y="655" uid="169" color="#FF007F">
                 <from>Backlog</from>
                 <to>DeliveryDelay</to>
             </connector>
-            <connector x="224" y="139" uid="150" color="#FF007F">
-                <from>IndustryDemand</from>
-                <to>newNonAdopters</to>
+            <connector x="103" y="172" uid="155" color="#FF007F">
+                <from>NonAdoptersTheoretical</from>
+                <to>AdoptionRate</to>
             </connector>
-            <connector x="164" y="245" uid="151" color="#FF007F">
+            <connector x="192" y="240" uid="156" color="#FF007F">
                 <from>NonAdopters</from>
                 <to>newNonAdopters</to>
             </connector>
-            <connector x="209" y="1151" uid="224" color="#FF007F">
+            <connector x="209" y="1151" uid="223" color="#FF007F">
                 <from>Attractiveness</from>
                 <to>OrderShare</to>
             </connector>
@@ -2125,7 +2124,7 @@
                 <from>WeightOnSupplyLine</from>
                 <to>ExpectedCompCapacity</to>
             </connector>
-            <connector x="193" y="268" uid="152" color="#FF007F">
+            <connector x="193" y="268" uid="153" color="#FF007F">
                 <from>InnovatorAdoptionFraction</from>
                 <to>AdoptionRate</to>
             </connector>
@@ -2141,9 +2140,9 @@
                 <from>ReportedIndustryVolume</from>
                 <to>change</to>
             </connector>
-            <connector x="471" y="2385" uid="195" color="#FF007F">
+            <connector x="471" y="2385" uid="194" color="#FF007F">
                 <from>
-                    <alias uid="198" />
+                    <alias uid="197" />
                 </from>
                 <to>BasePrice</to>
             </connector>
@@ -2157,7 +2156,7 @@
                 <from>InitialDemandForecast</from>
                 <to>IndustryVolume</to>
             </connector>
-            <connector x="317" y="1139" uid="225" color="#FF007F">
+            <connector x="317" y="1139" uid="224" color="#FF007F">
                 <from>SensOfAttractToPrice</from>
                 <to>AttractivenessFromPrice</to>
             </connector>
@@ -2169,7 +2168,7 @@
                 <from>DiscountFactor</from>
                 <to>NPVProfitChange</to>
             </connector>
-            <connector x="597" y="662" uid="171" color="#FF007F">
+            <connector x="597" y="662" uid="170" color="#FF007F">
                 <from>Shipments</from>
                 <to>DeliveryDelay</to>
             </connector>
@@ -2177,17 +2176,17 @@
                 <from>IndustryCapacity</from>
                 <to>CompetitorCapacity</to>
             </connector>
-            <connector x="124" y="1191" uid="226" color="#FF007F">
+            <connector x="124" y="1191" uid="225" color="#FF007F">
                 <from>TotalAttractiveness</from>
                 <to>OrderShare</to>
             </connector>
-            <connector x="295" y="1054" uid="217" color="#FF007F">
+            <connector x="295" y="1054" uid="216" color="#FF007F">
                 <from>
-                    <alias uid="214" />
+                    <alias uid="213" />
                 </from>
                 <to>AttractivenessFromPrice</to>
             </connector>
-            <connector x="381" y="134" uid="160" color="#FF007F">
+            <connector x="381" y="134" uid="159" color="#FF007F">
                 <from>InitialDiffusionFraction</from>
                 <to>InitialCumulativeAdopters</to>
             </connector>
@@ -2195,17 +2194,17 @@
                 <from>IndustryVolume</from>
                 <to>change</to>
             </connector>
-            <connector x="251" y="66" uid="153" color="#FF007F">
+            <connector x="251" y="66" uid="143" color="#FF007F">
                 <from>ReferencePrice</from>
                 <to>DemandCurveSlope</to>
             </connector>
-            <connector x="761" y="735" uid="176" color="#FF007F">
+            <connector x="761" y="735" uid="175" color="#FF007F">
                 <from>
-                    <alias uid="178" />
+                    <alias uid="177" />
                 </from>
                 <to>InitialInstalledBase</to>
             </connector>
-            <connector x="699" y="619" uid="172" color="#FF007F">
+            <connector x="699" y="619" uid="171" color="#FF007F">
                 <from>IndustryShipments</from>
                 <to>checkIndustryShipments</to>
             </connector>
@@ -2215,7 +2214,7 @@
                 </from>
                 <to>VariableCost</to>
             </connector>
-            <connector x="124" y="454" uid="211" color="#FF007F">
+            <connector x="124" y="454" uid="210" color="#FF007F">
                 <from>IndustryOrderRate</from>
                 <to>checkIndustryOrderRate</to>
             </connector>
@@ -2225,7 +2224,7 @@
                 </from>
                 <to>TargetNormalProduction</to>
             </connector>
-            <connector x="618" y="730" uid="173" color="#FF007F">
+            <connector x="618" y="730" uid="172" color="#FF007F">
                 <from>SwitchForCapacity</from>
                 <to>Shipments</to>
             </connector>
@@ -2257,7 +2256,7 @@
                 </from>
                 <to>InitialDemandForecast</to>
             </connector>
-            <connector x="166" y="141" uid="154" color="#FF007F">
+            <connector x="166" y="141" uid="144" color="#FF007F">
                 <from>Population</from>
                 <to>IndustryDemand</to>
             </connector>
@@ -2265,13 +2264,9 @@
                 <from>UncontestedMarketShare</from>
                 <to>TargetMarketShare</to>
             </connector>
-            <connector x="266" y="239" uid="155" color="#FF007F">
+            <connector x="272" y="234" uid="154" color="#FF007F">
                 <from>AdoptionRate</from>
                 <to>InitialOrderRate</to>
-            </connector>
-            <connector x="208" y="218" uid="156" color="#FF007F">
-                <from>NonAdopters</from>
-                <to>AdoptionRate</to>
             </connector>
             <connector x="369" y="1693" uid="100" color="#FF007F">
                 <from>SwitchForCapacityStrategy1</from>
@@ -2281,9 +2276,9 @@
                 <from>LaggedVolumeForecast</from>
                 <to>checkLaggedVolumeForecast</to>
             </connector>
-            <connector x="365" y="56" uid="157" color="#FF007F">
+            <connector x="365" y="56" uid="145" color="#FF007F">
                 <from>
-                    <alias uid="159" />
+                    <alias uid="158" />
                 </from>
                 <to>LowestPrice</to>
             </connector>
@@ -2291,9 +2286,9 @@
                 <from>TargetMarketShare</from>
                 <to>TargetCapacity</to>
             </connector>
-            <connector x="449" y="2434" uid="199" color="#FF007F">
+            <connector x="449" y="2434" uid="198" color="#FF007F">
                 <from>
-                    <alias uid="197" />
+                    <alias uid="196" />
                 </from>
                 <to>DemandSupplyBalance</to>
             </connector>
@@ -2301,9 +2296,9 @@
                 <from>SwitchForCapacityStrategy</from>
                 <to>SwitchForCapacityStrategy4</to>
             </connector>
-            <connector x="744" y="783" uid="177" color="#FF007F">
+            <connector x="744" y="783" uid="176" color="#FF007F">
                 <from>
-                    <alias uid="179" />
+                    <alias uid="178" />
                 </from>
                 <to>InitialInstalledBase</to>
             </connector>
@@ -2311,19 +2306,19 @@
                 <from>ExpGrowthInVolume</from>
                 <to>ExpectedIndustryDemand</to>
             </connector>
-            <connector x="302" y="69" uid="158" color="#FF007F">
+            <connector x="302" y="69" uid="146" color="#FF007F">
                 <from>LowestPrice</from>
                 <to>IndustryDemand</to>
             </connector>
-            <connector x="232" y="439" uid="212" color="#FF007F">
+            <connector x="232" y="439" uid="211" color="#FF007F">
                 <from>InitialOrderRate</from>
                 <to>IndustryOrderRate</to>
             </connector>
-            <connector x="772" y="639" uid="174" color="#FF007F">
+            <connector x="772" y="639" uid="173" color="#FF007F">
                 <from>FractionalDiscardRate</from>
                 <to>DiscardRate</to>
             </connector>
-            <connector x="199" y="1149" uid="227" color="#FF007F">
+            <connector x="199" y="1149" uid="226" color="#FF007F">
                 <from>Attractiveness</from>
                 <to>TotalAttractiveness</to>
             </connector>
@@ -2341,8 +2336,8 @@
                 <from>SmoothCapacity1</from>
                 <to>changeSmoothCapacity1</to>
             </connector>
-            <stacked_container x="470" y="8" height="270" width="475" visible_index="0" uid="228">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="102" orientation="horizontal" report_every_dt="true" isee:date_time="-701879317">
+            <stacked_container x="470" y="8" height="270" width="475" visible_index="0" uid="227">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="102" orientation="horizontal" report_every_dt="true" isee:date_time="-701878641">
                     <item type="time" color="black" text-align="left" precision="3" width="122" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="Price" index="1" />
@@ -2383,11 +2378,14 @@
                     <item color="black" text-align="left" precision="2" thousands_separator="true" index="12">
                         <entity name="LowestPrice" />
                     </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="13">
+                        <entity name="NonAdoptersTheoretical" />
+                    </item>
                 </table>
             </stacked_container>
-            <pad_icon x="492" y="17" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="228" />
-            <stacked_container x="600" y="2298" height="270" width="475" visible_index="0" uid="229">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="100" orientation="horizontal" report_every_dt="true" isee:date_time="-701879317">
+            <pad_icon x="492" y="17" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="227" />
+            <stacked_container x="600" y="2298" height="270" width="475" visible_index="0" uid="228">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="100" orientation="horizontal" report_every_dt="true" isee:date_time="-701878641">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
                         <entity name="BasePrice" index="1" />
@@ -2406,9 +2404,9 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="622" y="2314" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="229" />
-            <stacked_container x="881" y="308" height="270" width="475" visible_index="0" uid="230">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="100" orientation="horizontal" report_every_dt="true" isee:date_time="-701879317">
+            <pad_icon x="622" y="2314" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="228" />
+            <stacked_container x="881" y="308" height="270" width="475" visible_index="0" uid="229">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="100" orientation="horizontal" report_every_dt="true" isee:date_time="-701878641">
                     <item type="time" color="black" text-align="left" precision="3" width="145" />
                     <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
                         <entity name="CumulativeAdopters" />
@@ -2469,13 +2467,13 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="487" y="324" width="26" height="22" color="#008F44" label_side="bottom" label="Table 3" type="table" icon_of="230" />
+            <pad_icon x="487" y="324" width="26" height="22" color="#008F44" label_side="bottom" label="Table 3" type="table" icon_of="229" />
         </display>
         <interface page_cols="2" page_rows="3" page_width="788" page_height="528" zoom="50">
             <simulation_delay>0.001</simulation_delay>
             <pages />
-            <stacked_container x="189" y="923" height="282" width="492" visible_index="0" uid="231">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701879317" time_precision="2" from="0" to="40">
+            <stacked_container x="189" y="923" height="282" width="492" visible_index="0" uid="230">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701878641" time_precision="2" from="0" to="40">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="Orders" index="1" />
                     </plot>
@@ -2490,9 +2488,9 @@
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="211" y="939" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="231" />
-            <stacked_container x="173" y="1287" height="282" width="492" visible_index="0" uid="232">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701879317" time_precision="2" from="0" to="40">
+            <pad_icon x="211" y="939" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="230" />
+            <stacked_container x="173" y="1287" height="282" width="492" visible_index="0" uid="231">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701878641" time_precision="2" from="0" to="40">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="Price" index="1" />
                     </plot>
@@ -2507,9 +2505,9 @@
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="195" y="1303" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 2" type="graph" icon_of="232" />
-            <stacked_container x="819" y="71" height="282" width="492" visible_index="0" uid="233">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701879317" time_precision="2" from="0" to="40">
+            <pad_icon x="195" y="1303" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 2" type="graph" icon_of="231" />
+            <stacked_container x="819" y="71" height="282" width="492" visible_index="0" uid="232">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701878641" time_precision="2" from="0" to="40">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="NPVProfit" index="1" />
                     </plot>
@@ -2518,9 +2516,9 @@
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="908" y="104" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 3" type="graph" icon_of="233" />
-            <stacked_container x="822" y="411" height="282" width="492" visible_index="1" uid="234">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701879317" time_precision="2" from="0" to="40">
+            <pad_icon x="908" y="104" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 3" type="graph" icon_of="232" />
+            <stacked_container x="822" y="411" height="282" width="492" visible_index="1" uid="233">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701878641" time_precision="2" from="0" to="40">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="Orders" index="1" />
                     </plot>
@@ -2531,7 +2529,7 @@
                         <entity name="IndustryOrderRate" />
                     </plot>
                 </graph>
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701879317" time_precision="2" from="0" to="40">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701878641" time_precision="2" from="0" to="40">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="Price" index="1" />
                     </plot>
@@ -2543,9 +2541,9 @@
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="844" y="427" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 4" type="graph" icon_of="234" />
-            <stacked_container x="809" y="790" height="282" width="492" visible_index="1" uid="235">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701879317" time_precision="2" from="0" to="40">
+            <pad_icon x="844" y="427" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 4" type="graph" icon_of="233" />
+            <stacked_container x="809" y="790" height="282" width="492" visible_index="1" uid="234">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701878641" time_precision="2" from="0" to="40">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="NetIncome" index="1" />
                     </plot>
@@ -2553,7 +2551,7 @@
                         <entity name="NetIncome" index="2" />
                     </plot>
                 </graph>
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701879317" time_precision="2" from="0" to="40">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701878641" time_precision="2" from="0" to="40">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="NonAdopters" />
                     </plot>
@@ -2562,9 +2560,9 @@
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="831" y="806" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 5" type="graph" icon_of="235" />
-            <stacked_container x="57" y="46" height="468" width="705" visible_index="0" uid="236">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="107" orientation="vertical" report_every_dt="true" isee:date_time="-701879317">
+            <pad_icon x="831" y="806" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 5" type="graph" icon_of="234" />
+            <stacked_container x="57" y="46" height="468" width="705" visible_index="0" uid="235">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="107" orientation="vertical" report_every_dt="true" isee:date_time="-701878641">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="NPVProfit" index="1" />
@@ -2604,9 +2602,9 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="74" y="57" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="236" />
-            <stacked_container x="44" y="546" height="283" width="712" visible_index="0" uid="237">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="200" orientation="vertical" report_every_dt="true" isee:date_time="-701879317">
+            <pad_icon x="74" y="57" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="235" />
+            <stacked_container x="44" y="546" height="283" width="712" visible_index="0" uid="236">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="200" orientation="vertical" report_every_dt="true" isee:date_time="-701878641">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" flow_concept="true" index="0">
                         <entity name="checkAdoptionRate" />
@@ -2646,9 +2644,9 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="61" y="557" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="237" />
-            <stacked_container x="775" y="1138" height="329" width="521" visible_index="0" uid="238">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="111" orientation="horizontal" report_every_dt="true" isee:date_time="-701879317">
+            <pad_icon x="61" y="557" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="236" />
+            <stacked_container x="775" y="1138" height="329" width="521" visible_index="0" uid="237">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="111" orientation="horizontal" report_every_dt="true" isee:date_time="-701878641">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="1" thousands_separator="true" index="0">
                         <entity name="AdoptionRate" />
@@ -2661,7 +2659,7 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="838" y="1208" width="26" height="22" color="#008F44" label_side="bottom" label="Table 3" type="table" icon_of="238" />
+            <pad_icon x="838" y="1208" width="26" height="22" color="#008F44" label_side="bottom" label="Table 3" type="table" icon_of="237" />
         </interface>
     </model>
 </xmile>
