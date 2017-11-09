@@ -14,8 +14,6 @@ library(dplyr)
 # Carregando Funções Úteis
 source('funcoes.R', encoding = 'UTF-8')
 
-
-
 opcoes = list(
   VarResposta = "Cash",
   VarCenarios = "Scenario",
