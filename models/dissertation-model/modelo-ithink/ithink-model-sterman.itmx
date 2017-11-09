@@ -30,7 +30,7 @@
             <table name="interface:Table 2: p1" use_settings="true" />
         </export>
     </data>
-    <isee:prefs layer="interface" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
+    <isee:prefs layer="map" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
         <isee:window width="1366" height="685" />
         <isee:security />
         <isee:print_setup width="595" height="842" />
@@ -352,7 +352,7 @@
             <display x="185" y="454" color="blue" label_side="top" label_angle="99" />
         </aux>
         <aux name="IndustryDemand">
-            <eqn>MIN(Population,&#x0A;ReferencePopulation* MAX(0,1+DemandCurveSlope&#x0A;&#x09;*(LowestPrice&#x0A;&#x09;-ReferencePrice)/ReferencePopulation))</eqn>
+            <eqn>MIN(Population,&#x0A;ReferencePopulation * MAX(&#x0A;0, &#x0A;1+DemandCurveSlope * (LowestPrice - ReferencePrice) / ReferencePopulation&#x0A;)&#x0A;)</eqn>
             <display x="224" y="507" color="blue" />
         </aux>
         <aux name="InitialDiffusionFraction">
@@ -1374,7 +1374,7 @@
                 <item uid="232" />
             </display>
         </group>
-        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true" scroll_y="208">
+        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" zoom="75" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true">
             <alias x="90" y="225" uid="0">
                 <of>Price</of>
             </alias>
@@ -1395,7 +1395,7 @@
             <alias x="811" y="584" uid="177">
                 <of>InitialCumulativeAdopters</of>
             </alias>
-            <alias x="390" y="439" uid="157">
+            <alias x="385" y="431" uid="158">
                 <of>Price</of>
             </alias>
             <alias x="739" y="1136" uid="229">
@@ -1514,7 +1514,7 @@
                 <from>TimeForHistoricalVolume</from>
                 <to>LaggedIndustryVolume</to>
             </connector>
-            <connector x="269" y="603" uid="151" color="#FF007F">
+            <connector x="269" y="603" uid="150" color="#FF007F">
                 <from>AdoptionRate</from>
                 <to>checkAdoptionRate</to>
             </connector>
@@ -1522,11 +1522,11 @@
                 <from>TargetPrice</from>
                 <to>checkTargetPrice</to>
             </connector>
-            <connector x="115" y="449" uid="143" color="#FF007F">
+            <connector x="115" y="449" uid="142" color="#FF007F">
                 <from>ReferenceIndustryDemandElasticity</from>
                 <to>DemandCurveSlope</to>
             </connector>
-            <connector x="370" y="630" uid="152" color="#FF007F">
+            <connector x="370" y="630" uid="151" color="#FF007F">
                 <from>WOMStrength</from>
                 <to>AdoptionRate</to>
             </connector>
@@ -1652,7 +1652,7 @@
                 <from>WeightOnSupplyLine</from>
                 <to>ExpectedCompCapacity</to>
             </connector>
-            <connector x="191" y="632" uid="153" color="#FF007F">
+            <connector x="191" y="632" uid="152" color="#FF007F">
                 <from>InnovatorAdoptionFraction</from>
                 <to>AdoptionRate</to>
             </connector>
@@ -1692,7 +1692,7 @@
                 </from>
                 <to>AttractivenessFromAvailability</to>
             </connector>
-            <connector x="188" y="461" uid="144" color="#FF007F">
+            <connector x="188" y="461" uid="143" color="#FF007F">
                 <from>DemandCurveSlope</from>
                 <to>IndustryDemand</to>
             </connector>
@@ -1770,9 +1770,9 @@
                 <from>CapacityAcquisitionDelay</from>
                 <to>ExpectedIndustryDemand</to>
             </connector>
-            <connector x="368" y="422" uid="141" color="#FF007F">
+            <connector x="362" y="420" uid="156" color="#FF007F">
                 <from>
-                    <alias uid="157" />
+                    <alias uid="158" />
                 </from>
                 <to>LowestPrice</to>
             </connector>
@@ -1956,7 +1956,7 @@
                 </from>
                 <to>IndustryVolume</to>
             </connector>
-            <connector x="326" y="575" uid="149" color="#FF007F">
+            <connector x="326" y="575" uid="148" color="#FF007F">
                 <from>CumulativeAdopters</from>
                 <to>NonAdoptersTheoretical</to>
             </connector>
@@ -1968,7 +1968,7 @@
                 <from>Learning</from>
                 <to>UnitVariableCost</to>
             </connector>
-            <connector x="300" y="433" uid="142" color="#FF007F">
+            <connector x="300" y="433" uid="141" color="#FF007F">
                 <from>LowestPrice</from>
                 <to>IndustryDemand</to>
             </connector>
@@ -1996,11 +1996,11 @@
                 <from>InstalledBase</from>
                 <to>DiscardRate</to>
             </connector>
-            <connector x="162" y="511" uid="154" color="#FF007F">
+            <connector x="162" y="511" uid="153" color="#FF007F">
                 <from>Population</from>
                 <to>AdoptionRate</to>
             </connector>
-            <connector x="102" y="474" uid="145" color="#FF007F">
+            <connector x="102" y="474" uid="144" color="#FF007F">
                 <from>ReferencePopulation</from>
                 <to>DemandCurveSlope</to>
             </connector>
@@ -2122,7 +2122,7 @@
                 </from>
                 <to>BasePrice</to>
             </connector>
-            <connector x="331" y="574" uid="155" color="#FF007F">
+            <connector x="331" y="574" uid="154" color="#FF007F">
                 <from>CumulativeAdopters</from>
                 <to>AdoptionRate</to>
             </connector>
@@ -2182,7 +2182,7 @@
                 <from>SwitchForCapacityStrategy1</from>
                 <to>TargetMarketShare</to>
             </connector>
-            <connector x="206" y="582" uid="156" color="#FF007F">
+            <connector x="206" y="582" uid="155" color="#FF007F">
                 <from>NonAdopters</from>
                 <to>AdoptionRate</to>
             </connector>
@@ -2254,7 +2254,7 @@
                 </from>
                 <to>InitialInstalledBase</to>
             </connector>
-            <connector x="249" y="430" uid="146" color="#FF007F">
+            <connector x="249" y="430" uid="145" color="#FF007F">
                 <from>ReferencePrice</from>
                 <to>DemandCurveSlope</to>
             </connector>
@@ -2266,7 +2266,7 @@
                 <from>IndustryVolume</from>
                 <to>change</to>
             </connector>
-            <connector x="379" y="498" uid="158" color="#FF007F">
+            <connector x="379" y="498" uid="157" color="#FF007F">
                 <from>InitialDiffusionFraction</from>
                 <to>InitialCumulativeAdopters</to>
             </connector>
@@ -2364,20 +2364,37 @@
                 <from>NormalDeliveryDelay</from>
                 <to>DesiredShipments</to>
             </connector>
-            <connector x="162" y="608" uid="147" color="#FF007F">
+            <connector x="162" y="608" uid="146" color="#FF007F">
                 <from>NonAdopters</from>
                 <to>newNonAdopters</to>
             </connector>
-            <connector x="217" y="512" uid="148" color="#FF007F">
+            <connector x="217" y="512" uid="147" color="#FF007F">
                 <from>IndustryDemand</from>
                 <to>newNonAdopters</to>
             </connector>
-            <connector x="331" y="606" uid="150" color="#FF007F">
+            <connector x="331" y="606" uid="149" color="#FF007F">
                 <from>CumulativeAdopters</from>
                 <to>newNonAdopters</to>
             </connector>
-            <stacked_container x="1433" y="1077" height="270" width="475" visible_index="0" uid="233">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="96" orientation="vertical" report_every_dt="true" isee:date_time="-701897516">
+            <stacked_container x="401" y="1383" height="282" width="492" visible_index="0" uid="233">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701896827" time_precision="2" from="0" to="20">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="TargetPrice" index="1" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="DemandSupplyBalance" index="1" />
+                    </plot>
+                    <plot index="2" pen_width="1" color="fuchsia" precision="0" show_y_axis="true">
+                        <entity name="BasePrice" index="1" />
+                    </plot>
+                    <plot index="3" pen_width="1" color="#008F44" precision="0" show_y_axis="true">
+                        <entity name="Price" index="1" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="423" y="1399" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="233" />
+            <stacked_container x="1433" y="1077" height="270" width="475" visible_index="0" uid="234">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="96" orientation="vertical" report_every_dt="true" isee:date_time="-701896827">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
                         <entity name="BasePrice" index="1" />
@@ -2393,9 +2410,9 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="1455" y="1093" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="233" />
-            <stacked_container x="839" y="1421" height="270" width="475" visible_index="0" uid="234">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="87" orientation="vertical" report_every_dt="true" isee:date_time="-701897516">
+            <pad_icon x="1455" y="1093" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="234" />
+            <stacked_container x="839" y="1421" height="270" width="475" visible_index="0" uid="235">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="87" orientation="vertical" report_every_dt="true" isee:date_time="-701896827">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="TargetPrice" index="1" />
@@ -2408,9 +2425,9 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="861" y="1437" width="26" height="22" color="#008F44" label_side="bottom" label="Table 3" type="table" icon_of="234" />
-            <stacked_container x="1465" y="13" height="344" width="486" visible_index="0" uid="235">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="123" orientation="vertical" report_every_dt="true" isee:date_time="-701897516">
+            <pad_icon x="861" y="1437" width="26" height="22" color="#008F44" label_side="bottom" label="Table 3" type="table" icon_of="235" />
+            <stacked_container x="1465" y="13" height="344" width="486" visible_index="0" uid="236">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="123" orientation="vertical" report_every_dt="true" isee:date_time="-701896827">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="UnitFixedCost" index="1" />
@@ -2420,9 +2437,9 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="1482" y="24" width="26" height="22" color="#008F44" label_side="bottom" label="Table 5" type="table" icon_of="235" />
-            <stacked_container x="1342" y="595" height="270" width="475" visible_index="0" uid="236">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="103" orientation="vertical" report_every_dt="true" isee:date_time="-701897516">
+            <pad_icon x="1482" y="24" width="26" height="22" color="#008F44" label_side="bottom" label="Table 5" type="table" icon_of="236" />
+            <stacked_container x="1342" y="595" height="270" width="475" visible_index="0" uid="237">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="103" orientation="vertical" report_every_dt="true" isee:date_time="-701896827">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="0">
                         <entity name="LaggedIndustryVolume" index="1" />
@@ -2438,9 +2455,9 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="1364" y="611" width="26" height="22" color="#008F44" label_side="bottom" label="Table 6" type="table" icon_of="236" />
-            <stacked_container x="530" y="21" height="270" width="475" visible_index="0" uid="237">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="90" orientation="vertical" report_every_dt="true" isee:date_time="-701897516">
+            <pad_icon x="1364" y="611" width="26" height="22" color="#008F44" label_side="bottom" label="Table 6" type="table" icon_of="237" />
+            <stacked_container x="530" y="21" height="270" width="475" visible_index="0" uid="238">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="90" orientation="vertical" report_every_dt="true" isee:date_time="-701896827">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
                         <entity name="ValueOfNewOrders" index="1" />
@@ -2453,13 +2470,13 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="552" y="37" width="26" height="22" color="#008F44" label_side="bottom" label="Table 7" type="table" icon_of="237" />
+            <pad_icon x="552" y="37" width="26" height="22" color="#008F44" label_side="bottom" label="Table 7" type="table" icon_of="238" />
         </display>
-        <interface page_cols="2" page_rows="3" page_width="788" page_height="528" scroll_y="563">
+        <interface page_cols="2" page_rows="3" page_width="788" page_height="528">
             <simulation_delay>0.001</simulation_delay>
             <pages />
-            <stacked_container x="189" y="923" height="282" width="492" visible_index="0" uid="238">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701897516" time_precision="2" from="0" to="20">
+            <stacked_container x="189" y="923" height="282" width="492" visible_index="0" uid="239">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701896827" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="Orders" index="1" />
                     </plot>
@@ -2474,9 +2491,9 @@
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="211" y="939" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="238" />
-            <stacked_container x="173" y="1287" height="282" width="492" visible_index="0" uid="239">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701897516" time_precision="2" from="0" to="20">
+            <pad_icon x="211" y="939" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="239" />
+            <stacked_container x="173" y="1287" height="282" width="492" visible_index="0" uid="240">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701896827" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="Price" index="1" />
                     </plot>
@@ -2491,9 +2508,9 @@
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="195" y="1303" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 2" type="graph" icon_of="239" />
-            <stacked_container x="819" y="71" height="282" width="492" visible_index="0" uid="240">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701897516" time_precision="2" from="0" to="20">
+            <pad_icon x="195" y="1303" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 2" type="graph" icon_of="240" />
+            <stacked_container x="819" y="71" height="282" width="492" visible_index="0" uid="241">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701896827" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="NPVProfit" index="1" />
                     </plot>
@@ -2502,9 +2519,9 @@
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="908" y="104" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 3" type="graph" icon_of="240" />
-            <stacked_container x="822" y="411" height="282" width="492" visible_index="1" uid="241">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701897516" time_precision="2" from="0" to="20">
+            <pad_icon x="908" y="104" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 3" type="graph" icon_of="241" />
+            <stacked_container x="822" y="411" height="282" width="492" visible_index="1" uid="242">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701896827" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="Orders" index="1" />
                     </plot>
@@ -2515,7 +2532,7 @@
                         <entity name="IndustryOrderRate" />
                     </plot>
                 </graph>
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701897516" time_precision="2" from="0" to="20">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701896827" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="Price" index="1" />
                     </plot>
@@ -2527,9 +2544,9 @@
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="844" y="427" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 4" type="graph" icon_of="241" />
-            <stacked_container x="809" y="790" height="282" width="492" visible_index="1" uid="242">
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701897516" time_precision="2" from="0" to="20">
+            <pad_icon x="844" y="427" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 4" type="graph" icon_of="242" />
+            <stacked_container x="809" y="790" height="282" width="492" visible_index="1" uid="243">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701896827" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="NetIncome" index="1" />
                     </plot>
@@ -2537,7 +2554,7 @@
                         <entity name="NetIncome" index="2" />
                     </plot>
                 </graph>
-                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701897398" time_precision="2" from="0" to="20">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-701896827" time_precision="2" from="0" to="20">
                     <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
                         <entity name="NonAdopters" />
                     </plot>
@@ -2546,9 +2563,9 @@
                     </plot>
                 </graph>
             </stacked_container>
-            <pad_icon x="831" y="806" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 5" type="graph" icon_of="242" />
-            <stacked_container x="57" y="46" height="468" width="705" visible_index="0" uid="243">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="107" orientation="vertical" report_every_dt="true" isee:date_time="-701897516">
+            <pad_icon x="831" y="806" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 5" type="graph" icon_of="243" />
+            <stacked_container x="57" y="46" height="468" width="705" visible_index="0" uid="244">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="107" orientation="vertical" report_every_dt="true" isee:date_time="-701896827">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
                         <entity name="NPVProfit" index="1" />
@@ -2588,9 +2605,9 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="74" y="57" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="243" />
-            <stacked_container x="44" y="546" height="283" width="712" visible_index="0" uid="244">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="200" orientation="vertical" report_every_dt="true" isee:date_time="-701897516">
+            <pad_icon x="74" y="57" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="244" />
+            <stacked_container x="44" y="546" height="283" width="712" visible_index="0" uid="245">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="200" orientation="vertical" report_every_dt="true" isee:date_time="-701896827">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="3" thousands_separator="true" flow_concept="true" index="0">
                         <entity name="checkAdoptionRate" />
@@ -2630,9 +2647,9 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="61" y="557" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="244" />
-            <stacked_container x="775" y="1138" height="329" width="521" visible_index="0" uid="245">
-                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="111" orientation="horizontal" report_every_dt="true" isee:date_time="-701897516">
+            <pad_icon x="61" y="557" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="245" />
+            <stacked_container x="775" y="1138" height="329" width="521" visible_index="0" uid="246">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="111" orientation="horizontal" report_every_dt="true" isee:date_time="-701896827">
                     <item type="time" color="black" text-align="left" precision="3" width="100" />
                     <item color="black" text-align="left" precision="1" thousands_separator="true" index="0">
                         <entity name="AdoptionRate" />
@@ -2645,7 +2662,7 @@
                     </item>
                 </table>
             </stacked_container>
-            <pad_icon x="838" y="1208" width="26" height="22" color="#008F44" label_side="bottom" label="Table 3" type="table" icon_of="245" />
+            <pad_icon x="838" y="1208" width="26" height="22" color="#008F44" label_side="bottom" label="Table 3" type="table" icon_of="246" />
         </interface>
     </model>
 </xmile>
