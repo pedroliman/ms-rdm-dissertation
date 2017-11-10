@@ -1,7 +1,7 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
 library(dplyr)
-START<-0; FINISH<-40; STEP<-0.0625
+START<-2005; FINISH<-2020; STEP<-0.0625
 
 VERIFICAR_STOCKS = FALSE
 
@@ -9,7 +9,7 @@ VERIFICAR_CHECKS = FALSE
 
 CHECK_PRECISION = 0.00001
 
-BROWSE_ON_DIFF = TRUE
+BROWSE_ON_DIFF = FALSE
 
 # Vetor de Tempos
 simtime <- seq(START, FINISH, by=STEP)
@@ -475,10 +475,10 @@ modelo <- function(time, stocks, auxs){
                    ,d_SmoothCapacity2_dt
                    ,d_SmoothCapacity3_dt
                    )
+                 ,fIndustryOrderRate = fIndustryOrderRate
                  ,aNonAdopters = aNonAdopters
                  ,fReorderRate = fReorderRate
                  ,aIndustryShipments = aIndustryShipments
-                 ,fIndustryOrderRate = fIndustryOrderRate
                  ,aIndustryVolume = aIndustryVolume
                  ,fDiscardRate = fDiscardRate
                  ,aDiscountFactor = aDiscountFactor
