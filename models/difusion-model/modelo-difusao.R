@@ -66,3 +66,9 @@ sdmodel = list(
   Modelo = modelo,
   Variaveis = nomes_variaveis
 )
+
+
+simular_paralelo = function(params, ...) {
+  data.frame(ode(y=stocks, times=simtime, func = modelo, 
+                 parms=params, method="euler"))
+}
