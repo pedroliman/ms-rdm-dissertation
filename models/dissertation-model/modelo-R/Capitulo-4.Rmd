@@ -1,0 +1,57 @@
+---
+title: "Modelo Matemático - Manufatura Aditiva"
+author: "Pedro Nascimento de Lima"
+date: "November 19, 2017"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# A Indústria da Manufatura Aditiva
+
+
+# Modelos de Difusão de Novos Produtos
+
+Falar sobre cada modelo e mostrar o Quadro da análise dos modelos
+
+# Modelo empregado neste Trabalho
+
+Esta seção do trabalho apresenta o modelo de equações diferenciais utilizado para simular o comportamento da indústria da manufatura aditiva.
+
+## Difusão e Demanda por Impressoras 3D.
+
+## Visão Geral do Modelo
+O modelo proposto inicialmente por Sterman (XX) foi utilizado como ponto de partida deste trabalho, por possuir uma série de características desejáveis para este trabalho. Em primeiro lugar, o modelo não é restrito a monopólios, como o modelo de Bass (XX) e outros modelos deste trabalho (identificar e citar aqui). Além disso, o modelo possui uma estrutura de dinâmica competitiva considerando a interação de diversos fatores presentes na Indústria da Manufatura Aditiva, incluindo curvas de aprendizagens, diferentes players expandindo sua capacidade produtiva em função da demanda prospectada no mercado.
+
+No modelo proposto por Sterman (XX) dois players, inicialmente com a mesma capacidade produtiva, iniciam vendendo produtos a um mercado em expansão.
+
+## Demanda
+
+## Market Share
+
+## A Firma
+
+O lucro líquido a valor presente $\pi_{t}$ da empresa $i$ é definido como um estoque calculado em função das receitas e custos da empresa, trazidos a valor presente por um fator $\rho$. As receita líquida da empresa é calculada a partir do número de produtos entregues $s_i$ pela empresa $i$ e da diferença entre o preço médio dos produtos entregues $\bar{p_{i}}$, e do seu respectivo custo variável unitário $vc_i$. Os custos fixos da empresa são calculados a partir da sua capacidade $C_{i}$ e de um custo fixo unitário $fc_i$. Desta maneira, o lucro líquido da empresa no tempo $t$ será dado conforme esta equação:
+
+$$ \pi_{t} = \int_{t_0}^{t} [s_{i} * (\bar{p_{i}} - vc_{i})  - (C_{i} * fc_{i})]  *  e^{-\rho * t} $$
+## Custos
+
+## Produção
+
+## Capacidade
+
+## Capacidade Alvo e Previsão de Demanda
+
+## Preços
+
+## Curva de Aprendizagem
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:

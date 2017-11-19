@@ -338,36 +338,35 @@ modelo <- function(time, stocks, auxs){
     
     checkTargetPrice = mean(aTargetPrice)
     
-    
     fChangeInPrice = (aTargetPrice - sPrice) / aPriceAdjustmentTime
     
     ##### NET INCOME SECTOR #####
     
-    aDiscountFactor = exp(-aDiscountRate*time)
+    aDiscountFactor = exp(-aDiscountRate*time) # 
     
     fValueOfNewOrders = fOrders * sPrice
     
-    checkValueOfNewOrders1 = fValueOfNewOrders[1]
+    checkValueOfNewOrders1 = fValueOfNewOrders[1] #
     
     aAveragePriceOfOrderBook = sValueOfBacklog / sBacklog
     
-    fRevenue = fShipments * aAveragePriceOfOrderBook
+    fRevenue = fShipments * aAveragePriceOfOrderBook #
     
-    checkRevenue1 = fRevenue[1]
+    checkRevenue1 = fRevenue[1] #
     
-    aVariableCost = fShipments * aUnitVariableCost
+    aVariableCost = fShipments * aUnitVariableCost #
     
-    aFixedCost = aCapacity * aUnitFixedCost
+    aFixedCost = aCapacity * aUnitFixedCost #
     
-    fCost = aFixedCost + aVariableCost
+    fCost = aFixedCost + aVariableCost #
     
-    fNetIncome = fRevenue - fCost
+    fNetIncome = fRevenue - fCost #
     
-    fNPVProfitChange = fNetIncome * aDiscountFactor
+    fNPVProfitChange = fNetIncome * aDiscountFactor #
     
-    checkNPVProfitChange = mean(fNPVProfitChange)
+    checkNPVProfitChange = mean(fNPVProfitChange) #
     
-    aNPVIndustryProfits = sum(sNPVProfit)
+    aNPVIndustryProfits = sum(sNPVProfit) #
     
     
     ##### ESTOQUES #####
