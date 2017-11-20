@@ -161,8 +161,39 @@ $$\large dD^r/dt = (D^T  - D^r)/\tau^r$$
 
 Market Share Alvo e Estratégia da Firma:
 
+$$\large S^* = \cases{MAX(S^{min}_i, S^u_i), \ \text{se} \ Str_i = Agress. \\ \\ MIN(S^{max}_i, S^u_i), \ \text{se} \ Str_i = Conserv. }$$
+
 Se a firma busca uma estratégia agressiva, a mesma busca um share dominante do mercado. Uma estratégia conservadora, por outro lado, busca acomodação entre seus rivais, e define um market share modesto.
 
 A empresa agressiva também busca explorar sua vantagem aproveitando-se da demora dos outros players ainda aumentando seu share quando ela identifica que haverá demanda não atendida pelos outros players.
 
-Market Share Alvo:
+
+Market Share "Não-Disputado":
+$$\large S^u_i = MAX(0, D^u_i/D^e)$$
+
+Demanda não contestada:
+
+$$\large D^u_i = D^e - u^* \sum_{j \neq i}K^e_j$$
+
+Capacidade dos competidores esperada:
+
+$$\large K^e_j = w K^{e^*}_j + (1-w)K_j $$
+
+Calculo da Capacidade com defasagem - segue uma suavização exponencial:
+
+$$\large dK^{e^*}_j/dt = (K^{*}_j - K^{e^*}_j)/\tau^c$$
+
+Preço:
+Preço também ajusta-se a um valor alvo com delay e tempo de ajuste.
+
+$$\large dP_i/dt = (P^*_i-P_i)/\tau^p$$
+
+Equação do Preço Alvo:
+
+$$P^* = MAX \left[u^v, P \left( 1 + \alpha^c \left( \frac{P^c}{P}-1 \right) \right) \left( 1 + \alpha^d \left( \frac{Q^*}{u^*K}-1 \right)  \right) \left( 1 + \alpha^s \bigg( S^* - S \bigg) \right) \right]$$
+
+Parâmetros, Unidades Valores Máximos e Mínimos:
+
+$$P^C = (1+m^*) (u^f_i + u^f_i)$$
+
+
