@@ -82,7 +82,7 @@ O lucro líquido a valor presente $\pi_{t}$ da firma $i$ é definido como um est
 
 $$\large  \pi_{t} = \int_{t_0}^{t} [R_i -(C^f_i+C^v_i)]  *  e^{-\rho * t} $$
 
-Receita
+Receita:
 $$\large R_i = S_{i} * (V_i/B_i)$$
 
 Valor da Carteira de Vendas:
@@ -101,7 +101,7 @@ Esta formlua pressupõe que não há troca de experiência entre os players, e q
 
 $$\large E_{i,t} = E_{i,t0} + \int_{t_0}^{t} S_i$$
 
-## Produção
+### Produção
 
 Shipmentso é igual à Produção é igual a shipments, desprezando estoques na cadeia produtiva. 
 
@@ -129,22 +129,40 @@ Capacidade: Ajusta-se conforme uma função Erlang Lag de terceira ordem.
 Este é o operador $\varphi$ Erlang Lag.
 
 $$\large K_i = \varphi(K^*,\lambda)$$
-$$\large $$
 
-$$\large $$
+Capacidade Alvo e Previsão da Demanda
+A capacidade Alvo da Empresa $K^*$ 
+market share alvo $S^*$
+previsão da demanda $D^*$
+taxa de utilização de capacidade $u^*$
+
+$$\large K^* = MAX(K^{min}, S^*D^e/u^*)$$
+
+mínima escala de produção eficiente $K^{min}$.
 
 
-$$\large  \pi_{t} = \int_{t_0}^{t} [S_{i} * (\bar{p_{i}} - vc_{i})  - (C_{i} * fc_{i})]  *  e^{-\rho * t} $$
-## Custos
+Demanda Prevista (Demanda Esperada) $D^e$:
+Demanda Observada-Reportada $D^r$
+Anos de Previsão $\lambda$
+Taxa esperada de crescimento da demanda $g^e$
 
-## Produção
+$$\large D^e = D^r * e^{\lambda * g^e}$$
 
-## Capacidade
+Taxa de crescimento da demanda:
 
-## Capacidade Alvo e Previsão de Demanda
+Horizonte Histórico usado para a previsão $h$
+Demanda Observada-Reportada $D^r$
 
-## Preços
+$$\large g^e = ln(D^r_t/D^r_t-h)/h$$
 
-## Curva de Aprendizagem
 
-Os custos fixos e variáveis da firma caem ao longo do tempo em função da sua experiência de produção.
+Demanda Observada-Reportada $D^r$ - Segue um suavização exponencial:
+$$\large dD^r/dt = (D^T  - D^r)/\tau^r$$
+
+Market Share Alvo e Estratégia da Firma:
+
+Se a firma busca uma estratégia agressiva, a mesma busca um share dominante do mercado. Uma estratégia conservadora, por outro lado, busca acomodação entre seus rivais, e define um market share modesto.
+
+A empresa agressiva também busca explorar sua vantagem aproveitando-se da demora dos outros players ainda aumentando seu share quando ela identifica que haverá demanda não atendida pelos outros players.
+
+Market Share Alvo:
