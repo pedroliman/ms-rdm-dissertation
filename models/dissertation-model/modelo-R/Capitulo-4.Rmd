@@ -54,7 +54,7 @@ $$\large M^* = MIN (POP, POP^r * MAX(0, 1+\sigma(P^{min} - P^r)/POP^r))$$
 
 Inclinação da Curva de Demanda:
 
-$$\large \sigma = - \varepsilon(POP^r/p^r)$$
+$$\large \sigma = - \varepsilon_d(POP^r/p^r)$$
 
 Demanda por substituição de produtos:
 
@@ -68,8 +68,29 @@ Orders:
 $$\large O_i = S_i D^T$$
 
 Share:
+$$\large S_i = A_i/\sum_{i}A_i$$
 
-Atratividade:
+
+Atratividade: - Aqui deve entrar também a performance do produto.
+Standard Logit decision model
+
+$$\large A_i = e^{\varepsilon_p P_i/P^r} e^{\varepsilon_a (B_i/S_i)/\tau^r}$$
+
+
+$$\large $$
+
+$$\large $$
+
+$$\large $$
+
+$$\large $$
+
+$$\large $$
+
+$$\large $$
+$$\large $$
+
+$$\large $$
 
 
 ## A Firma
