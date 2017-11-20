@@ -3,8 +3,9 @@ title: "Modelo Matemático - Manufatura Aditiva"
 author: "Pedro Nascimento de Lima"
 date: "November 19, 2017"
 output:
-  pdf_document: default
   word_document: default
+  pdf_document: 
+    latex_engine: xelatex
 ---
 
 
@@ -34,78 +35,78 @@ No modelo proposto por Sterman (XX) dois players, inicialmente com a mesma capac
 ## Demanda
 
 A demanda Total da indústria é formada pela soma de pedidos dos primeiros clientes e pedidos em função da substituição de impressoras antigas.
-$$\large D^T = D^I + D^R$$
+$$D^T = D^I + D^R$$
 
 Demanda Inicial:
 
-$$\large D^I = \mu (dA/dt)$$
+$$D^I = \mu (dA/dt)$$
 
 Número de "Clientes":
 
-$$\large A = \int_{t_0}^{t} N (\alpha + \beta M / P)$$
+$$A = \int_{t_0}^{t} N (\alpha + \beta M / P)$$
 
 Número de "Consumidores Potenciais":
 
-$$\large N = MAX(0, M^* - M)$$
+$$N = MAX(0, M^* - M)$$
 
 Número de Consumidores que irão adotar o produto:
 
-$$\large M^* = MIN (POP, POP^r * MAX(0, 1+\sigma(P^{min} - P^r)/POP^r))$$
+$$M^* = MIN (POP, POP^r * MAX(0, 1+\sigma(P^{min} - P^r)/POP^r))$$
 
 Inclinação da Curva de Demanda:
 
-$$\large \sigma = - \varepsilon_d(POP^r/p^r)$$
+$$\sigma = - \varepsilon_d(POP^r/p^r)$$
 
 Demanda por substituição de produtos:
 
-$$\large D^r = \sum_{i}{D_i} \ ; \ D_i = \delta I_i$$
+$$D^r = \sum_{i}{D_i} \ ; \ D_i = \delta I_i$$
 Installed Base:
 
-$$\large I_{i,t} = I_{i,t_0} + \int_{t_0}^{t} S_{i,t} - D_{i,t}$$
+$$I_{i,t} = I_{i,t_0} + \int_{t_0}^{t} S_{i,t} - D_{i,t}$$
 ## Market Share
 
 Orders:
-$$\large O_i = S_i D^T$$
+$$O_i = S_i D^T$$
 
 Share:
-$$\large S_i = A_i/\sum_{i}A_i$$
+$$S_i = A_i/\sum_{i}A_i$$
 
 
 Atratividade: - Aqui deve entrar também a performance do produto.
 Standard Logit decision model
 
-$$\large A_i = e^{\varepsilon_p P_i/P^r} e^{\varepsilon_a (B_i/S_i)/\tau^r}$$
+$$A_i = e^{\varepsilon_p P_i/P^r} e^{\varepsilon_a (B_i/S_i)/\tau^r}$$
 
 ## A Firma
 
 O lucro líquido a valor presente $\pi_{t}$ da firma $i$ é definido como um estoque calculado em função das receitas e custos da empresa, trazidos a valor presente por um fator $\rho$. As receita líquida da empresa é calculada a partir do número de produtos entregues $s_i$ pela empresa $i$ e da diferença entre o preço médio dos produtos entregues $\bar{p_{i}}$, e do seu respectivo custo variável unitário $vc_i$. Os custos fixos da empresa são calculados a partir da sua capacidade $C_{i}$ e de um custo fixo unitário $fc_i$. Desta maneira, o lucro líquido da empresa no tempo $t$ será dado conforme esta equação:
 
-$$\large  \pi_{t} = \int_{t_0}^{t} [R_i -(C^f_i+C^v_i)]  *  e^{-\rho * t} $$
+$$ \pi_{t} = \int_{t_0}^{t} [R_i -(C^f_i+C^v_i)]  *  e^{-\rho * t} $$
 
 Receita:
-$$\large R_i = S_{i} * (V_i/B_i)$$
+$$R_i = S_{i} * (V_i/B_i)$$
 
 Valor da Carteira de Vendas:
-$$\large V_{i,t} = V_{i,t_0} + \int_{t_0}^{t} P_{i,t}*O_{i,t} - R_{i,t}$$
+$$V_{i,t} = V_{i,t_0} + \int_{t_0}^{t} P_{i,t}*O_{i,t} - R_{i,t}$$
 
 Custos:
 
-$$\large C^f_i = u^f_i*K_i\ ; \  C^v_i = u^v_i * S_i$$
+$$C^f_i = u^f_i*K_i\ ; \  C^v_i = u^v_i * S_i$$
 
 Custos Variáveis e Fixos decrescem conforme uma curva de experiência
 Standard learning curve:
 
-$$\large u^f_i = u^f_0(E/E_0)^\gamma ;\ u^v_i = u^v_0(E/E_0)^\gamma  $$
+$$u^f_i = u^f_0(E/E_0)^\gamma ;\ u^v_i = u^v_0(E/E_0)^\gamma  $$
 
 Esta formlua pressupõe que não há troca de experiência entre os players, e que não há "perda de experiência".
 
-$$\large E_{i,t} = E_{i,t0} + \int_{t_0}^{t} S_i$$
+$$E_{i,t} = E_{i,t0} + \int_{t_0}^{t} S_i$$
 
 ### Produção
 
 Shipmentso é igual à Produção é igual a shipments, desprezando estoques na cadeia produtiva. 
 
-$$\large Q_i = MIN(Q_i^*,K_i); S_i = Q_i$$
+$$Q_i = MIN(Q_i^*,K_i); S_i = Q_i$$
 
 Considera-se um sistema Make to Order, não considera estoques na cadeia. Para eles, o estoque na cadeia introduziria um efeito chicote ainda pior para a estratégia Get big fast, e por isso foi possível desconsidera-lo.
 
@@ -114,21 +115,21 @@ Neste ponto será necessário tomar uma decisão se este aspecto é importante p
 
 Delivery Delay:
 
-$$\large \tau_i  = B_i * Q_i$$
+$$\tau_i  = B_i * Q_i$$
 
 "Target Ship Rate:"
 
-$$\large Q_i^* = B/\tau_i^*$$
+$$Q_i^* = B/\tau_i^*$$
 
 Backlog de Produção:
 
-$$\large B_{i,t} = B_{i,t0} + \int_{t_0}^{t} O_i - Q_i$$
+$$B_{i,t} = B_{i,t0} + \int_{t_0}^{t} O_i - Q_i$$
 
 Capacidade: Ajusta-se conforme uma função Erlang Lag de terceira ordem.
 
 Este é o operador $\varphi$ Erlang Lag.
 
-$$\large K_i = \varphi(K^*,\lambda)$$
+$$K_i = \varphi(K^*,\lambda)$$
 
 Capacidade Alvo e Previsão da Demanda
 A capacidade Alvo da Empresa $K^*$ 
@@ -136,7 +137,7 @@ market share alvo $S^*$
 previsão da demanda $D^*$
 taxa de utilização de capacidade $u^*$
 
-$$\large K^* = MAX(K^{min}, S^*D^e/u^*)$$
+$$K^* = MAX(K^{min}, S^*D^e/u^*)$$
 
 mínima escala de produção eficiente $K^{min}$.
 
@@ -146,22 +147,22 @@ Demanda Observada-Reportada $D^r$
 Anos de Previsão $\lambda$
 Taxa esperada de crescimento da demanda $g^e$
 
-$$\large D^e = D^r * e^{\lambda * g^e}$$
+$$D^e = D^r * e^{\lambda * g^e}$$
 
 Taxa de crescimento da demanda:
 
 Horizonte Histórico usado para a previsão $h$
 Demanda Observada-Reportada $D^r$
 
-$$\large g^e = ln(D^r_t/D^r_t-h)/h$$
+$$g^e = ln(D^r_t/D^r_t-h)/h$$
 
 
 Demanda Observada-Reportada $D^r$ - Segue um suavização exponencial:
-$$\large dD^r/dt = (D^T  - D^r)/\tau^r$$
+$$dD^r/dt = (D^T  - D^r)/\tau^r$$
 
 Market Share Alvo e Estratégia da Firma:
 
-$$\large S^* = \cases{MAX(S^{min}_i, S^u_i), \ \text{se} \ Str_i = Agress. \\ \\ MIN(S^{max}_i, S^u_i), \ \text{se} \ Str_i = Conserv. }$$
+$$S^* =  \begin{cases} MAX(S^{min}_i, S^u_i), \ if \ Str_i = Agress. \\ \\ MIN(S^{max}_i, S^u_i), \ if \ Str_i = Conserv. \end{cases}$$
 
 Se a firma busca uma estratégia agressiva, a mesma busca um share dominante do mercado. Uma estratégia conservadora, por outro lado, busca acomodação entre seus rivais, e define um market share modesto.
 
@@ -169,24 +170,24 @@ A empresa agressiva também busca explorar sua vantagem aproveitando-se da demor
 
 
 Market Share "Não-Disputado":
-$$\large S^u_i = MAX(0, D^u_i/D^e)$$
+$$S^u_i = MAX(0, D^u_i/D^e)$$
 
 Demanda não contestada:
 
-$$\large D^u_i = D^e - u^* \sum_{j \neq i}K^e_j$$
+$$D^u_i = D^e - u^* \sum_{j \neq i}K^e_j$$
 
 Capacidade dos competidores esperada:
 
-$$\large K^e_j = w K^{e^*}_j + (1-w)K_j $$
+$$K^e_j = w K^{e^*}_j + (1-w)K_j $$
 
 Calculo da Capacidade com defasagem - segue uma suavização exponencial:
 
-$$\large dK^{e^*}_j/dt = (K^{*}_j - K^{e^*}_j)/\tau^c$$
+$$dK^{e^*}_j/dt = (K^{*}_j - K^{e^*}_j)/\tau^c$$
 
 Preço:
 Preço também ajusta-se a um valor alvo com delay e tempo de ajuste.
 
-$$\large dP_i/dt = (P^*_i-P_i)/\tau^p$$
+$$dP_i/dt = (P^*_i-P_i)/\tau^p$$
 
 Equação do Preço Alvo:
 
