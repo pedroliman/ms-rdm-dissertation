@@ -33,13 +33,50 @@ No modelo proposto por Sterman (XX) dois players, inicialmente com a mesma capac
 
 ## Demanda
 
+A demanda Total da indústria é formada pela soma de pedidos dos primeiros clientes e pedidos em função da substituição de impressoras antigas.
+$$\large D^T = D^I + D^R$$
+
+Demanda Inicial:
+
+$$\large D^I = \mu (dA/dt)$$
+
+Número de "Clientes":
+
+$$\large A = \int_{t_0}^{t} N (\alpha + \beta M / P)$$
+
+Número de "Consumidores Potenciais":
+
+$$\large N = MAX(0, M^* - M)$$
+
+Número de Consumidores que irão adotar o produto:
+
+$$\large M^* = MIN (POP, POP^r * MAX(0, 1+\sigma(P^{min} - P^r)/POP^r))$$
+
+Inclinação da Curva de Demanda:
+
+$$\large \sigma = - \varepsilon(POP^r/p^r)$$
+
+Demanda por substituição de produtos:
+
+$$\large D^r = \sum_{i}{D_i} \ ; \ D_i = \delta I_i$$
+Installed Base:
+
+$$\large I_{i,t} = I_{i,t_0} + \int_{t_0}^{t} S_{i,t} - D_{i,t}$$
 ## Market Share
+
+Orders:
+$$\large O_i = S_i D^T$$
+
+Share:
+
+Atratividade:
+
 
 ## A Firma
 
-O lucro líquido a valor presente $\pi_{t}$ da empresa $i$ é definido como um estoque calculado em função das receitas e custos da empresa, trazidos a valor presente por um fator $\rho$. As receita líquida da empresa é calculada a partir do número de produtos entregues $s_i$ pela empresa $i$ e da diferença entre o preço médio dos produtos entregues $\bar{p_{i}}$, e do seu respectivo custo variável unitário $vc_i$. Os custos fixos da empresa são calculados a partir da sua capacidade $C_{i}$ e de um custo fixo unitário $fc_i$. Desta maneira, o lucro líquido da empresa no tempo $t$ será dado conforme esta equação:
+O lucro líquido a valor presente $\pi_{t}$ da firma $i$ é definido como um estoque calculado em função das receitas e custos da empresa, trazidos a valor presente por um fator $\rho$. As receita líquida da empresa é calculada a partir do número de produtos entregues $s_i$ pela empresa $i$ e da diferença entre o preço médio dos produtos entregues $\bar{p_{i}}$, e do seu respectivo custo variável unitário $vc_i$. Os custos fixos da empresa são calculados a partir da sua capacidade $C_{i}$ e de um custo fixo unitário $fc_i$. Desta maneira, o lucro líquido da empresa no tempo $t$ será dado conforme esta equação:
 
-$$ \pi_{t} = \int_{t_0}^{t} [s_{i} * (\bar{p_{i}} - vc_{i})  - (C_{i} * fc_{i})]  *  e^{-\rho * t} $$
+$$\large  \pi_{t} = \int_{t_0}^{t} [S_{i} * (\bar{p_{i}} - vc_{i})  - (C_{i} * fc_{i})]  *  e^{-\rho * t} $$
 ## Custos
 
 ## Produção
@@ -52,6 +89,4 @@ $$ \pi_{t} = \int_{t_0}^{t} [s_{i} * (\bar{p_{i}} - vc_{i})  - (C_{i} * fc_{i})]
 
 ## Curva de Aprendizagem
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Os custos fixos e variáveis da firma caem ao longo do tempo em função da sua experiência de produção.
