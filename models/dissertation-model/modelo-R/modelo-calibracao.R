@@ -1,27 +1,16 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
 library(dplyr)
-START<-0; FINISH<-10; STEP<-0.0625
 
-VERIFICAR_STOCKS = FALSE
-
-VERIFICAR_CHECKS = FALSE
-
-CHECK_PRECISION = 0.00001
-
-BROWSE_ON_DIFF = FALSE
-
-# Vetor de Tempos
-simtime <- seq(START, FINISH, by=STEP)
-
-# Número de Players no modelo
-N_PLAYERS = 2
 
 ##### Modelo de Dinâmica de Sistemas ####
 
 # Definindo o Modelo
 modelo <- function(time, stocks, auxs, modo = "completo"){
   with(as.list(c(stocks, auxs)),{
+    
+    # Criando uma variavel n_tempo local
+    n_tempo = nrow(list.variaveis.globais$sReportedIndustryVolume)
     
     ##### VETORIZANDO ESTOQUES #####
     
@@ -149,7 +138,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     # Esta implementacao considera que os delays sempre serao iguais. Se os delays nao forem iguais, deve-se encontrar outra forma de implementar os delays (talvez com a equacao multiplicativa 1*(time > tempodelay)
     if(time > aTimeForHistoricalVolume) {
       nlinhas_delay = aTimeForHistoricalVolume / STEP
-      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[linha - nlinhas_delay,]
+      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[(linha - nlinhas_delay),]
     } else {
       aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[1,]
     }
@@ -158,7 +147,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     aExpectedIndustryDemand = sReportedIndustryVolume*exp(aForecastHorizon*aCapacityAcquisitionDelay*aExpGrowthInVolume)
     
-    list.variaveis.globais$aExpectedIndustryDemand[linha,] <<- aExpectedIndustryDemand
+    list.variaveis.globais$aExpectedIndustryDemand[linha,] = aExpectedIndustryDemand
     
     # Mais uma variável com delay
     if(time > aCapacityAcquisitionDelay) {

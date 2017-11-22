@@ -30,20 +30,27 @@ model <- function(time, stocks, auxs){
 
 solveWP <- function(pars){
   
+  ## Inicializar variaveis da simulacao aqui:
+  START<-0; FINISH<-10; STEP<-0.0625
+  
+  VERIFICAR_STOCKS = FALSE
+  
+  VERIFICAR_CHECKS = FALSE
+  
+  CHECK_PRECISION = 0.00001
+  
+  BROWSE_ON_DIFF = FALSE
+  
+  # Vetor de Tempos
+  SIM_TIME <- seq(START, FINISH, by=STEP)
+  
+  # Número de Players no modelo
+  N_PLAYERS = 2
+  
   # All the stocks are initialised here...
   
-  # Matriz de Variáveis que possuem valores no tempo global
-  matriz.variaveis.globais <<- matrix(simtime)
-  
-  n_tempo = length(simtime)
-  
-  nlinhas_matriz = nrow(matriz.variaveis.globais)
-  
-  # Adcionando variável sReportedIndustryVolume
-  matriz.variaveis.globais <<- cbind(matriz.variaveis.globais, NA)
-  
-  colnames(matriz.variaveis.globais) <<- c("Tempo", "sReportedIndustryVolume")
-  
+  n_tempo = length(SIM_TIME)
+
   list.variaveis.globais <<- list(
     sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
     aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
@@ -60,7 +67,7 @@ solveWP <- function(pars){
                   ,aReferenceIndustryDemandElasticity = 0.2
                   ,aReferencePopulation = 60000000
                   ,aInnovatorAdoptionFraction = 0.001
-                  ,aWOMStrength = unname(pars["aWOMStrength"]) # Original 1
+                  ,aWOMStrength = 1 # unname(pars["aWOMStrength"]) # Original 1
                   ,aPopulation = unname(pars["aPopulation"]) #100000000 # Original Sterman: 100000000
                   ,aUnitsPerHousehold = 1
                   ,aSwitchForShipmentsInForecast = 0
@@ -151,10 +158,12 @@ getCost<-function(p){
 }
 
 # Valores Iniciais dos parametros
-pars<-c(aFractionalDiscardRate=0.1) 
-lower<-c(0.0)
-upper<-c(0.5)
+pars<-c(aPopulation=1000000) 
+lower<-c(1000)
+upper<-c(100000000)
 
+
+solveWP(pars)
 
 Fit<-modFit(p=pars,f=getCost,lower=lower,upper=upper)
 
