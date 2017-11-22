@@ -1,7 +1,7 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
 library(dplyr)
-START<-2005; FINISH<-2020; STEP<-0.0625
+START<-0; FINISH<-10; STEP<-0.0625
 
 VERIFICAR_STOCKS = FALSE
 

@@ -9,6 +9,8 @@ dados_calibracao <- read_xlsx(path = "dados_calibracao.xlsx", sheet = "Plan1")
 
 dados_calibracao <- as.data.frame(dados_calibracao)
 
+variaveis_calibracao = names(dados_calibracao)
+
 # dados_calibracao <- read.xls("D:/dev/SDMR/models/07Chapter/R/WorldPopulation.xlsx",stringsAsFactors=F)
 
 WP_INIT<-dados_calibracao[1,"Population"]
@@ -38,11 +40,11 @@ solveWP <- function(pars){
   nlinhas_matriz = nrow(matriz.variaveis.globais)
   
   # Adcionando variável sReportedIndustryVolume
-  matriz.variaveis.globais = cbind(matriz.variaveis.globais, NA)
+  matriz.variaveis.globais <<- cbind(matriz.variaveis.globais, NA)
   
-  colnames(matriz.variaveis.globais) = c("Tempo", "sReportedIndustryVolume")
+  colnames(matriz.variaveis.globais) <<- c("Tempo", "sReportedIndustryVolume")
   
-  list.variaveis.globais = list(
+  list.variaveis.globais <<- list(
     sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
     aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
   )
@@ -123,20 +125,20 @@ solveWP <- function(pars){
   #stocks  <- c(Population=WP_INIT)
   
   # Adicinar aos auxiliares anteriores aqueles que eu quero calibrar. Por enquanto, nenhum.
-  browser()
-  return (data.frame(ode(y=stocks, simtime, func = modelo, 
-                         parms=auxs, method="euler")))
+  
+  resultado_completo = data.frame(ode(y=stocks, simtime, func = modelo, 
+                                      parms=auxs, method="euler"))
+  
+  resultado_completo[variaveis_calibracao]
 }
 
 getCost<-function(p){
   out<-solveWP(p)
-  browser()
   #http://www.inside-r.org/packages/cran/FME/docs/modCost
   cost <- modCost(obs=dados_calibracao,model=out)
   #cat(str(cost))
   return(cost)
 }
-
 
 # Valores Iniciais dos parametros
 pars<-c(aFractionalDiscardRate=0.1) 
