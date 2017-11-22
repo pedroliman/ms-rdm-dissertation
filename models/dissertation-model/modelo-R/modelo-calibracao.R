@@ -1,7 +1,7 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
 library(dplyr)
-START<-10; FINISH<-10; STEP<-0.0625
+START<-0; FINISH<-10; STEP<-0.0625
 
 VERIFICAR_STOCKS = FALSE
 
@@ -280,16 +280,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     aNPVIndustryProfits = sum(sNPVProfit) #
     
-    
-    ##### ESTOQUES - INICIAIS #####
-    
-    stocks_ini = list(
-      BacklogIni = (1/length(fNetIncome)) * fIndustryOrderRate * aNormalDeliveryDelay,
-      InstalledBaseIni = (1/length(fNetIncome)) * aUnitsPerHousehold * sCumulativeAdopters,
-      CumulativeAdoptersIni = aInitialCumulativeAdopters
-    )
-    
-    
+
     ##### ESTOQUES #####
     
     d_NPVProfit_dt = fNPVProfitChange
@@ -315,6 +306,41 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     d_SmoothCapacity2_dt = fchangeSmoothCapacity2
     
     d_SmoothCapacity3_dt = fchangeSmoothCapacity3
+    
+    
+    
+    # Variaveis de Estoques Iniciais
+    
+    BacklogIni = (1/length(fNetIncome)) * fIndustryOrderRate * aNormalDeliveryDelay
+    InstalledBaseIni = (1/length(fNetIncome)) * aUnitsPerHousehold * sCumulativeAdopters
+    
+    CumulativeAdoptersIni = aInitialCumulativeAdopters
+    
+    ValueOfBacklogIni = sPrice * BacklogIni 
+    
+    ReportedIndustryVolumeIni = aIndustryVolume
+    
+    CumulativeProductionIni = aInitialProductionExperience
+    
+    PerceivedCompTargetCapacityIni = aCompetitorCapacity
+    
+    CapacityIni = (1/length(fNetIncome)) * fIndustryOrderRate / aNormalCapacityUtilization
+      
+    ##### ESTOQUES - INICIAIS #####
+    
+    stocks_ini = list(
+      BacklogIni = BacklogIni,
+      InstalledBaseIni = InstalledBaseIni,
+      CumulativeAdoptersIni = CumulativeAdoptersIni,
+      ValueOfBacklogIni = ValueOfBacklogIni,
+      ReportedIndustryVolumeIni = ReportedIndustryVolumeIni,
+      CumulativeProductionIni = CumulativeProductionIni,
+      PerceivedCompTargetCapacityIni = PerceivedCompTargetCapacityIni,
+      CapacityIni = CapacityIni
+    )
+    
+    
+    
     
     ##### COMPARAR RESULTADOS COM O ITHINK #####
     

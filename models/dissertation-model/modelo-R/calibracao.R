@@ -54,14 +54,14 @@ solveWP <- function(pars){
                   ,aNormalDeliveryDelay = rep(0.25, times = N_PLAYERS)
                   ,aSwitchForCapacity = 1
                   # Vamos testar apenas um parâmetro por enquanto
-                  ,aFractionalDiscardRate = unname(pars["aFractionalDiscardRate"]) # Original 0.1
+                  ,aFractionalDiscardRate = 0.1 # unname(pars["aFractionalDiscardRate"]) # Original 0.1
                   ,aInitialDiffusionFraction = 0.001
                   ,aReferencePrice = 1000
                   ,aReferenceIndustryDemandElasticity = 0.2
                   ,aReferencePopulation = 60000000
                   ,aInnovatorAdoptionFraction = 0.001
-                  ,aWOMStrength = 1 # Original 1
-                  ,aPopulation = 100000000 # Original Sterman: 100000000
+                  ,aWOMStrength = unname(pars["aWOMStrength"]) # Original 1
+                  ,aPopulation = unname(pars["aPopulation"]) #100000000 # Original Sterman: 100000000
                   ,aUnitsPerHousehold = 1
                   ,aSwitchForShipmentsInForecast = 0
                   ,aVolumeReportingDelay = rep(0.25, times = N_PLAYERS)
@@ -80,7 +80,7 @@ solveWP <- function(pars){
                   ,aNormalProfitMargin = rep(0.2, times = N_PLAYERS)
                   ,aNormalCapacityUtilization = rep(0.8, times = N_PLAYERS)
                   #Target Capacity Sector
-                  ,aMinimumEfficientScale = rep(100000, times = N_PLAYERS)
+                  ,aMinimumEfficientScale = rep(100, times = N_PLAYERS) # Original 100000
                   ,aDesiredMarketShare = rep(0.5, times = N_PLAYERS)
                   ,aWeightOnSupplyLine= rep(1, times = N_PLAYERS)
                   ,aSwitchForCapacityStrategy = rep(1, times = N_PLAYERS)
@@ -92,10 +92,15 @@ solveWP <- function(pars){
                   ,aSensOfPriceToShare = rep(-0.1, times = N_PLAYERS)
                   # Capacity Sector
                   ,aSwitchForPerfectCapacity = 0
+                  
+                  # A Initial Price
+                  ,aInitialPrice = rep(1000, times = N_PLAYERS)
   )
   
   
   ##### VARIÁVEIS DE ENTRADA - ESTOQUES INICIAIS, SEM AJUSTES #####
+  
+  # Informando Estoques Iniciais, sem ajustes, apenas para calcular o primeiro tempo.
   stocks  <- c(
     sNPVProfit = rep(0, times = N_PLAYERS)
     ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
@@ -111,28 +116,25 @@ solveWP <- function(pars){
     ,sSmoothCapacity3 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
   ) 
   
+  
+  # Calculando estoques para o t0.
   estoques_calculados = modelo(time = 0, stocks = stocks, auxs = auxs, modo = "inicial")
   
-  
+  # Substituindo estoques no t0
   stocks  <- c(
     sNPVProfit = rep(0, times = N_PLAYERS)
-    ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
-    ,sBacklog = estoques_calculados$BacklogIni
+    ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
+    ,sBacklog = unname(estoques_calculados$BacklogIni)
     ,sInstalledBase = rep(unname(estoques_calculados$InstalledBaseIni), times = N_PLAYERS)
-    ,sPrice = rep(1000, times = N_PLAYERS)
-    ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-    ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
-    ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
-    ,sPerceivedCompTargetCapacity = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-    ,sSmoothCapacity1 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-    ,sSmoothCapacity2 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-    ,sSmoothCapacity3 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    ,sPrice = unname(auxs$aInitialPrice)
+    ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
+    ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
+    ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
+    ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
+    ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
+    ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
+    ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
   ) 
-  
-  
-  #stocks  <- c(Population=WP_INIT)
-  
-  # Adicinar aos auxiliares anteriores aqueles que eu quero calibrar. Por enquanto, nenhum.
   
   resultado_completo = data.frame(ode(y=stocks, simtime, func = modelo, 
                                       parms=auxs, method="euler"))
