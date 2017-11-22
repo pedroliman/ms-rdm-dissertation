@@ -49,29 +49,19 @@ solveWP <- function(pars){
     aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
   )
   
-  # Carregando Variáveis de Output do Ithink para Comparação
-  arquivo_excel_stocks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_stocks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
-  arquivo_excel_checks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_checks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
-  
-  dados_ithink_stocks  = arquivo_excel_stocks$ResultadosIthink %>% dplyr::select(-Months)
-  dados_ithink_checks  = arquivo_excel_checks$ResultadosIthink %>% dplyr::select(-Months)
-  
-  variaveis_ithink_stocks = names(dados_ithink_stocks)
-  variaveis_ithink_checks = names(dados_ithink_checks)
-  
   ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
   auxs    <- list(aDiscountRate = 0.04
                   ,aNormalDeliveryDelay = rep(0.25, times = N_PLAYERS)
                   ,aSwitchForCapacity = 1
                   # Vamos testar apenas um parâmetro por enquanto
-                  ,aFractionalDiscardRate = unname(pars["aFractionalDiscardRate"])
+                  ,aFractionalDiscardRate = unname(pars["aFractionalDiscardRate"]) # Original 0.1
                   ,aInitialDiffusionFraction = 0.001
                   ,aReferencePrice = 1000
                   ,aReferenceIndustryDemandElasticity = 0.2
                   ,aReferencePopulation = 60000000
                   ,aInnovatorAdoptionFraction = 0.001
-                  ,aWOMStrength = 1
-                  ,aPopulation = 100000000
+                  ,aWOMStrength = 1 # Original 1
+                  ,aPopulation = 100000000 # Original Sterman: 100000000
                   ,aUnitsPerHousehold = 1
                   ,aSwitchForShipmentsInForecast = 0
                   ,aVolumeReportingDelay = rep(0.25, times = N_PLAYERS)
@@ -105,11 +95,29 @@ solveWP <- function(pars){
   )
   
   
-  ##### VARIÁVEIS DE ENTRADA - ESTOQUES #####
+  ##### VARIÁVEIS DE ENTRADA - ESTOQUES INICIAIS, SEM AJUSTES #####
   stocks  <- c(
     sNPVProfit = rep(0, times = N_PLAYERS)
     ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
     ,sBacklog = rep(12738, times = N_PLAYERS) 
+    ,sInstalledBase = rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+    ,sPrice = rep(1000, times = N_PLAYERS)
+    ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+    ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
+    ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
+    ,sPerceivedCompTargetCapacity = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity1 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity2 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity3 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+  ) 
+  
+  estoques_calculados = modelo(time = 0, stocks = stocks, auxs = auxs, modo = "inicial")
+  
+  
+  stocks  <- c(
+    sNPVProfit = rep(0, times = N_PLAYERS)
+    ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
+    ,sBacklog = estoques_calculados$BacklogIni
     ,sInstalledBase = rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
     ,sPrice = rep(1000, times = N_PLAYERS)
     ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
@@ -143,7 +151,7 @@ getCost<-function(p){
 # Valores Iniciais dos parametros
 pars<-c(aFractionalDiscardRate=0.1) 
 lower<-c(0.0)
-upper<-c(0.3)
+upper<-c(0.5)
 
 
 Fit<-modFit(p=pars,f=getCost,lower=lower,upper=upper)
@@ -164,15 +172,15 @@ Fit$ssr
 
 p1<-ggplot()+geom_point(data=dados_calibracao,size=1.5,aes(time,fIndustryOrderRate,colour="Data"))+
   geom_line(data=optMod,size=1,aes(x=time,y=fIndustryOrderRate,colour="Model"))+
-  ylab("People")+
-  xlab("Year")+
+  ylab("Demanda da Indústria")+
+  xlab("Anos")+
   scale_y_continuous(labels = comma)+
   theme(legend.position="bottom")+
   scale_colour_manual(name="",
                       values=c(Data="red", 
                                Model="blue"),
-                      labels=c("Data",
-                               "Model"))
+                      labels=c("Dados",
+                               "Modelo"))
 p1
 
 

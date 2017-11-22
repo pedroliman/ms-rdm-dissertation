@@ -20,7 +20,7 @@ N_PLAYERS = 2
 ##### Modelo de Dinâmica de Sistemas ####
 
 # Definindo o Modelo
-modelo <- function(time, stocks, auxs){
+modelo <- function(time, stocks, auxs, modo = "completo"){
   with(as.list(c(stocks, auxs)),{
     
     ##### VETORIZANDO ESTOQUES #####
@@ -281,6 +281,13 @@ modelo <- function(time, stocks, auxs){
     aNPVIndustryProfits = sum(sNPVProfit) #
     
     
+    ##### ESTOQUES - INICIAIS #####
+    
+    stocks_ini = list(
+      BacklogIni = (1/length(fNetIncome)) * fIndustryOrderRate * aNormalDeliveryDelay
+    )
+    
+    
     ##### ESTOQUES #####
     
     d_NPVProfit_dt = fNPVProfitChange
@@ -372,36 +379,42 @@ modelo <- function(time, stocks, auxs){
     # browser()
     }
     
-    return (list(c(
-                   d_NPVProfit_dt
-                   ,d_ValueOfBacklog_dt
-                   ,d_Backlog_dt
-                   ,d_InstalledBase_dt
-                   ,d_Price_dt
-                   ,d_CumulativeAdopters_dt
-                   ,d_sReportedIndustryVolume_dt
-                   ,d_CumulativeProduction_dt
-                   ,d_PerceivedCompTargetCapacity_dt
-                   ,d_SmoothCapacity1_dt
-                   ,d_SmoothCapacity2_dt
-                   ,d_SmoothCapacity3_dt
-                   )
-                 ,fIndustryOrderRate = fIndustryOrderRate
-                 ,aNonAdopters = aNonAdopters
-                 ,fReorderRate = fReorderRate
-                 ,aIndustryShipments = aIndustryShipments
-                 ,aIndustryVolume = aIndustryVolume
-                 ,fDiscardRate = fDiscardRate
-                 ,aDiscountFactor = aDiscountFactor
-                 ,aDiscountRate = aDiscountRate
-                 ,fNPVProfitChange = fNPVProfitChange
-                 ,fNetIncome = fNetIncome
-                 ,aNPVIndustryProfits = aNPVIndustryProfits
-                 ,aInitialDemandForecast = aInitialDemandForecast
-                 ,aLaggedVolumeForecast = aLaggedVolumeForecast
-                 ,aForecastError = aForecastError
-                 ,aTargetCapacity = aTargetCapacity
-                 ,aCompetitorTargetCapacity = aCompetitorTargetCapacity))   
+    resultado_completo = list(c(
+      d_NPVProfit_dt
+      ,d_ValueOfBacklog_dt
+      ,d_Backlog_dt
+      ,d_InstalledBase_dt
+      ,d_Price_dt
+      ,d_CumulativeAdopters_dt
+      ,d_sReportedIndustryVolume_dt
+      ,d_CumulativeProduction_dt
+      ,d_PerceivedCompTargetCapacity_dt
+      ,d_SmoothCapacity1_dt
+      ,d_SmoothCapacity2_dt
+      ,d_SmoothCapacity3_dt
+    )
+    ,fIndustryOrderRate = fIndustryOrderRate
+    ,aNonAdopters = aNonAdopters
+    ,fReorderRate = fReorderRate
+    ,aIndustryShipments = aIndustryShipments
+    ,aIndustryVolume = aIndustryVolume
+    ,fDiscardRate = fDiscardRate
+    ,aDiscountFactor = aDiscountFactor
+    ,aDiscountRate = aDiscountRate
+    ,fNPVProfitChange = fNPVProfitChange
+    ,fNetIncome = fNetIncome
+    ,aNPVIndustryProfits = aNPVIndustryProfits
+    ,aInitialDemandForecast = aInitialDemandForecast
+    ,aLaggedVolumeForecast = aLaggedVolumeForecast
+    ,aForecastError = aForecastError
+    ,aTargetCapacity = aTargetCapacity
+    ,aCompetitorTargetCapacity = aCompetitorTargetCapacity)
+    
+    return (if(modo == "inicial"){
+      stocks_ini
+    } else {
+      resultado_completo
+    })   
   })
 }
 
