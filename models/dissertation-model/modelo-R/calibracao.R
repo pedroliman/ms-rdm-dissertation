@@ -118,7 +118,7 @@ solveWP <- function(pars){
     sNPVProfit = rep(0, times = N_PLAYERS)
     ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
     ,sBacklog = estoques_calculados$BacklogIni
-    ,sInstalledBase = rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+    ,sInstalledBase = rep(unname(estoques_calculados$InstalledBaseIni), times = N_PLAYERS)
     ,sPrice = rep(1000, times = N_PLAYERS)
     ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
     ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)

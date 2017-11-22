@@ -284,7 +284,9 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     ##### ESTOQUES - INICIAIS #####
     
     stocks_ini = list(
-      BacklogIni = (1/length(fNetIncome)) * fIndustryOrderRate * aNormalDeliveryDelay
+      BacklogIni = (1/length(fNetIncome)) * fIndustryOrderRate * aNormalDeliveryDelay,
+      InstalledBaseIni = (1/length(fNetIncome)) * aUnitsPerHousehold * sCumulativeAdopters,
+      CumulativeAdoptersIni = aInitialCumulativeAdopters
     )
     
     
