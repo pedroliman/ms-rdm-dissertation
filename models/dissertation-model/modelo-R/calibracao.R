@@ -31,7 +31,7 @@ model <- function(time, stocks, auxs){
 solveWP <- function(pars){
   
   ## Inicializar variaveis da simulacao aqui:
-  START<-0; FINISH<-10; STEP<-0.0625
+  START<-0; FINISH<-40; STEP<-0.0625
   
   VERIFICAR_STOCKS = FALSE
   
@@ -67,7 +67,7 @@ solveWP <- function(pars){
                   ,aReferenceIndustryDemandElasticity = 0.2
                   ,aReferencePopulation = 60000000
                   ,aInnovatorAdoptionFraction = 0.001
-                  ,aWOMStrength = 1 # unname(pars["aWOMStrength"]) # Original 1
+                  ,aWOMStrength = unname(pars["aWOMStrength"]) # unname(pars["aWOMStrength"]) # Original 1
                   ,aPopulation = unname(pars["aPopulation"]) #100000000 # Original Sterman: 100000000
                   ,aUnitsPerHousehold = 1
                   ,aSwitchForShipmentsInForecast = 0
@@ -158,10 +158,9 @@ getCost<-function(p){
 }
 
 # Valores Iniciais dos parametros
-pars<-c(aPopulation=1000000) 
-lower<-c(1000)
-upper<-c(100000000)
-
+pars<-c(aPopulation=1000000, aWOMStrength = 1) 
+lower<-c(1000, 0.3)
+upper<-c(10000000, 3)
 
 solveWP(pars)
 
@@ -178,7 +177,6 @@ optMod <- solveWP(optPar)
 time_points<-seq(from=1, to=length(simtime),by=1/STEP)
 optMod<-optMod[time_points,]
 
-
 Fit$ssr
 
 p1<-ggplot()+geom_point(data=dados_calibracao,size=1.5,aes(time,fIndustryOrderRate,colour="Data"))+
@@ -193,6 +191,3 @@ p1<-ggplot()+geom_point(data=dados_calibracao,size=1.5,aes(time,fIndustryOrderRa
                       labels=c("Dados",
                                "Modelo"))
 p1
-
-
-
