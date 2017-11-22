@@ -5,6 +5,23 @@ library(scales)
 library(FME)
 library(readxl)
 
+
+## Inicializar variaveis da simulacao aqui:
+START<-0; FINISH<-10; STEP<-0.0625
+
+VERIFICAR_STOCKS = FALSE
+
+VERIFICAR_CHECKS = FALSE
+
+CHECK_PRECISION = 0.00001
+
+BROWSE_ON_DIFF = FALSE
+
+# Vetor de Tempos
+SIM_TIME <- seq(START, FINISH, by=STEP)
+
+
+
 dados_calibracao <- read_xlsx(path = "dados_calibracao.xlsx", sheet = "Plan1")
 
 dados_calibracao <- as.data.frame(dados_calibracao)
@@ -30,20 +47,7 @@ model <- function(time, stocks, auxs){
 
 solveWP <- function(pars){
   
-  ## Inicializar variaveis da simulacao aqui:
-  START<-0; FINISH<-40; STEP<-0.0625
-  
-  VERIFICAR_STOCKS = FALSE
-  
-  VERIFICAR_CHECKS = FALSE
-  
-  CHECK_PRECISION = 0.00001
-  
-  BROWSE_ON_DIFF = FALSE
-  
-  # Vetor de Tempos
-  SIM_TIME <- seq(START, FINISH, by=STEP)
-  
+
   # Número de Players no modelo
   N_PLAYERS = 2
   
@@ -143,7 +147,7 @@ solveWP <- function(pars){
     ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
   ) 
   
-  resultado_completo = data.frame(ode(y=stocks, simtime, func = modelo, 
+  resultado_completo = data.frame(ode(y=stocks, SIM_TIME, func = modelo, 
                                       parms=auxs, method="euler"))
   
   resultado_completo[variaveis_calibracao]
@@ -174,7 +178,7 @@ optMod <- solveWP(optPar)
 
 # see http://www.inside-r.org/packages/cran/FME/docs/modFit
 
-time_points<-seq(from=1, to=length(simtime),by=1/STEP)
+time_points<-seq(from=1, to=length(SIM_TIME),by=1/STEP)
 optMod<-optMod[time_points,]
 
 Fit$ssr
