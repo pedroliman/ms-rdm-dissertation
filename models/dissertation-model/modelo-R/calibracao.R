@@ -5,7 +5,6 @@ library(scales)
 library(FME)
 library(readxl)
 
-
 ## Inicializar variaveis da simulacao aqui:
 START<-0; FINISH<-10; STEP<-0.0625
 
@@ -20,34 +19,19 @@ BROWSE_ON_DIFF = FALSE
 # Vetor de Tempos
 SIM_TIME <- seq(START, FINISH, by=STEP)
 
-
-
-dados_calibracao <- read_xlsx(path = "dados_calibracao.xlsx", sheet = "Plan1")
-
-dados_calibracao <- as.data.frame(dados_calibracao)
+dados_calibracao <- as.data.frame(read_xlsx(path = "dados_calibracao.xlsx", sheet = "Plan1")) 
 
 variaveis_calibracao = names(dados_calibracao)
 
-# dados_calibracao <- read.xls("D:/dev/SDMR/models/07Chapter/R/WorldPopulation.xlsx",stringsAsFactors=F)
+# Valores Iniciais dos parametros
+parametros<-c(aPopulation=1000000, aWOMStrength = 1) 
+lower<-c(1000, 0.3)
+upper<-c(10000000, 3)
 
-WP_INIT<-dados_calibracao[1,"Population"]
 
-model <- function(time, stocks, auxs){
-  with(as.list(c(stocks, auxs)),{  
-    
-    fPopulationAdded<-Population * aGrowthFraction
-    
-    fPopulationRemoved <- Population * aDeclineFraction
-    
-    dP_dt  <- fPopulationAdded - fPopulationRemoved
-    
-    return (list(c(dP_dt)))   
-  })
-}
 
-solveWP <- function(pars){
+solve_modelo_dissertacao <- function(parametros, modelo){
   
-
   # Número de Players no modelo
   N_PLAYERS = 2
   
@@ -71,8 +55,8 @@ solveWP <- function(pars){
                   ,aReferenceIndustryDemandElasticity = 0.2
                   ,aReferencePopulation = 60000000
                   ,aInnovatorAdoptionFraction = 0.001
-                  ,aWOMStrength = unname(pars["aWOMStrength"]) # unname(pars["aWOMStrength"]) # Original 1
-                  ,aPopulation = unname(pars["aPopulation"]) #100000000 # Original Sterman: 100000000
+                  ,aWOMStrength = unname(parametros["aWOMStrength"]) # unname(pars["aWOMStrength"]) # Original 1
+                  ,aPopulation = unname(parametros["aPopulation"]) #100000000 # Original Sterman: 100000000
                   ,aUnitsPerHousehold = 1
                   ,aSwitchForShipmentsInForecast = 0
                   ,aVolumeReportingDelay = rep(0.25, times = N_PLAYERS)
@@ -103,7 +87,6 @@ solveWP <- function(pars){
                   ,aSensOfPriceToShare = rep(-0.1, times = N_PLAYERS)
                   # Capacity Sector
                   ,aSwitchForPerfectCapacity = 0
-                  
                   # A Initial Price
                   ,aInitialPrice = rep(1000, times = N_PLAYERS)
   )
@@ -126,7 +109,6 @@ solveWP <- function(pars){
     ,sSmoothCapacity2 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
     ,sSmoothCapacity3 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
   ) 
-  
   
   # Calculando estoques para o t0.
   estoques_calculados = modelo(time = 0, stocks = stocks, auxs = auxs, modo = "inicial")
@@ -153,26 +135,27 @@ solveWP <- function(pars){
   resultado_completo[variaveis_calibracao]
 }
 
-getCost<-function(p){
-  out<-solveWP(p)
+getCost<-function(parametros, modelo, dados_calibracao){
+  
+  output_modelo <- solve_modelo_dissertacao(parametros, modelo)
   #http://www.inside-r.org/packages/cran/FME/docs/modCost
-  cost <- modCost(obs=dados_calibracao,model=out)
-  #cat(str(cost))
+  
+  cost <- modCost(obs=dados_calibracao, model=output_modelo)
+  
   return(cost)
+  
 }
 
-# Valores Iniciais dos parametros
-pars<-c(aPopulation=1000000, aWOMStrength = 1) 
-lower<-c(1000, 0.3)
-upper<-c(10000000, 3)
 
-solveWP(pars)
+Fit<-modFit(p = parametros, f = getCost, modelo = modelo, dados_calibracao = dados_calibracao, lower=lower, upper=upper)
 
-Fit<-modFit(p=pars,f=getCost,lower=lower,upper=upper)
+optPar1var = c(Fit$par)
 
 optPar<-c(Fit$par)
 
-cost = getCost(optPar)
+cost = getCost(parametros = optPar, modelo = modelo, dados_calibracao = dados_calibracao)
+
+cost$var
 
 optMod <- solveWP(optPar)
 
