@@ -40,21 +40,21 @@ A demanda inicial é calculada $D^I$ em função do número médio de unidades v
 
 $$D^I = \mu \frac{dA}{dt}$$
 
-O crescimento do número de clientes $A$ que aderiram às impressoras 3D em um dado instante de tempo $t$ é um estoque modelado por meio do modelo padrão de difusão de Bass (XXXX). Neste modelo o crescimento da população de clientes que aderem à uma ideia é dependente do tamanho total da população $POP$, do número de clientes que não adotaram $N$, da fração de inovadores que adotam ao produto ano a ano independentemente de outros usuários $\alpha$ e do parâmetro $\beta$ que mede a força da difusão do produto por boca-a-boca. 
+O crescimento do número de clientes $A$ que aderiram às impressoras 3D em um dado instante de tempo $t$ é um estoque modelado por meio do modelo padrão de difusão de Bass (XXXX). Neste modelo o crescimento da população de clientes que aderem à uma ideia é dependente do tamanho total da população $POP$, do número de clientes que não adotaram $N$, da fração de inovadores que adotam ao produto ano a ano independentemente de outros usuários $\alpha$ e do parâmetro $\beta$ que mede a força da difusão do produto por boca-a-boca. A não-negatividade da derivada é garantida obtendo-se o máximo entre a equação e zero.
 
 $$ \frac{dA}{dt}  = MAX\left(0,N \left(\alpha + \beta \frac{A}{POP}\right)\right) $$
 
-O número de consumidores potenciais Número de "Consumidores Potenciais":
+O número de consumidores potenciais $N$ é modelado como o máximo entre zero e a diferença entre o número de clientes que irá adotar o produto em algum momento $A^*$ e o número de clientes que adotou o produto $A$.
 
-$$N = MAX(0, M^* - M)$$
+$$N = MAX(0, A^* - A)$$
 
-Número de Consumidores que irão adotar o produto:
+O número de clientes que irá adotar o produto $A^*$ é modelado pela equação que calcula a demanda total da indústria, em equilíbrio, e é dependente do preço mínimo do produto $P^{min}$.
 
-$$M^* = MIN (POP, POP^r * MAX(0, 1+\sigma(P^{min} - P^r)/POP^r))$$
+$$A^* = MIN \left(POP, POP^r * MAX \left(0, 1+ \frac{\sigma(P^{min} - P^r)}{POP^r}\right)\right)$$
 
 Inclinação da Curva de Demanda:
 
-$$\sigma = - \varepsilon_d(POP^r/p^r)$$
+$$\sigma = - \varepsilon_d \left(\frac{POP^r}{p^r}\right)$$
 
 Demanda por substituição de produtos:
 
@@ -70,11 +70,10 @@ $$O_i = S_i D^T$$
 Share:
 $$S_i = A_i/\sum_{i}A_i$$
 
-
 Atratividade: - Aqui deve entrar também a performance do produto.
 Standard Logit decision model
 
-$$A_i = e^{\varepsilon_p P_i/P^r} e^{\varepsilon_a (B_i/S_i)/\tau^r}$$
+$$A_i = e^{\varepsilon_p \frac{P_i}{P^r}} * e^{\varepsilon_a (\frac{B_i}{S_i})/\tau^r}$$
 
 ## A Firma
 
