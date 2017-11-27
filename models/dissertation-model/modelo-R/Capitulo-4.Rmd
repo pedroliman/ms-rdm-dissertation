@@ -1,7 +1,7 @@
 ---
-title: "Modelo Matemático - Manufatura Aditiva"
+title: "Capítulo 4 - Dissertação"
 author: "Pedro Nascimento de Lima"
-date: "November 19, 2017"
+date: "Versão Preliminar - R"
 output:
   pdf_document: 
     latex_engine: xelatex
@@ -223,3 +223,29 @@ $$P^* = MAX \left[u^v, P \left( 1 + \alpha^c \left( \frac{P^c}{P}-1 \right) \rig
 Parâmetros, Unidades Valores Máximos e Mínimos:
 
 $$P^C = (1+m^*) (u^f_i + u^f_i)$$
+## Testes e Calibração do Modelo
+
+### Testes de Valores Extremos
+
+### Comparação com Dados Históricos e Calibração
+
+
+## Análise RDM
+
+### XLRM
+
+### Geração de Casos (Rodada 1)
+
+### Análise de Vulnerabilidades (Rodada 1)
+
+### Modificações do Modelo para a segunda Rodada
+
+### Geração de Casos (Rodada 2)
+
+### Análise de Vulnerabilidades (Rodada 2)
+
+### Análise de Tradeoffs
+
+## Discussão dos Resultados
+
+# Conclusões
