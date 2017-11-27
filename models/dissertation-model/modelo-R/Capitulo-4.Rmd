@@ -16,12 +16,63 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+# Premissas Anteriores:
+
+Dos capítulos anteriores da dissertação eu tenho:
+1 - Introdução:
+
+- Contextualização: Argumentação sobre os desafios que a incerteza impõe à tomada de decisão estratégica, e argumentação sobre as limitações das demais abordagens de suporte à decisão sob incerteza.
+
+- Objeto da Pesquisa: Avaliação de Decisões Estratégicas sob incerteza profunda.
+
+- Questão de Pesquisa: "Quais são as contribuições da Modelagem Exploratória (EMA) e do Robust Decision Making (RDM) para a avaliação de decisões estratégicas organizacionais em situações de incerteza profunda?"
+
+- Objetivo de Pesquisa: "Analisar as contribuições da EMA e do RDM para a avaliação das decisões estratégicas em situações de incerteza profunda."
+
+- Objetivos Específicos:
+a) identificar abordagens para avaliação de decisão estratégica sob incerteza profunda;
+b) instanciar o RDM no contexto empresarial;
+c) avaliar a instanciação do RDM no contexto empresarial;
+d) identificar heurísticas contingenciais na aplicação do RDM no ambiente empresarial.
+
 # A Indústria da Manufatura Aditiva
 
+As discussões desta seção provavelmente irão para o final do capítulo 2.
+
+## Comportamento da Demanda de Impressora 3D
+
+## Principais Players do Mercado
+
+## Comportamento de Variáveis Relevantes
+
+## Sub-divisão dos mercados potenciais da Impressão 3D
+
+## Delimitações do Trabalho
+
+## Questões relevantes levantadas para a simulação.
+
+Questões não respondidas que o meu trabalho pode responder:
+
+- Como pode se comportar a demanda por impressoras 3D?
+
+- Que Estratégia de Capacidade um Player deve adotar para este ramo: Estratégia Agressiva de penetração no mercado ou estratégia "Conservadora". 
+
+- Esperar o cenário melhor se configurar para agir ou agir para conquistar market share de modo preemptivo?
+
+- Quais são as incertezas mais importantes para a determinação da estratégia de capacidade mais adequada?
+
+As questões acima devem levar à escolha da simulação de dinâmica de sistemas como abordagem ideal.
+Não devem ser colocadas questões acima que a análise não irá ajudar a responder.
+
+Quais players simular.
+
+Que aspectos simular ou não
 
 # Modelos de Difusão de Novos Produtos
 
-Falar sobre cada modelo e mostrar o Quadro da análise dos modelos
+Em resposta às necessidades do item anterior, os modelos de difusão de novos produtos devem ser avaliados, culminando no modelo do Sterman (XXX). As características dos modelos podem ser brevemente descritas para ajudar nesta delimitação.
+
+Falar sobre cada modelo e mostrar o Quadro da análise dos modelos. Considerar que cada um dos 
 
 # Modelo empregado neste Trabalho
 
@@ -246,6 +297,15 @@ A modelagem exploratória, per si, abandona a premissa de que modelos de simula�
 
 ### Comparação com Dados Históricos e Calibração
 
+## Ferramenta Computacional para a Análise RDM
+
+4.1 Ferramenta Computacional para a Análise RDM
+
+A primeira barreira para a realização da Análise RDM é a disponibilidade de ferramentas computacionais para a operacionalização da análise. Embora existam frameworks de desenvolvimento potencialmente úteis para a modelagem exploratória (como o EmaWorkbench (KWAKKEL, 2013) e o OpenMORDM (HADKA et al., 2015)), tais ferramentas implicam em empecilhos para a utilização no contexto deste trabalho. 
+
+A ferramenta EmaWorkbench, desenvolvida na linguagem python não possui interface gráfica, não suporta integração com o software de dinâmica de sistemas iThink, ou com modelos desenvolvidos na linguagem R. Neste sentido, a ferramenta requer que o modelo seja desenvolvido em uma ferramenta como o Vensim, Excel ou um modelo no próprio Python. A ferramenta OpenMORDM é focalizada em problemas multi-objetivo, o que está fora do escopo deste trabalho.
+
+Considerando a necessidade de flexibilidade durante a execução deste trabalho, portanto, o pesquisador optou por desenvolver rotinas computacionais próprias para a analise dos dados. Ao fazer isto, será possível realizar a análise RDM sem a necessidade de recorrer à ferramentas terceiras ou privadas. Além disto, o desenvolvimento desta ferramenta computacional permitirá que os resultados desta dissertação sejam reproduzidos pelo seu leitor. Deste modo, procura-se atender aos requisitos de reprodutibilidade em trabalhos baseados em simulação computacional preconizados por Rahmandad e Sterman (2012).
 
 ## Análise RDM
 
