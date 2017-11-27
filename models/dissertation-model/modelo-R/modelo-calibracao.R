@@ -1,115 +1,16 @@
 # Neste arquivo apenas ficará o modelo de dinâmica de sistemas.
 # Definindo Tempos da Simulação
 library(dplyr)
-START<-0; FINISH<-10; STEP<-0.0625
 
-VERIFICAR_STOCKS = FALSE
-
-VERIFICAR_CHECKS = FALSE
-
-CHECK_PRECISION = 0.00001
-
-BROWSE_ON_DIFF = FALSE
-
-# Vetor de Tempos
-simtime <- seq(START, FINISH, by=STEP)
-
-# Número de Players no modelo
-N_PLAYERS = 2
-
-# Matriz de Variáveis que possuem valores no tempo global
-matriz.variaveis.globais = matrix(simtime)
-
-n_tempo = length(simtime)
-
-nlinhas_matriz = nrow(matriz.variaveis.globais)
-
-# Adcionando variável sReportedIndustryVolume
-matriz.variaveis.globais = cbind(matriz.variaveis.globais, NA)
-
-colnames(matriz.variaveis.globais) = c("Tempo", "sReportedIndustryVolume")
-
-list.variaveis.globais = list(
-  sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
-  aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
-)
-
-# Carregando Variáveis de Output do Ithink para Comparação
-arquivo_excel_stocks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_stocks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
-arquivo_excel_checks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_checks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
-
-dados_ithink_stocks  = arquivo_excel_stocks$ResultadosIthink %>% dplyr::select(-Months)
-dados_ithink_checks  = arquivo_excel_checks$ResultadosIthink %>% dplyr::select(-Months)
-
-variaveis_ithink_stocks = names(dados_ithink_stocks)
-variaveis_ithink_checks = names(dados_ithink_checks)
-
-##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
-auxs    <- list(aDiscountRate = 0.04
-                ,aNormalDeliveryDelay = rep(0.25, times = N_PLAYERS)
-                ,aSwitchForCapacity = 1
-                ,aFractionalDiscardRate = 0.1
-                ,aInitialDiffusionFraction = 0.001
-                ,aReferencePrice = 1000
-                ,aReferenceIndustryDemandElasticity = 0.2
-                ,aReferencePopulation = 60000000
-                ,aInnovatorAdoptionFraction = 0.001
-                ,aWOMStrength = 1
-                ,aPopulation = 100000000
-                ,aUnitsPerHousehold = 1
-                ,aSwitchForShipmentsInForecast = 0
-                ,aVolumeReportingDelay = rep(0.25, times = N_PLAYERS)
-                ,aForecastHorizon = rep(1, times = N_PLAYERS)
-                ,aCapacityAcquisitionDelay = 1
-                ,aTimeForHistoricalVolume = 1
-                # Market Sector
-                ,aReferenceDeliveryDelay = 0.25
-                ,aSensOfAttractToAvailability = -4
-                ,aSensOfAttractToPrice = -8
-                # Learning Curve Params
-                ,aLCStrength = rep(0.7, times = N_PLAYERS)
-                ,aInitialProductionExperience = rep(1e+007, times = N_PLAYERS)
-                ,aRatioOfFixedToVarCost = rep(3, times = N_PLAYERS)
-                ,aInitialPrice = rep(1000, times = N_PLAYERS)
-                ,aNormalProfitMargin = rep(0.2, times = N_PLAYERS)
-                ,aNormalCapacityUtilization = rep(0.8, times = N_PLAYERS)
-                #Target Capacity Sector
-                ,aMinimumEfficientScale = rep(100000, times = N_PLAYERS)
-                ,aDesiredMarketShare = rep(0.5, times = N_PLAYERS)
-                ,aWeightOnSupplyLine= rep(1, times = N_PLAYERS)
-                ,aSwitchForCapacityStrategy = rep(1, times = N_PLAYERS)
-                ,aTimeToPerceiveCompTargetCapacity = rep(0.25, times = N_PLAYERS)
-                # Price Sector
-                ,aPriceAdjustmentTime = 0.25
-                ,aSensOfPriceToCosts = rep(1, times = N_PLAYERS)
-                ,aSensOfPriceToDSBalance = rep(0.25, times = N_PLAYERS)
-                ,aSensOfPriceToShare = rep(-0.1, times = N_PLAYERS)
-                # Capacity Sector
-                ,aSwitchForPerfectCapacity = 0
-                )
-
-
-##### VARIÁVEIS DE ENTRADA - ESTOQUES #####
-stocks  <- c(
-   sNPVProfit = rep(0, times = N_PLAYERS)
-  ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
-  ,sBacklog = rep(12738, times = N_PLAYERS) 
-  ,sInstalledBase = rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-  ,sPrice = rep(1000, times = N_PLAYERS)
-  ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-  ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
-  ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
-  ,sPerceivedCompTargetCapacity = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-  ,sSmoothCapacity1 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-  ,sSmoothCapacity2 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-  ,sSmoothCapacity3 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-  ) 
 
 ##### Modelo de Dinâmica de Sistemas ####
 
 # Definindo o Modelo
-modelo <- function(time, stocks, auxs){
+modelo <- function(time, stocks, auxs, modo = "completo"){
   with(as.list(c(stocks, auxs)),{
+    
+    # Criando uma variavel n_tempo local
+    n_tempo = nrow(list.variaveis.globais$sReportedIndustryVolume)
     
     ##### VETORIZANDO ESTOQUES #####
     
@@ -237,7 +138,7 @@ modelo <- function(time, stocks, auxs){
     # Esta implementacao considera que os delays sempre serao iguais. Se os delays nao forem iguais, deve-se encontrar outra forma de implementar os delays (talvez com a equacao multiplicativa 1*(time > tempodelay)
     if(time > aTimeForHistoricalVolume) {
       nlinhas_delay = aTimeForHistoricalVolume / STEP
-      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[linha - nlinhas_delay,]
+      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[(linha - nlinhas_delay),]
     } else {
       aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[1,]
     }
@@ -246,7 +147,7 @@ modelo <- function(time, stocks, auxs){
     
     aExpectedIndustryDemand = sReportedIndustryVolume*exp(aForecastHorizon*aCapacityAcquisitionDelay*aExpGrowthInVolume)
     
-    list.variaveis.globais$aExpectedIndustryDemand[linha,] <<- aExpectedIndustryDemand
+    list.variaveis.globais$aExpectedIndustryDemand[linha,] = aExpectedIndustryDemand
     
     # Mais uma variável com delay
     if(time > aCapacityAcquisitionDelay) {
@@ -368,7 +269,7 @@ modelo <- function(time, stocks, auxs){
     
     aNPVIndustryProfits = sum(sNPVProfit) #
     
-    
+
     ##### ESTOQUES #####
     
     d_NPVProfit_dt = fNPVProfitChange
@@ -394,6 +295,41 @@ modelo <- function(time, stocks, auxs){
     d_SmoothCapacity2_dt = fchangeSmoothCapacity2
     
     d_SmoothCapacity3_dt = fchangeSmoothCapacity3
+    
+    
+    
+    # Variaveis de Estoques Iniciais
+    
+    BacklogIni = (1/length(fNetIncome)) * fIndustryOrderRate * aNormalDeliveryDelay
+    InstalledBaseIni = (1/length(fNetIncome)) * aUnitsPerHousehold * sCumulativeAdopters
+    
+    CumulativeAdoptersIni = aInitialCumulativeAdopters
+    
+    ValueOfBacklogIni = sPrice * BacklogIni 
+    
+    ReportedIndustryVolumeIni = aIndustryVolume
+    
+    CumulativeProductionIni = aInitialProductionExperience
+    
+    PerceivedCompTargetCapacityIni = aCompetitorCapacity
+    
+    CapacityIni = (1/length(fNetIncome)) * fIndustryOrderRate / aNormalCapacityUtilization
+      
+    ##### ESTOQUES - INICIAIS #####
+    
+    stocks_ini = list(
+      BacklogIni = BacklogIni,
+      InstalledBaseIni = InstalledBaseIni,
+      CumulativeAdoptersIni = CumulativeAdoptersIni,
+      ValueOfBacklogIni = ValueOfBacklogIni,
+      ReportedIndustryVolumeIni = ReportedIndustryVolumeIni,
+      CumulativeProductionIni = CumulativeProductionIni,
+      PerceivedCompTargetCapacityIni = PerceivedCompTargetCapacityIni,
+      CapacityIni = CapacityIni
+    )
+    
+    
+    
     
     ##### COMPARAR RESULTADOS COM O ITHINK #####
     
@@ -460,36 +396,42 @@ modelo <- function(time, stocks, auxs){
     # browser()
     }
     
-    return (list(c(
-                   d_NPVProfit_dt
-                   ,d_ValueOfBacklog_dt
-                   ,d_Backlog_dt
-                   ,d_InstalledBase_dt
-                   ,d_Price_dt
-                   ,d_CumulativeAdopters_dt
-                   ,d_sReportedIndustryVolume_dt
-                   ,d_CumulativeProduction_dt
-                   ,d_PerceivedCompTargetCapacity_dt
-                   ,d_SmoothCapacity1_dt
-                   ,d_SmoothCapacity2_dt
-                   ,d_SmoothCapacity3_dt
-                   )
-                 ,fIndustryOrderRate = fIndustryOrderRate
-                 ,aNonAdopters = aNonAdopters
-                 ,fReorderRate = fReorderRate
-                 ,aIndustryShipments = aIndustryShipments
-                 ,aIndustryVolume = aIndustryVolume
-                 ,fDiscardRate = fDiscardRate
-                 ,aDiscountFactor = aDiscountFactor
-                 ,aDiscountRate = aDiscountRate
-                 ,fNPVProfitChange = fNPVProfitChange
-                 ,fNetIncome = fNetIncome
-                 ,aNPVIndustryProfits = aNPVIndustryProfits
-                 ,aInitialDemandForecast = aInitialDemandForecast
-                 ,aLaggedVolumeForecast = aLaggedVolumeForecast
-                 ,aForecastError = aForecastError
-                 ,aTargetCapacity = aTargetCapacity
-                 ,aCompetitorTargetCapacity = aCompetitorTargetCapacity))   
+    resultado_completo = list(c(
+      d_NPVProfit_dt
+      ,d_ValueOfBacklog_dt
+      ,d_Backlog_dt
+      ,d_InstalledBase_dt
+      ,d_Price_dt
+      ,d_CumulativeAdopters_dt
+      ,d_sReportedIndustryVolume_dt
+      ,d_CumulativeProduction_dt
+      ,d_PerceivedCompTargetCapacity_dt
+      ,d_SmoothCapacity1_dt
+      ,d_SmoothCapacity2_dt
+      ,d_SmoothCapacity3_dt
+    )
+    ,fIndustryOrderRate = fIndustryOrderRate
+    ,aNonAdopters = aNonAdopters
+    ,fReorderRate = fReorderRate
+    ,aIndustryShipments = aIndustryShipments
+    ,aIndustryVolume = aIndustryVolume
+    ,fDiscardRate = fDiscardRate
+    ,aDiscountFactor = aDiscountFactor
+    ,aDiscountRate = aDiscountRate
+    ,fNPVProfitChange = fNPVProfitChange
+    ,fNetIncome = fNetIncome
+    ,aNPVIndustryProfits = aNPVIndustryProfits
+    ,aInitialDemandForecast = aInitialDemandForecast
+    ,aLaggedVolumeForecast = aLaggedVolumeForecast
+    ,aForecastError = aForecastError
+    ,aTargetCapacity = aTargetCapacity
+    ,aCompetitorTargetCapacity = aCompetitorTargetCapacity)
+    
+    return (if(modo == "inicial"){
+      stocks_ini
+    } else {
+      resultado_completo
+    })   
   })
 }
 

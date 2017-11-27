@@ -34,28 +34,27 @@ No modelo proposto por Sterman (XX) dois players, inicialmente com a mesma capac
 
 ## Demanda
 
-A demanda Total da indústria é formada pela soma de pedidos dos primeiros clientes e pedidos em função da substituição de impressoras antigas.
+A demanda Total da indústria anual $D^T$ é formada pela soma de dois tipos de demanda. A demanda inicial $D^I$ dos produtos (ou seja, à primeira compra realizada por um usuário da impressora 3D), e à demanda oriúnda de recompras $D^R$, realizadas em função do fim da vida útil do equipamento.
 $$D^T = D^I + D^R$$
+A demanda inicial é calculada $D^I$ em função do número médio de unidades vendidas por clientes $\mu$ e do número de clientes $dA$ que adotou o produto em um intervalo de tempo $dt$:
 
-Demanda Inicial:
+$$D^I = \mu \frac{dA}{dt}$$
 
-$$D^I = \mu (dA/dt)$$
+O crescimento do número de clientes $A$ que aderiram às impressoras 3D em um dado instante de tempo $t$ é um estoque modelado por meio do modelo padrão de difusão de Bass (XXXX). Neste modelo o crescimento da população de clientes que aderem à uma ideia é dependente do tamanho total da população $POP$, do número de clientes que não adotaram $N$, da fração de inovadores que adotam ao produto ano a ano independentemente de outros usuários $\alpha$ e do parâmetro $\beta$ que mede a força da difusão do produto por boca-a-boca. A não-negatividade da derivada é garantida obtendo-se o máximo entre a equação e zero.
 
-Número de "Clientes":
+$$ \frac{dA}{dt}  = MAX\left(0,N \left(\alpha + \beta \frac{A}{POP}\right)\right) $$
 
-$$A = \int_{t_0}^{t} N (\alpha + \beta M / P)$$
+O número de consumidores potenciais $N$ é modelado como o máximo entre zero e a diferença entre o número de clientes que irá adotar o produto em algum momento $A^*$ e o número de clientes que adotou o produto $A$.
 
-Número de "Consumidores Potenciais":
+$$N = MAX(0, A^* - A)$$
 
-$$N = MAX(0, M^* - M)$$
+O número de clientes que irá adotar o produto $A^*$ é modelado pela equação que calcula a demanda total da indústria, em equilíbrio, e é dependente do preço mínimo do produto $P^{min}$.
 
-Número de Consumidores que irão adotar o produto:
-
-$$M^* = MIN (POP, POP^r * MAX(0, 1+\sigma(P^{min} - P^r)/POP^r))$$
+$$A^* = MIN \left(POP, POP^r * MAX \left(0, 1+ \frac{\sigma(P^{min} - P^r)}{POP^r}\right)\right)$$
 
 Inclinação da Curva de Demanda:
 
-$$\sigma = - \varepsilon_d(POP^r/p^r)$$
+$$\sigma = - \varepsilon_d \left(\frac{POP^r}{p^r}\right)$$
 
 Demanda por substituição de produtos:
 
@@ -71,11 +70,10 @@ $$O_i = S_i D^T$$
 Share:
 $$S_i = A_i/\sum_{i}A_i$$
 
-
 Atratividade: - Aqui deve entrar também a performance do produto.
 Standard Logit decision model
 
-$$A_i = e^{\varepsilon_p P_i/P^r} e^{\varepsilon_a (B_i/S_i)/\tau^r}$$
+$$A_i = e^{\varepsilon_p \frac{P_i}{P^r}} * e^{\varepsilon_a (\frac{B_i}{S_i})/\tau^r}$$
 
 ## A Firma
 
@@ -159,7 +157,6 @@ $$g^e = ln(D^r_t/D^r_t-h)/h$$
 
 Demanda Observada-Reportada $D^r$ - Segue um suavização exponencial:
 $$dD^r/dt = (D^T  - D^r)/\tau^r$$
-
 Market Share Alvo e Estratégia da Firma:
 
 $$S^* =  \begin{cases} MAX(S^{min}_i, S^u_i), \ if \ Str_i = Agress. \\ \\ MIN(S^{max}_i, S^u_i), \ if \ Str_i = Conserv. \end{cases}$$
@@ -196,5 +193,3 @@ $$P^* = MAX \left[u^v, P \left( 1 + \alpha^c \left( \frac{P^c}{P}-1 \right) \rig
 Parâmetros, Unidades Valores Máximos e Mínimos:
 
 $$P^C = (1+m^*) (u^f_i + u^f_i)$$
-
-

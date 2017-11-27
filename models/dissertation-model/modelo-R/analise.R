@@ -32,6 +32,15 @@ source('modelo.R', encoding = 'UTF-8')
 resultado_unico <- data.frame(ode(y=stocks, times=simtime, func = modelo, 
                   parms=auxs, method="euler"))
 
+
+
+
+
+
+
+
+
+
 resultado_transposto = t(resultado_unico)
 
 write.csv2(x = resultado_transposto, file = "resultadosdoR.csv")
