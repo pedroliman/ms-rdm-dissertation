@@ -3,9 +3,9 @@ title: "Modelo Matemático - Manufatura Aditiva"
 author: "Pedro Nascimento de Lima"
 date: "November 19, 2017"
 output:
-  word_document: default
   pdf_document: 
     latex_engine: xelatex
+  word_document: default
 ---
 
 
@@ -40,23 +40,23 @@ A demanda inicial é calculada $D^I$ em função do número médio de unidades v
 
 $$D^I = \mu \frac{dA}{dt}$$
 
-O crescimento do número de clientes $A$ que aderiram às impressoras 3D em um dado instante de tempo $t$ é um estoque modelado por meio do modelo padrão de difusão de Bass (XXXX). Neste modelo o crescimento da população de clientes que aderem à uma ideia é dependente do tamanho total da população $POP$, do número de clientes que não adotaram $N$, da fração de inovadores que adotam ao produto ano a ano independentemente de outros usuários $\alpha$ e do parâmetro $\beta$ que mede a força da difusão do produto por boca-a-boca. A não-negatividade da derivada é garantida obtendo-se o máximo entre a equação e zero.
+O crescimento do número de clientes $A$ que aderiram às impressoras 3D em um dado instante de tempo $t$ é um estoque modelado por meio do modelo padrão de difusão de Bass (XXXX). Neste modelo o crescimento da população de clientes que aderem à uma ideia é dependente do tamanho total da população $POP$, do número de clientes que não adotaram $N$, da fração de inovadores que adotam ao produto ano a ano independentemente de outros usuários $\alpha$ e do parâmetro $\beta$ que mede a força da difusão do produto por boca-a-boca. A não-negatividade da equação é garantida obtendo-se o máximo entre a equação e zero. Além disto, o valor inicial do número de clientes $A_{t_0}$ é calibrado a partir do númer......
 
-$$ \frac{dA}{dt}  = MAX\left(0,N \left(\alpha + \beta \frac{A}{POP}\right)\right) $$
+$$ A_t = A_{t_0} + \int_{t_0}^{t}  MAX\left(0,N \left(\alpha + \beta \frac{A}{POP}\right)\right); A_{t_0} = \theta A^*$$
 
 O número de consumidores potenciais $N$ é modelado como o máximo entre zero e a diferença entre o número de clientes que irá adotar o produto em algum momento $A^*$ e o número de clientes que adotou o produto $A$.
 
 $$N = MAX(0, A^* - A)$$
 
-O número de clientes que irá adotar o produto $A^*$ é modelado pela equação que calcula a demanda total da indústria, em equilíbrio, e é dependente do preço mínimo do produto $P^{min}$.
+O número de clientes que irá adotar o produto $A^*$ é calculado segundo uma curva de demanda linear, variando em função do menor preço encontrado no mercado $P^{min}$, e da inclinação da curva de demanda $\sigma$, que corresponde à $(A^*-POP^r)/(P^{min} - P^r)$. Para a calibração da curva de preço e demanda, um preço de referência $P^r$ e uma demanda de referência $POP^r$. Além disto, a demanda nunca será maior do que a população total $POP$, nem menor do que $0$. 
 
 $$A^* = MIN \left(POP, POP^r * MAX \left(0, 1+ \frac{\sigma(P^{min} - P^r)}{POP^r}\right)\right)$$
 
-Inclinação da Curva de Demanda:
-
+A inclinação da curva de demanda $\sigma$, por sua vez, é calculada em função da população de referência $POP^r$, do preço de referência $P^r$ e da elasticidade da curva de demanda $\varepsilon_d$. 
 $$\sigma = - \varepsilon_d \left(\frac{POP^r}{p^r}\right)$$
 
-Demanda por substituição de produtos:
+A demanda oriúnda da necessidade de substituição dos produtos depende do número de impressoras 3D já vendidos pela empresa $I_i$, e de uma taxa percentual de descarte de impressoras $\delta$. Esta taxa percentual de descarte de impressoras corresponde ao inverso da vida útil média das impressoras vendidas.
+O modelo pressupõe que impressoras descartadas pelo fim da sua vida útil são
 
 $$D^r = \sum_{i}{D_i} \ ; \ D_i = \delta I_i$$
 Installed Base:

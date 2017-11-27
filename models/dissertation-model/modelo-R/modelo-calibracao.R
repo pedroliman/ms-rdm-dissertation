@@ -37,7 +37,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     # Gravando a Variável sReportedIndustryVolume no vetor global
     
     ##### DIFFUSION SECTOR #####
-    aDemandCurveSlope = (- aReferencePopulation * aReferenceIndustryDemandElasticity )/ ( aReferencePrice )
+    aDemandCurveSlope = - aReferenceIndustryDemandElasticity * (aReferencePopulation / aReferencePrice )
     
     aLowestPrice = min(sPrice)
     
