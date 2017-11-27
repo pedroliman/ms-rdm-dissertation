@@ -237,6 +237,10 @@ Os resultados deste trabalho podem ser observados no link bit.ly/reproddissertpn
 
 A modelagem exploratória, per si, abandona a premissa de que modelos de simulação computacional apenas serão úteis se validados (Bankes XX). Ainda assim, os modelos podem ser verificados visando avaliar sua consistência interna, bem como os seus resultados podem ser comparados com dados históricos para observar a capacidade do modelo em explicar o comportamento passado. (Sterman XXXX) Considerando estas premissas, esta seção apresenta os testes realizados no modelo
 
+
+## Ferramenta Computacional para a Análise RDM
+
+
 ### Verificação do Modelo
 
 
