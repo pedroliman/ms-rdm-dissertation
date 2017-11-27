@@ -30,6 +30,36 @@ Esta seção do trabalho apresenta o modelo de equações diferenciais utilizado
 ## Visão Geral do Modelo
 O modelo proposto inicialmente por Sterman (XX) foi utilizado como ponto de partida deste trabalho, por possuir uma série de características desejáveis para este trabalho. Em primeiro lugar, o modelo não é restrito a monopólios, como o modelo de Bass (XX) e outros modelos deste trabalho (identificar e citar aqui). Além disso, o modelo possui uma estrutura de dinâmica competitiva considerando a interação de diversos fatores presentes na Indústria da Manufatura Aditiva, incluindo curvas de aprendizagens, diferentes players expandindo sua capacidade produtiva em função da demanda prospectada no mercado.
 
+### Diagrama de Fronteira do Modelo
+
+A Figura (XX) ilustra os módulos do modelo e suas principais relações. Esta seção introduzirá as principais característsicas do modelo, e argumentará sua relação com a indústria da manufatura aditiva. Além disto, a seção  definirá as principais relações existentes entre os módulos e justificará a decisão pela inclusão de cada um destes módulos no modelo. Em seguida, a formulação matemática de cada um dos módulos será detalhada. Finalmente, esta seção também sintetizará as modificações empregadas no modelo original de Sterman (xx), justificando tais alterações.
+
+
+{Porque usar o modelo do Sterman.}
+O Modelo proposto inicialmente por Sterman (XX) compreende um conjunto de características que o tornam apropriado para servir como ponto de partida deste trabalho. Em primeiro lugar, o modelo apresenta 
+
+{Características Básicas do Modelo}
+Uma primeira característica importante para a compreensão do modelo é a escolha pela vetorização da maioria de seus módulos em diferentes players produtores de impressoras 3D. Esta característica torna o modelo útil para a avaliação da decisão estratégica de e um player específico, e permite a consideração de decisões estratégicas de outros players sobre o resultado da estratégia da própria empresa. Este aspecto é relevante para a representação da indústria da manufatura aditiva, visto que a adição de capacidade por outros players, e decisões relacionadas à sua precificação tendem à influenciar a decisão da empresa.
+
+Um segundo aspecto importante para a compreensão do modelo é que o mesmo ocupa-se de decisões estratégicas relacionadas à capacidade produtiva da empresa. Em específico, o modelo ocupa-se de analisar estratégias de crescimento de capacidade agressivas versus conservadoras. (ex.: O player busca maximizar sua receita apropriando-se de um alto nível de market-share por meio de estratégias de crescimento agressivas).
+Para o tema da indústria de impressão 3D, esta decisão pode ser considerada adequada, considerando o tamanho do investimento necessário para a impressão 3D.
+Pode parecer, a princípio, que uma estratégia robusta seja criar expectativas modestas para uma indústria ainda em ascenção, e crescer o investimento apenas após uma demonstração clara de crescimento....
+
+
+{Alterações necessárias no Modelo de Sterman}
+ - Questão: Market Share é apenas dividido por preço e delay na entrega, enquanto a performance do produto não parece ser considerada;
+ - Solução: Criar setor de investimento em P&D influenciando a performance do produto juntamente com a experiência de produção;
+ 
+ - Questão: Estratégia de crescimento é "Conservadora" ou "Agressiva", e não possui opção adaptativa;
+ - Solução: Avaliar primeiro as duas estratégias na primeira rodada do modelo e em seguida adicionar uma estratégia adaptativa (provavelmente a agressiva no início e conservadora no final).
+
+
+Uma vez que é possível simular cenários onde as demais empresas implementam estratégias similares ou
+
+![Modelo de Dinâmica Competitiva - Diagrama de Fronteiras](images/model-diagram.png)
+
+
+
 No modelo proposto por Sterman (XX) dois players, inicialmente com a mesma capacidade produtiva, iniciam vendendo produtos a um mercado em expansão.
 
 ## Demanda
