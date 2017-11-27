@@ -3,9 +3,11 @@ title: "Capítulo 4 - Dissertação"
 author: "Pedro Nascimento de Lima"
 date: "Versão Preliminar - R"
 output:
+  word_document: default
   pdf_document: 
     latex_engine: xelatex
-  word_document: default
+    number_sections: yes
+    toc: yes
 ---
 
 
@@ -223,9 +225,20 @@ $$P^* = MAX \left[u^v, P \left( 1 + \alpha^c \left( \frac{P^c}{P}-1 \right) \rig
 Parâmetros, Unidades Valores Máximos e Mínimos:
 
 $$P^C = (1+m^*) (u^f_i + u^f_i)$$
+## Implementação do Modelo Computacional
+
+O modelo matemático descrito na seção anterior foi implementado no software R. O código fonte implementado no software R está disponível no Apêndice (XX). Adicionalmente, o modelo  foi implementado no software Ithink 10.0.3, com o propósito de verificar a consistência dos resultados obtidos no software R. Considerando que a integração numérica invariavelmente traz erros ao processo do calculo, (Sterman XXX).
+
+O modelo foi implementado segundo as diretrizes constantes em Dungan (XXXX), e utilizou a biblioteca deSolve (procurar e Citar XXXX) para a resolução das equações diferenciais.
+
+Os resultados deste trabalho podem ser observados no link bit.ly/reproddissertpnl.
+
 ## Testes e Calibração do Modelo
 
-### Testes de Valores Extremos
+A modelagem exploratória, per si, abandona a premissa de que modelos de simulação computacional apenas serão úteis se validados (Bankes XX). Ainda assim, os modelos podem ser verificados visando avaliar sua consistência interna, bem como os seus resultados podem ser comparados com dados históricos para observar a capacidade do modelo em explicar o comportamento passado. (Sterman XXXX) Considerando estas premissas, esta seção apresenta os testes realizados no modelo
+
+### Verificação do Modelo
+
 
 ### Comparação com Dados Históricos e Calibração
 
