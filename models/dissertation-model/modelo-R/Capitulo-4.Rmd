@@ -3,11 +3,11 @@ title: "Capítulo 4 - Dissertação"
 author: "Pedro Nascimento de Lima"
 date: "Versão Preliminar - R"
 output:
-  word_document: default
   pdf_document: 
     latex_engine: xelatex
     number_sections: yes
     toc: yes
+  word_document: default
 ---
 
 
@@ -35,7 +35,7 @@ b) instanciar o RDM no contexto empresarial;
 c) avaliar a instanciação do RDM no contexto empresarial;
 d) identificar heurísticas contingenciais na aplicação do RDM no ambiente empresarial.
 
-# A Indústria da Manufatura Aditiva
+# Contexto de Aplicação - Indústria da Manufatura Aditiva
 
 As discussões desta seção provavelmente irão para o final do capítulo 2.
 
@@ -67,6 +67,33 @@ Não devem ser colocadas questões acima que a análise não irá ajudar a respo
 Quais players simular.
 
 Que aspectos simular ou não
+
+# Ferramenta Computacional para a Análise RDM
+
+O objetivo desta seção é descrever a ferramenta computacional desenvolvida no âmbito desta dissertação para viabilizar a operacionalização da análise RDM. A decisão por desenvolver a análise nesta dissertação por meio deste ambiente aberto, ainda que em princípio mais custosa, teve por objetivo realizar a análise RDM com a máxima independência possível, sem recorrer à ferramentas terceiras ou privadas. Além disto, o desenvolvimento desta ferramenta computacional permitirá que os resultados desta dissertação sejam reproduzidos. Recomenda-se ao leitor interessado que acesse a ferramenta disponível no link (http://bit.ly/pnldissert) Deste modo, procura-se atender aos requisitos de reprodutibilidade em trabalhos baseados em simulação computacional preconizados por Rahmandad e Sterman (2012).
+
+A primeira barreira para a realização da Análise RDM é a disponibilidade de ferramentas computacionais amigáveis para a operacionalização da análise exploratória. Embora existam frameworks de desenvolvimento úteis para a modelagem exploratória (como o EmaWorkbench (KWAKKEL, 2013) o OpenMORDM (HADKA et al., 2015) e o Rhodium(XXX)), tais ferramentas implicam em empecilhos para a utilização no contexto deste trabalho. Em primeiro lugar, estas ferramentas requerem que seu usuário final programe o modelo computacional e insira os parâmetros diretamente no código fonte. Embora propiciem um ambiente de desenvolvimento adequado para programadores proeficientes nas suas respectivas linguages de programação, estas bibliotecas carecem de interfaces para que os usuários finais interajam com os inputs da simulação (ex.: alterem os parâmetros de entrada e estratégias a serem simuladas), e avaliem imediatamente o resultado das simulações.
+
+A ferramenta EmaWorkbench, desenvolvida na linguagem python não possui interface gráfica, não suporta integração com o software de dinâmica de sistemas iThink, ou com modelos desenvolvidos na linguagem R. Neste sentido, a ferramenta requer que o modelo seja desenvolvido em uma ferramenta como o Vensim, Excel ou um modelo utilizando a linguagem Python.
+
+Considerando a necessidade de flexibilidade durante a execução deste trabalho, o pesquisador optou por desenvolver rotinas computacionais próprias utilizando a linguagem R e bibliotecas de código aberto disponíveis no repositório CRAN. A linguagem R possui bibliotecas para a integração numérica do modelo computacional (biblioteca deSolve), para a calibração do modelo (FME), para a disponibilização dos resultados em um aplicativo web (shiny), e para a visualização interativa dos resultados (ggplot2, plotly). Utilizando tais bibliotecas em conjunto, foi possível implementar as rotinas computacionais para a operacionalização do RDM, cuja estrutura é ilustrada na Figura (XXX).
+
+![Projeto Modular da Ferramenta Computacional para a Análise RDM](images/projeto-ferramenta-computacional.png)
+
+A ferramenta computacional foi projetada com o objetivo de receber uma planilha de inputs de dados (contendo a definição de estratégias a serem simuladas e incertezas a serem consideradas), e a partir do modelo computacional desenvolvido, rodar os passos da análise RDM com a maior grau de automação possível. A seguir são descritos os quatro principais componentes da ferramenta. O primeiro componente necessário para a análise RDM é um modelo de simulação computacional, e neste caso específico um modelo de dinâmica de sistemas. Este componente possui todas as equações necessárias para a simulação computacional e deve ser definido de modo compatível com a biblioteca deSolve, que é utilizada para a integração numérica do modelo.
+
+O segundo componente (b) trata-se de uma planilha com formato padronizado, contendo as estratégias a serem simuladas e incertezas, incluindo valores máximos e mínimos para cada parâmetro. 
+
+![Tela de Inputs da Ferramenta Computacional](images/rdm-tool-incertezas.png)
+
+
+Destaca-se que os componentes (a) e (b) podem ser modificados conforme o caso a ser analisado, sem a necessidade de reprogramar todas as funções do Simulador (c), nem do aplicativo web desenvolvido. Esta seção não detalhará cada um dos componentes e análises propiciadas pela ferramenta computacional, as quais serão analisadas nas seções seguintes.
+
+![Comparação de Estratégias em "N" cenários utilizando a Ferramenta Computacional](images/comparacao-estrategias-tempo.png)
+
+[Parágrafo sobre a análise de perda de oportunidade para a definição da estratégia mais robusta segundo um determinado critério.]
+
+![Análise de Perda de Oportunidade das Estratégias](images/graficos-analise-regret.png)
 
 # Modelos de Difusão de Novos Produtos
 
@@ -287,25 +314,6 @@ Os resultados deste trabalho podem ser observados no link bit.ly/reproddissertpn
 ## Testes e Calibração do Modelo
 
 A modelagem exploratória, per si, abandona a premissa de que modelos de simulação computacional apenas serão úteis se validados (Bankes XX). Ainda assim, os modelos podem ser verificados visando avaliar sua consistência interna, bem como os seus resultados podem ser comparados com dados históricos para observar a capacidade do modelo em explicar o comportamento passado. (Sterman XXXX) Considerando estas premissas, esta seção apresenta os testes realizados no modelo
-
-
-## Ferramenta Computacional para a Análise RDM
-
-
-### Verificação do Modelo
-
-
-### Comparação com Dados Históricos e Calibração
-
-## Ferramenta Computacional para a Análise RDM
-
-4.1 Ferramenta Computacional para a Análise RDM
-
-A primeira barreira para a realização da Análise RDM é a disponibilidade de ferramentas computacionais para a operacionalização da análise. Embora existam frameworks de desenvolvimento potencialmente úteis para a modelagem exploratória (como o EmaWorkbench (KWAKKEL, 2013) e o OpenMORDM (HADKA et al., 2015)), tais ferramentas implicam em empecilhos para a utilização no contexto deste trabalho. 
-
-A ferramenta EmaWorkbench, desenvolvida na linguagem python não possui interface gráfica, não suporta integração com o software de dinâmica de sistemas iThink, ou com modelos desenvolvidos na linguagem R. Neste sentido, a ferramenta requer que o modelo seja desenvolvido em uma ferramenta como o Vensim, Excel ou um modelo no próprio Python. A ferramenta OpenMORDM é focalizada em problemas multi-objetivo, o que está fora do escopo deste trabalho.
-
-Considerando a necessidade de flexibilidade durante a execução deste trabalho, portanto, o pesquisador optou por desenvolver rotinas computacionais próprias para a analise dos dados. Ao fazer isto, será possível realizar a análise RDM sem a necessidade de recorrer à ferramentas terceiras ou privadas. Além disto, o desenvolvimento desta ferramenta computacional permitirá que os resultados desta dissertação sejam reproduzidos pelo seu leitor. Deste modo, procura-se atender aos requisitos de reprodutibilidade em trabalhos baseados em simulação computacional preconizados por Rahmandad e Sterman (2012).
 
 ## Análise RDM
 
