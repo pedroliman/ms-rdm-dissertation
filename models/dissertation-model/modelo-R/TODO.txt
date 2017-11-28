@@ -2,13 +2,10 @@ TODO para finalizar a Dissertação:
 
 - Dominar o Modelo do Sterman - Documentar;
 
-- Calibrar o Modelo com Dados da Manuf. Aditiva;
-
-- Modificar o Modelo para o caso da Manuf. Aditiva;
-
-- Mostrar que o modelo modificado se ajusta melhor aos dados do que o modelo sem modificações;
+- Calibrar / Modificar o Modelo com Dados da Manuf. Aditiva;
 
 - Rodar o RDM com o Modelo:
+--- code: integrar o novo algoritmo de utilização do modelo com as funções usadas na calibração (porque elas estão melhores e abstraem a inicialização dos estoques.)
 -- Geração de Casos (Rodada 1)
 -- Descoberta de Cenários - Análise de Vulnerabilidades com o PRIM (Rodada 1)
 -- Propor Estratégia melhor - ampliar o conjunto de estratégias simuladas.

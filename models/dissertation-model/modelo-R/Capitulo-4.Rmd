@@ -10,11 +10,9 @@ output:
   word_document: default
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 
 # Premissas Anteriores:
 
@@ -68,6 +66,19 @@ Quais players simular.
 
 Que aspectos simular ou não
 
+# Revisão de Modelos
+
+Em resposta às necessidades do item anterior, os modelos de difusão de novos produtos devem ser avaliados, culminando no modelo do Sterman (XXX). As características dos modelos podem ser brevemente descritas para ajudar nesta delimitação.
+
+[Quadro de Comparação dos Modelos]
+
+
+![Temporario - Completar Quadro e Analisar Aqui](images/quadro-temporario-autores.png)
+
+(Escrever no Word para facilitar as citações.)
+
+Falar sobre cada modelo e mostrar o Quadro da análise dos modelos. Considerar que cada um dos modelos considera e suas contribuições e limitações para o trabalho atual. Ressaltar o que o Sterman considera e que os demais não consideram para justificar a escolha do Sterman como ponto de partida.
+
 # Ferramenta Computacional para a Análise RDM
 
 O objetivo desta seção é descrever a ferramenta computacional desenvolvida no âmbito desta dissertação para viabilizar a operacionalização da análise RDM. A decisão por desenvolver a análise nesta dissertação por meio deste ambiente aberto, ainda que em princípio mais custosa, teve por objetivo realizar a análise RDM com a máxima independência possível, sem recorrer à ferramentas terceiras ou privadas. Além disto, o desenvolvimento desta ferramenta computacional permitirá que os resultados desta dissertação sejam reproduzidos. Recomenda-se ao leitor interessado que acesse a ferramenta disponível no link (http://bit.ly/pnldissert) Deste modo, procura-se atender aos requisitos de reprodutibilidade em trabalhos baseados em simulação computacional preconizados por Rahmandad e Sterman (2012).
@@ -95,17 +106,9 @@ Destaca-se que os componentes (a) e (b) podem ser modificados conforme o caso a 
 
 ![Análise de Perda de Oportunidade das Estratégias](images/graficos-analise-regret.png)
 
-# Modelos de Difusão de Novos Produtos
 
-Em resposta às necessidades do item anterior, os modelos de difusão de novos produtos devem ser avaliados, culminando no modelo do Sterman (XXX). As características dos modelos podem ser brevemente descritas para ajudar nesta delimitação.
 
-Falar sobre cada modelo e mostrar o Quadro da análise dos modelos. Considerar que cada um dos 
-
-# Modelo empregado neste Trabalho
-
-Esta seção do trabalho apresenta o modelo de equações diferenciais utilizado para simular o comportamento da indústria da manufatura aditiva.
-
-## Difusão e Demanda por Impressoras 3D.
+# Modelo da Competição na Indústria de Impressoras 3D
 
 ## Visão Geral do Modelo
 O modelo proposto inicialmente por Sterman (XX) foi utilizado como ponto de partida deste trabalho, por possuir uma série de características desejáveis para este trabalho. Em primeiro lugar, o modelo não é restrito a monopólios, como o modelo de Bass (XX) e outros modelos deste trabalho (identificar e citar aqui). Além disso, o modelo possui uma estrutura de dinâmica competitiva considerando a interação de diversos fatores presentes na Indústria da Manufatura Aditiva, incluindo curvas de aprendizagens, diferentes players expandindo sua capacidade produtiva em função da demanda prospectada no mercado.
