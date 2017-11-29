@@ -14,10 +14,10 @@ library(akima)
 library(GGally)
 
 # Carregando Funções Úteis
-source('funcoes.R', encoding = 'UTF-8')
+# source('funcoes.R', encoding = 'UTF-8')
 
 ## Carregando o Modelo, e outros objetos
-source('modelo-difusao.R', encoding = 'UTF-8')
+# source('modelo-difusao.R', encoding = 'UTF-8')
 
 opcoes = list(
   VarResposta = "Cash",
@@ -166,7 +166,7 @@ server <- function(input, output, session) {
   
   
 
-  # Tentativa de deixar a escolha de estratégias dinâmica.
+  # Escolha de estratégias dinâmica.
   # observe({
   #   # Can also set the label and select items
   #   updateSelectInput("gr1_estrategia_selecionada",
@@ -177,13 +177,12 @@ server <- function(input, output, session) {
   # })
   
   
-  # Dados de Absenteismo simulados
+  # Output
   output_rdm = reactive({
       inputs = CarregaDados()
       if (is.null(inputs))
         return(NULL)
       withProgress(message = 'Calculando...', value = 0.3, {
-        #dados = simular_cba(paste(inputs$datapath, ".xlsx", sep=""), modo = "completo")
         dados = simularRDM_e_escolher_estrategia(inputs = paste(inputs$datapath, ".xlsx", sep=""), sdmodel = sdmodel, opcoes = opcoes)
         incProgress(1, detail = "Finalizando")
       })
@@ -295,8 +294,6 @@ server <- function(input, output, session) {
     plot_estrategias_versus_incertezas(ensemble_analisado, incertezas)
     
   })
-  
-  
   
   
   output$plot_superficie = renderPlotly({

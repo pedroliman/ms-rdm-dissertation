@@ -25,8 +25,17 @@ opcoes = list(
 )
 
 
-## Carregando Modelo, e outros objetos
-source('modelo.R', encoding = 'UTF-8')
+## Carregando Modelo
+source('modelo-calibracao.R', encoding = 'UTF-8')
+
+## Carregando objetos da Calibracao
+source(file = "calibracao.R", encoding = "UTF-8")
+
+source(file = "app.R", encoding = "UTF-8")
+
+## Gerar Capitulo 4:
+rmarkdown::render(input = "Capitulo-4.Rmd")
+
 
 # Simulando uma vez apenas
 resultado_unico <- data.frame(ode(y=stocks, times=simtime, func = modelo, 
@@ -35,8 +44,7 @@ resultado_unico <- data.frame(ode(y=stocks, times=simtime, func = modelo,
 
 
 
-
-
+## GE
 
 
 

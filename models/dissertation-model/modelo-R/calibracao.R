@@ -177,4 +177,16 @@ p1<-ggplot()+geom_point(data=dados_calibracao,size=1.5,aes(time,fIndustryOrderRa
                                Model="blue"),
                       labels=c("Dados",
                                "Modelo"))
-p1
+
+
+p2<-ggplot()+geom_point(data=dados_calibracao,size=1.5,aes(time,sPrice1,colour="Data"))+
+  geom_line(data=optMod,size=1,aes(x=time,y=sPrice1,colour="Model"))+
+  ylab("Preço")+
+  xlab("Anos")+
+  scale_y_continuous(labels = comma)+
+  theme(legend.position="bottom")+
+  scale_colour_manual(name="",
+                      values=c(Data="red", 
+                               Model="blue"),
+                      labels=c("Dados",
+                               "Modelo"))

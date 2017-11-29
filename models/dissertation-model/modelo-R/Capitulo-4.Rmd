@@ -1,37 +1,71 @@
 ---
-title: "Capítulo 4 - Dissertação"
+title: "Avaliação de Decisões Estratégicas sob Incerteza: Análise das Contribuições da Modelagem Exploratória (EMA) e Robust Decision Making (RDM)"
 author: "Pedro Nascimento de Lima"
+abstract: "Este documento contém os resultados da dissertação, e é escrito diretamente no R. Os capítulos do projeto da dissertação (1,2 e 3) não estão reproduzidos por completo neste documento, mas sua estrutura e argumentos utilizados está representado para alinharmos o trabalho como um todo, e decidirmos o local de cada argumento. Por hora, vou gerar e escrever o documento no R para agilizar a geração dos gráficos e fórmulas. Após a estabilização do documento, vou levá-lo para o word e formatar."
 date: "Versão Preliminar - R"
 output:
   pdf_document: 
-    latex_engine: xelatex
+    fig_caption: yes
+    fig_height: 3.5
+    fig_width: 5
     number_sections: yes
     toc: yes
+    toc_depth: 4
   word_document: default
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
-# Premissas Anteriores:
+# Introdução:
 
-Dos capítulos anteriores da dissertação eu tenho:
-1 - Introdução:
+Problematização sobre os desafios que a incerteza impõe à tomada de decisão estratégica.
 
-- Contextualização: Argumentação sobre os desafios que a incerteza impõe à tomada de decisão estratégica, e argumentação sobre as limitações das demais abordagens de suporte à decisão sob incerteza.
-
-- Objeto da Pesquisa: Avaliação de Decisões Estratégicas sob incerteza profunda.
+## Objeto e Questão de Pesquisa: 
+- Objeto: Avaliação de Decisões Estratégicas sob incerteza profunda. Uso o framework de processo de decisão estratégica do mintzberg para localizar o objeto da pesquisa.
 
 - Questão de Pesquisa: "Quais são as contribuições da Modelagem Exploratória (EMA) e do Robust Decision Making (RDM) para a avaliação de decisões estratégicas organizacionais em situações de incerteza profunda?"
 
-- Objetivo de Pesquisa: "Analisar as contribuições da EMA e do RDM para a avaliação das decisões estratégicas em situações de incerteza profunda."
+## Objetivos 
 
-- Objetivos Específicos:
+### Objetivo Geral
+
+"Analisar as contribuições da EMA e do RDM para a avaliação das decisões estratégicas em situações de incerteza profunda."
+
+### Objetivos Específicos
+
 a) identificar abordagens para avaliação de decisão estratégica sob incerteza profunda;
 b) instanciar o RDM no contexto empresarial;
 c) avaliar a instanciação do RDM no contexto empresarial;
 d) identificar heurísticas contingenciais na aplicação do RDM no ambiente empresarial.
+
+## Justificativa
+Argumentação sobre as limitações das abordagens para tomada de decisão de incerteza. Linha Geral de Argumentação:
+
+- Abordagens Atuais apresentam limitações sob incerteza profunda;
+- Existe o RDM (e outros métodos);
+- Não existe menção ao RDM na literatura de estratégia em negócio;
+- O trabalho contribui realizando uma "exaptação" da abordagem.
+
+
+# Fundamentação Teórica
+
+## Avaliação de Decisões Estratégicas Sob Incerteza Profunda
+
+### Avaliação de Decisões Estratégicas
+
+### Níveis de Incerteza e Incerteza Profunda
+
+## Abordagens para Avaliação de Decisão sob Incerteza Profunda
+
+### Identificação de Artefatos
+
+### Contextos de Aplicação do RDM
+
+## RDM - Robust Decision Making (...)
+
+# Método de Pesquisa (...)
 
 # Contexto de Aplicação - Indústria da Manufatura Aditiva
 
@@ -107,27 +141,23 @@ Destaca-se que os componentes (a) e (b) podem ser modificados conforme o caso a 
 ![Análise de Perda de Oportunidade das Estratégias](images/graficos-analise-regret.png)
 
 
-
 # Modelo da Competição na Indústria de Impressoras 3D
 
-## Visão Geral do Modelo
 O modelo proposto inicialmente por Sterman (XX) foi utilizado como ponto de partida deste trabalho, por possuir uma série de características desejáveis para este trabalho. Em primeiro lugar, o modelo não é restrito a monopólios, como o modelo de Bass (XX) e outros modelos deste trabalho (identificar e citar aqui). Além disso, o modelo possui uma estrutura de dinâmica competitiva considerando a interação de diversos fatores presentes na Indústria da Manufatura Aditiva, incluindo curvas de aprendizagens, diferentes players expandindo sua capacidade produtiva em função da demanda prospectada no mercado.
 
-### Diagrama de Fronteira do Modelo
+## Diagrama de Fronteiras do Modelo
 
 A Figura (XX) ilustra os módulos do modelo e suas principais relações. Esta seção introduzirá as principais característsicas do modelo, e argumentará sua relação com a indústria da manufatura aditiva. Além disto, a seção  definirá as principais relações existentes entre os módulos e justificará a decisão pela inclusão de cada um destes módulos no modelo. Em seguida, a formulação matemática de cada um dos módulos será detalhada. Finalmente, esta seção também sintetizará as modificações empregadas no modelo original de Sterman (xx), justificando tais alterações.
-
 
 {Porque usar o modelo do Sterman.}
 O Modelo proposto inicialmente por Sterman (XX) compreende um conjunto de características que o tornam apropriado para servir como ponto de partida deste trabalho. Em primeiro lugar, o modelo apresenta 
 
 {Características Básicas do Modelo}
-Uma primeira característica importante para a compreensão do modelo é a escolha pela vetorização da maioria de seus módulos em diferentes players produtores de impressoras 3D. Esta característica torna o modelo útil para a avaliação da decisão estratégica de e um player específico, e permite a consideração de decisões estratégicas de outros players sobre o resultado da estratégia da própria empresa. Este aspecto é relevante para a representação da indústria da manufatura aditiva, visto que a adição de capacidade por outros players, e decisões relacionadas à sua precificação tendem à influenciar a decisão da empresa.
+Uma primeira característica importante para a compreensão do modelo é a escolha pela vetorização da maioria de seus módulos em diferentes players produtores de impressoras 3D. 
 
-Um segundo aspecto importante para a compreensão do modelo é que o mesmo ocupa-se de decisões estratégicas relacionadas à capacidade produtiva da empresa. Em específico, o modelo ocupa-se de analisar estratégias de crescimento de capacidade agressivas versus conservadoras. (ex.: O player busca maximizar sua receita apropriando-se de um alto nível de market-share por meio de estratégias de crescimento agressivas).
+Um segundo aspecto importante para a compreensão do modelo é que o mesmo ocupa-se de decisões estratégicas relacionadas à capacidade produtiva da empresa. Em específico, o modelo ocupa-se de analisar estratégias de crescimento de capacidade agressivas versus estratégias conservadoras. (ex.: O player busca maximizar sua receita apropriando-se de um alto nível de market-share por meio de estratégias de crescimento agressivas).
 Para o tema da indústria de impressão 3D, esta decisão pode ser considerada adequada, considerando o tamanho do investimento necessário para a impressão 3D.
 Pode parecer, a princípio, que uma estratégia robusta seja criar expectativas modestas para uma indústria ainda em ascenção, e crescer o investimento apenas após uma demonstração clara de crescimento....
-
 
 {Alterações necessárias no Modelo de Sterman}
  - Questão: Market Share é apenas dividido por preço e delay na entrega, enquanto a performance do produto não parece ser considerada;
@@ -137,21 +167,33 @@ Pode parecer, a princípio, que uma estratégia robusta seja criar expectativas 
  - Solução: Avaliar primeiro as duas estratégias na primeira rodada do modelo e em seguida adicionar uma estratégia adaptativa (provavelmente a agressiva no início e conservadora no final).
 
 
-Uma vez que é possível simular cenários onde as demais empresas implementam estratégias similares ou
-
 ![Modelo de Dinâmica Competitiva - Diagrama de Fronteiras](images/model-diagram.png)
 
+No modelo atual, a demanda global pelo produto é determinada em função do preço, e de parâmetros que estimam o tamanho do mercado potencial, e sua reação à acréscimos ou decréscimos no preço por meio de uma curva de preço versus demanda. A demanda global calculada obtida em equilíbrio com o preço é sujeita à um processo de difusão do produto. Considerar o processo de difusão de um novo produto é uma prática presente em diversos modelos similadres (Ex: Bass (XX), citar outros), visto que a difusão de um novo produto não é instantânea. A difusão do produto é dada a partir da demanda global determinada pelo preço, e parâmetros que medem a velocidade de difusão do produto no mercado alvo.
 
+O próximo conjunto de módulos do modelo é vetorizado por produtores de impressora 3D (a partir deste momento denominados como players). Esta característica torna o modelo útil para a avaliação da decisão estratégica de e um player específico, e permite a consideração de decisões estratégicas de outros players sobre o resultado da estratégia de um player em questão.Este aspecto será essencial para simular situações onde players existentes no mercado possuem estratégias de crescimento agressivas ou conservadoras, e o como estas decisões impactam o resultado da estratégia de um dado player. De modo similar, esta característica permite simular o impacto positivo que a expansão de outros players pode ter, expandindo o mercado de tal modo que haja mais demanda global para os demais players.
+
+Este aspecto é relevante para a representação da indústria da manufatura aditiva, visto que a adição de capacidade por outros players, e decisões relacionadas à sua precificação tendem à influenciar a decisão da empresa.
+
+
+
+
+Em seguida, a produção de cada um dos players simulados no moeolo é estimada, utilizando as informações de demanda, capacidade dos players e market share estimado. A produção, de modo imediato, gera caixa para os players, atualizando seu valor presente líquido em caixa.
+
+Três macro-enlaces de feedback podem ser visualizados nesta estrutura. O primeiro enlace, R1, tende à estimular o crescimento da demanda por meio da expansão do mercado. Uma vez que parcelas cada vez maiores da
 
 No modelo proposto por Sterman (XX) dois players, inicialmente com a mesma capacidade produtiva, iniciam vendendo produtos a um mercado em expansão.
 
-## Demanda
+## Demanda Global
 
 A demanda Total da indústria anual $D^T$ é formada pela soma de dois tipos de demanda. A demanda inicial $D^I$ dos produtos (ou seja, à primeira compra realizada por um usuário da impressora 3D), e à demanda oriúnda de recompras $D^R$, realizadas em função do fim da vida útil do equipamento.
+
 $$D^T = D^I + D^R$$
 A demanda inicial é calculada $D^I$ em função do número médio de unidades vendidas por clientes $\mu$ e do número de clientes $dA$ que adotou o produto em um intervalo de tempo $dt$:
 
 $$D^I = \mu \frac{dA}{dt}$$
+
+## Difusão do Produto
 
 O crescimento do número de clientes $A$ que aderiram às impressoras 3D em um dado instante de tempo $t$ é um estoque modelado por meio do modelo padrão de difusão de Bass (XXXX). Neste modelo o crescimento da população de clientes que aderem à uma ideia é dependente do tamanho total da população $POP$, do número de clientes que não adotaram $N$, da fração de inovadores que adotam ao produto ano a ano independentemente de outros usuários $\alpha$ e do parâmetro $\beta$ que mede a força da difusão do produto por boca-a-boca. A não-negatividade da equação é garantida obtendo-se o máximo entre a equação e zero. Além disto, o valor inicial do número de clientes $A_{t_0}$ é calibrado a partir do númer......
 
@@ -314,9 +356,47 @@ O modelo foi implementado segundo as diretrizes constantes em Dungan (XXXX), e u
 
 Os resultados deste trabalho podem ser observados no link bit.ly/reproddissertpnl.
 
-## Testes e Calibração do Modelo
 
-A modelagem exploratória, per si, abandona a premissa de que modelos de simulação computacional apenas serão úteis se validados (Bankes XX). Ainda assim, os modelos podem ser verificados visando avaliar sua consistência interna, bem como os seus resultados podem ser comparados com dados históricos para observar a capacidade do modelo em explicar o comportamento passado. (Sterman XXXX) Considerando estas premissas, esta seção apresenta os testes realizados no modelo
+### Testes Estruturais / Testes de Valores Extremos
+
+## Calibração do Modelo e Comparação com Dados Históricos
+
+A modelagem exploratória, per si, abandona a premissa de que modelos de simulação computacional apenas serão úteis se validados (Bankes XX). Ainda assim, os modelos podem ser verificados visando avaliar sua consistência interna, bem como os seus resultados podem ser comparados com dados históricos para observar a capacidade do modelo em explicar o comportamento passado. (Sterman XXXX) Considerando estas premissas, esta seção apresenta os testes realizados no modelo.
+
+[Explicar o Procedimento de Calibração, fonte dos dados e objetivos da calibração.]
+
+Calibração da Demanda Global:
+
+```{r}
+p1
+```
+
+
+```{r}
+### Testes Estruturais / Testes de Valores Extremos
+p2
+```
+
+
+Variáveis utilizadas na calibração e erros:
+
+```{r}
+knitr::kable(cost$var)
+```
+
+
+Tabela de Resíduos da Calibração:
+
+```{r}
+knitr::kable(cost$residuals)
+```
+
+Parâmetros calibrados com este procedimento:
+
+```{r}
+knitr::kable(optPar)
+```
+
 
 ## Análise RDM
 
@@ -337,3 +417,97 @@ A modelagem exploratória, per si, abandona a premissa de que modelos de simula�
 ## Discussão dos Resultados
 
 # Conclusões
+
+# Apêndices
+
+## Códigos da Ferramenta Computacional
+
+### Modelo Computacional:
+
+```{r}
+modelo
+```
+
+### Rotinas para a Simulação RDM
+
+- **Função Simular RDM e Escolher Estrategia**: Simula cenários do RDM, realiza a análise de perda de oportunidade e define a estratégia candidata utilizando um critério pré-determinado:
+
+```{r}
+simularRDM_e_escolher_estrategia
+```
+
+- **Carregar Inputs**:
+
+```{r}
+carregar_inputs
+```
+
+- **Obter LHS Ensemble**: 
+
+```{r}
+obter_lhs_ensemble
+```
+
+- **Ampliar Ensemble como Levers**: 
+
+```{r}
+ampliar_ensemble_com_levers
+```
+
+
+
+- **Simular**: 
+
+```{r}
+simular
+```
+
+
+
+- **Simular RDM**: 
+
+```{r}
+simular_RDM
+```
+
+
+
+- **Calcular Regret**: 
+
+```{r}
+calcular_regret
+```
+
+
+
+- **Resumir Variável Resposta**: 
+
+```{r}
+resumir_variavel_resposta
+```
+
+
+
+- **Escolher Estratégia Candidata**: 
+
+```{r}
+escolher_estrategia_candidata
+```
+
+- **Calcular e Resumir Regret**: 
+
+```{r}
+calcular_e_resumir_regret
+```
+
+- **Analisar Ensemble com Melhor Estratégia**: 
+
+```{r}
+analisar_ensemble_com_melhor_estrategia
+```
+
+- **Funções do Aplicativo Web** :
+
+```{r}
+server
+```
