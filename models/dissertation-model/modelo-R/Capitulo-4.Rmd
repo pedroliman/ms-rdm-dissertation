@@ -4,14 +4,12 @@ author: "Pedro Nascimento de Lima"
 abstract: "Este documento contém os resultados da dissertação, e é escrito diretamente no R. Os capítulos do projeto da dissertação (1,2 e 3) não estão reproduzidos por completo neste documento, mas sua estrutura e argumentos utilizados está representado para alinharmos o trabalho como um todo, e decidirmos o local de cada argumento. Por hora, vou gerar e escrever o documento no R para agilizar a geração dos gráficos e fórmulas. Após a estabilização do documento, vou levá-lo para o word e formatar."
 date: "Versão Preliminar - R"
 output:
-  word_document: default
   pdf_document: 
     fig_caption: yes
-    # fig_height: 3.5
-    # fig_width: 5
     number_sections: yes
     toc: yes
     toc_depth: 4
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -241,12 +239,12 @@ $$O_i = S_i * D^T$$
 
 ## A Firma
 
-O lucro líquido a valor presente $\pi_{t}$ da firma $i$ é definido como um estoque calculado em função das receitas $R_i$ e custos fixos $C^f_i$ e variáveis $C^v_i$ da empresa, trazidos a valor presente por um fator $\rho$.   Desta maneira, o lucro líquido da empresa no tempo $t$ será dado conforme esta equação:
+O lucro líquido a valor presente $\pi_{t}$ da firma $i$ é definido como um estoque calculado em função das receitas $R_i$ e custos fixos $C^f_i$ e variáveis $C^v_i$ da empresa, trazidos a valor presente por um fator $\rho$. Desta maneira, o lucro líquido da empresa no tempo $t$ será dado conforme esta equação:
 
 $$ \pi_{t} = \int_{t_0}^{t} [R_i -(C^f_i+C^v_i)]  *  e^{-\rho * t} $$
-As receita bruta da empresa é calculada a partir do número de produtos entregues $S_{i}$ pela empresa $i$ e do preço médio de seus produtos vendidos $\bar P_i $, que é obtido pela divisão do valor da carteira de vendas $V_i$ e de seu backlog $B_i$.
+As receita bruta da empresa é calculada a partir do número de produtos entregues $S_{i}$ pela empresa $i$ e do preço médio de seus produtos vendidos $\bar{P_i}$, que é obtido pela divisão do valor da carteira de vendas $V_i$ e de seu backlog $B_i$.
 
-$$R_i = S_{i} * \bar P_i; \bar P_i = \frac{V_i}{B_i}$$
+$$R_i = S_{i} * \bar{P_i} \ ; \bar{P_i} = \frac{V_i}{B_i}$$
 
 O valor da carteira de vendas $V_i$  aumenta conforme a quantidade de pedidos faturados $O_{i,t}$  e seu preço $P_{i,t}*$, e decresce à medida que produtos são entregues aos seus clientes gerando receita $R_{i,t}$.
 
@@ -269,7 +267,6 @@ $$E_{i,t} = E_{i,t0} + \int_{t_0}^{t} S_i$$
 O modelo proposto por Sterman (XX) foi idealizado para representar decisões estratégicas de longo prazo, e não se dedicou a detalhar mecanismos de uma cadeia de suprimentos à jusante ou à montante de cada um dos players. Por este motivo, a produção realizada pela empresa corresponde às entregas, desprezando a representação de estoques na cadeia de suprimentos da empresa. Considera-se a manutenção deste pressuposto adequada para os objetivos deste trabalho, que também visam avaliar decisões de longo prazo.
 
 $$Q_i = MIN(Q_i^*,K_i); S_i = Q_i$$
-
 
 Delivery Delay:
 
