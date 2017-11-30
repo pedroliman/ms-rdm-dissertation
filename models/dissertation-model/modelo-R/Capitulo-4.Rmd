@@ -132,7 +132,7 @@ O segundo componente (b) trata-se de uma planilha com formato padronizado, conte
 ![Tela de Inputs da Ferramenta Computacional](images/rdm-tool-incertezas.png)
 
 
-Destaca-se que os componentes (a) e (b) podem ser modificados conforme o caso a ser analisado, sem a necessidade de reprogramar todas as funções do Simulador (c), nem do aplicativo web desenvolvido. Esta seção não detalhará cada um dos componentes e análises propiciadas pela ferramenta computacional, as quais serão analisadas nas seções seguintes.
+Destaca-se que os componentes (a) e (b) podem ser modificados conforme o caso a ser analisado, sem a necessidade de reprogramar todas as funções do Simulador (c), nem do aplicativo web desenvolvido (d). Esta seção não detalhará cada um dos componentes e análises propiciadas pela ferramenta computacional, as quais serão evidenciadas nas seções de análise seguintes.
 
 ![Comparação de Estratégias em "N" cenários utilizando a Ferramenta Computacional](images/comparacao-estrategias-tempo.png)
 
@@ -211,59 +211,64 @@ A inclinação da curva de demanda $\sigma$, por sua vez, é calculada em funç�
 $$\sigma = - \varepsilon_d \left(\frac{POP^r}{p^r}\right)$$
 
 A demanda oriúnda da necessidade de substituição dos produtos depende do número de impressoras 3D já vendidos pela empresa $I_i$, e de uma taxa percentual de descarte de impressoras $\delta$. Esta taxa percentual de descarte de impressoras corresponde ao inverso da vida útil média das impressoras vendidas.
-O modelo pressupõe que impressoras descartadas pelo fim da sua vida útil são
+O modelo pressupõe que o número de  impressoras descartadas pelo fim da sua vida útil corresponde ao número de impressoras a serem compradas.
 
-$$D^r = \sum_{i}{D_i} \ ; \ D_i = \delta I_i$$
-Installed Base:
+$$D^r = \sum_{i}{D_i} \ ; \ D_i = \delta * I_i$$
+
+
+**Modificação:** Este pressuposto atua como um pressuposto "otimista" para os produtores de impressoras 3D, implicando que, no longo prazo o mercado alcançado pelas impressoras 3D nunca retornarão à outras tecnologias. Podemos modificar esta equação incluindo uma taxa $\alpha$ de impressoras que são descartadas, porém nunca substituídas. Pensar numa forma de modelar esta taxa.
+
+$$D^r = \sum_{i}{D_i} \ ; \ D_i = \delta * I_i * \alpha $$
+O número de impressoras 3D atualmente instaladas em consumidores $I_{i,t}$ de cada player corresponde à acumulação de entregas de impressoras $I_{i,t}$ e é reduzida pelo número de produtos descartados $D_{i,t}$, considerando uma quantidade inicial $I_{i,t_0}$ de impressoras instaladas no período inicial de simulação.
 
 $$I_{i,t} = I_{i,t_0} + \int_{t_0}^{t} S_{i,t} - D_{i,t}$$
 ## Market Share
 
-Orders:
-$$O_i = S_i D^T$$
+A atratividade de cada player é calculada com base em um modelo logit de decisão (citar). Neste modelo, a atratividade de cada um dos players é calculada de acordo com um conjunto de critérios competitivos. No modelo de Sterman (XX), são utilizados como critérios o preço do produto e o tempo de entrega.
 
-Share:
+**Modificação:** Criar um módulo para estimar um índice de performance das impressoras 3D influenciados por investimentos em Pesquisa e Desenvolvimento. Desta maneira, o Share de cada produto player pode ser dividido de acordo com a performance dos diferentes players.
+Este módulo de performance do produto também pode ser influenciado pela curva de aprendizagem dos players.
+
+$$A_i = exp \left({\varepsilon_p \frac{P_i}{P^r}}\right) * exp \left({\varepsilon_a (\frac{B_i}{S_i})/\tau^r}\right)$$
+
+Com base na atratividade de cada player, o market share é definido normalizando-se a atratividade dos players em conjunto. Esta formulação garante que a soma do market share de cada um dos players será igual a 1.
+
 $$S_i = A_i/\sum_{i}A_i$$
 
-Atratividade: - Aqui deve entrar também a performance do produto.
-Standard Logit decision model
+Finalmente, os pedidos ganhos por cada empresa $O_i$ são calculados de acordo com a Demanda Total da Indústria e de acordo com o seu share calculado. 
 
-$$A_i = e^{\varepsilon_p \frac{P_i}{P^r}} * e^{\varepsilon_a (\frac{B_i}{S_i})/\tau^r}$$
+$$O_i = S_i * D^T$$
 
 ## A Firma
 
-O lucro líquido a valor presente $\pi_{t}$ da firma $i$ é definido como um estoque calculado em função das receitas e custos da empresa, trazidos a valor presente por um fator $\rho$. As receita líquida da empresa é calculada a partir do número de produtos entregues $s_i$ pela empresa $i$ e da diferença entre o preço médio dos produtos entregues $\bar{p_{i}}$, e do seu respectivo custo variável unitário $vc_i$. Os custos fixos da empresa são calculados a partir da sua capacidade $C_{i}$ e de um custo fixo unitário $fc_i$. Desta maneira, o lucro líquido da empresa no tempo $t$ será dado conforme esta equação:
+O lucro líquido a valor presente $\pi_{t}$ da firma $i$ é definido como um estoque calculado em função das receitas $R_i$ e custos fixos $C^f_i$ e variáveis $C^v_i$ da empresa, trazidos a valor presente por um fator $\rho$.   Desta maneira, o lucro líquido da empresa no tempo $t$ será dado conforme esta equação:
 
 $$ \pi_{t} = \int_{t_0}^{t} [R_i -(C^f_i+C^v_i)]  *  e^{-\rho * t} $$
+As receita bruta da empresa é calculada a partir do número de produtos entregues $S_{i}$ pela empresa $i$ e do preço médio de seus produtos vendidos $\bar P_i $, que é obtido pela divisão do valor da carteira de vendas $V_i$ e de seu backlog $B_i$.
 
-Receita:
-$$R_i = S_{i} * (V_i/B_i)$$
+$$R_i = S_{i} * \bar P_i; \bar P_i = \frac{V_i}{B_i}$$
 
-Valor da Carteira de Vendas:
+O valor da carteira de vendas $V_i$  aumenta conforme a quantidade de pedidos faturados $O_{i,t}$  e seu preço $P_{i,t}*$, e decresce à medida que produtos são entregues aos seus clientes gerando receita $R_{i,t}$.
+
 $$V_{i,t} = V_{i,t_0} + \int_{t_0}^{t} P_{i,t}*O_{i,t} - R_{i,t}$$
 
-Custos:
+Os custos fixos da empresa variam de modo proporcional à sua capacidade produtiva $K_i$, segundo um custo fixo unitário $u^f_i$. Os custos variáveis, por sua vez, são proporcionais ao número de produtos entregues pela empresa $S_i$, e um custo variável unitário $u^v_i$.
 
 $$C^f_i = u^f_i*K_i\ ; \  C^v_i = u^v_i * S_i$$
 
-Custos Variáveis e Fixos decrescem conforme uma curva de experiência
-Standard learning curve:
+Com o objetivo de demonstrar um mecanismo de retornos crescentes, Sterman (XX) insere em seu modelo um mecanismo de redução de custos oriúndo da curva de experiência. Esta formulação pressupõe que os players são capazes de reduzir seus custos à medida que produzem uma quantidade maior de produtos, obtendo experiência em produção $E$, equivalente dimensionalmente ao número de impressoras 3D produzidas. Os custos fixos $u^f_i$ e variáveis $u^v_i$ unitários caem à medida que a experiência $E$ aumenta em relação à experiência inicial $E_0$. A amplitude desta redução é calibrada apartir de custos fixos e variáveis iniciais $u^f_0$ e $u^v_0$, e de um parâmetro $\Gamma$ que representa a força da curva de experiência.
 
-$$u^f_i = u^f_0(E/E_0)^\gamma ;\ u^v_i = u^v_0(E/E_0)^\gamma  $$
+$$u^f_i = u^f_0(E/E_0)^\gamma ;\ u^v_i = u^v_0(E/E_0)^\gamma; \gamma = log(\Gamma)/log(2)$$
 
-Esta formlua pressupõe que não há troca de experiência entre os players, e que não há "perda de experiência".
+Esta formulação permite que os players em um primeiro momento ampliem suas margens, e também permite que os mesmos reduzam seus preços com o objetivo de alcançar uma fatia maior de mercado. Tal comportamento está em consonância com os dados observados na indústria da manufatura aditiva. Os preços das impressoras 3D tem caído expressivamente. Esta formulação, portanto, constitui-se como uma explicação estrutural para a queda dos preços nesta indústria. Esta formlua pressupõe que não há troca de experiência entre os players, e que não há "perda de experiência" de um determinado player.
 
 $$E_{i,t} = E_{i,t0} + \int_{t_0}^{t} S_i$$
 
 ### Produção
 
-Shipmentso é igual à Produção é igual a shipments, desprezando estoques na cadeia produtiva. 
+O modelo proposto por Sterman (XX) foi idealizado para representar decisões estratégicas de longo prazo, e não se dedicou a detalhar mecanismos de uma cadeia de suprimentos à jusante ou à montante de cada um dos players. Por este motivo, a produção realizada pela empresa corresponde às entregas, desprezando a representação de estoques na cadeia de suprimentos da empresa. Considera-se a manutenção deste pressuposto adequada para os objetivos deste trabalho, que também visam avaliar decisões de longo prazo.
 
 $$Q_i = MIN(Q_i^*,K_i); S_i = Q_i$$
-
-Considera-se um sistema Make to Order, não considera estoques na cadeia. Para eles, o estoque na cadeia introduziria um efeito chicote ainda pior para a estratégia Get big fast, e por isso foi possível desconsidera-lo.
-
-Neste ponto será necessário tomar uma decisão se este aspecto é importante para as estratégias consideradas ou não.
 
 
 Delivery Delay:
