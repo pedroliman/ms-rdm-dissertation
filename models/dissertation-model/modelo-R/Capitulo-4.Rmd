@@ -238,6 +238,7 @@ $$D^r = \sum_{i}{D_i} \ ; \ D_i = \delta * I_i * \alpha $$
 O número de impressoras 3D atualmente instaladas em consumidores $I_{i,t}$ de cada player corresponde à acumulação de entregas de impressoras $I_{i,t}$ e é reduzida pelo número de produtos descartados $D_{i,t}$, considerando uma quantidade inicial $I_{i,t_0}$ de impressoras instaladas no período inicial de simulação.
 
 $$I_{i,t} = I_{i,t_0} + \int_{t_0}^{t} S_{i,t} - D_{i,t}$$
+
 ## Market Share
 
 A atratividade de cada player é calculada com base em um modelo logit de decisão (citar). Neste modelo, a atratividade de cada um dos players é calculada de acordo com um conjunto de critérios competitivos. No modelo de Sterman (XX), são utilizados como critérios o preço do produto e o tempo de entrega.
@@ -336,39 +337,37 @@ $$dD^r/dt = (D^T  - D^r)/\tau^r$$
 
 ### Estratégia de Capacidade da Firma
 
-A variável de decisão criada no modelo de Sterman refere-se à estratégia de capacidade da firma.
-Se a firma busca uma estratégia agressiva, a mesma busca um share dominante do mercado. Uma estratégia conservadora, por outro lado, busca acomodação entre seus rivais, e define um market share modesto. A empresa agressiva também busca explorar sua vantagem aproveitando-se da demora dos outros players ainda aumentando seu share quando ela identifica que haverá demanda não atendida pelos outros players.
+A variável de decisão criada no modelo de Sterman refere-se à estratégia de capacidade da firma. Sterman (XX) utiliza duas estratégias de capacidade distintas. Se a firma busca uma estratégia agressiva, a mesma busca um share dominante do mercado. Desta maneira a empresa define como o seu market-share alvo o máximo entre seu share mínimo desejado $S^{min}_i$, e o share que a empresa visualiza que outros players não atenderão $S^u_i$. Uma estratégia conservadora, por outro lado, define um market share máximo $S^{max}_i$ que está disposta a ocupar no mercado. Caso a empresa observe que não haverá demanda suficiente para este market share em função de seus outros concorrentes, a empresa aceita como meta apenas o market share que outros players não atenderão $S^u_i$.
 
 $$S^* =  \begin{cases} MAX(S^{min}_i, S^u_i), \ if \ Str_i = Agress. \\ \\ MIN(S^{max}_i, S^u_i), \ if \ Str_i = Conserv. \end{cases}$$
+O market share não disputado $S^u_i$ é calculado em função da demanda não disputada $D^u_i$ e da demanda prevista $D^e$.
 
-Market Share "Não-Disputado":
 $$S^u_i = MAX(0, D^u_i/D^e)$$
-
-Demanda não contestada:
+A demanda não contestada é obtida a partir da soma das capacidades de outros players esperada, da taxa de utilização da indústria e da demanda prevista.
 
 $$D^u_i = D^e - u^* \sum_{j \neq i}K^e_j$$
-
-Capacidade dos competidores esperada:
+A capacidade dos competidores esperada é obtida considerando que os players não possuem acesso à informação perfeita sobre o planejamento da capacidade dos outros players. Em um extermo, os demais players não tem nenhuma informação sobre a capacidade em construção dos outros players, e em outro extremo, os mesmos possuem informação perfeita sobre a capacidade em construção. O modelo utiliza um fator para expressar a parcela da capacidade em construção conhecida pelos demais players, permitindo que seja simulado o impacto desta variável sobre os resultados do modelo.
 
 $$K^e_j = w K^{e^*}_j + (1-w)K_j $$
 
-Calculo da Capacidade com defasagem - segue uma suavização exponencial:
+A capacidade alvo dos demais competidores é calculada considerando um delay de tempo, pressupondo que a empresa leva tempo para estimar e realizar os processos necessários para estimar a capacidade dos demais players.
 
 $$dK^{e^*}_j/dt = (K^{*}_j - K^{e^*}_j)/\tau^c$$
 
 ### Preços
-Preço também ajusta-se a um valor alvo com delay e tempo de ajuste.
 
-$$dP_i/dt = (P^*_i-P_i)/\tau^p$$
-
-Equação do Preço Alvo:
-
-$$P^* = MAX \left[u^v, P \left( 1 + \alpha^c \left( \frac{P^c}{P}-1 \right) \right) \left( 1 + \alpha^d \left( \frac{Q^*}{u^*K}-1 \right)  \right) \left( 1 + \alpha^s \bigg( S^* - S \bigg) \right) \right]$$
-
-
-Parâmetros, Unidades Valores Máximos e Mínimos:
+O modelo pressupõe que as empresas ajustam seus preços considerando seus custos unitários, a relação entre oferta e demanda e o seu market share atual e o market-share desejado. Na primeira parcela da equação, um preço base é calculado de acordo com os custos fixos e variáveis unitários, e de acordo com um markup desejado.
 
 $$P^C = (1+m^*) (u^f_i + u^f_i)$$
+
+A partir deste preço base, a primeira parcelado preço alvo é calculada considerando a razão entre o preço base e o preço atual. Deste modo, se o preço base for maior do que o preço atual, a empresa tende a aumentar seus preços no futuro. A segunda parcela da equação relaciona a produção desejada da empresa com a sua capacidade efetiva, calculada a partir da sua taxa de utilização e sua capacidade. Novamente, se a produção desejada pela empresa é maior do que a sua capacidade, a empresa tende a aumentar seus preços, buscando otimizar a utilização de sua capacidade. Finalmente, a terceira parcela da equação utiliza a diferença entre o market share desejado pela empresa e seu market share atual. Deste modo, se o market share da empresa for menor do que o market share desejado, a empresa tende a reduzir seu preço, para alcançar o market share desejado.
+
+$$P^*_i = MAX \left[u^v_i, P_i \left( 1 + \alpha^c \left( \frac{P^c_i}{P_i}-1 \right) \right) \left( 1 + \alpha^d \left( \frac{Q^*_i}{u^*_iK_i}-1 \right)  \right) \left( 1 + \alpha^s \bigg( S^*_i - S_i \bigg) \right) \right]$$
+Em uma situação onde o preço atual é igual ao preço base, a produção desejada é igual à capacidade efetiva, e o market share atual é igual ao market share desejado, não realizará mudanças em seu preço. Caso qualquer uma destas igualdades não seja satisfeita, a empresa mudará seu preço alvo para um novo valor. Além disto, o modelo pressupõe que as empresas do modelo não precificarão seus produtos abaixo do custo variável. 
+
+A partir do preço alvo calculado, pressupõe-se que processos burocráticos não permitem que as empresas ajustem seu preço instantâneamente. Desta maneira, obtém-se o preço praticado pelos players por meio de uma suavização exponencial de primeira ordem, considerando um tempo de ajuste.
+
+$$dP_i/dt = (P^*_i-P_i)/\tau^p$$
 
 ## Implementação do Modelo Computacional
 
