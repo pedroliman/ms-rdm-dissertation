@@ -279,78 +279,67 @@ $$u^f_i = u^f_0(E/E_0)^\gamma ;\ u^v_i = u^v_0(E/E_0)^\gamma; \gamma = log(\Gamm
 A amplitude desta redução é calibrada apartir de custos fixos e variáveis iniciais $u^f_0$ e $u^v_0$, e de um parâmetro $\Gamma$ que representa a força da curva de experiência. Esta formulação permite que os players em um primeiro momento ampliem suas margens, e também permite que os mesmos reduzam seus preços com o objetivo de alcançar uma fatia maior de mercado. A Figura (XX) demonstra sensibilidade da relação não linear entre produção acumulada $E$ e custos $u^f_i$ e $u^v_i$, conforme varia a força da curva de experiência $\Gamma$.
 
 ```{r figlearningcurve, fig.cap="Relação entre Produção Acumulada e Custos"}
-
 gerar_grafico_curva_experiencia()
-
 ```
 
 
 Tal comportamento está em consonância com os dados observados na indústria da manufatura aditiva. Os preços das impressoras 3D tem caído expressivamente. Esta formulação, portanto, constitui-se como uma explicação estrutural para a queda dos preços nesta indústria. Esta formlua pressupõe que não há troca de experiência entre os players, e que não há "perda de experiência" de um determinado player.
 
-A experiência, por sua vez, é obtida a partir da acumulação da produção realizada por cada player.
+A experiência $E_{i,t}$, por sua vez, é obtida a partir da acumulação da produção de cada player $E_{i,t}$.
+
+**Ponto para possível modificação**. É possível imaginar um cenário onde, a longo prazo, a experiência obtida por um player é difundida para os demais players por meio de "cópias" e engenharia reversa. Seria possível imaginar uma forma de imaginar a uniformização do conhecimento, levando vantagens de curto prazo tenderem a se normalizar no longo prazo. Talvez seja mais inteligente levar essa ideia direto para o possível módulo de P & D.
+
+Esta curva, sozinha, pode não explicar porque alguns players com menor volume de produção conseguem obter custos competitivos no mercado. Uma empresa talvez tenha apenas uma vantagem temporária em relação aos demais players. Este é um ponto a pensar, pois esta curva de experiência influencia os preços, que influenciam todos os demais comportamentos do modelo.
+
+Este fator não "desmerece" o artigo do Sterman, visto que este pressuposto atua contra a hipótese dele, e o argumento que ele quiz usar não foi esse.
 
 $$E_{i,t} = E_{i,t0} + \int_{t_0}^{t} S_i$$
 
 ### Produção
 
-O modelo proposto por Sterman (XX) foi idealizado para representar decisões estratégicas de longo prazo, e não se dedicou a detalhar mecanismos de uma cadeia de suprimentos à jusante ou à montante de cada um dos players. Por este motivo, a produção realizada pela empresa corresponde às entregas, desprezando a representação de estoques na cadeia de suprimentos da empresa. Considera-se a manutenção deste pressuposto adequada para os objetivos deste trabalho, que também visam avaliar decisões de longo prazo.
+O presente modelo diferencia a produção real da empresa, a produção desejada, e sua capacidade. Pressupõe-se que a empresa busca maximizar sua produção, logo sua produção corresponderá ao mínimo entre a sua capacidade produtiva e sua produção desejada. O modelo proposto por Sterman (XX) foi idealizado para representar decisões estratégicas de longo prazo, e não se dedicou a detalhar mecanismos de uma cadeia de suprimentos à jusante ou à montante de cada um dos players. Por este motivo, a produção realizada pela empresa corresponde às entregas, desprezando a representação de estoques na cadeia de suprimentos da empresa. Considera-se a manutenção deste pressuposto adequada para os objetivos deste trabalho.
 
 $$Q_i = MIN(Q_i^*,K_i); S_i = Q_i$$
+Seguindo-se a lei de Little, o tempo médio de entrega corresponde à razão entre o backlog à taxa de entrega.
 
-Delivery Delay:
+$$\tau_i  = B_i / Q_i$$
+O modelo pressupõe que cada uma das empresas possui um tempo de entrega alvo, ajustando sua taxa de produção à este tempo de entrega e ao backlog formado. Sendo assim, a taxa de produção alvo depende do backlog formado e desta taxa de entrega alvo.
 
-$$\tau_i  = B_i * Q_i$$
+$$Q_i^* = B_i /\tau_i^*$$
 
-"Target Ship Rate:"
-
-$$Q_i^* = B/\tau_i^*$$
-
-Backlog de Produção:
+Por fim, o backlog de produção da empresa cresce com a chegada de pedidos e diminui com o envio de de produtos.
 
 $$B_{i,t} = B_{i,t0} + \int_{t_0}^{t} O_i - Q_i$$
 
-Capacidade: Ajusta-se conforme uma função Erlang Lag de terceira ordem.
+### Capacidade
 
-Este é o operador $\varphi$ Erlang Lag.
+Neste modelo, a capacidade da empresa não pode se ajustar imediatamente à demanda. Sterman (XX) propõe a utilização do operador $\varphi$ Erlang Lag, utilizado frequentemente para representar o delay embutido em processos de ajuste de capacidade (Sterman XX):
+
 
 $$K_i = \varphi(K^*,\lambda)$$
 
-Capacidade Alvo e Previsão da Demanda
-A capacidade Alvo da Empresa $K^*$ 
-market share alvo $S^*$
-previsão da demanda $D^*$
-taxa de utilização de capacidade $u^*$
+A capacidade Alvo da Empresa $K^*$, por sua vez, é obtida a partir do market share alvo da empresa $S^*$, da demanda prevista para a indústria $D^e$ e da taxa de utilização de capacidade $u^*$. A capacidade ainda é restrita a uma mínima escala de produção eficiente $K^{min}$.
 
-$$K^* = MAX(K^{min}, S^*D^e/u^*)$$
+$$K^* = MAX(K^{min}, S^* * D^e/u^*)$$
 
-mínima escala de produção eficiente $K^{min}$.
+O modelo pressupõe que os players do mercado realizam estimativas de previsão de demanda $\lambda$ anos à frente da demanda prevista com o objetivo de ajustar sua capacidade produtiva à demanda. Desta maneira, a demanda prevista $D^e$ é estimada a partir da demanda reportada na indústria $D^r$ e da taxa esperada de crescimento da demanda $g^e$. O modelo adota como pressuposto que as empresas extrapolam a demanda passada da indústria para prever a sua demanda futura.
 
+$$D^e = D^r * exp({\lambda * g^e})$$
 
-Demanda Prevista (Demanda Esperada) $D^e$:
-Demanda Observada-Reportada $D^r$
-Anos de Previsão $\lambda$
-Taxa esperada de crescimento da demanda $g^e$
+A taxa de crescimento da demanda, por sua vez, é estimada a partir de um horizonte histórico usado para a previsão $h$, comparando a reportada no período atual $D^r_t/$ e a demanda reportada no período $t-h$, $D^r_{t-h}$.
 
-$$D^e = D^r * e^{\lambda * g^e}$$
+$$g^e = ln(D^r_t/D^r_{t-h})/h$$
 
-Taxa de crescimento da demanda:
+O modelo também admite que a empresa não possui a informação da demanda instantânea $D^T$. Desta maneira, a demanda reportada $D^r$ não corresponde à demanda corrente, visto que há delays no processo de comunicação do volume de vendas, mas sim ajusta-se à esta variável por meio de uma suavização exponencial de primeira ordem, conforme o parâmetro $\tau^r$ de suavização.
 
-Horizonte Histórico usado para a previsão $h$
-Demanda Observada-Reportada $D^r$
-
-$$g^e = ln(D^r_t/D^r_t-h)/h$$
-
-
-Demanda Observada-Reportada $D^r$ - Segue um suavização exponencial:
 $$dD^r/dt = (D^T  - D^r)/\tau^r$$
-Market Share Alvo e Estratégia da Firma:
+
+### Estratégia de Capacidade da Firma
+
+A variável de decisão criada no modelo de Sterman refere-se à estratégia de capacidade da firma.
+Se a firma busca uma estratégia agressiva, a mesma busca um share dominante do mercado. Uma estratégia conservadora, por outro lado, busca acomodação entre seus rivais, e define um market share modesto. A empresa agressiva também busca explorar sua vantagem aproveitando-se da demora dos outros players ainda aumentando seu share quando ela identifica que haverá demanda não atendida pelos outros players.
 
 $$S^* =  \begin{cases} MAX(S^{min}_i, S^u_i), \ if \ Str_i = Agress. \\ \\ MIN(S^{max}_i, S^u_i), \ if \ Str_i = Conserv. \end{cases}$$
-
-Se a firma busca uma estratégia agressiva, a mesma busca um share dominante do mercado. Uma estratégia conservadora, por outro lado, busca acomodação entre seus rivais, e define um market share modesto.
-
-A empresa agressiva também busca explorar sua vantagem aproveitando-se da demora dos outros players ainda aumentando seu share quando ela identifica que haverá demanda não atendida pelos outros players.
-
 
 Market Share "Não-Disputado":
 $$S^u_i = MAX(0, D^u_i/D^e)$$
@@ -367,7 +356,7 @@ Calculo da Capacidade com defasagem - segue uma suavização exponencial:
 
 $$dK^{e^*}_j/dt = (K^{*}_j - K^{e^*}_j)/\tau^c$$
 
-Preço:
+### Preços
 Preço também ajusta-se a um valor alvo com delay e tempo de ajuste.
 
 $$dP_i/dt = (P^*_i-P_i)/\tau^p$$
@@ -376,9 +365,11 @@ Equação do Preço Alvo:
 
 $$P^* = MAX \left[u^v, P \left( 1 + \alpha^c \left( \frac{P^c}{P}-1 \right) \right) \left( 1 + \alpha^d \left( \frac{Q^*}{u^*K}-1 \right)  \right) \left( 1 + \alpha^s \bigg( S^* - S \bigg) \right) \right]$$
 
+
 Parâmetros, Unidades Valores Máximos e Mínimos:
 
 $$P^C = (1+m^*) (u^f_i + u^f_i)$$
+
 ## Implementação do Modelo Computacional
 
 O modelo matemático descrito na seção anterior foi implementado no software R. O código fonte implementado no software R está disponível no Apêndice (XX). Adicionalmente, o modelo  foi implementado no software Ithink 10.0.3, com o propósito de verificar a consistência dos resultados obtidos no software R. Considerando que a integração numérica invariavelmente traz erros ao processo do calculo, (Sterman XXX).
