@@ -67,6 +67,20 @@ Argumentação sobre as limitações das abordagens para tomada de decisão de i
 
 # Contexto de Aplicação - Indústria da Manufatura Aditiva
 
+Links Interessantes para ler e citar:
+
+Nova Impressora 3D que imprime 10 x mais rápido que as demais:
+http://www.sciencedirect.com/science/article/pii/S2214860416303220
+
+https://www.technologyreview.com/the-download/609607/blink-and-youll-miss-how-fast-this-souped-up-3-d-printer-makes-prototypes/?utm_source=facebook.com&utm_medium=social&utm_content=2017-11-30&utm_campaign=Technology+Review
+
+
+
+
+Impressão 3D na manufatura:
+https://www.technologyreview.com/s/604088/the-3-d-printer-that-could-finally-change-manufacturing/
+
+
 As discussões desta seção provavelmente irão para o final do capítulo 2.
 
 ## Comportamento da Demanda de Impressora 3D
