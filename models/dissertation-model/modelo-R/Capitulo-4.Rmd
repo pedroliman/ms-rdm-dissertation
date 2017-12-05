@@ -6,6 +6,8 @@ date: "Versão Preliminar - R"
 output:
   pdf_document: 
     fig_caption: yes
+    fig_height: 3
+    fig_width: 5
     number_sections: yes
     toc: yes
     toc_depth: 4
@@ -14,6 +16,8 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+library(ggplot2)
+library(ggpubr)
 ```
 
 # Introdução:
@@ -268,11 +272,51 @@ Os custos fixos da empresa variam de modo proporcional à sua capacidade produti
 
 $$C^f_i = u^f_i*K_i\ ; \  C^v_i = u^v_i * S_i$$
 
-Com o objetivo de demonstrar um mecanismo de retornos crescentes, Sterman (XX) insere em seu modelo um mecanismo de redução de custos oriúndo da curva de experiência. Esta formulação pressupõe que os players são capazes de reduzir seus custos à medida que produzem uma quantidade maior de produtos, obtendo experiência em produção $E$, equivalente dimensionalmente ao número de impressoras 3D produzidas. Os custos fixos $u^f_i$ e variáveis $u^v_i$ unitários caem à medida que a experiência $E$ aumenta em relação à experiência inicial $E_0$. A amplitude desta redução é calibrada apartir de custos fixos e variáveis iniciais $u^f_0$ e $u^v_0$, e de um parâmetro $\Gamma$ que representa a força da curva de experiência.
+Com o objetivo de demonstrar um mecanismo de retornos crescentes, Sterman (XX) insere em seu modelo um mecanismo de redução de custos oriúndo da curva de experiência. Esta formulação pressupõe que os players são capazes de reduzir seus custos à medida que produzem uma quantidade maior de produtos, obtendo experiência em produção $E$, equivalente dimensionalmente ao número de impressoras 3D produzidas. Os custos fixos $u^f_i$ e variáveis $u^v_i$ unitários caem à medida que a experiência $E$ aumenta em relação à experiência inicial $E_0$.
 
 $$u^f_i = u^f_0(E/E_0)^\gamma ;\ u^v_i = u^v_0(E/E_0)^\gamma; \gamma = log(\Gamma)/log(2)$$
 
-Esta formulação permite que os players em um primeiro momento ampliem suas margens, e também permite que os mesmos reduzam seus preços com o objetivo de alcançar uma fatia maior de mercado. Tal comportamento está em consonância com os dados observados na indústria da manufatura aditiva. Os preços das impressoras 3D tem caído expressivamente. Esta formulação, portanto, constitui-se como uma explicação estrutural para a queda dos preços nesta indústria. Esta formlua pressupõe que não há troca de experiência entre os players, e que não há "perda de experiência" de um determinado player.
+A amplitude desta redução é calibrada apartir de custos fixos e variáveis iniciais $u^f_0$ e $u^v_0$, e de um parâmetro $\Gamma$ que representa a força da curva de experiência. Esta formulação permite que os players em um primeiro momento ampliem suas margens, e também permite que os mesmos reduzam seus preços com o objetivo de alcançar uma fatia maior de mercado. A Figura (XX) demonstra sensibilidade da relação não linear entre produção acumulada $E$ e custos $u^f_i$ e $u^v_i$, conforme varia a força da curva de experiência $\Gamma$.
+
+```{r figlearningcurve, fig.cap="Relação entre Produção Acumulada e Custos"}
+aLCStrength = c(0.5, 0.75, 0.85, 0.95, 1)
+
+aLCExponent = log(aLCStrength)/log(2)
+
+aInitialProductionExperience = 100
+
+sCumulativeProduction = 100:5000
+
+learning_df = data.frame(Learning0.5 = (sCumulativeProduction/aInitialProductionExperience)^aLCExponent[1],
+                         Learning0.75 = (sCumulativeProduction/aInitialProductionExperience)^aLCExponent[2],
+                         Learning0.85 = (sCumulativeProduction/aInitialProductionExperience)^aLCExponent[3],
+                         Learning0.95 = (sCumulativeProduction/aInitialProductionExperience)^aLCExponent[4],
+                         Learning1 = (sCumulativeProduction/aInitialProductionExperience)^aLCExponent[5])
+    
+aInitialUnitFixedCost = 2000
+    
+aInitialUnitVariableCost = 1000
+    
+# aUnitFixedCost = aLearning * aInitialUnitFixedCost
+    
+aUnitVariableCost = data.frame(learning_df * aInitialUnitVariableCost, Producao = sCumulativeProduction) 
+
+ggplot2::ggplot(aUnitVariableCost, aes(Producao)) + 
+  geom_line(aes(y = Learning1, colour = "1")) + 
+  geom_line(aes(y = Learning0.95, colour = "0.95")) + 
+  geom_line(aes(y = Learning0.85, colour = "0.85")) + 
+  geom_line(aes(y = Learning0.75, colour = "0.75")) + 
+  geom_line(aes(y = Learning0.5, colour = "0.5")) + 
+  ylab("Custo Variável de Produção") + 
+  xlab("Produção Acumulada") +
+  labs(color = expression(Gamma))
+
+```
+
+
+Tal comportamento está em consonância com os dados observados na indústria da manufatura aditiva. Os preços das impressoras 3D tem caído expressivamente. Esta formulação, portanto, constitui-se como uma explicação estrutural para a queda dos preços nesta indústria. Esta formlua pressupõe que não há troca de experiência entre os players, e que não há "perda de experiência" de um determinado player.
+
+A experiência, por sua vez, é obtida a partir da acumulação da produção realizada por cada player.
 
 $$E_{i,t} = E_{i,t0} + \int_{t_0}^{t} S_i$$
 
