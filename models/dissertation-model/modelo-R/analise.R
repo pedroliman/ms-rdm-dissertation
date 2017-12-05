@@ -31,6 +31,9 @@ source('modelo-calibracao.R', encoding = 'UTF-8')
 ## Carregando objetos da Calibracao
 source(file = "calibracao.R", encoding = "UTF-8")
 
+# Carregando objetos de demonstração
+source(file = "demonstracoes.R", encoding = "UTF-8")
+
 source(file = "app.R", encoding = "UTF-8")
 
 ## Gerar Capitulo 4:
