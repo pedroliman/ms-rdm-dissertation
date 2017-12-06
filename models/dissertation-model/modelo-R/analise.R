@@ -76,11 +76,7 @@ grafico_preco_sterman = plot_linha_uma_variavel(dados = resultados_sterman, vari
 
 grafico_demanda_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "fIndustryOrderRate", nome_amigavel_variavel = "Demanda Anual Total")
 
-
-
-
-
-
+grafico_vpl_preco = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "sPrice1", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Preço")
 
 
 

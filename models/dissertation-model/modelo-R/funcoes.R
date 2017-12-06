@@ -721,6 +721,42 @@ plot_linha_uma_variavel = function(dados, variavel, nome_amigavel_variavel) {
 }
 
 
+plot_linha_duas_variaveis = function(dados, variavel1, nome_amigavel_variavel1, variavel2, nome_amigavel_variavel2) {
+  
+  p <- ggplot2::ggplot(dados, aes(x = time))
+  
+  call_variavel1 = substitute(
+    expr = p + geom_line(aes(y = Variavel, colour = NomeVariavel)),
+    env = list(Variavel = as.name(variavel1), NomeVariavel = nome_amigavel_variavel1)
+  ) 
+  
+  razaovariavel = (max(dados[,variavel1]) - min(dados[,variavel1])) / (max(dados[,variavel2]) - min(dados[,variavel2]))
+  
+  p <- eval(call_variavel1)
+  
+  call_variavel2 = substitute(
+    expr = p + geom_line(aes(y = Variavel * Razao, colour = NomeVariavel)),
+    env = list(Variavel = as.name(variavel2), NomeVariavel = nome_amigavel_variavel2, Razao = razaovariavel)
+  ) 
+  
+  p <- eval(call_variavel2)
+  
+  # now adding the secondary axis, following the example in the help file ?scale_y_continuous
+  # and, very important, reverting the above transformation
+  p <- p + scale_y_continuous(sec.axis = sec_axis(~./razaovariavel, name = nome_amigavel_variavel2))
+  
+  # modifying colours and theme options
+  p <- p + scale_colour_manual(values = c("blue", "red"))
+  p <- p + labs(y = nome_amigavel_variavel1,
+                x = "Tempo",
+                colour = "Variaveis")
+  
+  p <- p + theme(legend.position="bottom")
+
+  p
+  
+}
+
 
 
 plot_taxa_adocao_uma_estrategia = function(dados, estrategia) {
