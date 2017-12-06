@@ -15,7 +15,7 @@ library(GGally)
 
 ##### CONSTANTES #####
 VAR_SCENARIO = "Scenario"
-
+VAR_LEVER = "Lever"
 
 ##### SIMULAR RDM E ESCOLHER ESTRATEGIA #####
 
@@ -186,17 +186,22 @@ ampliar_ensemble_com_levers = function(ensemble, levers) {
 #' @export
 #'
 #' @examples
-simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
+simular = function(simtime, modelo, ensemble, nomes_variaveis_final) {
   message("01. funcoes.R/simular: Iniciando Simulação.")
   # Rodando a Simulação (uma vez), com a primeira linha do ensemble - Ajuda a saber se funciona.
   # Esta função apenas funciona com o estoque inicial fixo, será necessário implementar de outra forma depois.
-  o<-data.frame(ode(y=stocks, times=simtime, func = modelo, 
-                    parms=ensemble[1,], method="euler"))
+  
+  o = as.data.frame(solve_modelo_dissertacao(parametros = ensemble[1,], modelo = modelo, simtime = simtime)) 
+  
+  nomes_temporario = names(o)
+  
+  # o<-data.frame(ode(y=stocks, times=simtime, func = modelo, 
+  #                   parms=ensemble[1,], method="euler"))
   pontos = nrow(ensemble)
   
   nlinhas = nrow(o)
   
-  ncolunas = ncol(o)+1
+  ncolunas = ncol(o)+2
   
   # Montando uma matriz com todos os dados para a simulação
   dados_simulacao = matrix(nrow = pontos*nlinhas, ncol = ncolunas)
@@ -204,24 +209,34 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
   # J é o índice dos dados simulados
   j = 1
   # Rodando a Simulacao Em todo o Ensemble
+  
   for (i in 1:nrow(ensemble)) {
-    resultados_simulacao = ode(y=stocks, times=simtime, func = modelo, 
-                               parms=ensemble[i,], method="euler")
-    linhas = nrow(resultados_simulacao)
     
+    #resultados_simulacao = ode(y=stocks, times=simtime, func = modelo, 
+    #                           parms=ensemble[i,], method="euler")
+    
+    resultados_simulacao = as.data.frame(solve_modelo_dissertacao(parametros = ensemble[i,], modelo = modelo, simtime = simtime)) 
+    
+    resultados_simulacao = as.matrix(resultados_simulacao)
+    
+    linhas = nrow(resultados_simulacao)
     
     # Avançando a linha inicial e Final da Simulação
     l_inicial = j
     l_final = j + linhas-1
     
     # Adicionando o resultado ao ensemble
-    dados_simulacao[l_inicial:l_final,1:ncolunas-1] = resultados_simulacao
+    dados_simulacao[l_inicial:l_final,1:(ncolunas-2)] = resultados_simulacao
+    
+    # Adicionando o Número do Cenário
+    dados_simulacao[l_inicial:l_final,(ncolunas-1)] = ensemble[i,VAR_LEVER]
     
     # Adicionando o Número do Cenário
     dados_simulacao[l_inicial:l_final,ncolunas] = ensemble[i,VAR_SCENARIO]
     
+    
     # Exibindo uma Mensagem de Status
-    if (i %% 100 == 0) {
+    if (i %% 5 == 0) {
       message(paste(i, "simulações finalizadas."))
     }
     
@@ -229,10 +244,13 @@ simular = function(stocks, simtime, modelo, ensemble, nomes_variaveis_final) {
     j = j + linhas
   }
   
-  colnames(dados_simulacao) = nomes_variaveis_final
+  # Usando nomes temporario
+  colnames(dados_simulacao) = c(nomes_temporario, VAR_LEVER, VAR_SCENARIO)
+  # colnames(dados_simulacao) = nomes_variaveis_final
   
   dados_simulacao = as.data.frame(dados_simulacao)
-  names(dados_simulacao) = nomes_variaveis_final
+  names(dados_simulacao) = c(nomes_temporario, VAR_LEVER, VAR_SCENARIO)
+  #names(dados_simulacao) = nomes_variaveis_final
   
   message("01. funcoes.R/simular: Finalizando Simulacao.")
   
@@ -254,6 +272,8 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = 10){
   message("Bem vindo ao SIMULADOR RDM! Pedro Lima.")
   message(paste("Iniciando Simulacao RDM: ", t_inicio))
   
+  
+  
   # Carregando Inputs
   inputs = carregar_inputs(arquivo_de_inputs = arquivo_de_inputs)
   
@@ -270,7 +290,8 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = 10){
   
   message(paste("Esta rotina realizará", nestrategias * nfuturos * ntempo, "Simulacoes.\n (", nestrategias, "estratégias x", nfuturos, "futuros, em", ntempo , "periodos de tempo."))
   
-  dados_simulacao = simular(stocks = sdmodel$Stocks, simtime = sdmodel$SimTime, modelo = sdmodel$Modelo, ensemble = novo_ensemble, nomes_variaveis_final = sdmodel$Variaveis)
+  # TODO: Esta Chamada vai precisar mudar para considerar a nova funcao
+  dados_simulacao = simular(simtime = sdmodel$SimTime, modelo = sdmodel$Modelo, ensemble = novo_ensemble, nomes_variaveis_final = sdmodel$Variaveis)
   
   t_fim = Sys.time()
   
@@ -527,14 +548,14 @@ completeFun <- function(data, desiredCols) {
 
 
 
-solve_modelo_dissertacao <- function(parametros, modelo){
+solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   
   # Número de Players no modelo
   N_PLAYERS = 2
   
   # All the stocks are initialised here...
   
-  n_tempo = length(SIM_TIME)
+  n_tempo = length(simtime)
   
   list.variaveis.globais <<- list(
     sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
@@ -573,9 +594,14 @@ solve_modelo_dissertacao <- function(parametros, modelo){
                   ,aNormalCapacityUtilization = rep(unname(parametros["aNormalCapacityUtilization"]), times = N_PLAYERS)
                   #Target Capacity Sector
                   ,aMinimumEfficientScale = rep(unname(parametros["aMinimumEfficientScale"]), times = N_PLAYERS) # Original 100000
-                  ,aDesiredMarketShare = rep(0.5, times = N_PLAYERS)
+                  
+                  # Esta variavel é desdobrada por player.
+                  ,aDesiredMarketShare = c(unname(parametros["aDesiredMarketShare1"]), unname(parametros["aDesiredMarketShare2"]))      #rep(0.5, times = N_PLAYERS)
+                  
+                  # Esta variavel deve ser arredondada, sempre.
+                  ,aSwitchForCapacityStrategy = round(c(unname(parametros["aSwitchForCapacityStrategy1"]), unname(parametros["aSwitchForCapacityStrategy2"])), 0)
+                  
                   ,aWeightOnSupplyLine= rep(unname(parametros["aWeightOnSupplyLine"]), times = N_PLAYERS)
-                  ,aSwitchForCapacityStrategy = rep(1, times = N_PLAYERS)
                   ,aTimeToPerceiveCompTargetCapacity = rep(unname(parametros["aTimeToPerceiveCompTargetCapacity"]), times = N_PLAYERS)
                   # Price Sector
                   ,aPriceAdjustmentTime = unname(parametros["aPriceAdjustmentTime"])
@@ -626,7 +652,7 @@ solve_modelo_dissertacao <- function(parametros, modelo){
     ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
   ) 
   
-  resultado_completo = data.frame(ode(y=stocks, SIM_TIME, func = modelo, 
+  resultado_completo = data.frame(ode(y=stocks, simtime, func = modelo, 
                                       parms=auxs, method="euler"))
   # Posso filtrar os resultados ou não:
   # resultado_completo[variaveis_calibracao]
@@ -702,7 +728,22 @@ plot_cash_uma_estrategia = function(dados, estrategia) {
     labs(color = "Estratégia")
 }
 
-
+plot_linha_uma_variavel_ensemble = function(dados, variavel, nome_amigavel_variavel, estrategia) {
+  
+  gr2_dados = subset(dados, (Lever == estrategia))
+  
+  call_grafico = substitute(
+    expr = ggplot2::ggplot(gr2_dados, aes(x= time, y= Variavel, color=factor(Lever), group=Scenario)),
+    env = list(Variavel = as.name(variavel))
+  )
+  
+  p <- eval(call_grafico)
+  
+  p + 
+    geom_line() + 
+    ylab(nome_amigavel_variavel) + 
+    xlab("Tempo")
+}
 
 
 plot_linha_uma_variavel = function(dados, variavel, nome_amigavel_variavel) {

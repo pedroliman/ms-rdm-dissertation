@@ -19,11 +19,11 @@ library(dplyr)
 source('funcoes.R', encoding = 'UTF-8')
 
 opcoes = list(
-  VarResposta = "Cash",
+  VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 100,
-  VarTempo = "Tempo",
+  N = 10,
+  VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
 )
@@ -48,11 +48,10 @@ source('modelo-calibracao.R', encoding = 'UTF-8')
 ## Carregando objetos da Calibracao
 # source(file = "calibracao.R", encoding = "UTF-8")
 
+# source(file = "app.R", encoding = "UTF-8")
+
 # Carregando objetos de demonstração
 source(file = "demonstracoes.R", encoding = "UTF-8")
-
-source(file = "app.R", encoding = "UTF-8")
-
 
 
 ### Replicando os Resultados do Sterman ###
@@ -67,7 +66,7 @@ parametros_sterman = t(parametros_completos[,"Sterman"])[1,]
 names(parametros_sterman) = as.matrix(parametros_completos[,1])
 
 
-resultados_sterman = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = modelo)
+resultados_sterman = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
 
 # Gráfico do Lucro Simulado pelo Sterman
 grafico_npv_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sNPVProfit1", nome_amigavel_variavel = "Valor Presente Liquido")
@@ -78,10 +77,29 @@ grafico_demanda_sterman = plot_linha_uma_variavel(dados = resultados_sterman, va
 
 grafico_vpl_preco = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "sPrice1", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Preço")
 
+grafico_vpl_demanda = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "fIndustryOrderRate", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Demanda Global")
 
 
 
+### Rodando a minha Análise RDM ###
 
+results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
+
+
+plot_estrategia1 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = 1)
+
+plot_estrategia10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = 10)
+
+plot_preco_estrategia10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = c(6))
+
+
+plot_estrategia_candidata = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = results$EstrategiaCandidata)
+
+plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1RegretPerc")
+
+plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1Regret")
+
+plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1")
 
 
 ## Gerar Capitulo 4:

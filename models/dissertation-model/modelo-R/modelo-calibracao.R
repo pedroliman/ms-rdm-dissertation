@@ -2,6 +2,21 @@
 # Definindo Tempos da Simulação
 library(dplyr)
 
+## Inicializar variaveis da simulacao aqui:
+START<-0; FINISH<-5; STEP<-0.0625
+
+VERIFICAR_STOCKS = FALSE
+
+VERIFICAR_CHECKS = FALSE
+
+CHECK_PRECISION = 0.00001
+
+BROWSE_ON_DIFF = FALSE
+
+# Vetor de Tempos
+SIM_TIME <- seq(START, FINISH, by=STEP)
+
+
 ##### Modelo de Dinâmica de Sistemas ####
 
 # Definindo o Modelo
@@ -442,9 +457,9 @@ sdmodel = list(
   Start = START,
   Finish = FINISH,
   Step = STEP,
-  SimTime = simtime,
-  Auxs = auxs,
-  Stocks = stocks,
+  SimTime = SIM_TIME,
+  # Auxs = auxs,
+  # Stocks = stocks,
   Modelo = modelo,
   Variaveis = nomes_variaveis
 )
