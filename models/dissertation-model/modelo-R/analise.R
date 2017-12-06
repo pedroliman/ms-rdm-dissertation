@@ -54,6 +54,9 @@ source(file = "demonstracoes.R", encoding = "UTF-8")
 source(file = "app.R", encoding = "UTF-8")
 
 
+
+### Replicando os Resultados do Sterman ###
+
 # Rodando a Simulação com os Parâmetros do Sterman, rodando uma vez apenas.
 arquivo_parametros = "./params.xlsx"
 
@@ -66,14 +69,19 @@ names(parametros_sterman) = as.matrix(parametros_completos[,1])
 
 resultados_sterman = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = modelo)
 
-
 # Gráfico do Lucro Simulado pelo Sterman
-
-dados = resultados_sterman
-
 grafico_npv_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sNPVProfit1", nome_amigavel_variavel = "Valor Presente Liquido")
 
+grafico_preco_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sPrice1", nome_amigavel_variavel = "Preço Player 1")
+
 grafico_demanda_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "fIndustryOrderRate", nome_amigavel_variavel = "Demanda Anual Total")
+
+
+
+
+
+
+
 
 
 
