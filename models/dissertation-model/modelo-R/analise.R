@@ -29,7 +29,7 @@ opcoes = list(
 )
 
 ## Inicializar variaveis da simulacao aqui:
-START<-0; FINISH<-10; STEP<-0.0625
+START<-0; FINISH<-40; STEP<-0.0625
 
 VERIFICAR_STOCKS = FALSE
 
@@ -64,8 +64,16 @@ parametros_sterman = t(parametros_completos[,"Sterman"])[1,]
 names(parametros_sterman) = as.matrix(parametros_completos[,1])
 
 
-resultados_uma_rodada = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = modelo)
+resultados_sterman = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = modelo)
 
+
+# Gráfico do Lucro Simulado pelo Sterman
+
+dados = resultados_sterman
+
+grafico_npv_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sNPVProfit1", nome_amigavel_variavel = "Valor Presente Liquido")
+
+grafico_demanda_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "fIndustryOrderRate", nome_amigavel_variavel = "Demanda Anual Total")
 
 
 

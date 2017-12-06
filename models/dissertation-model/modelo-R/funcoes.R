@@ -703,6 +703,26 @@ plot_cash_uma_estrategia = function(dados, estrategia) {
 }
 
 
+
+
+plot_linha_uma_variavel = function(dados, variavel, nome_amigavel_variavel) {
+  
+  call_grafico = substitute(
+    expr = ggplot2::ggplot(dados, aes(x= time, y= Variavel)),
+    env = list(Variavel = as.name(variavel))
+  )
+  
+  p <- eval(call_grafico)
+  
+  p + 
+    geom_line() + 
+    ylab(nome_amigavel_variavel) + 
+    xlab("Tempo")
+}
+
+
+
+
 plot_taxa_adocao_uma_estrategia = function(dados, estrategia) {
   gr2_dados = subset(dados, (Lever == estrategia))
   ggplot2::ggplot(gr2_dados,
