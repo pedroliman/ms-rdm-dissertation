@@ -163,6 +163,10 @@ O segundo componente (b) trata-se de uma planilha com formato padronizado, conte
 
 Table: Entrada de Incertezas (X)
 
+Uma vez enviado à ferramenta computacional esta tabela é exibida na ferramenta web, como pode ser observado na Figura (XX).
+
+![Tela de Inputs da Ferramenta Computacional](images/rdm-tool-incertezas.png)
+
 A estruturação deste input neste formato permite que um número arbitrário de parâmetros incertos seja utilizado pelo modelo, e que o usuário possa alterar os parâmetros minimos e máximos e observar o impacto desta alteração em relação à análise realizada sem a necessidade de alterar o código fonte do modelo. O segundo elemento da entrada de dados consiste na tabela de estratégias a simular, que é ilustrada no Quadro (XX).
 
 | **Lever** | **LeverCode ** | **Variavel1** | **...** | **Variaveln** |
@@ -175,18 +179,19 @@ A estruturação deste input neste formato permite que um número arbitrário de
 
 Table: Entrada de Estratégias (L)
 
-Neste segundo quadro, cada linha da tabela representa uma estratégia, ou seja, uma combinação única de decisões a serem simuladas em cada um dos "n" futuros plausíveis definidos.
+Neste segundo quadro, cada linha da tabela representa uma estratégia, ou seja, uma combinação única de decisões a serem simuladas em cada um dos "n" futuros plausíveis definidos. As colunas "Lever" e "LeverCode" são fixas identificam a estratégia a ser simulada. As demais colunas correspondem à nomes de variáveis, que devem corresponder aos nomes constantes no modelo computacional, e os valores que estas variáveis assumirão.
 
+A partir do modelo computacional (presente na calculadora web) e dos inputs informados, a calculadora executa uma série de análises para a execução da análise RDM. O quadro (XX) sintetiza o papel de cada uma destas etapas. A seção de análise dos resultados neste trabalho detalhará o significado de cada uma destas etapas.
 
-O segundo componente 
-, e neste caso específico um modelo de dinâmica de sistemas. Este componente possui todas as equações necessárias para a simulação computacional e deve ser definido de modo compatível com a biblioteca deSolve, que é utilizada para a integração numérica do modelo.
+| **Etapa** | **Função da Etapa** |
+| ----------------| ----------------------------------------------------|
+| Geração de Casos | Nesta etapa a técnica Latin Hypercube Sampling (Citar XX) é usada para gerar um conjunto de casos contra os quais cada estratégia será testada. Todas as incertezas informadas na planilha são variadas simultâneamente de modo a representar uma ampla gama de situações às quais as decisões da empresa poderão ser submetidas. |
+| Resolução das Equações Diferenciais | Para cada um dos casos gerados, o algoritmo emprega a biblioteca deSolve para a integração numérica do conjunto de equações indicados no modelo. Nesta etapa, a variável de interesse é calculada (ex.: Valor Presente Líquido) |
+| Análise de Perda de Oportunidade | Nesta etapa o algoritmo calcula a perda de oportunidade (regret) de cada estratégia em cada cenário. Desta maneira, estima-se o valor monetário perdido pela empresa por não escolher a melhor estratégia dentre as disponíveis para o cenário em questão. |
+| Escolha de Estartégias Candidatas | A partir da perda de oportunidade calculada, uma estratégia candidata é selecionada dentre as disponíveis, utilizando-se um critério (o critério adotado por lempert (menor percentil 75%) é adotado por padrão). |
+| Análise de Vulnerabilidade da Estratégia | Este processo emprega o algoritmo PRIM para identificar cenários que melhor caracterizam as condições nas quais a estratégia candidata tem performance ruim. Este processo não pode ser automatizado completamente, devido à característica iterativa do algoritmo PRIM. |
+| Análise da Fronteira de Tradeoffs | Considerando a caracterização da vulnerabilidade da estratégia escolhida, a fronteira de tradeoffs é calculada exibindo as estratégias que levam à uma menor perda de oportunidade no cenário onde a estratégia candidata é ruim. |
 
-
-
-
-
-
-![Tela de Inputs da Ferramenta Computacional](images/rdm-tool-incertezas.png)
 
 Destaca-se que os componentes (a) e (b) podem ser modificados conforme o caso a ser analisado, sem a necessidade de reprogramar todas as funções do Simulador (c), nem do aplicativo web desenvolvido (d). Esta seção não detalhará cada um dos componentes e análises propiciadas pela ferramenta computacional, as quais serão evidenciadas nas seções de análise seguintes.
 
