@@ -143,11 +143,48 @@ A ferramenta EmaWorkbench, desenvolvida na linguagem python não possui interfac
 
 Considerando a necessidade de flexibilidade durante a execução deste trabalho, o pesquisador optou por desenvolver rotinas computacionais próprias utilizando a linguagem R e bibliotecas de código aberto disponíveis no repositório CRAN. A linguagem R possui bibliotecas para a integração numérica do modelo computacional (biblioteca deSolve), para a calibração do modelo (FME), para a disponibilização dos resultados em um aplicativo web (shiny), e para a visualização interativa dos resultados (ggplot2, plotly). Utilizando tais bibliotecas em conjunto, foi possível implementar as rotinas computacionais para a operacionalização do RDM, cuja estrutura é ilustrada na Figura (XXX).
 
+## Módulos da Ferramenta Computacional
+
+A ferramenta computacional foi projetada com o objetivo de receber uma planilha de inputs de dados (contendo a definição de estratégias a serem simuladas e incertezas a serem consideradas), e a partir do modelo computacional desenvolvido, rodar os passos da análise RDM com a maior grau de automação possível. A seguir são descritos os quatro principais módulos da ferramenta (ilustrados na Figura (XX)), e suas principais funções, com o propósito de viabilizar seu uso ou adaptação em trabalhos futuros.
+
+O primeiro componente necessário para a análise RDM é um modelo de simulação computacional. Por parte do RDM (e da análise exploratória em geral), não há uma limitação ou especificação quanto ao tipo de modelo a utilizar. Conforme Lempert (XXX 2006) esclarece, o framework de análise RDM pressupõe que modelos de simulação de "complexidade arbitrária" podem ser utilizados pela análise, desde que sejam capazes de relacionar decisões da empresa à métricas de resultado. A ferramenta computacional em questão propõe-se a suportar específicamente a utilização de modelos de dinâmica de sistemas desenvolvidos na linguagem R, de modo compatível à biblioteca de integração numérica deSolve.
+
 ![Projeto Modular da Ferramenta Computacional para a Análise RDM](images/projeto-ferramenta-computacional.png)
 
-A ferramenta computacional foi projetada com o objetivo de receber uma planilha de inputs de dados (contendo a definição de estratégias a serem simuladas e incertezas a serem consideradas), e a partir do modelo computacional desenvolvido, rodar os passos da análise RDM com a maior grau de automação possível. A seguir são descritos os quatro principais componentes da ferramenta. O primeiro componente necessário para a análise RDM é um modelo de simulação computacional, e neste caso específico um modelo de dinâmica de sistemas. Este componente possui todas as equações necessárias para a simulação computacional e deve ser definido de modo compatível com a biblioteca deSolve, que é utilizada para a integração numérica do modelo.
+O segundo componente (b) trata-se de uma planilha com formato padronizado, contendo as estratégias a serem simuladas e incertezas, incluindo valores máximos e mínimos para cada parâmetro. Esta planilha possui duas entradas de dados, com o propósito de permitir a entrada de incertezas (elemento X do framework XLRM) e de estratégias (elemtno L do framework XLRM). A tabela de incertezas deve conter uma linha por variável considerada incerta, e seus ranges plausíveis, como é ilustrado no Quadro (XX).
 
-O segundo componente (b) trata-se de uma planilha com formato padronizado, contendo as estratégias a serem simuladas e incertezas, incluindo valores máximos e mínimos para cada parâmetro. 
+| **Variavel** | **Nome Amigável ** | **Min** | **Max** | **Unidade** |
+| ------------ | ------------------| -------| -------- | -------------|
+| Incerteza1 | Incerteza ABC | 5 | 10 | R$ |
+| Incerteza2 | Incerteza XYZ | 20 | 30 | venda / pessoa |
+| ... | ... | ... | ... | ... |
+| Incertezan | Incerteza xyz | 0 | 1 | % Market Share |
+| Parametrofixo | Parametro ABC | 2,5 | 2,5 | Número de Pessoas |
+
+Table: Entrada de Incertezas (X)
+
+A estruturação deste input neste formato permite que um número arbitrário de parâmetros incertos seja utilizado pelo modelo, e que o usuário possa alterar os parâmetros minimos e máximos e observar o impacto desta alteração em relação à análise realizada sem a necessidade de alterar o código fonte do modelo. O segundo elemento da entrada de dados consiste na tabela de estratégias a simular, que é ilustrada no Quadro (XX).
+
+| **Lever** | **LeverCode ** | **Variavel1** | **...** | **Variaveln** |
+| ------------ | ------------------| -------| -------- | -------------|
+| 1 | Estratégia 1 | 1 | 0 | 0 |
+| 2 | Estratégia 2 | 1 | 0 | 1 |
+| 3 | Estratégia 3  | 0 | 1,5 | 1,5 |
+| ... | ...  | ... | ... | ... |
+| n | Estratégia n  | 0 | 2,5 | 3 |
+
+Table: Entrada de Estratégias (L)
+
+Neste segundo quadro, cada linha da tabela representa uma estratégia, ou seja, uma combinação única de decisões a serem simuladas em cada um dos "n" futuros plausíveis definidos.
+
+
+O segundo componente 
+, e neste caso específico um modelo de dinâmica de sistemas. Este componente possui todas as equações necessárias para a simulação computacional e deve ser definido de modo compatível com a biblioteca deSolve, que é utilizada para a integração numérica do modelo.
+
+
+
+
+
 
 ![Tela de Inputs da Ferramenta Computacional](images/rdm-tool-incertezas.png)
 
