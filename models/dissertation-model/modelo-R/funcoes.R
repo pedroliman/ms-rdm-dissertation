@@ -523,6 +523,126 @@ completeFun <- function(data, desiredCols) {
   return(data[completeVec, ])
 }
 
+##### FUNÇÕES CRIADAS NA CALIBRAÇÃO ####
+
+
+
+solve_modelo_dissertacao <- function(parametros, modelo){
+  
+  # Número de Players no modelo
+  N_PLAYERS = 2
+  
+  # All the stocks are initialised here...
+  
+  n_tempo = length(SIM_TIME)
+  
+  list.variaveis.globais <<- list(
+    sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
+    aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
+  )
+  
+  ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
+  auxs    <- list(aDiscountRate = unname(parametros["aDiscountRate"])
+                  ,aNormalDeliveryDelay = rep(unname(parametros["aNormalDeliveryDelay"]), times = N_PLAYERS)
+                  ,aSwitchForCapacity = unname(parametros["aSwitchForCapacity"])
+                  # Vamos testar apenas um parâmetro por enquanto
+                  ,aFractionalDiscardRate = unname(parametros["aFractionalDiscardRate"]) # unname(pars["aFractionalDiscardRate"]) # Original 0.1
+                  ,aInitialDiffusionFraction = unname(parametros["aInitialDiffusionFraction"])
+                  ,aReferencePrice = unname(parametros["aReferencePrice"])
+                  ,aReferenceIndustryDemandElasticity = unname(parametros["aReferenceIndustryDemandElasticity"])
+                  ,aReferencePopulation = unname(parametros["aReferencePopulation"])
+                  ,aInnovatorAdoptionFraction = unname(parametros["aInnovatorAdoptionFraction"])
+                  ,aWOMStrength = unname(parametros["aWOMStrength"]) # unname(pars["aWOMStrength"]) # Original 1
+                  ,aPopulation = unname(parametros["aPopulation"]) #100000000 # Original Sterman: 100000000
+                  ,aUnitsPerHousehold = unname(parametros["aUnitsPerHousehold"])
+                  ,aSwitchForShipmentsInForecast = unname(parametros["aSwitchForShipmentsInForecast"])
+                  ,aVolumeReportingDelay = rep(unname(parametros["aVolumeReportingDelay"]), times = N_PLAYERS)
+                  ,aForecastHorizon = rep(unname(parametros["aForecastHorizon"]), times = N_PLAYERS)
+                  ,aCapacityAcquisitionDelay = unname(parametros["aCapacityAcquisitionDelay"])
+                  ,aTimeForHistoricalVolume = unname(parametros["aTimeForHistoricalVolume"])
+                  # Market Sector
+                  ,aReferenceDeliveryDelay = unname(parametros["aReferenceDeliveryDelay"])
+                  ,aSensOfAttractToAvailability = unname(parametros["aSensOfAttractToAvailability"])
+                  ,aSensOfAttractToPrice = unname(parametros["aSensOfAttractToPrice"])
+                  # Learning Curve Params
+                  ,aLCStrength = rep(unname(parametros["aLCStrength"]), times = N_PLAYERS)
+                  ,aInitialProductionExperience = rep(unname(parametros["aInitialProductionExperience"]), times = N_PLAYERS)
+                  ,aRatioOfFixedToVarCost = rep(unname(parametros["aRatioOfFixedToVarCost"]), times = N_PLAYERS)
+                  ,aInitialPrice = rep(unname(parametros["aInitialPrice"]), times = N_PLAYERS)
+                  ,aNormalProfitMargin = rep(unname(parametros["aNormalProfitMargin"]), times = N_PLAYERS)
+                  ,aNormalCapacityUtilization = rep(unname(parametros["aNormalCapacityUtilization"]), times = N_PLAYERS)
+                  #Target Capacity Sector
+                  ,aMinimumEfficientScale = rep(unname(parametros["aMinimumEfficientScale"]), times = N_PLAYERS) # Original 100000
+                  ,aDesiredMarketShare = rep(0.5, times = N_PLAYERS)
+                  ,aWeightOnSupplyLine= rep(unname(parametros["aWeightOnSupplyLine"]), times = N_PLAYERS)
+                  ,aSwitchForCapacityStrategy = rep(1, times = N_PLAYERS)
+                  ,aTimeToPerceiveCompTargetCapacity = rep(unname(parametros["aTimeToPerceiveCompTargetCapacity"]), times = N_PLAYERS)
+                  # Price Sector
+                  ,aPriceAdjustmentTime = unname(parametros["aPriceAdjustmentTime"])
+                  ,aSensOfPriceToCosts = rep(unname(parametros["aSensOfPriceToCosts"]), times = N_PLAYERS)
+                  ,aSensOfPriceToDSBalance = rep(unname(parametros["aSensOfPriceToDSBalance"]), times = N_PLAYERS)
+                  ,aSensOfPriceToShare = rep(unname(parametros["aSensOfPriceToShare"]), times = N_PLAYERS)
+                  # Capacity Sector
+                  ,aSwitchForPerfectCapacity = unname(parametros["aSwitchForPerfectCapacity"])
+                  # A Initial Price
+                  ,aInitialPrice = rep(unname(parametros["aInitialPrice"]), times = N_PLAYERS)
+  )
+  
+  
+  ##### VARIÁVEIS DE ENTRADA - ESTOQUES INICIAIS, SEM AJUSTES #####
+  
+  # Informando Estoques Iniciais, sem ajustes, apenas para calcular o primeiro tempo.
+  stocks  <- c(
+    sNPVProfit = rep(0, times = N_PLAYERS)
+    ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
+    ,sBacklog = rep(12738, times = N_PLAYERS) 
+    ,sInstalledBase = rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+    ,sPrice = rep(1000, times = N_PLAYERS)
+    ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+    ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
+    ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
+    ,sPerceivedCompTargetCapacity = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity1 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity2 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity3 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+  ) 
+  
+  # Calculando estoques para o t0.
+  estoques_calculados = modelo(time = 0, stocks = stocks, auxs = auxs, modo = "inicial")
+  
+  # Substituindo estoques no t0
+  stocks  <- c(
+    sNPVProfit = rep(0, times = N_PLAYERS)
+    ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
+    ,sBacklog = unname(estoques_calculados$BacklogIni)
+    ,sInstalledBase = rep(unname(estoques_calculados$InstalledBaseIni), times = N_PLAYERS)
+    ,sPrice = unname(auxs$aInitialPrice)
+    ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
+    ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
+    ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
+    ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
+    ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
+    ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
+    ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
+  ) 
+  
+  resultado_completo = data.frame(ode(y=stocks, SIM_TIME, func = modelo, 
+                                      parms=auxs, method="euler"))
+  # Posso filtrar os resultados ou não:
+  # resultado_completo[variaveis_calibracao]
+  resultado_completo
+}
+
+getCost<-function(parametros, modelo, dados_calibracao){
+  
+  output_modelo <- solve_modelo_dissertacao(parametros, modelo)
+  #http://www.inside-r.org/packages/cran/FME/docs/modCost
+  
+  cost <- modCost(obs=dados_calibracao, model=output_modelo)
+  
+  return(cost)
+  
+}
 
 
 ##### GRÁFICOS ####

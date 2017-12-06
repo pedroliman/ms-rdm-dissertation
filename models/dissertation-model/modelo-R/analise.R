@@ -5,7 +5,12 @@
 # Objetivo: Este arquivo contém funções utilizadas para as análises 
 # RDM realizadas durante a dissertação.
 ###############################################################
-
+library(deSolve)
+library(ggplot2)
+library(gdata)
+library(scales)
+library(FME)
+library(readxl)
 library(akima)
 # library(prim)
 library(dplyr)
@@ -23,17 +28,49 @@ opcoes = list(
   SentidoCriterio = "min"
 )
 
+## Inicializar variaveis da simulacao aqui:
+START<-0; FINISH<-10; STEP<-0.0625
+
+VERIFICAR_STOCKS = FALSE
+
+VERIFICAR_CHECKS = FALSE
+
+CHECK_PRECISION = 0.00001
+
+BROWSE_ON_DIFF = FALSE
+
+# Vetor de Tempos
+SIM_TIME <- seq(START, FINISH, by=STEP)
 
 ## Carregando Modelo
 source('modelo-calibracao.R', encoding = 'UTF-8')
 
 ## Carregando objetos da Calibracao
-source(file = "calibracao.R", encoding = "UTF-8")
+# source(file = "calibracao.R", encoding = "UTF-8")
 
 # Carregando objetos de demonstração
 source(file = "demonstracoes.R", encoding = "UTF-8")
 
 source(file = "app.R", encoding = "UTF-8")
+
+
+# Rodando a Simulação com os Parâmetros do Sterman, rodando uma vez apenas.
+arquivo_parametros = "./params.xlsx"
+
+parametros_completos = readxl::read_xlsx(arquivo_parametros, sheet = "params")
+
+parametros_sterman = t(parametros_completos[,"Sterman"])[1,]
+
+names(parametros_sterman) = as.matrix(parametros_completos[,1])
+
+
+resultados_uma_rodada = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = modelo)
+
+
+
+
+
+
 
 ## Gerar Capitulo 4:
 rmarkdown::render(input = "Capitulo-4.Rmd")
