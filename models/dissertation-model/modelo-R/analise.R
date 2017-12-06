@@ -10,7 +10,6 @@ library(akima)
 # library(prim)
 library(dplyr)
 
-
 # Carregando Funções Úteis
 source('funcoes.R', encoding = 'UTF-8')
 
@@ -47,9 +46,9 @@ resultado_unico <- data.frame(ode(y=stocks, times=simtime, func = modelo,
 
 
 
+
+
 ## GE
-
-
 
 
 resultado_transposto = t(resultado_unico)
