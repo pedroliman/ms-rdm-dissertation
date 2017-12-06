@@ -730,10 +730,11 @@ plot_cash_uma_estrategia = function(dados, estrategia) {
 
 plot_linha_uma_variavel_ensemble = function(dados, variavel, nome_amigavel_variavel, estrategia) {
   
-  gr2_dados = subset(dados, (Lever == estrategia))
+  gr2_dados = subset(dados, (Lever %in% estrategia))
   
   call_grafico = substitute(
-    expr = ggplot2::ggplot(gr2_dados, aes(x= time, y= Variavel, color=factor(Lever), group=Scenario)),
+    expr = ggplot2::ggplot(gr2_dados, aes(x= time, y= Variavel, color=factor(Lever) , group= interaction(Lever, Scenario) 
+                                          )),
     env = list(Variavel = as.name(variavel))
   )
   
