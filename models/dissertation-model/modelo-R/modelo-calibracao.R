@@ -161,7 +161,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     aExpectedIndustryDemand = sReportedIndustryVolume*exp(aForecastHorizon*aCapacityAcquisitionDelay*aExpGrowthInVolume)
     
-    list.variaveis.globais$aExpectedIndustryDemand[linha,] = aExpectedIndustryDemand
+    list.variaveis.globais$aExpectedIndustryDemand[linha,] <<- aExpectedIndustryDemand
     
     # Mais uma variável com delay
     if(time > aCapacityAcquisitionDelay) {

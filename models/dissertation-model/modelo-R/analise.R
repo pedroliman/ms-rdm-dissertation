@@ -22,14 +22,14 @@ opcoes = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 10,
+  N = 20,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
 )
 
 ## Inicializar variaveis da simulacao aqui:
-START<-0; FINISH<-40; STEP<-0.0625
+START<-0; FINISH<-10; STEP<-0.0625
 
 VERIFICAR_STOCKS = FALSE
 
@@ -95,8 +95,7 @@ results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdm
 plot_estrategia1 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = 1)
 
 plot_estrategia1e10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = c(6, 7))
-
-plot_preco_estrategia10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = c(1, 6, 10))
+plot_preco_estrategia10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = c(3))
 
 
 plot_estrategia_candidata = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = results$EstrategiaCandidata)
@@ -106,6 +105,32 @@ plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret
 plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1Regret")
 
 plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1")
+
+# Verificar resultados com NA
+
+View(results$DadosSimulados[which(results$DadosSimulados$Scenario == 1),])
+
+
+
+### Analisar ENsemble
+
+ensemble_analisado = analisar_ensemble_com_melhor_estrategia(ensemble = results$Ensemble,
+                                                             dados_regret = results$AnaliseRegret$Dados, 
+                                                             var_cenarios = opcoes$VarCenarios, 
+                                                             var_estrategias = opcoes$VarEstrategias, 
+                                                             var_resposta = opcoes$VarResposta, 
+                                                             estrategia_candidata = results$EstrategiaCandidata)
+
+
+parametros_lidos = readxl::read_xlsx("params.xlsx", sheet = "params")
+
+incertezas = parametros_lidos[which(!(parametros_lidos[,"Min"]==parametros_lidos[,"Max"])),"Variavel"][[1]]
+
+incertezas = c("aUnitsPerHousehold", "aFractionalDiscardRate", "aReferenceIndustryDemandElasticity", "aVolumeReportingDelay")
+
+
+# Ajuda a Identificar em Que condições a Estratégia Candidata não é a melhor.
+plot_estrategias_incertezas = plot_estrategias_versus_incertezas(ensemble_analisado = ensemble_analisado,incertezas = incertezas)
 
 
 #### RODADA 2 ####

@@ -421,6 +421,11 @@ O modelo matemático descrito na seção anterior foi implementado no software R
 
 Os resultados deste trabalho podem ser observados no link bit.ly/reproddissertpnl.
 
+```{r vpl_preco_sterman, fig.cap= "Preço e VPL - Resultados do Modelo"}
+print(grafico_vpl_preco)
+```
+
+
 ### Testes Estruturais / Testes de Valores Extremos
 
 ## Calibração do Modelo e Comparação com Dados Históricos
