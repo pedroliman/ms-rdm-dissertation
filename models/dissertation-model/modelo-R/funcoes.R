@@ -551,7 +551,7 @@ completeFun <- function(data, desiredCols) {
 solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   
   # Número de Players no modelo
-  N_PLAYERS = 2
+  N_PLAYERS <<- 2
   
   # All the stocks are initialised here...
   
@@ -743,7 +743,9 @@ plot_linha_uma_variavel_ensemble = function(dados, variavel, nome_amigavel_varia
   p + 
     geom_line() + 
     ylab(nome_amigavel_variavel) + 
-    xlab("Tempo")
+    xlab("Tempo") + 
+    theme(legend.position="bottom")  +
+    labs(color = "Estratégia")
 }
 
 
@@ -759,7 +761,8 @@ plot_linha_uma_variavel = function(dados, variavel, nome_amigavel_variavel) {
   p + 
     geom_line() + 
     ylab(nome_amigavel_variavel) + 
-    xlab("Tempo")
+    xlab("Tempo") + 
+    theme(legend.position="bottom")
 }
 
 

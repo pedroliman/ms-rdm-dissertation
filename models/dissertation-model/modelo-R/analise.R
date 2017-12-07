@@ -56,8 +56,10 @@ source(file = "demonstracoes.R", encoding = "UTF-8")
 
 ### Replicando os Resultados do Sterman ###
 
+
+#### Replicando Sterman ####
 # Rodando a Simulação com os Parâmetros do Sterman, rodando uma vez apenas.
-arquivo_parametros = "./params.xlsx"
+arquivo_parametros = "./analise-sterman/params.xlsx"
 
 parametros_completos = readxl::read_xlsx(arquivo_parametros, sheet = "params")
 
@@ -65,7 +67,7 @@ parametros_sterman = t(parametros_completos[,"Sterman"])[1,]
 
 names(parametros_sterman) = as.matrix(parametros_completos[,1])
 
-
+## Mudando o tempo de simulação para Simular o Sterman
 resultados_sterman = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
 
 # Gráfico do Lucro Simulado pelo Sterman
@@ -79,16 +81,20 @@ grafico_vpl_preco = plot_linha_duas_variaveis(dados = resultados_sterman, variav
 
 grafico_vpl_demanda = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "fIndustryOrderRate", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Demanda Global")
 
-
-
 ### Rodando a minha Análise RDM ###
+
+
+#### RODADA 1 ####
+
+# Carregando o Modelo Novamente:
+source('modelo-calibracao.R', encoding = 'UTF-8')
 
 results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
 
 plot_estrategia1 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = 1)
 
-plot_estrategia10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = c(10, 1))
+plot_estrategia1e10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = c(6, 7))
 
 plot_preco_estrategia10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = c(1, 6, 10))
 
@@ -101,6 +107,8 @@ plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dado
 
 plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1")
 
+
+#### RODADA 2 ####
 
 ## Gerar Capitulo 4:
 rmarkdown::render(input = "Capitulo-4.Rmd")

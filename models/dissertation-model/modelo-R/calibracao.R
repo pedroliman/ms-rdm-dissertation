@@ -15,6 +15,17 @@ lower<-c(1000, 0.3)
 upper<-c(10000000, 3)
 
 
+arquivo_parametros = "./analise-sterman/params.xlsx"
+
+parametros_completos = readxl::read_xlsx(arquivo_parametros, sheet = "params")
+
+parametros = t(parametros_completos[,"Sterman"])[1,]
+
+names(parametros_sterman) = as.matrix(parametros_completos[,1])
+
+lower = t(parametros_completos[,"Min"])[1,] 
+upper = t(parametros_completos[,"Max"])[1,]
+
 # Aqui é onde a calibração pode ser feita.
 
 Fit<-modFit(p = parametros, f = getCost, modelo = modelo, dados_calibracao = dados_calibracao, lower=lower, upper=upper)

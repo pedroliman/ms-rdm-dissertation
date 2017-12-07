@@ -450,33 +450,33 @@ Table: Parâmetros e Valores de Referência
 Calibração da Demanda Global:
 
 ```{r}
-p1
+# p1
 ```
 
 
 ```{r}
 ### Testes Estruturais / Testes de Valores Extremos
-p2
+# p2
 ```
 
 
 Variáveis utilizadas na calibração e erros:
 
 ```{r}
-knitr::kable(cost$var)
+# knitr::kable(cost$var)
 ```
 
 
 Tabela de Resíduos da Calibração:
 
 ```{r}
-knitr::kable(cost$residuals)
+# knitr::kable(cost$residuals)
 ```
 
 Parâmetros calibrados com este procedimento:
 
 ```{r}
-knitr::kable(optPar)
+# knitr::kable(optPar)
 ```
 
 
@@ -485,6 +485,70 @@ knitr::kable(optPar)
 ### XLRM
 
 ### Geração de Casos (Rodada 1)
+
+**Parâmetros:**
+
+```{r parametros1, fig.cap="Tabela de Parâmetros"}
+colunas = c("Variavel","Min", "Max", "Unidade")
+nomes = c("Variável", "Mínimo", "Máximo", "Unidade")
+knitr::kable(results$Inputs$Parametros[colunas], digits = 3, col.names = nomes, caption = "Ranges de Parâmetros - Rodada 1")
+```
+
+
+**Estratégias**
+
+
+```{r levers1, fig.cap="Tabela de Estratégias"}
+colunas = c("Variavel","Min", "Max", "Unidade")
+nomes = c("Estratégia", "Código", "Estratégia de Capacidade", "Market Share Alvo")
+knitr::kable(results$Inputs$Levers, digits = 3, col.names = nomes, caption = "Estratégias Simuladas - Rodada 1")
+```
+
+**Geração do Ensemble**
+
+```{r ensemble1, fig.cap="Tabela de Estratégias"}
+nomes = c("Caso 1", "Caso 2", "Caso 3", "Caso 4")
+knitr::kable(t(head(results$Ensemble, n = 4)), digits = 3, col.names = nomes, format.args = list(scientific = FALSE), caption = "Primeiros 4 casos do Ensemble de Casos")
+```
+
+
+**Resultados da Simulação**
+
+
+```{r estrategia1, fig.cap="Trajetórias Simuladas de duas Estratégias"}
+print(plot_estrategia1e10)
+```
+
+
+** Plot Preço**
+
+```{r preco1, fig.cap="Trajetórias Simuladas de duas Estratégias - Impacto Sobre Preço"}
+print(plot_preco_estrategia10)
+```
+
+
+** Análise de Perda de Oportunidade **
+
+- Lucro Possível:
+
+```{r fig.cap="Comparação VPL Possível das Estratégias"}
+print(plot_whisker_lever_profit)
+```
+
+
+- Perda de Oportunidade Absoluta:
+
+```{r fig.cap="Comparação Perda de Oportunidade das Estratégias"}
+print(plot_whisker_lever_regret)
+```
+
+
+- Perda de Oportunidade Relativa:
+
+```{r fig.cap="Comparação Perda de Oportunidade Relativa das Estratégias"}
+print(plot_whisker_lever_perc_regret)
+```
+
 
 ### Análise de Vulnerabilidades (Rodada 1)
 
@@ -591,5 +655,5 @@ analisar_ensemble_com_melhor_estrategia
 - **Funções do Aplicativo Web** :
 
 ```{r}
-server
+# server
 ```

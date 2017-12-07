@@ -3,7 +3,7 @@
 library(dplyr)
 
 ## Inicializar variaveis da simulacao aqui:
-START<-0; FINISH<-5; STEP<-0.0625
+# START<-0; FINISH<-40; STEP<-0.0625
 
 VERIFICAR_STOCKS = FALSE
 
@@ -14,7 +14,7 @@ CHECK_PRECISION = 0.00001
 BROWSE_ON_DIFF = FALSE
 
 # Vetor de Tempos
-SIM_TIME <- seq(START, FINISH, by=STEP)
+# SIM_TIME <- seq(START, FINISH, by=STEP)
 
 
 ##### Modelo de Dinâmica de Sistemas ####
