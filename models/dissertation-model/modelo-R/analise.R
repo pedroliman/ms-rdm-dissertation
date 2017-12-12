@@ -71,6 +71,10 @@ names(parametros_sterman) = as.matrix(parametros_completos[,1])
 resultados_sterman = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
 
 # Gráfico do Lucro Simulado pelo Sterman
+
+plots_width = 6
+plots_heigh = 3
+
 grafico_npv_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sNPVProfit1", nome_amigavel_variavel = "Valor Presente Liquido")
 
 grafico_preco_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sPrice1", nome_amigavel_variavel = "Preço Player 1")
@@ -80,6 +84,17 @@ grafico_demanda_sterman = plot_linha_uma_variavel(dados = resultados_sterman, va
 grafico_vpl_preco = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "sPrice1", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Preço")
 
 grafico_vpl_demanda = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "fIndustryOrderRate", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Demanda Global")
+
+
+# Salvando os Gráficos do Sterman
+ggsave("./images/grafico_npv_sterman.png", plot = grafico_npv_sterman, width = plots_width, height = plots_heigh)
+ggsave("./images/grafico_preco_sterman.png", plot = grafico_preco_sterman, width = plots_width, height = plots_heigh)
+ggsave("./images/grafico_demanda_sterman.png", plot = grafico_npv_sterman, width = plots_width, height = plots_heigh)
+ggsave("./images/grafico_vpl_preco.png", plot = grafico_vpl_preco, width = plots_width, height = plots_heigh)
+ggsave("./images/grafico_vpl_demanda.png", plot = grafico_vpl_demanda, width = plots_width, height = plots_heigh)
+
+
+
 
 ### Rodando a minha Análise RDM ###
 
