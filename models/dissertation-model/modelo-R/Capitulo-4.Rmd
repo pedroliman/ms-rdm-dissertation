@@ -4,6 +4,8 @@ author: "Pedro Nascimento de Lima"
 abstract: "Este documento contém os resultados da dissertação, e é escrito diretamente no R. Os capítulos do projeto da dissertação (1,2 e 3) não estão reproduzidos por completo neste documento, mas sua estrutura e argumentos utilizados está representado para alinharmos o trabalho como um todo, e decidirmos o local de cada argumento. Por hora, vou gerar e escrever o documento no R para agilizar a geração dos gráficos e fórmulas. Após a estabilização do documento, vou levá-lo para o word e formatar."
 date: "Versão Preliminar - R"
 output:
+  word_document: 
+    fig_caption: yes
   pdf_document: 
     fig_caption: yes
     fig_height: 3
@@ -11,7 +13,6 @@ output:
     number_sections: yes
     toc: yes
     toc_depth: 4
-  word_document: default
 header-includes:
 - \usepackage{booktabs}
 - \usepackage{longtable}
