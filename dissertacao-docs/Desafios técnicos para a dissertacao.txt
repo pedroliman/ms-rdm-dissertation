@@ -1,0 +1,27 @@
+Questões Resolvidas:
+Como rodar o modelo no R?
+Como rodar o modelo com um conjunto de diversos parâmetros?
+Como rodar o modelo com um conjunto de estratégias?
+Como combinar estratégias e parâmetros?
+
+Análises do RDM:
+Como rodar o algoritmo PRIM para a descoberta de cenários?
+
+
+Análises do RDM:
+Como calcular o "Regret" das estratégias"?
+Como visualizar a "fronteira de robustez" de uma estratégia?
+Como calcular os tradeoffs da análise do RDM?
+
+
+Questões ainda a Resolver (Questões Tecnológicas):
+1) Dado que eu tenho dados, como calibrar o modelo usando as recomendações atuais?
+2) Que dados eu vou precisar?
+2.1) Não havendo todos os dados disponíveis, como calibrar o modelo para estimar alguns parâmetros?
+
+3) Considerar ou não estocasticidade no modelo?
+3.1) Se for para considerar a estocasticidade, como modelar o "ruído pink", assim como o Sterman coloca?
+
+Ideia do "balão de ensaio".
+
+Completar o livro do Jim Duggan com

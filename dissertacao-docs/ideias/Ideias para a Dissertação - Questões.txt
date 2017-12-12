@@ -1,0 +1,38 @@
+Questões de Pesquisa Possíveis:
+
+
+Conceitos Usados com frequência
+
+DDD - Data Driven Decisionmaking - Erik ... (MIT - Digital.mit.edu)
+
+ - As empresas que usam Data Driven DecisionMaking tem performance melhor?
+	 R: Uma pesquisa aponta que sim, há evidência americana que suporta isso.
+
+ - Como?
+	- Como Data driven Decision Making pode ser aplicado na manufatura?
+		- Exemplo: Experimentação com diversas variáveis verificadas na realidade. (Se você olhar, isso é a mesma lógica das pás de Taylor).
+	- Que métodos o Data Driven Decision Making pode incorporar hoje e não podia antes?
+	- Como essas novas técnicas podem realmente gerar resultados?
+	- Como as empresas podem fazer uma "transição"? Erik disse em uma entrevista que talvez a maioria delas não iriam fazer uma transição.
+
+ - Por quê?
+ 	- Por quê Data Driven Decision Making é importante para a Manufatura?
+ 	- Por quê Data Driven Decision Making é importante para os Negócios?
+
+ - O quê?
+ 	- O que é Data Driven DecisionMaking? Isso pode ser considerado um novo paradigma realmente?
+
+ - Quais são os Impactos de Data Driven Decision making?
+	- Quais são os impactos e implicações para a qualidade de vida das pessoas?
+	- Que tipos de emprego essas tecnologias criarão e destruirão?
+
+É necessária uma nova Teoria para Data Driven Decisionmaking? Isso envolve um novo paradigma, ou não? Parece que não!
+
+Is Business Analytics just Taylorism Revamped? Why Data-Driven Decision Making and Data Analytics Capabilities maybe just Taylorism fueled with more Data.
+
+Taylor have coined one of the most influential concepts: The rise of Scientific Management as "necessary for getting over judgment".
+
+Scientific Management Revamped: Is Business Analytics Movement just a Modern Scientific Manegement?
+
+The main thesis of this article is: All this Data-Hype (at least applied to Data Science) might just be the same Taylorist Idea (Scientific Management)
+We're not questioning the powerfull impact Data Science can have on business. In fact, evide

@@ -1,0 +1,7 @@
+https://www-scopus-com.ez101.periodicos.capes.gov.br/results/citedbyresults.uri?sort=cp-f&cite=2-s2.0-0030304390&src=s&nlo=&nlr=&nls=&imp=t&sid=593D825D06AA06D5193E10C22B006791.wsnAw8kcdt7IPYLO0V48gA%3a610&sot=cite&sdt=sisr&sl=0&ref=%28strategic+decision+making%29&origin=resultslist&offset=1&txGid=593D825D06AA06D5193E10C22B006791.wsnAw8kcdt7IPYLO0V48gA%3a70
+
+
+Busca 2, mais refinada:
+
+https://www-scopus-com.ez101.periodicos.capes.gov.br/results/citedbyresults.uri?sort=cp-f&cite=2-s2.0-0030304390&src=s&nlo=&nlr=&nls=&imp=t&sid=C6B64E7633A1735D32B41FD3F0FD1218.wsnAw8kcdt7IPYLO0V48gA%3a400&sot=cite&sdt=sisr&sl=0&ref=%28%28strategic+decision+making%29%29+AND+%28TITLE-ABS-KEY%28%22strategic+decision%22%29%29&origin=resultslist&offset=1&txGid=C6B64E7633A1735D32B41FD3F0FD1218.wsnAw8kcdt7IPYLO0V48gA%3a39
+
