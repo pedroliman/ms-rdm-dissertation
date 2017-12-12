@@ -1,0 +1,12 @@
+id	label	x	y	cluster	weight<Links>	weight<Total link strength>	weight<Citations>
+14	"bankes, s.c."	0.6884	0.0494	2	10	317	14
+40	"characklis, g.w."	-0.8818	-0.0943	1	8	235	5
+108	"groves, d.g."	-0.0485	-0.0333	1	10	187	5
+155	"kasprzyk, j.r."	-0.8806	0.1612	1	8	235	5
+162	"kirsch, b.r."	-0.7582	-0.2981	1	8	192	4
+165	"kollat, j.b."	-0.6842	0.2713	1	8	276	6
+176	"lempert, r.j."	0.2189	0.0267	2	10	614	23
+218	"morgan, m.g."	1.2194	0.0467	2	5	78	4
+219	"nakicenovic, n."	1.1539	-0.0502	2	5	95	5
+232	"popper, s.w."	0.547	-0.0603	2	10	286	11
+246	"reed, p.m."	-0.5743	-0.0191	1	8	507	13

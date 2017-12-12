@@ -1,0 +1,77 @@
+Existe uma fronteira de eficiência para o meio de "divulgação" que alguém está usando.
+
+Em qualquer situação, sempre existirá uma fronteira de eficiência. A eficácia de uma propaganda não pode crescer infinitamente.
+
+Da mesma forma, o 
+
+O sucesso ou não do crescimento de uma startup dependerá de:
+
+a) Se o mercado é grande o suficiente / tem margem o suficiente para sustentar e dar dinheiro para a startup;
+b) "A fronteira de eficiência" é grande ou pequena;
+c) A startup pode chegar à esta fronteira antes de sua concorrência ou não.
+
+d) A startup pode manter-se perto desta fronteira ao longo do tempo ou não.
+e) Existem outros players no mercado / outras startups distorcendo a fronteira de eficiência / o tamanho do mercado / etc.
+f) O valor oferecido pela plataforma.
+
+Clientes
+Margem
+
+Fluxo de clientes entrando e saindo da startup.
+Outros concorrentes puxando os clientes para "fora" da startup.
+
+
+Como consequência.:
+
+ - Existem mercados que não são lucrativos dada a eficiência atual dos processos de divulgação atuais. Logo, existem mercados que podem se tornar lucrativos com mudanças na eficiência do growth hacking.
+ - Existem mercados que são lucrativos e já foram dominados por grandes players que agora aproveitam "network effects" nestes mercados (ex.: Uber. Qual seria o custo de criar um novo Uber agora? Ou um novo Google? O que explica isso não é tecnologia, mas sim a base de usuários que gerou uma "path dependence".)
+ - Existem mercados que são lucrativos dada a eficiência atual dos processos de divulgação. Ao longo do tempo, espera-se.
+ - Existem mercados que não tem plataformas com valor oferecido pela plataforma.
+
+
+EXISTE INTERAÇÃO ENTRE O VALOR OFERECIDO PELA PLATAFORMA E A ESTRATÉGIA DE GROWTH HACKING.
+
+DUAS PLATAFORMAS IGUAIS TERÃO VALORES DIFERENTES PARA OS CLIENTES SÓ PELO FATO DE QUEM ESTÁ LÁ.
+
+Onde dá para ganhar dinheiro?
+
+ - Entrando em mercados com potencial de lucro inexplorados;
+ - Entrando em mercados já explorados, com muito mais valor...
+
+A decisão de investir bem, portanto, depende de reconhecer o mercado com relativamente baixa barreira de entrada e ter uma estratégia de crescimento robusta para gerar efeitos de rede rápido, antes da concorrência.
+
+Dados estes argumentos, a decisão "estratégica" mais importante é onde investir / em que opções de "startup" investir, e entender como a incerteza e os fatores incertos impactam esta decisão.
+
+
+Decisões tomadas pelo "investidor / empreendedor" em uma startup peer to peer:
+
+ - Em Que ramo de negócio focar?
+	- Transporte, Comida, Roupa, Serviços de Beleza, Aluguel de Casa, etc, etc, etc.
+
+ - Em que região começar o negócio?
+	- Região grande, pequena, nicho específico, etc, etc, etc.
+
+ - Que preço / modelo de negócio usar?
+	- Fremium, free, baixa taxa, alta taxa, 
+
+ - Que mecanismo de incentivo usar para incentivar o consumidor final a adotar a plataforma? Que mecanismo de incentivo usar para o prestador de incentivo usar a plataforma?
+	 - Desconto / Compartilhamento, Uso Gratuito, Coupons, 
+
+ - Como a plataforma agrega valor ao cliente E ao prestador do serviço? (Tem a ver com o mecanismo de incentivo).
+    - 
+
+ - O que pode dar errado neste plano? Em que cenários a empresa cresce e em que cenários a empresa não cresce?
+ - Quais são as fragilidades deste plano? Há uma forma de evitar estas fragilidades.
+
+
+
+Outra linha de raciocínio: Tradeoffs e Escolhas Operacionais...
+
+
+
+
+
+
+
+
+

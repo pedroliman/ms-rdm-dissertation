@@ -1,0 +1,15 @@
+Getting past Overoptimism Cognitive Biases: Confronting Uncertain Strategic Decisions with Robust Decision Methods and Data Analytics
+
+- Cognitive Biases have influenced strategic decision making for long enough.
+- Academic discussion focused on proving and testing such proposition. Some normative work required CEOs to do scenario planning, which can be also biased.
+
+- Traditional Decision Analytic Methods required Probabilitistic Estimates, subject to Optimism Bias.
+
+- RDM offers an approach favors decisions less dependant on assumptions about what the future will bring and more favorable to robust decision.
+
+- New methods offers quantitative-based way out of Hyppo's biased predictions.
+
+HYPPOs - Highest paid Person Estimates.
+
+Bayes Decision Rule (termed "Predict-Then-Act" Approaches) which aims at making the best decision with the available information can be hihgly misleading...
+

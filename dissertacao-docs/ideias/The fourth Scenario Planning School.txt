@@ -1,0 +1,25 @@
+The Fourth Scenario School: The Multi-Scenario / Exploratory Modeling, Robust Decision Searching School
+
+Recent years had seen a surge of new methods called "Robust Decision Methods".
+
+These methods change scenario planning methodologies and do intend to substitute them in some degree.
+
+Although they use scenario driven ideas (such as "do not work to get more precise forecasts, and consider a wide range of plausible future), they fundamentally diverge on how to approach the task replacing the more qualitative with a quantitative, decision-focused one.
+
+This paper provides bibliometric evidence of this school existence, and compares it using the same criteria used in previous scenario school-defining work. Findings explicitly:
+
+a) A compelling bibliometric evidence of this school surgence;
+b) A distinction between the most traditional approaches and this new school.
+
+Nearby neighbours... This school has some important neighbours which should be mentioned:
+The Bayesian Decision Analysis School
+The Robust Optimisation School
+The System Dynamics Simulation School
+Other Robust Decision Frameworks School.
+
+Findings suggest that these new approaches have been successfully applied to an increasing number of circumstances. Yet, such development has been constrained to the public policy arena. Nevertheless, the school holds promise for the business arena, which should be fuelled by the recent interest on more Analitycal - Evidence-Based methods.
+
+It makes clear the distinction between the new approaches and what it means for strategic planners and scholars.
+
+
+Decision Making Under Uncertainty

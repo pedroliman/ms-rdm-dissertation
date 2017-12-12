@@ -1,0 +1,79 @@
+{UTF-8}
+Avg Transactions per Customer  = A FUNCTION OF( )
+	~	
+	~		|
+
+Final Customers=A FUNCTION OF(Final Customers) ~~|
+Final Customers= INTEG (
+	,
+		100)
+	~	
+	~		|
+
+Service Providers=A FUNCTION OF(Service Providers) ~~|
+Service Providers= INTEG (
+	,
+		100)
+	~	
+	~		|
+
+Transactions  = A FUNCTION OF( )
+	~	
+	~		|
+
+Transactions Performed  = A FUNCTION OF( -Transactions)
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP 
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,100,0
+10,1,Final Customers,368,81,40,20,3,3,0,0,0,0,0,0
+10,2,Service Providers,370,329,40,20,3,3,0,0,0,0,0,0
+10,3,Avg Transactions per Customer,576,138,56,19,8,3,0,0,0,0,0,0
+10,4,Transactions Performed,490,224,40,20,3,3,0,0,0,0,0,0
+12,5,48,689,233,10,8,0,3,0,0,-1,0,0,0
+1,6,8,5,4,0,0,22,0,0,0,-1--1--1,,1|(644,233)|
+1,7,8,4,100,0,0,22,0,0,0,-1--1--1,,1|(564,233)|
+11,8,0,604,233,6,8,34,3,0,0,1,0,0,0
+10,9,Transactions,604,252,40,11,40,3,0,0,-1,0,0,0
+///---\\\
+:L<%^E!@
+9:Current
+23:0
+15:0,0,0,0,0,0
+19:100,0
+27:0,
+34:0,
+5:Service Providers
+24:0
+25:0
+26:0
