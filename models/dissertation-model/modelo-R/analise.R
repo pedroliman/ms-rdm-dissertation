@@ -56,7 +56,6 @@ names(parametros_sterman) = as.matrix(parametros_completos[,1])
 # Mudando o tempo de simulação para Simular o Sterman
 resultados_sterman = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
 
-
 # Gerando Gráficos
 sterman_plots = list(
   grafico_npv_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sNPVProfit1", nome_amigavel_variavel = "Valor Presente Liquido"),
@@ -70,6 +69,11 @@ sterman_plots = list(
   grafico_vpl_demanda = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "fIndustryOrderRate", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Demanda Global")
   
 )
+
+# Salvando Resultados do Sterman e Plots (para eventual verificação posterior):
+save(sdmodel, parametros_sterman, resultados_sterman, sterman_plots, file = "./analise-sterman/resultados_sterman.Rdata")
+# Para carregar depois, basta rodar:
+# load(file = "./analise-sterman/resultados_sterman.Rdata")
 
 # Salvando todos os Gráficos do Sterman:
 mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=sterman_plots, width = plots_width, height = plots_heigh)
@@ -85,8 +89,9 @@ VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.00001; B
 # Carregando o Modelo Novamente:
 source('modelo-calibracao.R', encoding = 'UTF-8')
 
-results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
-
+results = simularRDM_e_escolher_estrategia(inputs = "./rodada1/params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
+# Salvando Resultados
+save(resultados_sterman, results)
 
 # Gráficos
 
