@@ -743,7 +743,7 @@ plot_linha_uma_variavel_ensemble = function(dados, variavel, nome_amigavel_varia
   p + 
     geom_line() + 
     ylab(nome_amigavel_variavel) + 
-    xlab("Tempo") + 
+    xlab("Tempo (anos)") + 
     theme(legend.position="bottom")  +
     labs(color = "Estratégia")
 }
@@ -761,7 +761,7 @@ plot_linha_uma_variavel = function(dados, variavel, nome_amigavel_variavel) {
   p + 
     geom_line() + 
     ylab(nome_amigavel_variavel) + 
-    xlab("Tempo") + 
+    xlab("Tempo (anos)") + 
     theme(legend.position="bottom")
 }
 
@@ -793,8 +793,8 @@ plot_linha_duas_variaveis = function(dados, variavel1, nome_amigavel_variavel1, 
   # modifying colours and theme options
   p <- p + scale_colour_manual(values = c("blue", "red"))
   p <- p + labs(y = nome_amigavel_variavel1,
-                x = "Tempo",
-                colour = "Variaveis")
+                x = "Tempo (anos)",
+                colour = "Variáveis")
   
   p <- p + theme(legend.position="bottom")
 
@@ -810,7 +810,7 @@ plot_taxa_adocao_uma_estrategia = function(dados, estrategia) {
                   aes(x=Tempo, y=Adoption_Rate, color=factor(Lever), group=Scenario)) + 
     geom_line() + 
     ylab("Taxa de Adoção") + 
-    xlab("Tempo") +
+    xlab("Tempo (anos)") +
     labs(color = "Estratégia")
 }
 

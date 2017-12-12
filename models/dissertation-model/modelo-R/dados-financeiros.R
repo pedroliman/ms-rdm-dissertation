@@ -1,4 +1,8 @@
 library(RCurl)
+library(Quandl)
+library(dplyr)
+
+
 
 # Quandl API:
 # RsCuvs4_WjRPP_zzSzfv
@@ -31,7 +35,7 @@ dados_us_fundamentals = read.csv(textConnection(csv_dados_us_fundamentals))
 write.csv2(x = dados_us_fundamentals, file = "./fundamentals-data/dados_us_fundamentals.csv")
 
 # Gerando Gráficos e Dados:
-library(dplyr)
+
 dados_us_fundamentals %>% dplyr::filter(indicator_id == "GrossProfit")
 
 sales_revenue = dados_us_fundamentals %>% dplyr::filter(indicator_id == "SalesRevenueNet")
@@ -39,7 +43,7 @@ sales_revenue = dados_us_fundamentals %>% dplyr::filter(indicator_id == "SalesRe
 
 #### Dados Quandl ####
 
-library(Quandl)
+
 
 obter_fundamentos_financeiros_quandl = function(company_code = "DDD") {
   
@@ -150,7 +154,6 @@ plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$
 plot_cash_net_income_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "NetIncome", nome_amigavel_variavel1 = "Lucro Líquido", variavel2 = "GrossProfit", nome_amigavel_variavel2 = "Lucro Bruto")
 
 
-### Carregando Dados do data.world
-library(data.world)
+
 
 

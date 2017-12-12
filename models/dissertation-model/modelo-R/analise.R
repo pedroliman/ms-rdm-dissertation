@@ -1,10 +1,11 @@
-###############################################################
 # Autor: Pedro Nascimento de Lima, 2017
 # Código fonte desenvolvido para a Dissertação de Mestrado.
 # Arquivo: analise.R
 # Objetivo: Este arquivo contém funções utilizadas para as análises 
 # RDM realizadas durante a dissertação.
-###############################################################
+
+#### Início: Carregando Bibliotecas e Funções ####
+
 library(deSolve)
 library(ggplot2)
 library(gdata)
@@ -18,6 +19,8 @@ library(dplyr)
 # Carregando Funções Úteis
 source('funcoes.R', encoding = 'UTF-8')
 
+source(file = "demonstracoes.R", encoding = "UTF-8")
+
 opcoes = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
@@ -28,36 +31,19 @@ opcoes = list(
   SentidoCriterio = "min"
 )
 
-## Inicializar variaveis da simulacao aqui:
-START<-0; FINISH<-10; STEP<-0.0625
+# Parâmetros para a Geração dos Gráficos
+plots_width = 6
+plots_heigh = 3
 
-VERIFICAR_STOCKS = FALSE
 
-VERIFICAR_CHECKS = FALSE
-
-CHECK_PRECISION = 0.00001
-
-BROWSE_ON_DIFF = FALSE
-
-# Vetor de Tempos
-SIM_TIME <- seq(START, FINISH, by=STEP)
+#### Replicando Sterman ####
+## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
+START<-0; FINISH<-40; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.00001; BROWSE_ON_DIFF = FALSE
 
 ## Carregando Modelo
 source('modelo-calibracao.R', encoding = 'UTF-8')
 
-## Carregando objetos da Calibracao
-# source(file = "calibracao.R", encoding = "UTF-8")
-
-# source(file = "app.R", encoding = "UTF-8")
-
-# Carregando objetos de demonstração
-source(file = "demonstracoes.R", encoding = "UTF-8")
-
-
-### Replicando os Resultados do Sterman ###
-
-
-#### Replicando Sterman ####
 # Rodando a Simulação com os Parâmetros do Sterman, rodando uma vez apenas.
 arquivo_parametros = "./analise-sterman/params.xlsx"
 
@@ -67,45 +53,42 @@ parametros_sterman = t(parametros_completos[,"Sterman"])[1,]
 
 names(parametros_sterman) = as.matrix(parametros_completos[,1])
 
-## Mudando o tempo de simulação para Simular o Sterman
+# Mudando o tempo de simulação para Simular o Sterman
 resultados_sterman = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
 
-# Gráfico do Lucro Simulado pelo Sterman
 
-plots_width = 6
-plots_heigh = 3
+# Gerando Gráficos
+sterman_plots = list(
+  grafico_npv_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sNPVProfit1", nome_amigavel_variavel = "Valor Presente Liquido"),
+  
+  grafico_preco_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sPrice1", nome_amigavel_variavel = "Preço Player 1"),
+  
+  grafico_demanda_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "fIndustryOrderRate", nome_amigavel_variavel = "Demanda Anual Total"),
+  
+  grafico_vpl_preco = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "sPrice1", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Preço"),
+  
+  grafico_vpl_demanda = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "fIndustryOrderRate", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Demanda Global")
+  
+)
 
-grafico_npv_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sNPVProfit1", nome_amigavel_variavel = "Valor Presente Liquido")
+# Salvando todos os Gráficos do Sterman:
+mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=sterman_plots, width = plots_width, height = plots_heigh)
 
-grafico_preco_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sPrice1", nome_amigavel_variavel = "Preço Player 1")
-
-grafico_demanda_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "fIndustryOrderRate", nome_amigavel_variavel = "Demanda Anual Total")
-
-grafico_vpl_preco = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "sPrice1", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Preço")
-
-grafico_vpl_demanda = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "fIndustryOrderRate", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Demanda Global")
-
-
-# Salvando os Gráficos do Sterman
-ggsave("./images/grafico_npv_sterman.png", plot = grafico_npv_sterman, width = plots_width, height = plots_heigh)
-ggsave("./images/grafico_preco_sterman.png", plot = grafico_preco_sterman, width = plots_width, height = plots_heigh)
-ggsave("./images/grafico_demanda_sterman.png", plot = grafico_npv_sterman, width = plots_width, height = plots_heigh)
-ggsave("./images/grafico_vpl_preco.png", plot = grafico_vpl_preco, width = plots_width, height = plots_heigh)
-ggsave("./images/grafico_vpl_demanda.png", plot = grafico_vpl_demanda, width = plots_width, height = plots_heigh)
-
-
-
-
-### Rodando a minha Análise RDM ###
 
 
 #### RODADA 1 ####
+
+## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
+START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.00001; BROWSE_ON_DIFF = FALSE
 
 # Carregando o Modelo Novamente:
 source('modelo-calibracao.R', encoding = 'UTF-8')
 
 results = simularRDM_e_escolher_estrategia(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
+
+# Gráficos
 
 plot_estrategia1 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = 1)
 
