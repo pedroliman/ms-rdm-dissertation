@@ -352,18 +352,18 @@ resumir_variavel_resposta = function(dados = dados_ano_final, var_resposta = "Ca
     expr =
       dplyr::group_by(dados, VarGroup) 
     %>% select(VarGroup, VarResposta, VarRegret, VarRegretPerc)
-    %>% summarise(VarMedio = mean(VarResposta),
-                  VarDev = sd(VarResposta),
-                  Percentil25Var = quantile(VarResposta, probs = c(0.25)),
-                  Percentil75Var = quantile(VarResposta, probs = c(0.75)),
-                  RegretMedio = mean(VarRegret),
-                  DesvioRegret = sd(VarRegret),
-                  Percentil25Regret = quantile(VarRegret, probs = c(0.25)),
-                  Percentil75Regret = quantile(VarRegret, probs = c(0.75)),
-                  RegretMedioPerc = mean(VarRegretPerc),
-                  DesvioRegretPerc = sd(VarRegretPerc),
-                  Percentil25RegretPerc = quantile(VarRegretPerc, probs = c(0.25)),
-                  Percentil75RegretPerc = quantile(VarRegretPerc, probs = c(0.75))
+    %>% summarise(VarMedio = mean(VarResposta, na.rm = TRUE),
+                  VarDev = sd(VarResposta, na.rm = TRUE),
+                  Percentil25Var = quantile(VarResposta, probs = c(0.25), na.rm = TRUE),
+                  Percentil75Var = quantile(VarResposta, probs = c(0.75), na.rm = TRUE),
+                  RegretMedio = mean(VarRegret, na.rm = TRUE),
+                  DesvioRegret = sd(VarRegret, na.rm = TRUE),
+                  Percentil25Regret = quantile(VarRegret, probs = c(0.25), na.rm = TRUE),
+                  Percentil75Regret = quantile(VarRegret, probs = c(0.75), na.rm = TRUE),
+                  RegretMedioPerc = mean(VarRegretPerc, na.rm = TRUE),
+                  DesvioRegretPerc = sd(VarRegretPerc, na.rm = TRUE),
+                  Percentil25RegretPerc = quantile(VarRegretPerc, probs = c(0.25), na.rm = TRUE),
+                  Percentil75RegretPerc = quantile(VarRegretPerc, probs = c(0.75), na.rm = TRUE)
     )
     ,
     env = list(VarGroup = as.name(var_group),

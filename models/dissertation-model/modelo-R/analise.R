@@ -91,27 +91,23 @@ source('modelo-calibracao.R', encoding = 'UTF-8')
 
 results = simularRDM_e_escolher_estrategia(inputs = "./rodada1/params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 # Salvando Resultados
-save(resultados_sterman, results)
-
+is.na(results$DadosSimulados)
 # Gráficos
 
-plot_estrategia1 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = 1)
-
-plot_estrategia1e10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = c(6, 7))
-plot_preco_estrategia10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = c(3))
-
-
-plot_estrategia_candidata = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = results$EstrategiaCandidata)
-
-plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1RegretPerc")
-
-plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1Regret")
-
-plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1")
+plots_rodada1 = list(
+  plot_estrategia1 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = 1),
+  plot_estrategia1e10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = c(6, 7)),
+  plot_preco_estrategia10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = c(3)),
+  plot_estrategia_candidata = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = results$EstrategiaCandidata),
+  plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1RegretPerc"),
+  plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1Regret"),
+  plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1")
+)
 
 # Verificar resultados com NA
 
-View(results$DadosSimulados[which(results$DadosSimulados$Scenario == 1),])
+# Salvar Plots em Imagem:
+mapply(ggsave, file=paste0("./images/", names(plots_rodada1), ".png"), plot=plots_rodada1, width = plots_width, height = plots_heigh)
 
 
 
@@ -125,7 +121,7 @@ ensemble_analisado = analisar_ensemble_com_melhor_estrategia(ensemble = results$
                                                              estrategia_candidata = results$EstrategiaCandidata)
 
 
-parametros_lidos = readxl::read_xlsx("params.xlsx", sheet = "params")
+parametros_lidos = readxl::read_xlsx("./rodada1/params.xlsx", sheet = "params")
 
 incertezas = parametros_lidos[which(!(parametros_lidos[,"Min"]==parametros_lidos[,"Max"])),"Variavel"][[1]]
 
