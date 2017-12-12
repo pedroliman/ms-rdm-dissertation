@@ -12,10 +12,24 @@ output:
     toc: yes
     toc_depth: 4
   word_document: default
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage[table]{xcolor}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+library(knitr)
+library(kableExtra)
 library(ggplot2)
 library(ggpubr)
 ```
@@ -73,23 +87,75 @@ Argumentação sobre as limitações das abordagens para tomada de decisão de i
 
 Links Interessantes para ler e citar:
 
-Nova Impressora 3D que imprime 10 x mais rápido que as demais:
-http://www.sciencedirect.com/science/article/pii/S2214860416303220
-
-https://www.technologyreview.com/the-download/609607/blink-and-youll-miss-how-fast-this-souped-up-3-d-printer-makes-prototypes/?utm_source=facebook.com&utm_medium=social&utm_content=2017-11-30&utm_campaign=Technology+Review
-
-
+# a complex table with merged cells, column/row separators, and custom alignments and widths
 
 
 Impressão 3D na manufatura:
 https://www.technologyreview.com/s/604088/the-3-d-printer-that-could-finally-change-manufacturing/
 
+- Evolução Tecnológica das Impressoras 3D;
+
+ - Número de Patentes relacionadas à impressão 3D:
+ (Gráfico).
+ 
+ - Investimento em P & D de empresas de impressoras 3D;
+ 
+ - Investimento e P e D gera patentes, que expiram com o tempo:
+ 
+ https://3dprintingindustry.com/news/more-3d-printing-patents-are-expiring-soon-heres-a-roundup-96561/
+ 
+ https://techcrunch.com/2016/05/15/how-expiring-patents-are-ushering-in-the-next-generation-of-3d-printing/
+ 
+ https://futurism.com/expiring-patents-set-to-improve-3d-world/
+ 
+ https://qz.com/106483/3d-printing-will-explode-in-2014-thanks-to-the-expiration-of-key-patents/
+ 
+ https://www.finnegan.com/en/insights/how-patents-die-expiring-3d-printing-patents.html
+ 
+ Patentes na Impressão 3D:
+ Este artigo mostra os principais players da impressão 3D.
+ https://www.finnegan.com/en/insights/3d-printing-patent-landscape.html
+ 
+ História da Formlabs:
+ https://techcrunch.com/2012/09/27/3d-printer-form-1-gets-6x-its-100k-funding-goal-on-kickstarter-in-one-day/
+ 
+ 
+ 
+ 
+ Alguns argumentam que o número de patentes expirando pode influenciar a queda dos preços e gerar interesse pela impressão 3D.
+ 
+Um exemplo é a impressoã de materiais metálicos. A tecnologia foi criada inicialmente em 1984, 
+ 
+ - 
+Nova Impressora 3D que imprime 10 x mais rápido que as demais:
+http://www.sciencedirect.com/science/article/pii/S2214860416303220
+
+https://www.technologyreview.com/the-download/609607/blink-and-youll-miss-how-fast-this-souped-up-3-d-printer-makes-prototypes/?utm_source=facebook.com&utm_medium=social&utm_content=2017-11-30&utm_campaign=Technology+Review
+
+- Difusão da Impressão 3D em novos mercados e nichos;
+
+ - Gráfico dos Nichos de Mercado da Impressão 3D e demonstração de que eles estão em fases diferentes;
+
+- Melhoria dos Processos propiciado pela impressão 3D;
+ - Bico de injeção da GE com tecnologia superior;
+ 
 
 As discussões desta seção provavelmente irão para o final do capítulo 2.
 
 ## Comportamento da Demanda de Impressora 3D
 
 ## Principais Players do Mercado
+
+```{r, fig.cap="Receita e Investimento - 3D Systems"}
+print(plot_receita_investimento_3dsystems)
+```
+
+
+
+```{r, fig.cap="Lucro Líquido - 3D Systems"}
+print(plot_cash_net_income_3dsystems)
+```
+
 
 ## Comportamento de Variáveis Relevantes
 
@@ -430,9 +496,34 @@ print(grafico_vpl_preco)
 
 ## Calibração do Modelo e Comparação com Dados Históricos
 
-A modelagem exploratória, per si, abandona a premissa de que modelos de simulação computacional apenas serão úteis se validados (Bankes XX). Ainda assim, os modelos podem ser verificados visando avaliar sua consistência interna, bem como os seus resultados podem ser comparados com dados históricos para observar a capacidade do modelo em explicar o comportamento passado. (Sterman XXXX) Considerando estas premissas, esta seção apresenta os testes realizados no modelo.
+A modelagem exploratória, per si, abandona a premissa de que modelos de simulação computacional apenas serão úteis se validados experimentalmente (Bankes XX). Ainda assim, os modelos podem ser verificados visando avaliar sua consistência interna, bem como os seus resultados podem ser comparados com dados históricos para observar a capacidade do modelo em explicar o comportamento passado. (Sterman XXXX) Considerando estas premissas, esta seção apresenta os testes e calibrações realizadas no modelo.
 
-[Explicar o Procedimento de Calibração, fonte dos dados e objetivos da calibração.]
+O objetivo deste procedimento de calibração foi ajustar os dados de entrada do modelo à ordem de grandeza dos números observados em empresas da indústria da manufatura aditiva. Neste sentido, um conjunto de dados financeiros foi coletado com o propósito de comparar tais dados aos resultados da simulação.
+
+Considerando a característica estratégica da maior parte dos dados relacionados ao modelo, foi necessário recorrer à bases de informação públicamente disponíveis. Sendo assim, foi realizada uma pesquisa junto à websites que possuíram dados financeiros relacionados à industria.
+
+
+```{r}
+nomes_variaveis_fundamentos = c("Código da Variável", "Nome da variável", "Descrição")
+kable(fundamentos_ddd$Variaveis, format = "latex",longtable = T, col.names = nomes_variaveis_fundamentos, caption = "Variáveis Coletadas por Empresa") %>% kable_styling(full_width = T, font_size = 9, latex_options =c("repeat_header"))  %>%
+  column_spec(3, width = "8cm")
+#   column_spec(column = 1, width = "1in") %>%
+#   column_spec(column = 2, width = "1in") %>%
+#   column_spec(column = 3, width = "4in")
+  
+```
+
+
+
+
+
+```{r}
+#nomes_variaveis_fundamentos = c("Código da Variável", "Nome da variável", "Descrição")
+# knitr::kable(fundamentos_ddd$Dados, caption = "Fundamentos Financeiros - 3D Systems")
+
+kable(fundamentos_ddd$Dados, caption = "Fundamentos Financeiros - 3D Systems", format = "latex", booktabs = T) %>% 
+  kable_styling(latex_options =c("striped", "scale_down"))
+```
 
 
 ## Tabela de Parâmetros Calibrados

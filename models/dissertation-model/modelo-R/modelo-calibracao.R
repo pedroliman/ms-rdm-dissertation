@@ -30,18 +30,31 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     #Estoques Vetorizados = substituindo estoques pela forma vetorizada (pra que seja possivel formular equações de forma mais simples).
     # Esta implementação tem por objetivo não gerar a necessidade de referenciar os estoque spelo seu nome único
-    sNPVProfit = stocks[(N_PLAYERS*0+1):(N_PLAYERS*1)]
-    sValueOfBacklog = stocks[(N_PLAYERS*1+1):(N_PLAYERS*2)]
-    sBacklog = stocks[(N_PLAYERS*2+1):(N_PLAYERS*3)]
-    sInstalledBase = stocks[(N_PLAYERS*3+1):(N_PLAYERS*4)]
-    sPrice = stocks[(N_PLAYERS*4+1):(N_PLAYERS*5)]
-    sCumulativeAdopters = stocks[(N_PLAYERS*5+1)]
-    sReportedIndustryVolume = stocks[(N_PLAYERS*6):(N_PLAYERS*6+1)]
-    sCumulativeProduction = stocks[(N_PLAYERS*7):(N_PLAYERS*7+1)]
-    sPerceivedCompTargetCapacity = stocks[(N_PLAYERS*8):(N_PLAYERS*8+1)]
-    sSmoothCapacity1 = stocks[(N_PLAYERS*9):(N_PLAYERS*9+1)]
-    sSmoothCapacity2 = stocks[(N_PLAYERS*10):(N_PLAYERS*10+1)]
-    sSmoothCapacity3 = stocks[(N_PLAYERS*11):(N_PLAYERS*11+1)]
+    sNPVProfit = stocks[grep("sNPVProfit", x = names(stocks))]
+    sValueOfBacklog = stocks[grep("sValueOfBacklog", x = names(stocks))]
+    sBacklog = stocks[grep("sBacklog", x = names(stocks))]
+    sInstalledBase = stocks[grep("sInstalledBase", x = names(stocks))]
+    sPrice = stocks[grep("sPrice", x = names(stocks))]
+    sCumulativeAdopters = stocks[grep("sCumulativeAdopters", x = names(stocks))]
+    sReportedIndustryVolume = stocks[grep("sReportedIndustryVolume", x = names(stocks))]
+    sCumulativeProduction = stocks[grep("sCumulativeProduction", x = names(stocks))]
+    sPerceivedCompTargetCapacity = stocks[grep("sPerceivedCompTargetCapacity", x = names(stocks))]
+    sSmoothCapacity1 = stocks[grep("sSmoothCapacity1", x = names(stocks))]
+    sSmoothCapacity2 = stocks[grep("sSmoothCapacity2", x = names(stocks))]
+    sSmoothCapacity3 = stocks[grep("sSmoothCapacity3", x = names(stocks))]
+    
+    # sNPVProfit = stocks[(N_PLAYERS*0+1):(N_PLAYERS*1)]
+    # sValueOfBacklog = stocks[(N_PLAYERS*1+1):(N_PLAYERS*2)]
+    # sBacklog = stocks[(N_PLAYERS*2+1):(N_PLAYERS*3)]
+    # sInstalledBase = stocks[(N_PLAYERS*3+1):(N_PLAYERS*4)]
+    # sPrice = stocks[(N_PLAYERS*4+1):(N_PLAYERS*5)]
+    # sCumulativeAdopters = stocks[(N_PLAYERS*5+1)]
+    # sReportedIndustryVolume = stocks[(N_PLAYERS*6):(N_PLAYERS*6+1)]
+    # sCumulativeProduction = stocks[(N_PLAYERS*7):(N_PLAYERS*7+1)]
+    # sPerceivedCompTargetCapacity = stocks[(N_PLAYERS*8):(N_PLAYERS*8+1)]
+    # sSmoothCapacity1 = stocks[(N_PLAYERS*9):(N_PLAYERS*9+1)]
+    # sSmoothCapacity2 = stocks[(N_PLAYERS*10):(N_PLAYERS*10+1)]
+    # sSmoothCapacity3 = stocks[(N_PLAYERS*11):(N_PLAYERS*11+1)]
     
     #Obtendo o número da linha no qual estou
     linha = (time * (n_tempo - 1)) / FINISH + 1

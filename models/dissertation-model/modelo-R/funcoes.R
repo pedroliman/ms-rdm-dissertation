@@ -288,7 +288,7 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = 10){
   nfuturos = nrow(ensemble)
   ntempo = ((sdmodel$Finish - sdmodel$Start)/sdmodel$Step)
   
-  message(paste("Esta rotina realizará", nestrategias * nfuturos * ntempo, "Simulacoes.\n (", nestrategias, "estratégias x", nfuturos, "futuros, em", ntempo , "periodos de tempo."))
+  message(paste("Esta rotina realizará", nestrategias * nfuturos, "Simulacoes.\n (", nestrategias, "estratégias x", nfuturos, "futuros, em", ntempo , "periodos de tempo."))
   
   # TODO: Esta Chamada vai precisar mudar para considerar a nova funcao
   dados_simulacao = simular(simtime = sdmodel$SimTime, modelo = sdmodel$Modelo, ensemble = novo_ensemble, nomes_variaveis_final = sdmodel$Variaveis)
@@ -596,10 +596,10 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aMinimumEfficientScale = rep(unname(parametros["aMinimumEfficientScale"]), times = N_PLAYERS) # Original 100000
                   
                   # Esta variavel é desdobrada por player.
-                  ,aDesiredMarketShare = c(unname(parametros["aDesiredMarketShare1"]), unname(parametros["aDesiredMarketShare2"]))      #rep(0.5, times = N_PLAYERS)
+                  ,aDesiredMarketShare = c(unname(parametros["aDesiredMarketShare1"]), rep(unname(parametros["aDesiredMarketShare2"]), times = N_PLAYERS - 1) )      #rep(0.5, times = N_PLAYERS)
                   
                   # Esta variavel deve ser arredondada, sempre.
-                  ,aSwitchForCapacityStrategy = round(c(unname(parametros["aSwitchForCapacityStrategy1"]), unname(parametros["aSwitchForCapacityStrategy2"])), 0)
+                  ,aSwitchForCapacityStrategy = round(c(unname(parametros["aSwitchForCapacityStrategy1"]), rep(unname(parametros["aSwitchForCapacityStrategy2"]),times = N_PLAYERS - 1)), 0)
                   
                   ,aWeightOnSupplyLine= rep(unname(parametros["aWeightOnSupplyLine"]), times = N_PLAYERS)
                   ,aTimeToPerceiveCompTargetCapacity = rep(unname(parametros["aTimeToPerceiveCompTargetCapacity"]), times = N_PLAYERS)
