@@ -12,6 +12,10 @@ library(deSolve)
 library(dplyr)
 library(ggplot2)
 library(GGally)
+library(viridis)
+library(season)
+library(gridExtra)
+library(akima)
 
 ##### CONSTANTES #####
 VAR_SCENARIO = "Scenario"
@@ -902,6 +906,69 @@ plot_estrategias_versus_incertezas = function(ensemble_analisado, incertezas, bi
   
   p
 }
+
+
+plot_landscape_futuros_plausiveis = function(results, estrategia, variavelresp, nomeamigavel_variavelresp, variavel1, n_variavel1, variavel2, n_variavel2) {
+  
+  ensemble_e_resultados = dplyr::inner_join(as.data.frame(results$Ensemble), results$AnaliseRegret$Dados, by = "Scenario")
+  
+  ensemble_e_resultados = ensemble_e_resultados[which(ensemble_e_resultados$Lever == estrategia),]
+  
+  var_x = ensemble_e_resultados[,variavel1]
+  var_y = ensemble_e_resultados[,variavel2] 
+  var_z = ensemble_e_resultados[,variavelresp]
+  
+  my.df.interp <- interp(x = var_x, y = var_y, z = var_z, nx = 30, ny = 30)
+  my.df.interp.xyz <- as.data.frame(interp2xyz(my.df.interp))
+  names(my.df.interp.xyz) <- c(variavel1, variavel2, variavelresp)
+  
+  my.df.interp.xyz = my.df.interp.xyz[complete.cases(my.df.interp.xyz),] 
+  
+  
+  call_plot = substitute(
+    expr = ggplot(data = my.df.interp.xyz, aes(x = Variavelx, y = Variavely)) + geom_tile(aes(fill = Variavelz)),
+    env = list(Variavelx = as.name(variavel1), Variavely = as.name(variavel2), Variavelz = as.name(variavelresp))
+  ) 
+  
+  p <- eval(call_plot)
+  p <- p + xlab(n_variavel1) + 
+    ylab(n_variavel2) + 
+    labs(fill = nomeamigavel_variavelresp) + 
+    ggtitle(label = paste("Estratégia", estrategia)) + 
+    theme(plot.title = element_text(hjust = 0.5))
+  p  
+}
+
+plot_grid_estrategias_casos_vpl = function(results) {
+  plot<-ggplot(results$DadosUltimoPeriodo, aes(Scenario, Lever, fill = sNPVProfit1)) + 
+    geom_tile(colour="gray20", size=1.5, stat="identity") + 
+    scale_fill_viridis(option="D") +
+    scale_y_continuous(breaks=1:6)+
+    xlab("Caso Simulado") + 
+    ylab("Estratégias") +
+    theme(
+      #plot.title = element_text(color="white",hjust=0,vjust=1, size=rel(2)),
+      plot.background = element_blank(),
+      panel.background = element_blank(),
+      #panel.border = element_rect(fill=NA,color="gray20", size=0.5, linetype="solid"),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.line = element_blank(),
+      axis.ticks = element_blank(), 
+      #axis.text = element_text(color="white", size=rel(1.5)),
+      axis.text.y  = element_text(hjust=1),
+      #legend.text = element_text(color="white", size=rel(1.3)),
+      #legend.background = element_rect(fill="gray20"),
+      legend.position = "right"
+      #legend.title=element_blank()
+    )
+  
+  plot$labels$fill = "VPL"
+  plot
+}
+
+
+
 
 
 sdrdm.pairs_plot= function(data, lever, variables) {

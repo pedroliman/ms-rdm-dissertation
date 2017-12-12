@@ -96,7 +96,7 @@ is.na(results$DadosSimulados)
 
 plots_rodada1 = list(
   plot_estrategia1 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = 1),
-  plot_estrategia1e10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = c(6, 7)),
+  plot_1_e_candidata = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = c(1, results$EstrategiaCandidata)),
   plot_preco_estrategia10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = c(3)),
   plot_estrategia_candidata = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = results$EstrategiaCandidata),
   plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1RegretPerc"),
@@ -108,7 +108,6 @@ plots_rodada1 = list(
 
 # Salvar Plots em Imagem:
 mapply(ggsave, file=paste0("./images/", names(plots_rodada1), ".png"), plot=plots_rodada1, width = plots_width, height = plots_heigh)
-
 
 
 ### Analisar ENsemble
@@ -130,6 +129,20 @@ incertezas = c("aUnitsPerHousehold", "aFractionalDiscardRate", "aReferenceIndust
 
 # Ajuda a Identificar em Que condições a Estratégia Candidata não é a melhor.
 plot_estrategias_incertezas = plot_estrategias_versus_incertezas(ensemble_analisado = ensemble_analisado,incertezas = incertezas)
+
+ggsave(filename = "./images/plot_estrategias_incertezas.png", plot = plot_estrategias_incertezas, width = 10, height = 6)
+
+
+landscape_estrategia1 = plot_landscape_futuros_plausiveis(
+  results, estrategia = 1, 
+  variavelresp = "sNPVProfit1",
+  nomeamigavel_variavelresp = "VPL",
+  variavel1  = "aUnitsPerHousehold",
+  n_variavel1 = "Consumo Médio Unitário",
+  variavel2 = "aNormalCapacityUtilization",
+  n_variavel2 = "Utilização da Capacidade"
+)
+
 
 
 #### RODADA 2 ####
