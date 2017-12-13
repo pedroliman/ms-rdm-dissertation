@@ -32,7 +32,6 @@ VAR_LEVER = "Lever"
 #' @return list com resultados da simulacao e uma estratégia candidata.
 simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes) {
   
-  
   output_simulacao = simular_RDM(arquivo_de_inputs=inputs ,sdmodel = sdmodel, n = opcoes$N)
   
   ## Simular
@@ -232,7 +231,7 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final) {
     # Adicionando o resultado ao ensemble
     dados_simulacao[l_inicial:l_final,1:(ncolunas-2)] = resultados_simulacao
     
-    # Adicionando o Número do Cenário
+    # Adicionando o Número do Lever
     dados_simulacao[l_inicial:l_final,(ncolunas-1)] = ensemble[i,VAR_LEVER]
     
     # Adicionando o Número do Cenário
@@ -243,6 +242,10 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final) {
     if (i %% 5 == 0) {
       message(paste(i, "simulações finalizadas."))
     }
+    
+    # if(i %% 20 == 0){
+    #   browser()
+    # }
     
     # Avançando o índice dos dados simulados
     j = j + linhas
@@ -271,7 +274,7 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final) {
 #' @param n Número de cenarios a gerar (numeric)
 #'
 #' @return data.frame com resultados da simulação
-simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = 10){
+simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n){
   t_inicio = Sys.time()
   message("Bem vindo ao SIMULADOR RDM! Pedro Lima.")
   message(paste("Iniciando Simulacao RDM: ", t_inicio))
@@ -355,8 +358,8 @@ resumir_variavel_resposta = function(dados = dados_ano_final, var_resposta = "Ca
   call = substitute(
     expr =
       dplyr::group_by(dados, VarGroup) 
-    %>% select(VarGroup, VarResposta, VarRegret, VarRegretPerc)
-    %>% summarise(VarMedio = mean(VarResposta, na.rm = TRUE),
+    %>% dplyr::select(VarGroup, VarResposta, VarRegret, VarRegretPerc)
+    %>% dplyr::summarise(VarMedio = mean(VarResposta, na.rm = TRUE),
                   VarDev = sd(VarResposta, na.rm = TRUE),
                   Percentil25Var = quantile(VarResposta, probs = c(0.25), na.rm = TRUE),
                   Percentil75Var = quantile(VarResposta, probs = c(0.75), na.rm = TRUE),
