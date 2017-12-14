@@ -1,0 +1,36 @@
+---
+title: "R Notebook"
+output:
+  word_document: default
+  html_notebook: default
+---
+
+# Preços
+
+| Símbolo | Significado |
+|:-----:|---------------------------------------------------|
+|$P^*_i$|Preço Alvo do player $i$.|
+|$u^v_i$|Custo Variável do player $i$.|
+|$P_i$|Preço do Player $i$.|
+|$\alpha^c$|Sensibilidade do Preço Alvo à diferença entre o Preço Atual e Preço Alvo.|
+|$P^c_i$|Preço-Base do Player $i$ (custos fixos e variáveis acrescentados à uma margem definida).|
+|$\alpha^d$|Sensibilidade do Preço à diferença entre oferta e Demanda.|
+|$Q^*_i$|Produção desejada pelo Player $i$.|
+|$u^*_i$|Taxa de Utilização da capacidade do Player $i$.|
+|$K_i$|Capacidadedo player $i$.|
+|$\alpha^s$|Sensibilidade do Preço à relação entre market share e market share desejado.|
+|$S^*_i$| Market Share desejado do PLayer $i$.|
+|$S_i$| Market SHare do Player $i$.|
+
+
+# Market Share
+
+| Símbolo | Significado |
+|:-----:|---------------------------------------------------|
+|$A_i$|Atratividade do Player $i$.|
+|$\varepsilon_p$| Sensibilidade do market share dos players ao preço.|
+|$P_i$|Preço do Player $i$.|
+|$P^r$|Preço de Referência.|
+|$\varepsilon_a$| Sensibilidade do market share dos players ao tempo de entrega.|
+|$\tau_i$|Tempo de Entrega do player $i$.|
+|$\tau^r$|Tempo de Entrega de Referência.|
