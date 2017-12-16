@@ -186,12 +186,14 @@ ampliar_ensemble_com_levers = function(ensemble, levers) {
 #' @param modelo Modelo de dinâmica de sistemas no padrão do deSolve (function)
 #' @param ensemble ensemble montado (pronto para a simulação)
 #' @param nomes_variaveis_final vetor com nomes de variáveis
+#' @param paralelo TRUE ou false (roda no modo paralelo ou Falso)
+#' @param modo_paralelo "FORK" ou "PSOCK". Usar "FORK" no Linux e Mac, e "PSOCK" no Windows.
 #'
 #' @return
 #' @export
 #'
 #' @examples
-simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = TRUE) {
+simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = TRUE, modo_paralelo = "FORK") {
   message("01. funcoes.R/simular: Iniciando Simulação.")
   
   # Rodando a Simulação (uma vez), com a primeira linha do ensemble - Ajuda a saber se funciona.
@@ -215,28 +217,32 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = 
     # Calculate the number of cores
     no_cores <- detectCores() - 1
     # Inicializar Cluster
-    cl <- makeCluster(no_cores)
+    cl <- makeCluster(no_cores, type = modo_paralelo)
     
     # Carregando bibliotecas no cluster:
     #clusterEvalQ(cl, source("funcoes.R"))
     #clusterEvalQ(cl, eval(parse('funcoes.R')))
     # textConnection(animal.R)
+    
+    if(modo_paralelo  == "PSOCK") {
+      # Se o modo paralelo é "PSOCK", é necessário definir explícitamente as variáveis que devem ir para o cluster
+      # http://gforge.se/2015/02/how-to-go-parallel-in-r-basics-tips/
+      clusterEvalQ(cl, library(deSolve))
+      
+      # Exportando objetos que preciso ter nos clusters:
+      clusterExport(cl, varlist = list("ensemble", 
+                                       "modelo", 
+                                       "simtime", 
+                                       "FINISH", 
+                                       "VERIFICAR_STOCKS", 
+                                       "solve_modelo", 
+                                       "VERIFICAR_CHECKS",
+                                       "VAR_LEVER",
+                                       "VAR_SCENARIO",
+                                       "STEP",
+                                       "solve_modelo_dissertacao"), envir = environment())  
+    }
 
-    clusterEvalQ(cl, library(deSolve))
-    
-    # Exportando objetos que preciso ter nos clusters:
-    clusterExport(cl, varlist = list("ensemble", 
-                                     "modelo", 
-                                     "simtime", 
-                                     "FINISH", 
-                                     "VERIFICAR_STOCKS", 
-                                     "solve_modelo", 
-                                     "VERIFICAR_CHECKS",
-                                     "VAR_LEVER",
-                                     "VAR_SCENARIO",
-                                     "STEP",
-                                     "solve_modelo_dissertacao"), envir = environment())
-    
     # Executando código no cluster:
     t_inicio = Sys.time()
     message(t_inicio)
