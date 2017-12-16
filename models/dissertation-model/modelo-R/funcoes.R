@@ -193,42 +193,23 @@ ampliar_ensemble_com_levers = function(ensemble, levers) {
 #' @examples
 simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = TRUE) {
   message("01. funcoes.R/simular: Iniciando Simulação.")
+  
   # Rodando a Simulação (uma vez), com a primeira linha do ensemble - Ajuda a saber se funciona.
   # Esta função apenas funciona com o estoque inicial fixo, será necessário implementar de outra forma depois.
-  
+  t_inicio_teste = Sys.time()
   o = as.data.frame(solve_modelo_dissertacao(parametros = ensemble[1,], modelo = modelo, simtime = simtime)) 
   
-  nomes_temporario = names(o)
-  
-  # o<-data.frame(ode(y=stocks, times=simtime, func = modelo, 
-  #                   parms=ensemble[1,], method="euler"))
-  pontos = nrow(ensemble)
-  
-  nlinhas = nrow(o)
-  
-  ncolunas = ncol(o)+2
-  
-  # Montando uma matriz com todos os dados para a simulação
-  dados_simulacao = matrix(nrow = pontos*nlinhas, ncol = ncolunas)
-  
-  # J é o índice dos dados simulados
-  j = 1
-  # Rodando a Simulacao Em todo o Ensemble
+  t_fim_teste = Sys.time()
+  t_uma_rodada = as.numeric(difftime(time1 = t_fim_teste, time2 = t_inicio_teste, units = "secs"))
   
   solve_modelo = function(n_linha_ensemble) {
     params = ensemble[n_linha_ensemble,]
     res = solve_modelo_dissertacao(parametros = params, modelo = modelo, simtime = simtime)
-    res
-    message(paste("L:", n_linha_ensemble, "/",nrow(ensemble)))
-    as.matrix(res)
+    # Gerar Matriz de Resultados
+    cbind(res,
+          Lever = ensemble[n_linha_ensemble,VAR_LEVER],
+          Scenario = ensemble[n_linha_ensemble,VAR_SCENARIO])
   }
-  
-  # if(paralelo == TRUE) {
-  #   browser()
-  #   resultados_paralelo = lapply(1:nrow(ensemble), solve_modelo)
-  #   resultados_paralelo = do.call(rbind, resultados_paralelo)
-  #   
-  # }
   
   if(paralelo == TRUE) {
     # Calculate the number of cores
@@ -250,7 +231,9 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = 
                                      "FINISH", 
                                      "VERIFICAR_STOCKS", 
                                      "solve_modelo", 
-                                     "VERIFICAR_CHECKS", 
+                                     "VERIFICAR_CHECKS",
+                                     "VAR_LEVER",
+                                     "VAR_SCENARIO",
                                      "STEP",
                                      "solve_modelo_dissertacao"), envir = environment())
     
@@ -259,79 +242,81 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = 
     message(t_inicio)
     message(paste("Iniciando Simulacao em modo paralelo. Usando", no_cores, "núcleos."))
     
-    t_uma_rodada = 0.583717
+    # t_uma_rodada = 0.583717
     
     t_estimado = t_uma_rodada * nrow(ensemble)/no_cores
     message(paste("Tempo estimado (segundos):"),t_estimado)
     
-    resultados_paralelo <- parLapply(cl, 1:nrow(ensemble), solve_modelo)
-    resultados_paralelo = do.call(rbind, resultados_paralelo)
-    
+    # Aplicando Função paralela para a computação dos resultados
+    dados_simulacao <- parLapply(cl, 1:nrow(ensemble), solve_modelo)
+    stopCluster(cl)
+
+    dados_simulacao = do.call(rbind, dados_simulacao)
     
     t_fim = Sys.time()
     
-    perf = t_estimado / as.numeric(difftime(time1 = t_fim, time2 = t_inicio, units = "secs"))
+    perf = t_estimado / as.numeric(difftime(time1 = t_fim, time2 = t_inicio, units = "secs")) / 0.75
     message(t_fim)
     message("Finalizando Simulacao. Finalizando Cluster")
     message(paste("Indice de Performance",perf))
-    
-    browser()
-    stopCluster(cl)
     #resultados_paralelo = lapply(1:nrow(ensemble), solve_modelo)
-    
+    dados_simulacao = as.data.frame(dados_simulacao)
     
   }
   
-  
-  for (i in 1:nrow(ensemble)) {
+  if(paralelo == FALSE){
+    # J é o índice dos dados simulados
+    j = 1
+    # Rodando a Simulacao Em todo o Ensemble
+    # Fazer os calculos da maneira anterior aqui.
+    nomes_temporario = names(o)
     
-    #resultados_simulacao = ode(y=stocks, times=simtime, func = modelo, 
-    #                           parms=ensemble[i,], method="euler")
+    # o<-data.frame(ode(y=stocks, times=simtime, func = modelo, 
+    #                   parms=ensemble[1,], method="euler"))
+    pontos = nrow(ensemble)
     
-    if(paralelo == FALSE){
-      # Fazer os calculos aqui.
+    nlinhas = nrow(o)
+    
+    ncolunas = ncol(o)+2
+    
+    # Montando uma matriz com todos os dados para a simulação
+    dados_simulacao = matrix(nrow = pontos*nlinhas, ncol = ncolunas)
+    
+    for (i in 1:nrow(ensemble)) {
+      resultados_simulacao = as.data.frame(solve_modelo_dissertacao(parametros = ensemble[i,], modelo = modelo, simtime = simtime)) 
+      
+      resultados_simulacao = as.matrix(resultados_simulacao)
+      
+      linhas = nrow(resultados_simulacao)
+      
+      # Avançando a linha inicial e Final da Simulação
+      l_inicial = j
+      l_final = j + linhas-1
+      
+      # Adicionando o resultado ao ensemble
+      dados_simulacao[l_inicial:l_final,1:(ncolunas-2)] = resultados_simulacao
+      
+      # Adicionando o Número do Lever
+      dados_simulacao[l_inicial:l_final,(ncolunas-1)] = ensemble[i,VAR_LEVER]
+      
+      # Adicionando o Número do Cenário
+      dados_simulacao[l_inicial:l_final,ncolunas] = ensemble[i,VAR_SCENARIO]
+      
+      # Exibindo uma Mensagem de Status
+      if (i %% 5 == 0) {
+        message(paste(i, "simulações finalizadas."))
+      }
+      # Avançando o índice dos dados simulados
+      j = j + linhas
     }
+    # Usando nomes temporario
+    colnames(dados_simulacao) = c(nomes_temporario, VAR_LEVER, VAR_SCENARIO)
+    # colnames(dados_simulacao) = nomes_variaveis_final
     
-    resultados_simulacao = as.data.frame(solve_modelo_dissertacao(parametros = ensemble[i,], modelo = modelo, simtime = simtime)) 
-    
-    resultados_simulacao = as.matrix(resultados_simulacao)
-    
-    linhas = nrow(resultados_simulacao)
-    
-    # Avançando a linha inicial e Final da Simulação
-    l_inicial = j
-    l_final = j + linhas-1
-    
-    # Adicionando o resultado ao ensemble
-    dados_simulacao[l_inicial:l_final,1:(ncolunas-2)] = resultados_simulacao
-    
-    # Adicionando o Número do Lever
-    dados_simulacao[l_inicial:l_final,(ncolunas-1)] = ensemble[i,VAR_LEVER]
-    
-    # Adicionando o Número do Cenário
-    dados_simulacao[l_inicial:l_final,ncolunas] = ensemble[i,VAR_SCENARIO]
-    
-    
-    # Exibindo uma Mensagem de Status
-    if (i %% 5 == 0) {
-      message(paste(i, "simulações finalizadas."))
-    }
-    
-    # if(i %% 20 == 0){
-    #   browser()
-    # }
-    
-    # Avançando o índice dos dados simulados
-    j = j + linhas
+    dados_simulacao = as.data.frame(dados_simulacao)
+    names(dados_simulacao) = c(nomes_temporario, VAR_LEVER, VAR_SCENARIO)
+    #names(dados_simulacao) = nomes_variaveis_final
   }
-  
-  # Usando nomes temporario
-  colnames(dados_simulacao) = c(nomes_temporario, VAR_LEVER, VAR_SCENARIO)
-  # colnames(dados_simulacao) = nomes_variaveis_final
-  
-  dados_simulacao = as.data.frame(dados_simulacao)
-  names(dados_simulacao) = c(nomes_temporario, VAR_LEVER, VAR_SCENARIO)
-  #names(dados_simulacao) = nomes_variaveis_final
   
   message("01. funcoes.R/simular: Finalizando Simulacao.")
   
