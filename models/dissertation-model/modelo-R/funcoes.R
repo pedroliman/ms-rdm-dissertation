@@ -16,6 +16,8 @@ library(viridis)
 library(season)
 library(gridExtra)
 library(akima)
+library(parallel)
+
 
 ##### CONSTANTES #####
 VAR_SCENARIO = "Scenario"
@@ -189,7 +191,7 @@ ampliar_ensemble_com_levers = function(ensemble, levers) {
 #' @export
 #'
 #' @examples
-simular = function(simtime, modelo, ensemble, nomes_variaveis_final) {
+simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = TRUE) {
   message("01. funcoes.R/simular: Iniciando Simulação.")
   # Rodando a Simulação (uma vez), com a primeira linha do ensemble - Ajuda a saber se funciona.
   # Esta função apenas funciona com o estoque inicial fixo, será necessário implementar de outra forma depois.
@@ -213,10 +215,82 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final) {
   j = 1
   # Rodando a Simulacao Em todo o Ensemble
   
+  solve_modelo = function(n_linha_ensemble) {
+    params = ensemble[n_linha_ensemble,]
+    res = solve_modelo_dissertacao(parametros = params, modelo = modelo, simtime = simtime)
+    res
+    message(paste("L:", n_linha_ensemble, "/",nrow(ensemble)))
+    as.matrix(res)
+  }
+  
+  # if(paralelo == TRUE) {
+  #   browser()
+  #   resultados_paralelo = lapply(1:nrow(ensemble), solve_modelo)
+  #   resultados_paralelo = do.call(rbind, resultados_paralelo)
+  #   
+  # }
+  
+  if(paralelo == TRUE) {
+    # Calculate the number of cores
+    no_cores <- detectCores() - 1
+    # Inicializar Cluster
+    cl <- makeCluster(no_cores)
+    
+    # Carregando bibliotecas no cluster:
+    #clusterEvalQ(cl, source("funcoes.R"))
+    #clusterEvalQ(cl, eval(parse('funcoes.R')))
+    # textConnection(animal.R)
+
+    clusterEvalQ(cl, library(deSolve))
+    
+    # Exportando objetos que preciso ter nos clusters:
+    clusterExport(cl, varlist = list("ensemble", 
+                                     "modelo", 
+                                     "simtime", 
+                                     "FINISH", 
+                                     "VERIFICAR_STOCKS", 
+                                     "solve_modelo", 
+                                     "VERIFICAR_CHECKS", 
+                                     "STEP",
+                                     "solve_modelo_dissertacao"), envir = environment())
+    
+    # Executando código no cluster:
+    t_inicio = Sys.time()
+    message(t_inicio)
+    message(paste("Iniciando Simulacao em modo paralelo. Usando", no_cores, "núcleos."))
+    
+    t_uma_rodada = 0.583717
+    
+    t_estimado = t_uma_rodada * nrow(ensemble)/no_cores
+    message(paste("Tempo estimado (segundos):"),t_estimado)
+    
+    resultados_paralelo <- parLapply(cl, 1:nrow(ensemble), solve_modelo)
+    resultados_paralelo = do.call(rbind, resultados_paralelo)
+    
+    
+    t_fim = Sys.time()
+    
+    perf = t_estimado / as.numeric(difftime(time1 = t_fim, time2 = t_inicio, units = "secs"))
+    message(t_fim)
+    message("Finalizando Simulacao. Finalizando Cluster")
+    message(paste("Indice de Performance",perf))
+    
+    browser()
+    stopCluster(cl)
+    #resultados_paralelo = lapply(1:nrow(ensemble), solve_modelo)
+    
+    
+  }
+  
+  
   for (i in 1:nrow(ensemble)) {
     
     #resultados_simulacao = ode(y=stocks, times=simtime, func = modelo, 
     #                           parms=ensemble[i,], method="euler")
+    
+    if(paralelo == FALSE){
+      # Fazer os calculos aqui.
+    }
     
     resultados_simulacao = as.data.frame(solve_modelo_dissertacao(parametros = ensemble[i,], modelo = modelo, simtime = simtime)) 
     
@@ -971,10 +1045,7 @@ plot_grid_estrategias_casos_vpl = function(results) {
 }
 
 
-
-
-
-sdrdm.pairs_plot= function(data, lever, variables) {
+sdrdm.pairs_plot = function(data, lever, variables) {
   dados_grafico = subset(data, Lever == lever)
   dados_grafico = dados_grafico[variables]
   
