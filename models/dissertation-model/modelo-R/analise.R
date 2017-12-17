@@ -25,7 +25,7 @@ opcoes = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 500,
+  N = 10000,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
@@ -91,8 +91,7 @@ source('modelo-calibracao.R', encoding = 'UTF-8')
 
 results = simularRDM_e_escolher_estrategia(inputs = "./rodada1/params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
-
-View(results$DadosSimulados$Scenario)
+save(results, file = "./rodada1/resultados.Rdata")
 
 dplyr::group_by(results$DadosSimulados, Scenario) %>% dplyr::summarise(MaxTime = max(time))
 
@@ -100,7 +99,7 @@ dplyr::group_by(results$DadosSimulados, Scenario) %>% dplyr::summarise(MaxTime =
 results$DadosUltimoPeriodo
 
 # Salvando Resultados
-# save(results, file = "./rodada1/resultados.Rdata")
+
 # Gráficos
 
 plots_rodada1 = list(
