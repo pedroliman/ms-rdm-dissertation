@@ -1,0 +1,5 @@
+{
+  "odata.metadata":"https://pedrolimabatch.brazilsouth.batch.azure.com/$metadata#Microsoft.Azure.Batch.Protocol.Entities.Container.errors/@Element","code":"NodeNotFound","message":{
+    "lang":"en-US","value":"The specified node does not exist.\nRequestId:2b17bad0-0da0-4aef-9424-fe9733b69e94\nTime:2017-12-17T16:47:28.7272698Z"
+  }
+}
