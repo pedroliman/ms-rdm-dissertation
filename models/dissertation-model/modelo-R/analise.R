@@ -25,7 +25,7 @@ opcoes = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 200,
+  N = 20,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
@@ -45,7 +45,7 @@ VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.00001; B
 source('modelo-calibracao.R', encoding = 'UTF-8')
 
 # Rodando a Simulação com os Parâmetros do Sterman, rodando uma vez apenas.
-arquivo_parametros = "./analise-sterman/params.xlsx"
+arquivo_parametros = "./analise-sterman/params_sterman.xlsx"
 
 parametros_completos = readxl::read_xlsx(arquivo_parametros, sheet = "params")
 

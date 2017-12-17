@@ -684,6 +684,31 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aSwitchForPerfectCapacity = unname(parametros["aSwitchForPerfectCapacity"])
                   # A Initial Price
                   ,aInitialPrice = rep(unname(parametros["aInitialPrice"]), times = N_PLAYERS)
+                  
+                  # Pesquisa e Desenvolvimento
+                  ,aPeDLigado = unname(parametros["aPeDLigado"])
+                  ,aOrcamentoPeD = rep(unname(parametros["aOrcamentoPeD"]), times = N_PLAYERS)
+                  ,aTempoMedioRealizacaoPeD = unname(parametros["aTempoMedioRealizacaoPeD"])
+                  ,aCustoMedioPatente = unname(parametros["aCustoMedioPatente"])
+                  ,aTempoMedioAvaliacao = unname(parametros["aTempoMedioAvaliacao"])
+                  ,aTaxaRejeicao = unname(parametros["aTaxaRejeicao"])
+                  ,aTempoVencimentoPatentes = unname(parametros["aTempoVencimentoPatentes"])
+                  ,aTempodeInutilizacaoPatente = unname(parametros["aTempodeInutilizacaoPatente"])
+                  ,aPerfSlope = unname(parametros["aPerfSlope"])
+                  ,aPerfMin = unname(parametros["aPerfMin"])
+                  ,aPerfMax = unname(parametros["aPerfMax"])
+                  ,aSensOfAttractToPerformance = unname(parametros["aSensOfAttractToPerformance"])
+                  ,aReferencePerformance = unname(parametros["aReferencePerformance"])
+                  
+                  ,aInitialInvestimentoNaoRealizadoPeD = rep(unname(parametros["aInitialInvestimentoNaoRealizadoPeD"]), times = N_PLAYERS)
+                  ,aInitialPatentesRequisitadas = rep(unname(parametros["aInitialPatentesRequisitadas"]), times = N_PLAYERS)
+                  ,aInitialPatentesEmpresa = rep(unname(parametros["aInitialPatentesEmpresa"]), times = N_PLAYERS)
+                  ,aInitialsPatentesEmDominioPublicoUteis = unname(parametros["aInitialsPatentesEmDominioPublicoUteis"])
+                  ,aInitialsInvestimentoPeDDepreciar = rep(unname(parametros["aInitialsInvestimentoPeDDepreciar"]), times = N_PLAYERS)
+                  ,aPatentShare = rep(unname(parametros["aPatentShare"]), times = N_PLAYERS)
+                  
+                  
+                  
   )
   
   
@@ -703,6 +728,13 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
     ,sSmoothCapacity1 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
     ,sSmoothCapacity2 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
     ,sSmoothCapacity3 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    
+    ,sInvestimentoNaoRealizadoPeD = rep(1000, times = N_PLAYERS)
+    ,sPatentesRequisitadas = rep(1000, times = N_PLAYERS)
+    ,sPatentesEmpresa = rep(1000, times = N_PLAYERS)
+    ,sPatentesEmDominioPublicoUteis = rep(1000, times = N_PLAYERS)
+    ,sInvestimentoPeDDepreciar = rep(1000, times = N_PLAYERS)
+    
   ) 
   
   # Calculando estoques para o t0.
@@ -722,6 +754,11 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
     ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
     ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
     ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
+    ,sInvestimentoNaoRealizadoPeD = unname(estoques_calculados$InitialInvestimentoNaoRealizadoPeD)
+    ,sPatentesRequisitadas = unname(estoques_calculados$InitialPatentesRequisitadas)
+    ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
+    ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
+    ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
   ) 
   
   resultado_completo = data.frame(ode(y=stocks, simtime, func = modelo, 

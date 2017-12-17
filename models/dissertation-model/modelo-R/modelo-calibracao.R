@@ -126,11 +126,20 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     ##### MARKET SECTOR #####
     
+    # Patentes e Performance
+    aPatentesEmpresaTemAcesso = sPatentesRequisitadas + sPatentesEmpresa + sPatentesEmDominioPublicoUteis
+    
+    aPerformanceCalculada = aPerfSlope * aPatentesEmpresaTemAcesso
+    
+    aPerformance = pmax(aPerfMin, pmin(aPerfMax, aPerformanceCalculada))
+    
+    aAttractivenessFromPerformance = aPeDLigado * exp(aSensOfAttractToPerformance*(aReferencePerformance/aPerformance)) + (1 - aPeDLigado)
+    
     aAttractivenessFromAvailability = exp(aSensOfAttractToAvailability*(aDeliveryDelay/aReferenceDeliveryDelay))
     
     aAttractivenessFromPrice = exp(aSensOfAttractToPrice*(sPrice/aReferencePrice))
     
-    aAttractiveness = aAttractivenessFromAvailability * aAttractivenessFromPrice
+    aAttractiveness = aAttractivenessFromAvailability * aAttractivenessFromPrice * aAttractivenessFromPerformance
     
     aTotalAttractiveness = sum(aAttractiveness)
     
@@ -225,6 +234,17 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     fchangeSmoothCapacity3 = (sSmoothCapacity2 - sSmoothCapacity3) / (aCapacityAcquisitionDelay / 3)
     
     
+    
+    ##### Custo P e D ####
+    aTempoDepreciacao = aTempoMedioAvaliacao + aTempoVencimentoPatentes
+    
+    fDepreciacaoInvPeD = sInvestimentoPeDDepreciar / aTempoDepreciacao
+    
+    aPeDUnitCost = fDepreciacaoInvPeD / fShipments
+    
+    
+    
+    
     ##### LEARNING CURVE SECTOR #####
     fProduction = fShipments
     
@@ -236,7 +256,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     aInitialUnitVariableCost = (aInitialPrice/(1+aNormalProfitMargin))*(1/(1+aRatioOfFixedToVarCost/aNormalCapacityUtilization))
     
-    aUnitFixedCost = aLearning * aInitialUnitFixedCost
+    aUnitFixedCost = aLearning * aInitialUnitFixedCost + aPeDUnitCost * aPeDLigado
     
     aUnitVariableCost = aLearning * aInitialUnitVariableCost
     
@@ -306,9 +326,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     fPatentesUtilidadeExpirada = sPatentesEmDominioPublicoUteis / aTempodeInutilizacaoPatente
     
-    aTempoDepreciacao = aTempoMedioAvaliacao + aTempoVencimentoPatentes
     
-    fDepreciacaoInvPeD = sInvestimentoPeDDepreciar / aTempoDepreciacao
     
 
     ##### ESTOQUES #####
@@ -367,6 +385,13 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     PerceivedCompTargetCapacityIni = aCompetitorCapacity
     
     CapacityIni = (1/length(fNetIncome)) * fIndustryOrderRate / aNormalCapacityUtilization
+    
+    InitialInvestimentoNaoRealizadoPeD = aInitialInvestimentoNaoRealizadoPeD * aPatentShare
+    InitialPatentesRequisitadas = aInitialPatentesRequisitadas * aPatentShare
+    InitialPatentesEmpresa = aInitialPatentesEmpresa * aPatentShare
+    InitialsPatentesEmDominioPublicoUteis =  aInitialsPatentesEmDominioPublicoUteis
+    InitialsInvestimentoPeDDepreciar = aInitialsInvestimentoPeDDepreciar * aPatentShare
+    
       
     ##### ESTOQUES - INICIAIS #####
     
@@ -378,7 +403,12 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       ReportedIndustryVolumeIni = ReportedIndustryVolumeIni,
       CumulativeProductionIni = CumulativeProductionIni,
       PerceivedCompTargetCapacityIni = PerceivedCompTargetCapacityIni,
-      CapacityIni = CapacityIni
+      CapacityIni = CapacityIni,
+      InitialInvestimentoNaoRealizadoPeD = InitialInvestimentoNaoRealizadoPeD,
+      InitialPatentesRequisitadas = InitialPatentesRequisitadas,
+      InitialPatentesEmpresa = InitialPatentesEmpresa,
+      InitialsPatentesEmDominioPublicoUteis = InitialsPatentesEmDominioPublicoUteis,
+      InitialsInvestimentoPeDDepreciar = InitialsInvestimentoPeDDepreciar
     )
     
     
