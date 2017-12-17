@@ -471,6 +471,13 @@ A partir do preço alvo calculado, pressupõe-se que processos burocráticos nã
 
 $$dP_i/dt = (P^*_i-P_i)/\tau^p$$
 
+### Pesquisa e Desenvolvimento e Patentes
+
+O investimento em Pesquisa e Desenvolvimento é representado por uma decisão da empresa relacionada à fração de sua receita a ser investida. Este investimento é acumulado em um estoque, representando o volume de investimentos que ainda não gerou patentes.
+
+$$D_{i}/dt = (Receita * Orc) - D_i/TempoMédio$$
+
+
 ## Síntese das Modificações Realizadas
 
 | **Módulo** | **Necessidade de Modificação** | **Modificação Realizada** |

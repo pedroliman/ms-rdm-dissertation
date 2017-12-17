@@ -43,25 +43,18 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     sSmoothCapacity2 = stocks[grep("sSmoothCapacity2", x = names(stocks))]
     sSmoothCapacity3 = stocks[grep("sSmoothCapacity3", x = names(stocks))]
     
-    # sNPVProfit = stocks[(N_PLAYERS*0+1):(N_PLAYERS*1)]
-    # sValueOfBacklog = stocks[(N_PLAYERS*1+1):(N_PLAYERS*2)]
-    # sBacklog = stocks[(N_PLAYERS*2+1):(N_PLAYERS*3)]
-    # sInstalledBase = stocks[(N_PLAYERS*3+1):(N_PLAYERS*4)]
-    # sPrice = stocks[(N_PLAYERS*4+1):(N_PLAYERS*5)]
-    # sCumulativeAdopters = stocks[(N_PLAYERS*5+1)]
-    # sReportedIndustryVolume = stocks[(N_PLAYERS*6):(N_PLAYERS*6+1)]
-    # sCumulativeProduction = stocks[(N_PLAYERS*7):(N_PLAYERS*7+1)]
-    # sPerceivedCompTargetCapacity = stocks[(N_PLAYERS*8):(N_PLAYERS*8+1)]
-    # sSmoothCapacity1 = stocks[(N_PLAYERS*9):(N_PLAYERS*9+1)]
-    # sSmoothCapacity2 = stocks[(N_PLAYERS*10):(N_PLAYERS*10+1)]
-    # sSmoothCapacity3 = stocks[(N_PLAYERS*11):(N_PLAYERS*11+1)]
+    sInvestimentoNaoRealizadoPeD = stocks[grep("sInvestimentoNaoRealizadoPeD", x = names(stocks))]
+    sPatentesRequisitadas = stocks[grep("sPatentesRequisitadas", x = names(stocks))]
+    sPatentesEmpresa = stocks[grep("sPatentesEmpresa", x = names(stocks))]
+    sPatentesEmDominioPublicoUteis = stocks[grep("sPatentesEmDominioPublicoUteis", x = names(stocks))]
+    sInvestimentoPeDDepreciar = stocks[grep("sInvestimentoPeDDepreciar", x = names(stocks))]
     
     #Obtendo o número da linha no qual estou
     linha = (time * (n_tempo - 1)) / FINISH + 1
     
+    # Gravando a Variável sReportedIndustryVolume no vetor global
     list.variaveis.globais$sReportedIndustryVolume[linha,] <<- sReportedIndustryVolume
     
-    # Gravando a Variável sReportedIndustryVolume no vetor global
     
     ##### DIFFUSION SECTOR #####
     aDemandCurveSlope = - aReferenceIndustryDemandElasticity * (aReferencePopulation / aReferencePrice )
@@ -296,6 +289,27 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     aNPVIndustryProfits = sum(sNPVProfit) #
     
+    
+    ##### P&D - Investimento #####
+    
+    fInvestimentoPeD = fRevenue * aOrcamentoPeD * aPeDLigado
+    
+    fInvestimentoPeDRealizado = sInvestimentoNaoRealizadoPeD / aTempoMedioRealizacaoPeD
+    
+    fPatentesSolicitadas = fInvestimentoPeDRealizado / aCustoMedioPatente
+    
+    fPatentesRejeitadas = (sPatentesRequisitadas/aTempoMedioAvaliacao) * aTaxaRejeicao
+    
+    fPatentesConcedidas = (sPatentesRequisitadas/aTempoMedioAvaliacao) * (1-aTaxaRejeicao)
+    
+    fPatentesVencidas = sPatentesEmpresa / aTempoVencimentoPatentes
+    
+    fPatentesUtilidadeExpirada = sPatentesEmDominioPublicoUteis / aTempodeInutilizacaoPatente
+    
+    aTempoDepreciacao = aTempoMedioAvaliacao + aTempoVencimentoPatentes
+    
+    fDepreciacaoInvPeD = sInvestimentoPeDDepreciar / aTempoDepreciacao
+    
 
     ##### ESTOQUES #####
     
@@ -322,6 +336,18 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     d_SmoothCapacity2_dt = fchangeSmoothCapacity2
     
     d_SmoothCapacity3_dt = fchangeSmoothCapacity3
+    
+    #Estoques do Investimento em PeD
+    
+    d_InvestimentoNaoRealizadoPeD_dt = fInvestimentoPeD - fInvestimentoPeDRealizado
+    
+    d_PatentesRequisitadas_dt = fPatentesSolicitadas - fPatentesConcedidas - fPatentesRejeitadas
+    
+    d_PatentesEmpresa_dt = fPatentesConcedidas - fPatentesVencidas
+    
+    d_PatentesEmDominioPublicoUteis_dt = sum(fPatentesVencidas) - fPatentesUtilidadeExpirada
+    
+    d_InvestimentoPeDDepreciar_dt = fInvestimentoPeD - fDepreciacaoInvPeD
     
     
     
@@ -436,6 +462,11 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       ,d_SmoothCapacity1_dt
       ,d_SmoothCapacity2_dt
       ,d_SmoothCapacity3_dt
+      ,d_InvestimentoNaoRealizadoPeD_dt
+      ,d_PatentesRequisitadas_dt
+      ,d_PatentesEmpresa_dt
+      ,d_PatentesEmDominioPublicoUteis_dt
+      ,d_InvestimentoPeDDepreciar_dt
     )
     ,fIndustryOrderRate = fIndustryOrderRate
     ,aNonAdopters = aNonAdopters
