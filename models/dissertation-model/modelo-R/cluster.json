@@ -1,0 +1,23 @@
+{
+  "name": "pedrolimabatch",
+  "vmSize": "Standard_D2_v2",
+  "maxTasksPerNode": 2,
+  "poolSize": {
+    "dedicatedNodes": {
+      "min": 3,
+      "max": 5
+    },
+    "lowPriorityNodes": {
+      "min": 3,
+      "max": 5
+    },
+    "autoscaleFormula": "QUEUE"
+  },
+  "containerImage": "rocker/tidyverse:latest",
+  "rPackages": {
+    "cran": [],
+    "github": [],
+    "bioconductor": []
+  },
+  "commandLine": []
+}

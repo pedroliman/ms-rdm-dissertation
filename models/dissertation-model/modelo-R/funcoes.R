@@ -214,49 +214,78 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = 
   }
   
   if(paralelo == TRUE) {
-    # Calculate the number of cores
-    no_cores <- detectCores() - 1
-    # Inicializar Cluster
-    cl <- makeCluster(no_cores, type = modo_paralelo)
-    
-    # Carregando bibliotecas no cluster:
-    #clusterEvalQ(cl, source("funcoes.R"))
-    #clusterEvalQ(cl, eval(parse('funcoes.R')))
-    # textConnection(animal.R)
-    
-    if(modo_paralelo  == "PSOCK") {
-      # Se o modo paralelo é "PSOCK", é necessário definir explícitamente as variáveis que devem ir para o cluster
-      # http://gforge.se/2015/02/how-to-go-parallel-in-r-basics-tips/
-      clusterEvalQ(cl, library(deSolve))
-      
-      # Exportando objetos que preciso ter nos clusters:
-      clusterExport(cl, varlist = list("ensemble", 
-                                       "modelo", 
-                                       "simtime", 
-                                       "FINISH", 
-                                       "VERIFICAR_STOCKS", 
-                                       "solve_modelo", 
-                                       "VERIFICAR_CHECKS",
-                                       "VAR_LEVER",
-                                       "VAR_SCENARIO",
-                                       "STEP",
-                                       "solve_modelo_dissertacao"), envir = environment())  
-    }
-
-    # Executando código no cluster:
+   
     t_inicio = Sys.time()
     message(t_inicio)
-    message(paste("Iniciando Simulacao em modo paralelo. Usando", no_cores, "núcleos."))
     
-    # t_uma_rodada = 0.583717
+    if((modo_paralelo == "PSOCK") | (modo_paralelo == "FORK")){
+      # Calculate the number of cores
+      no_cores <- detectCores() - 1
+      # Inicializar Cluster
+      cl <- makeCluster(no_cores, type = modo_paralelo)
+      
+      # Carregando bibliotecas no cluster:
+      #clusterEvalQ(cl, source("funcoes.R"))
+      #clusterEvalQ(cl, eval(parse('funcoes.R')))
+      # textConnection(animal.R)
+      
+      if(modo_paralelo  == "PSOCK") {
+        # Se o modo paralelo é "PSOCK", é necessário definir explícitamente as variáveis que devem ir para o cluster
+        # http://gforge.se/2015/02/how-to-go-parallel-in-r-basics-tips/
+        clusterEvalQ(cl, library(deSolve))
+        
+        # Exportando objetos que preciso ter nos clusters:
+        clusterExport(cl, varlist = list("ensemble", 
+                                         "modelo", 
+                                         "simtime", 
+                                         "FINISH", 
+                                         "VERIFICAR_STOCKS", 
+                                         "solve_modelo", 
+                                         "VERIFICAR_CHECKS",
+                                         "VAR_LEVER",
+                                         "VAR_SCENARIO",
+                                         "STEP",
+                                         "solve_modelo_dissertacao"), envir = environment())  
+      }
+      
+      
+      message(paste("Iniciando Simulacao em modo paralelo. Usando", no_cores, "núcleos."))
+      
+      # t_uma_rodada = 0.583717
+      
+      t_estimado = t_uma_rodada * nrow(ensemble)/no_cores
+      message(paste("Tempo estimado (segundos):"),t_estimado)
+      
+      # Aplicando Função paralela para a computação dos resultados
+      dados_simulacao <- parLapply(cl, 1:nrow(ensemble), solve_modelo)
+      stopCluster(cl)
+      
+      
+    }
     
-    t_estimado = t_uma_rodada * nrow(ensemble)/no_cores
-    message(paste("Tempo estimado (segundos):"),t_estimado)
+    if(modo_paralelo == "Azure") {
+      # 3. Set your credentials - you need to give the R session your credentials to interact with Azure
+      setCredentials("credentials.json")
+      
+      # 4. Register the pool. This will create a new pool if your pool hasn't already been provisioned.
+      cluster <- makeCluster("cluster.json")
+      
+      # 5. Register the pool as your parallel backend
+      registerDoAzureParallel(cluster)
+      
+      # 6. Check that your parallel backend has been registered
+      getDoParWorkers()
+      
+      # GErando resultado
+      browser()
+      dados_simulacao <- foreach(i = 1:nrow(ensemble)) %dopar% {
+        # This code is executed, in parallel, across your cluster.
+        solve_modelo()
+      }
+      
+    }
     
-    # Aplicando Função paralela para a computação dos resultados
-    dados_simulacao <- parLapply(cl, 1:nrow(ensemble), solve_modelo)
-    stopCluster(cl)
-
+    # Unindo Dados da Simulação, seja entregues pelo Azure seja pelo meu
     dados_simulacao = do.call(rbind, dados_simulacao)
     
     t_fim = Sys.time()
