@@ -79,6 +79,13 @@ save(sdmodel, parametros_sterman, resultados_sterman, sterman_plots, file = "./a
 mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=sterman_plots, width = plots_width, height = plots_heigh)
 
 
+## Análise dos dados inforrmados
+
+
+#### Calibração ####
+results$Ensemble = adicionar_erro_ao_ensemble(results = results, variaveis_calibracao = c("fIndustryOrderRate"), planilha_calibracao = "dados_calibracao.xlsx")
+
+
 
 #### RODADA 1 ####
 

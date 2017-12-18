@@ -780,6 +780,40 @@ getCost<-function(parametros, modelo, dados_calibracao){
 }
 
 
+adicionar_erro_ao_ensemble = function(results, variaveis_calibracao, planilha_calibracao) {
+  
+  dados_calibracao <- as.data.frame(read_xlsx(path = planilha_calibracao, sheet = "Plan1"))
+  
+  variaveis_a_utilizar_modelo = c(opcoes$VarCenarios, opcoes$VarTempo, variaveis_calibracao)
+  
+  variaveis_a_utilizar_dados = c(opcoes$VarTempo, variaveis_calibracao)
+  
+  dados_modelo = results$DadosSimulados[,variaveis_a_utilizar_modelo]
+  
+  cenarios = unique(dados_modelo$Scenario)
+  
+  
+  obter_custo = function(cenario, dados_modelo, dados_calibracao, variaveis_calibracao){
+    custo = modCost(model = dados_modelo[which(dados_modelo$Scenario == cenario),],
+                    obs = dados_calibracao[,variaveis_a_utilizar_dados])
+    soma_SSR = custo$model
+    soma_SSR
+  }
+  
+  obter_custo_cenario = function(cenario){
+    custo = obter_custo(cenario = cenario, dados_modelo, dados_calibracao, variaveis_calibracao)
+    custo
+  }
+  
+  SomaSSR =  do.call(rbind, lapply(results$Ensemble[,opcoes$VarCenarios], obter_custo_cenario))
+  colnames(SomaSSR) = c("SomaSSR")
+  
+  # Retornando o Ensemble com o Erro
+  cbind(results$Ensemble, SomaSSR)
+  
+}
+
+
 ##### GRÁFICOS ####
 gerar_grafico_superficie = function(dados_ultimo_ano,variaveis, estrategia) {
   dadosplot = subset.data.frame(dados_ultimo_ano, (Lever == estrategia))

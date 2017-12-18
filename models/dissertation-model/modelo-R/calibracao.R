@@ -5,7 +5,10 @@ library(scales)
 library(FME)
 library(readxl)
 
-dados_calibracao <- as.data.frame(read_xlsx(path = "dados_calibracao.xlsx", sheet = "Plan1")) 
+
+
+
+# Todos os Dados simulados estão no objeto results, e os dados ano a ano estão no objeto DadosSimulados
 
 variaveis_calibracao = names(dados_calibracao)
 
