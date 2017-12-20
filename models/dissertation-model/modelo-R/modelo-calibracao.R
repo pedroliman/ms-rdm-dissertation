@@ -22,7 +22,6 @@ library(dplyr)
 # Definindo o Modelo
 modelo <- function(time, stocks, auxs, modo = "completo"){
   with(as.list(c(stocks, auxs)),{
-    
     # Criando uma variavel n_tempo local
     n_tempo = nrow(list.variaveis.globais$sReportedIndustryVolume)
     
@@ -388,11 +387,11 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     BacklogIni = aInitialSharePlayers * fIndustryOrderRate * aNormalDeliveryDelay
     
-    InstalledBaseIni = aInitialSharePlayers * aUnitsPerHousehold * sCumulativeAdopters
+    InstalledBaseIni = aInitialCumulativeAdopters * aInitialSharePlayers * aUnitsPerHousehold
     
     CumulativeAdoptersIni = aInitialCumulativeAdopters
     
-    ValueOfBacklogIni = sPrice * BacklogIni 
+    ValueOfBacklogIni = aInitialSharePlayers * fIndustryOrderRate * aNormalDeliveryDelay * aInitialPrice
     
     ReportedIndustryVolumeIni = aIndustryVolume
     
@@ -403,11 +402,18 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     CapacityIni = aInitialSharePlayers * fIndustryOrderRate / aNormalCapacityUtilization
     
     InitialInvestimentoNaoRealizadoPeD = aInitialInvestimentoNaoRealizadoPeD * aPatentShare
+    
     InitialPatentesRequisitadas = aInitialPatentesRequisitadas * aPatentShare
+    
     InitialPatentesEmpresa = aInitialPatentesEmpresa * aPatentShare
+    
     InitialsPatentesEmDominioPublicoUteis =  aInitialsPatentesEmDominioPublicoUteis
+    
     InitialsInvestimentoPeDDepreciar = aInitialsInvestimentoPeDDepreciar * aPatentShare
     
+    # if(modo == "inicial") {
+    #   browser()
+    # }
       
     ##### ESTOQUES - INICIAIS #####
     
@@ -433,7 +439,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     ##### COMPARAR RESULTADOS COM O ITHINK #####
     
-    if(VERIFICAR_STOCKS){
+    if(VERIFICAR_STOCKS & modo == "completo"){
       for (variavel in variaveis_ithink_stocks) {
         # Definir o tipo de variavel
         # Variavel é um estoque?
@@ -460,7 +466,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     }
     
     
-    if(VERIFICAR_CHECKS){
+    if(VERIFICAR_CHECKS & modo == "completo"){
       for (variavel in variaveis_ithink_checks) {
         # Definir o tipo de variavel
         # Variavel é um estoque?

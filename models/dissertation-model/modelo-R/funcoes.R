@@ -747,12 +747,12 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   ##### VARIÁVEIS DE ENTRADA - ESTOQUES INICIAIS, SEM AJUSTES #####
   
   # Informando Estoques Iniciais, sem ajustes, apenas para calcular o primeiro tempo.
-  stocks  <- c(
+  stocks_iniciais  <- c(
     sNPVProfit = rep(0, times = N_PLAYERS)
     ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
     ,sBacklog = rep(12738, times = N_PLAYERS) 
-    ,sInstalledBase = rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-    ,sPrice = rep(1000, times = N_PLAYERS)
+    ,sInstalledBase = unname(auxs$aTotalInitialInstalledBase) * unname(auxs$aInitialSharePlayers)  # rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+    ,sPrice = unname(auxs$aInitialPrice)
     ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
     ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
     ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
@@ -770,15 +770,15 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   ) 
   
   # Calculando estoques para o t0.
-  estoques_calculados = modelo(time = 0, stocks = stocks, auxs = auxs, modo = "inicial")
+  estoques_calculados = modelo(time = 0, stocks = stocks_iniciais, auxs = auxs, modo = "inicial")
   
   # Substituindo estoques no t0
   stocks  <- c(
-    sNPVProfit = rep(0, times = N_PLAYERS)
+    sNPVProfit = unname(stocks_iniciais[grep("sNPVProfit", x = names(stocks_iniciais))]) 
     ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
     ,sBacklog = unname(estoques_calculados$BacklogIni)
-    ,sInstalledBase = rep(unname(estoques_calculados$InstalledBaseIni), times = N_PLAYERS)
-    ,sPrice = unname(auxs$aInitialPrice)
+    ,sInstalledBase = unname(stocks_iniciais[grep("sInstalledBase", x = names(stocks_iniciais))]) 
+    ,sPrice = unname(stocks_iniciais[grep("sPrice", x = names(stocks_iniciais))])
     ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
     ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
     ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)

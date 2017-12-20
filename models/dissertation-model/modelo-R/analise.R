@@ -86,21 +86,10 @@ mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=ster
 #### Roando um Cenário Base ####
 ## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
 START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
-VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.01; BROWSE_ON_DIFF = FALSE
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.01; BROWSE_ON_DIFF = TRUE
 
 ## Carregando Modelo
 source('modelo-calibracao.R', encoding = 'UTF-8')
-
-
-# Rodando a Simulação com os Parâmetros do Sterman, rodando uma vez apenas.
-arquivo_parametros = "./rodada1/params_rodada1.xlsx"
-
-parametros_completos = readxl::read_xlsx(arquivo_parametros, sheet = "params")
-
-parametros_cenariobase = t(parametros_completos[,"CenarioBase"])[1,]
-
-names(parametros_cenariobase) = as.matrix(parametros_completos[,1])
-
 
 # Carregando Variáveis de Output do Ithink para Comparação
 arquivo_excel_stocks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_stocks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
@@ -112,15 +101,19 @@ dados_ithink_checks  = arquivo_excel_checks$ResultadosIthink %>% dplyr::select(-
 variaveis_ithink_stocks = names(dados_ithink_stocks)
 variaveis_ithink_checks = names(dados_ithink_checks)
 
+# Rodando a Simulação com os Parâmetros do Sterman, rodando uma vez apenas.
+arquivo_parametros = "./calibracao/params_calibracao.xlsx"
+
+parametros_completos = readxl::read_xlsx(arquivo_parametros, sheet = "params")
+
+parametros_cenariobase = t(parametros_completos[,"CenarioBase"])[1,]
+
+names(parametros_cenariobase) = as.matrix(parametros_completos[,1])
 
 # Mudando o tempo de simulação para Simular o Sterman
 resultados_cenariobase = solve_modelo_dissertacao(parametros = parametros_cenariobase, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
 
-
-
-
-
-
+View(resultados_cenariobase)
 
 
 
