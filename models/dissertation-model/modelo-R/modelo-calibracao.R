@@ -25,6 +25,11 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     # Criando uma variavel n_tempo local
     n_tempo = nrow(list.variaveis.globais$sReportedIndustryVolume)
     
+    # if(modo == "completo") {
+    #   browser()  
+    # }
+    
+    
     ##### VETORIZANDO ESTOQUES #####
     
     #Estoques Vetorizados = substituindo estoques pela forma vetorizada (pra que seja possivel formular equações de forma mais simples).
