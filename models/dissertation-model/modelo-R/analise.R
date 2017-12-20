@@ -25,7 +25,7 @@ opcoes = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 10000,
+  N = 10,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
@@ -82,6 +82,14 @@ mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=ster
 ## Análise dos dados inforrmados
 
 
+
+
+
+
+
+
+
+
 #### Calibração ####
 results$Ensemble = adicionar_erro_ao_ensemble(results = results, variaveis_calibracao = c("fIndustryOrderRate"), planilha_calibracao = "dados_calibracao.xlsx")
 
@@ -94,6 +102,8 @@ quartil1_erro = quantile(results$Ensemble[,"SomaSSR"], probs = c(0.05))
 cenarios_quartis = results$Ensemble[which(results$Ensemble[,"SomaSSR"]<quartil1_erro),opcoes$VarCenarios]
 
 cenario_menor_erro = results$Ensemble[which(results$Ensemble[,"SomaSSR"]==min(results$Ensemble[,"SomaSSR"])),opcoes$VarCenarios]
+
+cenario_menor_erro = 1
 
 # Selecionando Pontos de Dados para Exibir no Gráfico
 time_points<-seq(from=1, to=length(SIM_TIME),by=1/STEP)
@@ -127,7 +137,7 @@ VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.00001; B
 # Carregando o Modelo Novamente:
 source('modelo-calibracao.R', encoding = 'UTF-8')
 
-results = simularRDM_e_escolher_estrategia(inputs = "./rodada1/params.xlsx", sdmodel = sdmodel, opcoes = opcoes)
+results = simularRDM_e_escolher_estrategia(inputs = "./rodada1/params_rodada1.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
 save(results, file = "./rodada1/resultados.Rdata")
 

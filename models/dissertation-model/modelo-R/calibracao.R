@@ -14,7 +14,7 @@ variaveis_calibracao = c("fIndustryOrderRate")
 #upper<-c(10000000, 3)
 
 
-arquivo_parametros = "./rodada1/params.xlsx"
+arquivo_parametros = "./rodada1/params_rodada1.xlsx"
 
 View(parametros_completos)
 

@@ -56,8 +56,22 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     list.variaveis.globais$sReportedIndustryVolume[linha,] <<- sReportedIndustryVolume
     
     
+    ### Calculando Variáveis para o Estoque Inicial de Cumulative Adopters
+    
+    aEstimatedAdopters = aTotalInitialInstalledBase / aUnitsPerHousehold
+    
+    aInitialNewAdoptersOrderRate = aInitialIndustryShipments*(1-aInitialReorderShare)
+    
+    aInitialAdoptionRate = aInitialNewAdoptersOrderRate / aUnitsPerHousehold
+    
+    aInitialCumulativeAdopters2 = ((aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))-aInnovatorAdoptionFraction)*(aPopulation/aWOMStrength)
+    
+    aInitialCumulativeAdopters = aInitialCumulativeAdopters2
+    
+    #browser()
+    
     ##### DIFFUSION SECTOR #####
-      aDemandCurveSlope = - aReferenceIndustryDemandElasticity * (aReferencePopulation / aReferencePrice )
+    aDemandCurveSlope = - aReferenceIndustryDemandElasticity * (aReferencePopulation / aReferencePrice )
     
     aLowestPrice = min(sPrice)
     
@@ -71,7 +85,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     checkIndustryDemand = aIndustryDemand
     
-    aInitialCumulativeAdopters = aInitialDiffusionFraction * aIndustryDemand
+    # A fórmula abaixo não é mais utilizada.
+    # aInitialCumulativeAdopters = aInitialDiffusionFraction * aIndustryDemand
     
     aNonAdopters = aIndustryDemand - sCumulativeAdopters
     
@@ -371,8 +386,9 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     # Variaveis de Estoques Iniciais
     
-    BacklogIni = (1/length(fNetIncome)) * fIndustryOrderRate * aNormalDeliveryDelay
-    InstalledBaseIni = (1/length(fNetIncome)) * aUnitsPerHousehold * sCumulativeAdopters
+    BacklogIni = aInitialSharePlayers * fIndustryOrderRate * aNormalDeliveryDelay
+    
+    InstalledBaseIni = aInitialSharePlayers * aUnitsPerHousehold * sCumulativeAdopters
     
     CumulativeAdoptersIni = aInitialCumulativeAdopters
     
@@ -384,7 +400,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     PerceivedCompTargetCapacityIni = aCompetitorCapacity
     
-    CapacityIni = (1/length(fNetIncome)) * fIndustryOrderRate / aNormalCapacityUtilization
+    CapacityIni = aInitialSharePlayers * fIndustryOrderRate / aNormalCapacityUtilization
     
     InitialInvestimentoNaoRealizadoPeD = aInitialInvestimentoNaoRealizadoPeD * aPatentShare
     InitialPatentesRequisitadas = aInitialPatentesRequisitadas * aPatentShare
@@ -514,6 +530,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     ,aForecastError = aForecastError
     ,aTargetCapacity = aTargetCapacity
     ,aCompetitorTargetCapacity = aCompetitorTargetCapacity)
+    
+    # browser()
     
     return (if(modo == "inicial"){
       stocks_ini

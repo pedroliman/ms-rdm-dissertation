@@ -193,7 +193,7 @@ ampliar_ensemble_com_levers = function(ensemble, levers) {
 #' @export
 #'
 #' @examples
-simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = TRUE, modo_paralelo = "FORK") {
+simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = TRUE, modo_paralelo = "PSOCK") {
   message("01. funcoes.R/simular: Iniciando Simulação.")
   
   # Rodando a Simulação (uma vez), com a primeira linha do ensemble - Ajuda a saber se funciona.
@@ -737,7 +737,10 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aPatentShare = rep(unname(parametros["aPatentShare"]), times = N_PLAYERS)
                   
                   
-                  
+                  ,aInitialSharePlayers = rep(unname(parametros["aInitialSharePlayers"]), times = N_PLAYERS)
+                  ,aInitialReorderShare =unname(parametros["aInitialReorderShare"])
+                  ,aTotalInitialInstalledBase = unname(parametros["aTotalInitialInstalledBase"])
+                  ,aInitialIndustryShipments = unname(parametros["aInitialIndustryShipments"])
   )
   
   
