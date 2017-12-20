@@ -85,6 +85,37 @@ mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=ster
 #### Calibração ####
 results$Ensemble = adicionar_erro_ao_ensemble(results = results, variaveis_calibracao = c("fIndustryOrderRate"), planilha_calibracao = "dados_calibracao.xlsx")
 
+dados_calibracao <- as.data.frame(read_xlsx(path = "dados_calibracao.xlsx", sheet = "Plan1"))
+
+hist(results$Ensemble[,"SomaSSR"])
+
+quartil1_erro = quantile(results$Ensemble[,"SomaSSR"], probs = c(0.05))
+
+cenarios_quartis = results$Ensemble[which(results$Ensemble[,"SomaSSR"]<quartil1_erro),opcoes$VarCenarios]
+
+cenario_menor_erro = results$Ensemble[which(results$Ensemble[,"SomaSSR"]==min(results$Ensemble[,"SomaSSR"])),opcoes$VarCenarios]
+
+# Selecionando Pontos de Dados para Exibir no Gráfico
+time_points<-seq(from=1, to=length(SIM_TIME),by=1/STEP)
+
+time_plot = seq(from=START, to=FINISH)
+
+resultados_exibir = dplyr::filter(results$DadosSimulados, Scenario == cenario_menor_erro)[time_points,]
+
+resultados_exibir = results$DadosSimulados[which(results$DadosSimulados[,opcoes$VarCenarios] %in% cenarios_quartis),]   [time_points,]
+
+p1<-ggplot()+
+  geom_point(data=dados_calibracao,size=1.5,aes(time,fIndustryOrderRate,colour="Data"))+
+  geom_line(data=resultados_exibir,size=1,aes(x=time,y=fIndustryOrderRate,colour="Model"))+
+  ylab("Demanda da Indústria")+
+  xlab("Anos")+
+  scale_y_continuous(labels = comma)+
+  theme(legend.position="bottom")+
+  scale_colour_manual(name="",
+                      values=c(Data="red", 
+                               Model="blue"),
+                      labels=c("Dados",
+                               "Modelo"))
 
 
 #### RODADA 1 ####

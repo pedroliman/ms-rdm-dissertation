@@ -57,7 +57,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     
     ##### DIFFUSION SECTOR #####
-    aDemandCurveSlope = - aReferenceIndustryDemandElasticity * (aReferencePopulation / aReferencePrice )
+      aDemandCurveSlope = - aReferenceIndustryDemandElasticity * (aReferencePopulation / aReferencePrice )
     
     aLowestPrice = min(sPrice)
     

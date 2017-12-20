@@ -4,34 +4,44 @@ library(gdata)
 library(scales)
 library(FME)
 library(readxl)
-
-
-
-
 # Todos os Dados simulados estão no objeto results, e os dados ano a ano estão no objeto DadosSimulados
 
-variaveis_calibracao = names(dados_calibracao)
+variaveis_calibracao = c("fIndustryOrderRate")
 
 # Valores Iniciais dos parametros
-parametros<-c(aPopulation=1000000, aWOMStrength = 1) 
-lower<-c(1000, 0.3)
-upper<-c(10000000, 3)
+#parametros<-c(aPopulation=1000000, aWOMStrength = 1) 
+#lower<-c(1000, 0.3)
+#upper<-c(10000000, 3)
 
 
-arquivo_parametros = "./analise-sterman/params.xlsx"
+arquivo_parametros = "./rodada1/params.xlsx"
+
+View(parametros_completos)
 
 parametros_completos = readxl::read_xlsx(arquivo_parametros, sheet = "params")
 
-parametros = t(parametros_completos[,"Sterman"])[1,]
+parametros = t(parametros_completos[,"CenarioBase"])[1,]
 
-names(parametros_sterman) = as.matrix(parametros_completos[,1])
+names(parametros) = as.matrix(parametros_completos[,1])
 
 lower = t(parametros_completos[,"Min"])[1,] 
 upper = t(parametros_completos[,"Max"])[1,]
 
+params = parametros
+
 # Aqui é onde a calibração pode ser feita.
 
-Fit<-modFit(p = parametros, f = getCost, modelo = modelo, dados_calibracao = dados_calibracao, lower=lower, upper=upper)
+Fit<-modFit(p = params, f = getCost, modelo = modelo, dados_calibracao = dados_calibracao, lower=lower, upper=upper)
+
+Fit<-modFit(p = params, f = getCost, modelo = modelo, dados_calibracao = dados_calibracao, lower=lower, upper=upper)
+
+getCost(p = params, modelo = modelo, dados_calibracao = dados_calibracao)
+
+Fit = FME::modFit(f = solve_modelo_dissertacao(parametros = params, modelo = modelo, simtime = SIM_TIME), p = params)
+
+getCost<-function(parametros, modelo, dados_calibracao)
+
+
 
 optPar1var = c(Fit$par)
 
@@ -45,8 +55,6 @@ optMod <- solveWP(optPar)
 
 # see http://www.inside-r.org/packages/cran/FME/docs/modFit
 
-time_points<-seq(from=1, to=length(SIM_TIME),by=1/STEP)
-optMod<-optMod[time_points,]
 
 Fit$ssr
 
