@@ -86,8 +86,8 @@ mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=ster
 #### Rodando um Cenário Base ####
 ## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
 START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
-VERIFICAR_STOCKS = TRUE; VERIFICAR_CHECKS = TRUE; CHECK_PRECISION = 0.001; BROWSE_ON_DIFF = TRUE
-VERIFICAR_GLOBAL = TRUE;
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; BROWSE_ON_DIFF = TRUE
+VERIFICAR_GLOBAL = FALSE;
 
 ## Carregando Modelo
 source('modelo-calibracao.R', encoding = 'UTF-8')
@@ -127,7 +127,7 @@ resultados_cenariobase = solve_modelo_dissertacao(parametros = parametros_cenari
 
 
 
-
+resultados_cenariobase$a
 
 
 

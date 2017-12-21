@@ -502,13 +502,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       }
     }
     
-    
-    
-    
-    
     # Colocar isso dentro do IF abaixo e verificar!
-      
-    
     if(VERIFICAR_GLOBAL & modo == "completo"){
       
       # Forma que usa todas as variaveis do ambiente:
@@ -577,9 +571,9 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     ##### VARIÁVEIS RETORNADAS #####
     
     ## Parar se o tempo chegou ao fim.
-    if(time == FINISH){
+    # if(time == FINISH){
     # browser()
-    }
+    # }
     
     resultado_completo = list(c(
       d_NPVProfit_dt
@@ -616,8 +610,6 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     ,aForecastError = aForecastError
     ,aTargetCapacity = aTargetCapacity
     ,aCompetitorTargetCapacity = aCompetitorTargetCapacity)
-    
-    # browser()
     
     return (if(modo == "inicial"){
       stocks_ini
