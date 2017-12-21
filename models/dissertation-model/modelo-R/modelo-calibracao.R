@@ -5,13 +5,13 @@ library(dplyr)
 ## Inicializar variaveis da simulacao aqui:
 # START<-0; FINISH<-40; STEP<-0.0625
 
-VERIFICAR_STOCKS = FALSE
+# VERIFICAR_STOCKS = FALSE
 
-VERIFICAR_CHECKS = FALSE
+# VERIFICAR_CHECKS = TRUE
 
-CHECK_PRECISION = 0.00001
+# CHECK_PRECISION = 0.001
 
-BROWSE_ON_DIFF = FALSE
+#BROWSE_ON_DIFF = TRUE
 
 # Vetor de Tempos
 # SIM_TIME <- seq(START, FINISH, by=STEP)
@@ -420,6 +420,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       CumulativeProductionIni = CumulativeProductionIni,
       PerceivedCompTargetCapacityIni = PerceivedCompTargetCapacityIni,
       CapacityIni = CapacityIni,
+      
       InitialInvestimentoNaoRealizadoPeD = InitialInvestimentoNaoRealizadoPeD,
       InitialPatentesRequisitadas = InitialPatentesRequisitadas,
       InitialPatentesEmpresa = InitialPatentesEmpresa,
