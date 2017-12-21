@@ -6,16 +6,6 @@
 
 #### Início: Carregando Bibliotecas e Funções ####
 
-library(deSolve)
-library(ggplot2)
-library(gdata)
-library(scales)
-library(FME)
-library(readxl)
-library(akima)
-# library(prim)
-library(dplyr)
-
 # Carregando Funções Úteis
 source('funcoes.R', encoding = 'UTF-8')
 
@@ -134,8 +124,9 @@ resultados_cenariobase$a
 
 
 #### Visualizando que o Cenário Base é Plausível ####
-START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+START<-0; FINISH<-30; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.01; BROWSE_ON_DIFF = TRUE
+VERIFICAR_GLOBAL = FALSE;
 
 ## Carregando Modelo
 source('modelo-calibracao.R', encoding = 'UTF-8')
@@ -166,7 +157,7 @@ resultados_exibir = dplyr::filter(resultados_cenarioscalibracao$DadosSimulados, 
 p1<-ggplot()+
   geom_point(data=dados_calibracao,size=1.5,aes(time,fIndustryOrderRate,colour="Data"))+
   geom_line(data=resultados_exibir,size=1,aes(x=time,y=fIndustryOrderRate,colour="Model"))+
-  ylab("Demanda da Indústria")+
+  ylab("Demanda Anual - Impressoras 3D > 5k USD")+
   xlab("Anos")+
   scale_y_continuous(labels = comma)+
   theme(legend.position="bottom")+

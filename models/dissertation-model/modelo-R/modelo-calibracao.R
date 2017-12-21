@@ -54,7 +54,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     sInvestimentoPeDDepreciar = stocks[grep("sInvestimentoPeDDepreciar", x = names(stocks))]
     
     #Obtendo o número da linha no qual estou
-    linha = (time * (n_tempo - 1)) / FINISH + 1
+    linha = ((START - time) * (n_tempo - 1)) / FINISH + 1
     
     # Gravando a Variável sReportedIndustryVolume no vetor global
     list.variaveis.globais$sReportedIndustryVolume[linha,] <<- sReportedIndustryVolume
@@ -622,7 +622,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
 # Nomeando o Dataframe de Saída
 nomes_variaveis = c("Tempo", "d_NPVProfit_dt", "aDiscountFactor", "aDiscountRate", "fNPVProfitChange", "fNetIncome", "aNPVIndustryProfits")
 
-# Inicializando um list com Tudo o que é necessário
+# Inicializando um list com Tudo o que é necessário para a Simulação.
 sdmodel = list(
   Start = START,
   Finish = FINISH,

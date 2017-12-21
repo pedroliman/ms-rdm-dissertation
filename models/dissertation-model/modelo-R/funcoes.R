@@ -1,11 +1,12 @@
-###############################################################
+####
 # Autor: Pedro Nascimento de Lima, 2017
 # Código fonte desenvolvido para a Dissertação de Mestrado.
 # Arquivo: funcoes.R
 # Objetivo: Este arquivo contém funções utilizadas para as análises 
 # RDM realizadas durante a dissertação.
-###############################################################
+####
 
+# Bibliotecas Utilizadas
 library(plotly)
 library(lhs)
 library(deSolve)
@@ -17,11 +18,838 @@ library(season)
 library(gridExtra)
 library(akima)
 library(parallel)
-
+library(FME)
+library(readxl)
+library(gdata)
+library(scales)
+# library(prim)
 
 ##### CONSTANTES #####
 VAR_SCENARIO = "Scenario"
 VAR_LEVER = "Lever"
+
+##### MODELO #####
+
+#' solve_modelo_dissertacao
+#' Inicializa Parâmetros e Estoques do Modelo da Dissertação, e retorna os resultados do modelo como um dataframe.
+#'
+#' @param parametros Vetor de parâmetros a serem utilizados na simulação. Deve incluir parâmetros para a inicialização dos estoques.
+#' @param modelo Modelo de Dinâmica de Sistemas  (conforme os moldes da biblioteca deSolve).
+#' @param simtime Vetor de Tempo da Simulação.
+#'
+#' @return matriz com resultados da simulação.
+#' @export
+#' 
+solve_modelo_dissertacao <- function(parametros, modelo, simtime){
+  
+  # Número de Players no modelo
+  N_PLAYERS <<- 2
+  
+  # All the stocks are initialised here...
+  
+  n_tempo = length(simtime)
+  
+  list.variaveis.globais <<- list(
+    sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
+    aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
+  )
+  
+  ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
+  auxs    <- list(aDiscountRate = unname(parametros["aDiscountRate"])
+                  ,aNormalDeliveryDelay = rep(unname(parametros["aNormalDeliveryDelay"]), times = N_PLAYERS)
+                  ,aSwitchForCapacity = unname(parametros["aSwitchForCapacity"])
+                  # Vamos testar apenas um parâmetro por enquanto
+                  ,aFractionalDiscardRate = unname(parametros["aFractionalDiscardRate"]) # unname(pars["aFractionalDiscardRate"]) # Original 0.1
+                  ,aInitialDiffusionFraction = unname(parametros["aInitialDiffusionFraction"])
+                  ,aReferencePrice = unname(parametros["aReferencePrice"])
+                  ,aReferenceIndustryDemandElasticity = unname(parametros["aReferenceIndustryDemandElasticity"])
+                  ,aReferencePopulation = unname(parametros["aReferencePopulation"])
+                  ,aInnovatorAdoptionFraction = unname(parametros["aInnovatorAdoptionFraction"])
+                  ,aWOMStrength = unname(parametros["aWOMStrength"]) # unname(pars["aWOMStrength"]) # Original 1
+                  ,aPopulation = unname(parametros["aPopulation"]) #100000000 # Original Sterman: 100000000
+                  ,aUnitsPerHousehold = unname(parametros["aUnitsPerHousehold"])
+                  ,aSwitchForShipmentsInForecast = unname(parametros["aSwitchForShipmentsInForecast"])
+                  ,aVolumeReportingDelay = rep(unname(parametros["aVolumeReportingDelay"]), times = N_PLAYERS)
+                  ,aForecastHorizon = rep(unname(parametros["aForecastHorizon"]), times = N_PLAYERS)
+                  ,aCapacityAcquisitionDelay = unname(parametros["aCapacityAcquisitionDelay"])
+                  ,aTimeForHistoricalVolume = unname(parametros["aTimeForHistoricalVolume"])
+                  # Market Sector
+                  ,aReferenceDeliveryDelay = unname(parametros["aReferenceDeliveryDelay"])
+                  ,aSensOfAttractToAvailability = unname(parametros["aSensOfAttractToAvailability"])
+                  ,aSensOfAttractToPrice = unname(parametros["aSensOfAttractToPrice"])
+                  # Learning Curve Params
+                  ,aLCStrength = rep(unname(parametros["aLCStrength"]), times = N_PLAYERS)
+                  ,aInitialProductionExperience = rep(unname(parametros["aInitialProductionExperience"]), times = N_PLAYERS)
+                  ,aRatioOfFixedToVarCost = rep(unname(parametros["aRatioOfFixedToVarCost"]), times = N_PLAYERS)
+                  ,aInitialPrice = rep(unname(parametros["aInitialPrice"]), times = N_PLAYERS)
+                  ,aNormalProfitMargin = rep(unname(parametros["aNormalProfitMargin"]), times = N_PLAYERS)
+                  ,aNormalCapacityUtilization = rep(unname(parametros["aNormalCapacityUtilization"]), times = N_PLAYERS)
+                  #Target Capacity Sector
+                  ,aMinimumEfficientScale = rep(unname(parametros["aMinimumEfficientScale"]), times = N_PLAYERS) # Original 100000
+                  
+                  # Esta variavel é desdobrada por player.
+                  ,aDesiredMarketShare = c(unname(parametros["aDesiredMarketShare1"]), rep(unname(parametros["aDesiredMarketShare2"]), times = N_PLAYERS - 1) )      #rep(0.5, times = N_PLAYERS)
+                  
+                  # Esta variavel deve ser arredondada, sempre.
+                  ,aSwitchForCapacityStrategy = round(c(unname(parametros["aSwitchForCapacityStrategy1"]), rep(unname(parametros["aSwitchForCapacityStrategy2"]),times = N_PLAYERS - 1)), 0)
+                  
+                  ,aWeightOnSupplyLine= rep(unname(parametros["aWeightOnSupplyLine"]), times = N_PLAYERS)
+                  ,aTimeToPerceiveCompTargetCapacity = rep(unname(parametros["aTimeToPerceiveCompTargetCapacity"]), times = N_PLAYERS)
+                  # Price Sector
+                  ,aPriceAdjustmentTime = unname(parametros["aPriceAdjustmentTime"])
+                  ,aSensOfPriceToCosts = rep(unname(parametros["aSensOfPriceToCosts"]), times = N_PLAYERS)
+                  ,aSensOfPriceToDSBalance = rep(unname(parametros["aSensOfPriceToDSBalance"]), times = N_PLAYERS)
+                  ,aSensOfPriceToShare = rep(unname(parametros["aSensOfPriceToShare"]), times = N_PLAYERS)
+                  # Capacity Sector
+                  ,aSwitchForPerfectCapacity = unname(parametros["aSwitchForPerfectCapacity"])
+                  # A Initial Price
+                  ,aInitialPrice = rep(unname(parametros["aInitialPrice"]), times = N_PLAYERS)
+                  
+                  # Pesquisa e Desenvolvimento
+                  ,aPeDLigado = unname(parametros["aPeDLigado"])
+                  ,aOrcamentoPeD = rep(unname(parametros["aOrcamentoPeD"]), times = N_PLAYERS)
+                  ,aTempoMedioRealizacaoPeD = unname(parametros["aTempoMedioRealizacaoPeD"])
+                  ,aCustoMedioPatente = unname(parametros["aCustoMedioPatente"])
+                  ,aTempoMedioAvaliacao = unname(parametros["aTempoMedioAvaliacao"])
+                  ,aTaxaRejeicao = unname(parametros["aTaxaRejeicao"])
+                  ,aTempoVencimentoPatentes = unname(parametros["aTempoVencimentoPatentes"])
+                  ,aTempodeInutilizacaoPatente = unname(parametros["aTempodeInutilizacaoPatente"])
+                  ,aPerfSlope = unname(parametros["aPerfSlope"])
+                  ,aPerfMin = unname(parametros["aPerfMin"])
+                  ,aPerfMax = unname(parametros["aPerfMax"])
+                  ,aSensOfAttractToPerformance = unname(parametros["aSensOfAttractToPerformance"])
+                  ,aReferencePerformance = unname(parametros["aReferencePerformance"])
+                  
+                  ,aInitialInvestimentoNaoRealizadoPeD = rep(unname(parametros["aInitialInvestimentoNaoRealizadoPeD"]), times = N_PLAYERS)
+                  ,aInitialPatentesRequisitadas = rep(unname(parametros["aInitialPatentesRequisitadas"]), times = N_PLAYERS)
+                  ,aInitialPatentesEmpresa = rep(unname(parametros["aInitialPatentesEmpresa"]), times = N_PLAYERS)
+                  ,aInitialsPatentesEmDominioPublicoUteis = unname(parametros["aInitialsPatentesEmDominioPublicoUteis"])
+                  ,aInitialsInvestimentoPeDDepreciar = rep(unname(parametros["aInitialsInvestimentoPeDDepreciar"]), times = N_PLAYERS)
+                  ,aPatentShare = rep(unname(parametros["aPatentShare"]), times = N_PLAYERS)
+                  
+                  
+                  ,aInitialSharePlayers = rep(unname(parametros["aInitialSharePlayers"]), times = N_PLAYERS)
+                  ,aInitialReorderShare =unname(parametros["aInitialReorderShare"])
+                  ,aTotalInitialInstalledBase = unname(parametros["aTotalInitialInstalledBase"])
+                  ,aInitialIndustryShipments = unname(parametros["aInitialIndustryShipments"])
+  )
+  
+  
+  ##### VARIÁVEIS DE ENTRADA - ESTOQUES INICIAIS, SEM AJUSTES #####
+  
+  # Informando Estoques Iniciais, sem ajustes, apenas para calcular o primeiro tempo.
+  stocks_iniciais  <- c(
+    sNPVProfit = rep(0, times = N_PLAYERS)
+    ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
+    ,sBacklog = rep(12738, times = N_PLAYERS) 
+    ,sInstalledBase = rep(0, times = N_PLAYERS)  # rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+    ,sPrice = unname(auxs$aInitialPrice)
+    ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+    ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
+    ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
+    ,sPerceivedCompTargetCapacity = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity1 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity2 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity3 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    
+    ,sInvestimentoNaoRealizadoPeD = rep(1000, times = N_PLAYERS)
+    ,sPatentesRequisitadas = rep(1000, times = N_PLAYERS)
+    ,sPatentesEmpresa = rep(1000, times = N_PLAYERS)
+    ,sPatentesEmDominioPublicoUteis = rep(1000, times = N_PLAYERS)
+    ,sInvestimentoPeDDepreciar = rep(1000, times = N_PLAYERS)
+    
+  ) 
+  
+  # Calculando estoques para o t0.
+  iteracoes_aquecimento_estoques = 3
+  
+  for(i in 1:iteracoes_aquecimento_estoques){
+    
+    estoques_calculados = modelo(time = 0, stocks = stocks_iniciais, auxs = auxs, modo = "inicial")
+    
+    stocks_iniciais  <- c(
+      sNPVProfit = unname(stocks_iniciais[grep("sNPVProfit", x = names(stocks_iniciais))]) 
+      ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
+      ,sBacklog = unname(estoques_calculados$BacklogIni)
+      ,sInstalledBase = unname(estoques_calculados$InstalledBaseIni)
+      ,sPrice = unname(stocks_iniciais[grep("sPrice", x = names(stocks_iniciais))])
+      ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
+      ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
+      ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
+      ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
+      ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
+      ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
+      ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
+      ,sInvestimentoNaoRealizadoPeD = unname(estoques_calculados$InitialInvestimentoNaoRealizadoPeD)
+      ,sPatentesRequisitadas = unname(estoques_calculados$InitialPatentesRequisitadas)
+      ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
+      ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
+      ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
+    ) 
+    
+  }
+  
+  stocks = stocks_iniciais
+  
+  # Substituindo estoques no t0
+  # stocks  <- c(
+  #   sNPVProfit = unname(stocks_iniciais[grep("sNPVProfit", x = names(stocks_iniciais))]) 
+  #   ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
+  #   ,sBacklog = unname(estoques_calculados$BacklogIni)
+  #   ,sInstalledBase = unname(estoques_calculados$InstalledBaseIni)
+  #   ,sPrice = unname(stocks_iniciais[grep("sPrice", x = names(stocks_iniciais))])
+  #   ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
+  #   ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
+  #   ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
+  #   ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
+  #   ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
+  #   ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
+  #   ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
+  #   ,sInvestimentoNaoRealizadoPeD = unname(estoques_calculados$InitialInvestimentoNaoRealizadoPeD)
+  #   ,sPatentesRequisitadas = unname(estoques_calculados$InitialPatentesRequisitadas)
+  #   ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
+  #   ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
+  #   ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
+  # ) 
+  
+  resultado_completo = data.frame(ode(y=stocks, simtime, func = modelo, 
+                                      parms=auxs, method="euler"))
+  # Posso filtrar os resultados ou não:
+  # resultado_completo[variaveis_calibracao]
+  resultado_completo
+}
+
+
+
+##### MODELO ####
+#' modelo
+#'
+#' Esta função contém o modelo de equações diferenciais empregado pelo trabalho. Este modelo específico foi baseado no modelo de Sterman (2007) (Getting Big Too Fast: Strategic Dynamics with Increasing Returns and Bounded Rationality) e possui diveras modificações para representar o caso da manufatura aditiva (destacando-se o setor de P&D).
+#' @param time tempo a ser simulado (inteiro)
+#' @param stocks objeto com estoques a serem computados pelo modelo
+#' @param auxs objeto com vetor de parâmetros utilizados pelo modelo
+#' @param modo "completo" (realiza a simulação completa) ou "inicial" (calcula valores iniciais de estoques).
+#'
+#' @return matriz com resultados das equações (de um dt).
+#' @export
+#'
+modelo <- function(time, stocks, auxs, modo = "completo"){
+  with(as.list(c(stocks, auxs)),{
+    # Criando uma variavel n_tempo local
+    n_tempo = nrow(list.variaveis.globais$sReportedIndustryVolume)
+    
+    # if(modo == "inicial") {
+    #   browser()
+    # }
+    
+    
+    ##### VETORIZANDO ESTOQUES #####
+    
+    #Estoques Vetorizados = substituindo estoques pela forma vetorizada (pra que seja possivel formular equações de forma mais simples).
+    # Esta implementação tem por objetivo não gerar a necessidade de referenciar os estoque spelo seu nome único
+    sNPVProfit = stocks[grep("sNPVProfit", x = names(stocks))]
+    sValueOfBacklog = stocks[grep("sValueOfBacklog", x = names(stocks))]
+    sBacklog = stocks[grep("sBacklog", x = names(stocks))]
+    sInstalledBase = stocks[grep("sInstalledBase", x = names(stocks))]
+    sPrice = stocks[grep("sPrice", x = names(stocks))]
+    sCumulativeAdopters = stocks[grep("sCumulativeAdopters", x = names(stocks))]
+    sReportedIndustryVolume = stocks[grep("sReportedIndustryVolume", x = names(stocks))]
+    sCumulativeProduction = stocks[grep("sCumulativeProduction", x = names(stocks))]
+    sPerceivedCompTargetCapacity = stocks[grep("sPerceivedCompTargetCapacity", x = names(stocks))]
+    sSmoothCapacity1 = stocks[grep("sSmoothCapacity1", x = names(stocks))]
+    sSmoothCapacity2 = stocks[grep("sSmoothCapacity2", x = names(stocks))]
+    sSmoothCapacity3 = stocks[grep("sSmoothCapacity3", x = names(stocks))]
+    
+    sInvestimentoNaoRealizadoPeD = stocks[grep("sInvestimentoNaoRealizadoPeD", x = names(stocks))]
+    sPatentesRequisitadas = stocks[grep("sPatentesRequisitadas", x = names(stocks))]
+    sPatentesEmpresa = stocks[grep("sPatentesEmpresa", x = names(stocks))]
+    sPatentesEmDominioPublicoUteis = stocks[grep("sPatentesEmDominioPublicoUteis", x = names(stocks))]
+    sInvestimentoPeDDepreciar = stocks[grep("sInvestimentoPeDDepreciar", x = names(stocks))]
+    
+    #Obtendo o número da linha no qual estou
+    linha = ((START - time) * (n_tempo - 1)) / FINISH + 1
+    
+    # Gravando a Variável sReportedIndustryVolume no vetor global
+    list.variaveis.globais$sReportedIndustryVolume[linha,] <<- sReportedIndustryVolume
+    
+    
+    ### Calculando Variáveis para o Estoque Inicial de Cumulative Adopters
+    
+    aEstimatedAdopters = aTotalInitialInstalledBase / aUnitsPerHousehold
+    
+    aInitialNewAdoptersOrderRate = aInitialIndustryShipments*(1-aInitialReorderShare)
+    
+    aInitialAdoptionRate = aInitialNewAdoptersOrderRate / aUnitsPerHousehold
+    
+    aInitialCumulativeAdopters2 = ((aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))-aInnovatorAdoptionFraction)*(aPopulation/aWOMStrength)
+    
+    aInitialCumulativeAdopters = aInitialCumulativeAdopters2
+    
+    #browser()
+    
+    ##### DIFFUSION SECTOR #####
+    aDemandCurveSlope = - aReferenceIndustryDemandElasticity * (aReferencePopulation / aReferencePrice )
+    
+    aLowestPrice = min(sPrice)
+    
+    aIndustryDemand = min(
+      aPopulation,
+      aReferencePopulation * max(
+        0,
+        1 + aDemandCurveSlope * (aLowestPrice - aReferencePrice) / aReferencePopulation
+      )
+    )
+    
+    checkIndustryDemand = aIndustryDemand
+    
+    # A fórmula abaixo não é mais utilizada.
+    # aInitialCumulativeAdopters = aInitialDiffusionFraction * aIndustryDemand
+    
+    aNonAdopters = aIndustryDemand - sCumulativeAdopters
+    
+    checkNonAdopters = aNonAdopters
+    
+    # Ajuste temporário: Colocar o adoption Rate como Fluxo apenas positivo.
+    
+    fAdoptionRate = max(0, 
+                        aNonAdopters * (aInnovatorAdoptionFraction + aWOMStrength * sCumulativeAdopters/aPopulation)) 
+    
+    checkAdoptionRate = fAdoptionRate
+    
+    ##### ORDERS SECTOR - PT 1 #####
+    
+    fDiscardRate = sInstalledBase * aFractionalDiscardRate
+    
+    ##### INDUSTRY DEMAND SECTOR #####
+    
+    fReorderRate = sum(fDiscardRate)
+    
+    aInitialOrderRate = aUnitsPerHousehold * fAdoptionRate
+    
+    fIndustryOrderRate = fReorderRate + aInitialOrderRate
+    
+    checkIndustryOrderRate = fIndustryOrderRate
+    
+    ##### ORDERS SECTOR - PT 2 #####
+    
+    aDesiredShipments = sBacklog / aNormalDeliveryDelay
+    
+    ### CAPACITY SECTOR - PT 1 ####
+    
+    aCapacity = aSwitchForPerfectCapacity * (aDesiredShipments / aNormalCapacityUtilization) + (1-aSwitchForPerfectCapacity) * sSmoothCapacity3
+    
+    aNormalProduction = aCapacity * aNormalCapacityUtilization
+    
+    aIndustryNormalProduction = sum(aNormalProduction)
+    
+    ##### ORDERS SECTOR - PT 3 #####
+    
+    fShipments = aSwitchForCapacity * pmin(aDesiredShipments, aCapacity) + (1-aSwitchForCapacity) * aDesiredShipments
+    
+    aCapacityUtilization = fShipments / aCapacity
+    
+    aIndustryShipments = sum(fShipments)
+    
+    aMarketShare = fShipments / aIndustryShipments
+    
+    aDeliveryDelay = sBacklog / fShipments
+    
+    checkIndustryShipments = aIndustryShipments
+    
+    ##### MARKET SECTOR #####
+    
+    # Patentes e Performance
+    aPatentesEmpresaTemAcesso = sPatentesRequisitadas + sPatentesEmpresa + sPatentesEmDominioPublicoUteis
+    
+    aPerformanceCalculada = aPerfSlope * aPatentesEmpresaTemAcesso
+    
+    aPerformance = pmax(aPerfMin, pmin(aPerfMax, aPerformanceCalculada))
+    
+    checkPerformance = mean(aPerformance)
+    
+    aAttractivenessFromPerformance = aPeDLigado * exp(aSensOfAttractToPerformance*(aReferencePerformance/aPerformance)) + (1 - aPeDLigado)
+    
+    aAttractivenessFromAvailability = exp(aSensOfAttractToAvailability*(aDeliveryDelay/aReferenceDeliveryDelay))
+    
+    aAttractivenessFromPrice = exp(aSensOfAttractToPrice*(sPrice/aReferencePrice))
+    
+    aAttractiveness = aAttractivenessFromAvailability * aAttractivenessFromPrice * aAttractivenessFromPerformance
+    
+    aTotalAttractiveness = sum(aAttractiveness)
+    
+    aOrderShare = aAttractiveness / aTotalAttractiveness
+    
+    ##### ORDERS SECTOR - PT 3 #####
+    
+    fOrders = fIndustryOrderRate * aOrderShare
+    
+    checkOrders = sum(fOrders)
+    
+    ##### EXPECTED INDUSTRY DEMAND SECTOR #####
+    
+    aInitialDemandForecast = fReorderRate
+    
+    aIndustryVolume = pmax(aInitialDemandForecast,
+                           aSwitchForShipmentsInForecast*aIndustryShipments+
+                             (1-aSwitchForShipmentsInForecast)*fIndustryOrderRate)
+    
+    
+    # Variavel com SMOOTH - Primeira Ordem: - Retirando o DT, o calculo funcionou corretamente!
+    fsmooth_ReportedIndustryVolume = ((aIndustryVolume - sReportedIndustryVolume) / aVolumeReportingDelay) # * STEP # Multiplicando pelo step para ajustar o calculo.
+    
+    # Variavel com DELAY - A definição das constantes aqui devem ser alteradas se as condicoes iniciais do modelo mudarem
+    # Esta implementacao considera que os delays sempre serao iguais. Se os delays nao forem iguais, deve-se encontrar outra forma de implementar os delays (talvez com a equacao multiplicativa 1*(time > tempodelay)
+    if(time > aTimeForHistoricalVolume) {
+      nlinhas_delay = aTimeForHistoricalVolume / STEP
+      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[(linha - nlinhas_delay),]
+    } else {
+      aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[1,]
+    }
+    
+    aExpGrowthInVolume =  log(sReportedIndustryVolume/aLaggedIndustryVolume)/aTimeForHistoricalVolume
+    
+    aExpectedIndustryDemand = sReportedIndustryVolume*exp(aForecastHorizon*aCapacityAcquisitionDelay*aExpGrowthInVolume)
+    
+    list.variaveis.globais$aExpectedIndustryDemand[linha,] <<- aExpectedIndustryDemand
+    
+    # Mais uma variável com delay
+    if(time > aCapacityAcquisitionDelay) {
+      nlinhas_delay = aCapacityAcquisitionDelay / STEP
+      aLaggedVolumeForecast = list.variaveis.globais$aExpectedIndustryDemand[linha-nlinhas_delay,]
+    } else {
+      aLaggedVolumeForecast = list.variaveis.globais$aExpectedIndustryDemand[1,]
+    }
+    
+    aForecastError = (aLaggedVolumeForecast - aIndustryVolume)/(1e-009+aIndustryVolume)
+    
+    checkLaggedVolumeForecast = mean(aLaggedVolumeForecast)
+    
+    ##### TARGET CAPACITY SECTOR #####
+    
+    aIndustryCapacity = sum(aCapacity)
+    
+    aCompetitorCapacity = aIndustryCapacity - aCapacity
+    
+    aExpectedCompCapacity = aNormalCapacityUtilization*(aWeightOnSupplyLine*sPerceivedCompTargetCapacity+(1-aWeightOnSupplyLine)*aCompetitorCapacity)
+    
+    aUncontestedDemand = pmax(0, aExpectedIndustryDemand - aExpectedCompCapacity)
+    
+    aUncontestedMarketShare = aUncontestedDemand / aExpectedIndustryDemand
+    
+    aSwitchForCapacityStrategy1 = ifelse(aSwitchForCapacityStrategy == 1, 1, 0)
+    aSwitchForCapacityStrategy2 = ifelse(aSwitchForCapacityStrategy == 2, 1, 0)
+    aSwitchForCapacityStrategy3 = ifelse(aSwitchForCapacityStrategy == 3, 1, 0)
+    aSwitchForCapacityStrategy4 = ifelse(aSwitchForCapacityStrategy == 4, 1, 0)
+    
+    aTargetMarketShare = {
+      aSwitchForCapacityStrategy1*pmax(aDesiredMarketShare,aUncontestedMarketShare) +
+        aSwitchForCapacityStrategy2*pmin(aDesiredMarketShare,aUncontestedMarketShare) +
+        aSwitchForCapacityStrategy3*aDesiredMarketShare +
+        aSwitchForCapacityStrategy4*aUncontestedMarketShare
+    }
+    
+    
+    aTargetCapacity = pmax(aMinimumEfficientScale,
+                           aTargetMarketShare*aExpectedIndustryDemand/aNormalCapacityUtilization)
+    
+    aTargetNormalProduction = aTargetCapacity * aNormalCapacityUtilization
+    
+    aIndustryTotalTargetCapacity = sum(aTargetCapacity)
+    
+    aCompetitorTargetCapacity = aIndustryTotalTargetCapacity - aTargetCapacity
+    
+    fChangePerceivedCompTargetCapacity = (aCompetitorTargetCapacity - sPerceivedCompTargetCapacity) / aTimeToPerceiveCompTargetCapacity
+    
+    checkCompetitorTargetCapacity = mean(aCompetitorTargetCapacity)
+    
+    ##### CAPACITY SECTOR  - PT 2 - FLUXOS #####
+    fchangeSmoothCapacity1 = (aTargetCapacity - sSmoothCapacity1) / (aCapacityAcquisitionDelay / 3)
+    fchangeSmoothCapacity2 = (sSmoothCapacity1 - sSmoothCapacity2) / (aCapacityAcquisitionDelay / 3)
+    fchangeSmoothCapacity3 = (sSmoothCapacity2 - sSmoothCapacity3) / (aCapacityAcquisitionDelay / 3)
+    
+    
+    
+    ##### Custo P e D ####
+    aTempoDepreciacao = aTempoMedioAvaliacao + aTempoVencimentoPatentes + aTempoMedioRealizacaoPeD
+    
+    fDepreciacaoInvPeD = sInvestimentoPeDDepreciar / aTempoDepreciacao
+    
+    aPeDUnitCost = fDepreciacaoInvPeD / fShipments
+    
+    
+    
+    
+    ##### LEARNING CURVE SECTOR #####
+    fProduction = fShipments
+    
+    aLCExponent = log(aLCStrength)/log(2)
+    
+    aLearning = (sCumulativeProduction/aInitialProductionExperience)^aLCExponent
+    
+    aInitialUnitFixedCost = (aInitialPrice/(1+aNormalProfitMargin))*aRatioOfFixedToVarCost*(1/(1+aRatioOfFixedToVarCost/aNormalCapacityUtilization))
+    
+    aInitialUnitVariableCost = (aInitialPrice/(1+aNormalProfitMargin))*(1/(1+aRatioOfFixedToVarCost/aNormalCapacityUtilization))
+    
+    aUnitFixedCost = aLearning * aInitialUnitFixedCost + aPeDUnitCost * aPeDLigado
+    
+    aUnitVariableCost = aLearning * aInitialUnitVariableCost
+    
+    checkUnitFixedCost = mean(aUnitFixedCost)
+    
+    checkUnitVariableCost = mean(aUnitVariableCost)
+    
+    ##### PRICE SECTOR #####
+    
+    aBasePrice = (1+aNormalProfitMargin)*(aUnitVariableCost+aUnitFixedCost/aNormalCapacityUtilization)
+    
+    aDemandSupplyBalance = aDesiredShipments/(aNormalCapacityUtilization*aCapacity)
+    
+    aTargetPrice = 
+      pmax(aUnitVariableCost,
+           sPrice*
+             (1+aSensOfPriceToCosts*((aBasePrice/sPrice)-1))*
+             (1+aSensOfPriceToDSBalance*(aDemandSupplyBalance-1))*
+             (1+aSensOfPriceToShare*((aTargetMarketShare-aMarketShare))))
+    
+    checkTargetPrice = mean(aTargetPrice)
+    
+    fChangeInPrice = (aTargetPrice - sPrice) / aPriceAdjustmentTime
+    
+    ##### NET INCOME SECTOR #####
+    
+    aDiscountFactor = exp(-aDiscountRate*time) # 
+    
+    fValueOfNewOrders = fOrders * sPrice
+    
+    checkValueOfNewOrders1 = fValueOfNewOrders[1] #
+    
+    aAveragePriceOfOrderBook = sValueOfBacklog / sBacklog
+    
+    fRevenue = fShipments * aAveragePriceOfOrderBook #
+    
+    ##### P&D - Investimento #####
+    
+    fInvestimentoPeD = fRevenue * aOrcamentoPeD * aPeDLigado
+    
+    fInvestimentoPeDRealizado = sInvestimentoNaoRealizadoPeD / aTempoMedioRealizacaoPeD
+    
+    fPatentesSolicitadas = fInvestimentoPeDRealizado / aCustoMedioPatente
+    
+    fPatentesRejeitadas = (sPatentesRequisitadas/aTempoMedioAvaliacao) * aTaxaRejeicao
+    
+    fPatentesConcedidas = (sPatentesRequisitadas/aTempoMedioAvaliacao) * (1-aTaxaRejeicao)
+    
+    fPatentesVencidas = sPatentesEmpresa / aTempoVencimentoPatentes
+    
+    fPatentesUtilidadeExpirada = sPatentesEmDominioPublicoUteis / aTempodeInutilizacaoPatente
+    
+    ##### NET INCOME - PARTE 2 #####
+    
+    checkRevenue1 = fRevenue[1] #
+    
+    aVariableCost = fShipments * aUnitVariableCost #
+    
+    aFixedCost = aCapacity * (aUnitFixedCost - (aPeDUnitCost * aPeDLigado)) #
+    
+    fCost = aFixedCost + aVariableCost #
+    
+    fNetIncome = fRevenue - fCost - fInvestimentoPeD #
+    
+    fNPVProfitChange = fNetIncome * aDiscountFactor #
+    
+    checkNPVProfitChange = mean(fNPVProfitChange) #
+    
+    checkNPVProfitChange1 = fNPVProfitChange[1]
+    
+    
+    aNPVIndustryProfits = sum(sNPVProfit) #
+    
+    
+    
+    
+    
+    
+    ##### ESTOQUES #####
+    
+    d_NPVProfit_dt = fNPVProfitChange
+    
+    d_ValueOfBacklog_dt = fValueOfNewOrders - fRevenue
+    
+    d_Backlog_dt = fOrders - fShipments
+    
+    d_InstalledBase_dt = fShipments - fDiscardRate
+    
+    d_Price_dt = fChangeInPrice
+    
+    d_CumulativeAdopters_dt = fAdoptionRate
+    
+    d_sReportedIndustryVolume_dt = fsmooth_ReportedIndustryVolume
+    
+    d_CumulativeProduction_dt = fProduction
+    
+    d_PerceivedCompTargetCapacity_dt = fChangePerceivedCompTargetCapacity
+    
+    d_SmoothCapacity1_dt = fchangeSmoothCapacity1
+    
+    d_SmoothCapacity2_dt = fchangeSmoothCapacity2
+    
+    d_SmoothCapacity3_dt = fchangeSmoothCapacity3
+    
+    #Estoques do Investimento em PeD
+    
+    d_InvestimentoNaoRealizadoPeD_dt = fInvestimentoPeD - fInvestimentoPeDRealizado
+    
+    d_PatentesRequisitadas_dt = fPatentesSolicitadas - fPatentesConcedidas - fPatentesRejeitadas
+    
+    d_PatentesEmpresa_dt = fPatentesConcedidas - fPatentesVencidas
+    
+    d_PatentesEmDominioPublicoUteis_dt = sum(fPatentesVencidas) - fPatentesUtilidadeExpirada
+    
+    d_InvestimentoPeDDepreciar_dt = fInvestimentoPeD - fDepreciacaoInvPeD
+    
+    
+    
+    # Variaveis de Estoques Iniciais
+    
+    BacklogIni = aInitialSharePlayers * fIndustryOrderRate * aNormalDeliveryDelay
+    
+    InstalledBaseIni = aInitialCumulativeAdopters * aInitialSharePlayers * aUnitsPerHousehold
+    
+    CumulativeAdoptersIni = aInitialCumulativeAdopters
+    
+    ValueOfBacklogIni = aInitialSharePlayers * fIndustryOrderRate * aNormalDeliveryDelay * aInitialPrice
+    
+    ReportedIndustryVolumeIni = aIndustryVolume
+    
+    CumulativeProductionIni = aInitialProductionExperience
+    
+    PerceivedCompTargetCapacityIni = aCompetitorCapacity
+    
+    CapacityIni = aInitialSharePlayers * fIndustryOrderRate / aNormalCapacityUtilization
+    
+    InitialInvestimentoNaoRealizadoPeD = aInitialInvestimentoNaoRealizadoPeD * aPatentShare
+    
+    InitialPatentesRequisitadas = aInitialPatentesRequisitadas * aPatentShare
+    
+    InitialPatentesEmpresa = aInitialPatentesEmpresa * aPatentShare
+    
+    InitialsPatentesEmDominioPublicoUteis =  aInitialsPatentesEmDominioPublicoUteis
+    
+    InitialsInvestimentoPeDDepreciar = aInitialsInvestimentoPeDDepreciar * aPatentShare
+    
+    
+    ##### ESTOQUES - INICIAIS #####
+    
+    stocks_ini = list(
+      BacklogIni = BacklogIni,
+      InstalledBaseIni = InstalledBaseIni,
+      CumulativeAdoptersIni = CumulativeAdoptersIni,
+      ValueOfBacklogIni = ValueOfBacklogIni,
+      ReportedIndustryVolumeIni = ReportedIndustryVolumeIni,
+      CumulativeProductionIni = CumulativeProductionIni,
+      PerceivedCompTargetCapacityIni = PerceivedCompTargetCapacityIni,
+      CapacityIni = CapacityIni,
+      
+      InitialInvestimentoNaoRealizadoPeD = InitialInvestimentoNaoRealizadoPeD,
+      InitialPatentesRequisitadas = InitialPatentesRequisitadas,
+      InitialPatentesEmpresa = InitialPatentesEmpresa,
+      InitialsPatentesEmDominioPublicoUteis = InitialsPatentesEmDominioPublicoUteis,
+      InitialsInvestimentoPeDDepreciar = InitialsInvestimentoPeDDepreciar
+    )
+    
+    ##### COMPARAR RESULTADOS COM O ITHINK #####
+    
+    if(VERIFICAR_STOCKS & modo == "completo"){
+      for (variavel in variaveis_ithink_stocks) {
+        # Definir o tipo de variavel
+        # Variavel é um estoque?
+        variavel_ithink_alterada = gsub(pattern = "\\[", replacement = "", x = variavel, ignore.case = TRUE)
+        variavel_ithink_alterada = gsub(pattern = "\\]", replacement = "", x = variavel_ithink_alterada, ignore.case = TRUE)
+        
+        # Verificar apenas Estoques:
+        variavel_ithink_alterada = paste("s", variavel_ithink_alterada, sep = "")
+        
+        # Valor da Variavel Calculada
+        valor_variavel_R = eval(parse(text = variavel_ithink_alterada))
+        
+        valor_variavel_ithink = dados_ithink_stocks[[linha,variavel]]
+        
+        diferenca = valor_variavel_R - valor_variavel_ithink
+        
+        if (abs(x = diferenca) > CHECK_PRECISION){
+          message(paste("Estoque Diff:", time, linha, variavel, diferenca, sep = " - "))
+          if(BROWSE_ON_DIFF){
+            browser()  
+          }
+        }
+      }  
+    }
+    
+    
+    if(VERIFICAR_CHECKS & modo == "completo"){
+      for (variavel in variaveis_ithink_checks) {
+        # Definir o tipo de variavel
+        # Variavel é um estoque?
+        variavel_ithink_alterada = gsub(pattern = "\\[", replacement = "", x = variavel, ignore.case = TRUE)
+        variavel_ithink_alterada = gsub(pattern = "\\]", replacement = "", x = variavel_ithink_alterada, ignore.case = TRUE)
+        
+        # Verificar apenas Estoques:
+        #variavel_ithink_alterada = paste("s", variavel_ithink_alterada, sep = "")
+        
+        # Valor da Variavel Calculada
+        valor_variavel_R = eval(parse(text = variavel_ithink_alterada))
+        
+        valor_variavel_ithink = dados_ithink_checks[[linha,variavel]]
+        
+        diferenca = valor_variavel_R - valor_variavel_ithink
+        
+        if(!is.na(diferenca)){
+          if (abs(x = diferenca) > CHECK_PRECISION){
+            message(paste("Check Diff:", time, linha, variavel, diferenca, sep = " - "))
+            if(BROWSE_ON_DIFF){
+              browser()  
+            }
+          }  
+        }
+        
+      }
+    }
+    
+    # Colocar isso dentro do IF abaixo e verificar!
+    if(VERIFICAR_GLOBAL & modo == "completo"){
+      
+      # Forma que usa todas as variaveis do ambiente:
+      # variaveis_disponiveis_ambiente = ls()
+      # variaveis_auxiliares = variaveis_disponiveis_ambiente[grep("^[aA].*", variaveis_disponiveis_ambiente)]
+      # 
+      # Forma que usa as variaveis globais definidas em um vetor
+      variaveis_auxiliares = variaveis_globais_a_verificar
+      
+      
+      seletor_players = paste("[",1:N_PLAYERS,"]", sep = "")
+      
+      variaveis_a_verificar = expand.grid(variaveis_auxiliares, seletor_players)
+      
+      variaveis_a_verificar = paste(variaveis_a_verificar[,1], variaveis_a_verificar[,2], sep = "")
+      
+      variaveis_a_verificar_no_ithink = substring(variaveis_a_verificar, 2)
+      
+      
+      verificar_variaveis_globais = function(n_variavel){
+        valor_variavel_R = eval(parse(text = variaveis_a_verificar[n_variavel]))
+        
+        valor_variavel_ithink = dados_ithink_global[[linha,variaveis_a_verificar_no_ithink[n_variavel]]]
+        
+        if((length(valor_variavel_ithink) > 0)) {
+          decisao = !is.na(valor_variavel_ithink) & is.numeric(valor_variavel_ithink)
+          if(decisao == FALSE) {
+            valor_variavel_ithink = NA
+          }
+        } else {valor_variavel_ithink = NA}
+        
+        
+        if((length(valor_variavel_R) > 0)) {
+          decisao = !is.na(valor_variavel_R) & is.numeric(valor_variavel_R)
+          if(decisao == FALSE) {
+            valor_variavel_R = NA
+          }
+        } else {valor_variavel_R = NA}
+        
+        
+        diferenca = unname(valor_variavel_R)  - unname(valor_variavel_ithink)
+        
+        diferenca
+      }
+      
+      diferencas = lapply(X = 1:length(variaveis_a_verificar), FUN = verificar_variaveis_globais)
+      
+      diferencas = do.call(rbind, diferencas)
+      
+      matriz_diferencas = data.frame(
+        variaveis_a_verificar,
+        diferencas
+      )
+      
+      diferencas_a_reportar = subset(matriz_diferencas, abs(diferencas) > CHECK_PRECISION)
+      
+      if(nrow(diferencas_a_reportar)>1) {
+        message(paste("Check Diferenças Globais:", time, linha, sep = " - "))
+        if(BROWSE_ON_DIFF){
+          browser()  
+        }
+      }
+      
+    }
+    
+    ##### VARIÁVEIS RETORNADAS #####
+    
+    ## Parar se o tempo chegou ao fim.
+    # if(time == FINISH){
+    # browser()
+    # }
+    
+    resultado_completo = list(c(
+      d_NPVProfit_dt
+      ,d_ValueOfBacklog_dt
+      ,d_Backlog_dt
+      ,d_InstalledBase_dt
+      ,d_Price_dt
+      ,d_CumulativeAdopters_dt
+      ,d_sReportedIndustryVolume_dt
+      ,d_CumulativeProduction_dt
+      ,d_PerceivedCompTargetCapacity_dt
+      ,d_SmoothCapacity1_dt
+      ,d_SmoothCapacity2_dt
+      ,d_SmoothCapacity3_dt
+      ,d_InvestimentoNaoRealizadoPeD_dt
+      ,d_PatentesRequisitadas_dt
+      ,d_PatentesEmpresa_dt
+      ,d_PatentesEmDominioPublicoUteis_dt
+      ,d_InvestimentoPeDDepreciar_dt
+    )
+    ,fIndustryOrderRate = fIndustryOrderRate
+    ,aNonAdopters = aNonAdopters
+    ,fReorderRate = fReorderRate
+    ,aIndustryShipments = aIndustryShipments
+    ,aIndustryVolume = aIndustryVolume
+    ,fDiscardRate = fDiscardRate
+    ,aDiscountFactor = aDiscountFactor
+    ,aDiscountRate = aDiscountRate
+    ,fNPVProfitChange = fNPVProfitChange
+    ,fNetIncome = fNetIncome
+    ,aNPVIndustryProfits = aNPVIndustryProfits
+    ,aInitialDemandForecast = aInitialDemandForecast
+    ,aLaggedVolumeForecast = aLaggedVolumeForecast
+    ,aForecastError = aForecastError
+    ,aTargetCapacity = aTargetCapacity
+    ,aCompetitorTargetCapacity = aCompetitorTargetCapacity)
+    
+    return (if(modo == "inicial"){
+      stocks_ini
+    } else {
+      resultado_completo
+    })   
+  })
+}
+
+
+#### OBJETO SDMODEL #####
+
+# Nomeando o Dataframe de Saída
+nomes_variaveis = c("Tempo", "d_NPVProfit_dt", "aDiscountFactor", "aDiscountRate", "fNPVProfitChange", "fNetIncome", "aNPVIndustryProfits")
+
+# Inicializando um list com Tudo o que é necessário para a Simulação.
+# Este objeto contém informações necessárias sobre o modelo para a sua simulação.
+sdmodel = list(
+  Start = START,
+  Finish = FINISH,
+  Step = STEP,
+  SimTime = SIM_TIME,
+  # Auxs = auxs,
+  # Stocks = stocks,
+  Modelo = modelo,
+  Variaveis = nomes_variaveis
+)
 
 ##### SIMULAR RDM E ESCOLHER ESTRATEGIA #####
 
@@ -193,7 +1021,7 @@ ampliar_ensemble_com_levers = function(ensemble, levers) {
 #' @export
 #'
 #' @examples
-simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = TRUE, modo_paralelo = "PSOCK") {
+simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = TRUE, modo_paralelo = "FORK") {
   message("01. funcoes.R/simular: Iniciando Simulação.")
   
   # Rodando a Simulação (uma vez), com a primeira linha do ensemble - Ajuda a saber se funciona.
@@ -645,188 +1473,8 @@ completeFun <- function(data, desiredCols) {
   return(data[completeVec, ])
 }
 
-##### FUNÇÕES CRIADAS NA CALIBRAÇÃO ####
+##### CALIBRAÇÃO ####
 
-
-
-solve_modelo_dissertacao <- function(parametros, modelo, simtime){
-  
-  # Número de Players no modelo
-  N_PLAYERS <<- 2
-  
-  # All the stocks are initialised here...
-  
-  n_tempo = length(simtime)
-  
-  list.variaveis.globais <<- list(
-    sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
-    aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
-  )
-  
-  ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
-  auxs    <- list(aDiscountRate = unname(parametros["aDiscountRate"])
-                  ,aNormalDeliveryDelay = rep(unname(parametros["aNormalDeliveryDelay"]), times = N_PLAYERS)
-                  ,aSwitchForCapacity = unname(parametros["aSwitchForCapacity"])
-                  # Vamos testar apenas um parâmetro por enquanto
-                  ,aFractionalDiscardRate = unname(parametros["aFractionalDiscardRate"]) # unname(pars["aFractionalDiscardRate"]) # Original 0.1
-                  ,aInitialDiffusionFraction = unname(parametros["aInitialDiffusionFraction"])
-                  ,aReferencePrice = unname(parametros["aReferencePrice"])
-                  ,aReferenceIndustryDemandElasticity = unname(parametros["aReferenceIndustryDemandElasticity"])
-                  ,aReferencePopulation = unname(parametros["aReferencePopulation"])
-                  ,aInnovatorAdoptionFraction = unname(parametros["aInnovatorAdoptionFraction"])
-                  ,aWOMStrength = unname(parametros["aWOMStrength"]) # unname(pars["aWOMStrength"]) # Original 1
-                  ,aPopulation = unname(parametros["aPopulation"]) #100000000 # Original Sterman: 100000000
-                  ,aUnitsPerHousehold = unname(parametros["aUnitsPerHousehold"])
-                  ,aSwitchForShipmentsInForecast = unname(parametros["aSwitchForShipmentsInForecast"])
-                  ,aVolumeReportingDelay = rep(unname(parametros["aVolumeReportingDelay"]), times = N_PLAYERS)
-                  ,aForecastHorizon = rep(unname(parametros["aForecastHorizon"]), times = N_PLAYERS)
-                  ,aCapacityAcquisitionDelay = unname(parametros["aCapacityAcquisitionDelay"])
-                  ,aTimeForHistoricalVolume = unname(parametros["aTimeForHistoricalVolume"])
-                  # Market Sector
-                  ,aReferenceDeliveryDelay = unname(parametros["aReferenceDeliveryDelay"])
-                  ,aSensOfAttractToAvailability = unname(parametros["aSensOfAttractToAvailability"])
-                  ,aSensOfAttractToPrice = unname(parametros["aSensOfAttractToPrice"])
-                  # Learning Curve Params
-                  ,aLCStrength = rep(unname(parametros["aLCStrength"]), times = N_PLAYERS)
-                  ,aInitialProductionExperience = rep(unname(parametros["aInitialProductionExperience"]), times = N_PLAYERS)
-                  ,aRatioOfFixedToVarCost = rep(unname(parametros["aRatioOfFixedToVarCost"]), times = N_PLAYERS)
-                  ,aInitialPrice = rep(unname(parametros["aInitialPrice"]), times = N_PLAYERS)
-                  ,aNormalProfitMargin = rep(unname(parametros["aNormalProfitMargin"]), times = N_PLAYERS)
-                  ,aNormalCapacityUtilization = rep(unname(parametros["aNormalCapacityUtilization"]), times = N_PLAYERS)
-                  #Target Capacity Sector
-                  ,aMinimumEfficientScale = rep(unname(parametros["aMinimumEfficientScale"]), times = N_PLAYERS) # Original 100000
-                  
-                  # Esta variavel é desdobrada por player.
-                  ,aDesiredMarketShare = c(unname(parametros["aDesiredMarketShare1"]), rep(unname(parametros["aDesiredMarketShare2"]), times = N_PLAYERS - 1) )      #rep(0.5, times = N_PLAYERS)
-                  
-                  # Esta variavel deve ser arredondada, sempre.
-                  ,aSwitchForCapacityStrategy = round(c(unname(parametros["aSwitchForCapacityStrategy1"]), rep(unname(parametros["aSwitchForCapacityStrategy2"]),times = N_PLAYERS - 1)), 0)
-                  
-                  ,aWeightOnSupplyLine= rep(unname(parametros["aWeightOnSupplyLine"]), times = N_PLAYERS)
-                  ,aTimeToPerceiveCompTargetCapacity = rep(unname(parametros["aTimeToPerceiveCompTargetCapacity"]), times = N_PLAYERS)
-                  # Price Sector
-                  ,aPriceAdjustmentTime = unname(parametros["aPriceAdjustmentTime"])
-                  ,aSensOfPriceToCosts = rep(unname(parametros["aSensOfPriceToCosts"]), times = N_PLAYERS)
-                  ,aSensOfPriceToDSBalance = rep(unname(parametros["aSensOfPriceToDSBalance"]), times = N_PLAYERS)
-                  ,aSensOfPriceToShare = rep(unname(parametros["aSensOfPriceToShare"]), times = N_PLAYERS)
-                  # Capacity Sector
-                  ,aSwitchForPerfectCapacity = unname(parametros["aSwitchForPerfectCapacity"])
-                  # A Initial Price
-                  ,aInitialPrice = rep(unname(parametros["aInitialPrice"]), times = N_PLAYERS)
-                  
-                  # Pesquisa e Desenvolvimento
-                  ,aPeDLigado = unname(parametros["aPeDLigado"])
-                  ,aOrcamentoPeD = rep(unname(parametros["aOrcamentoPeD"]), times = N_PLAYERS)
-                  ,aTempoMedioRealizacaoPeD = unname(parametros["aTempoMedioRealizacaoPeD"])
-                  ,aCustoMedioPatente = unname(parametros["aCustoMedioPatente"])
-                  ,aTempoMedioAvaliacao = unname(parametros["aTempoMedioAvaliacao"])
-                  ,aTaxaRejeicao = unname(parametros["aTaxaRejeicao"])
-                  ,aTempoVencimentoPatentes = unname(parametros["aTempoVencimentoPatentes"])
-                  ,aTempodeInutilizacaoPatente = unname(parametros["aTempodeInutilizacaoPatente"])
-                  ,aPerfSlope = unname(parametros["aPerfSlope"])
-                  ,aPerfMin = unname(parametros["aPerfMin"])
-                  ,aPerfMax = unname(parametros["aPerfMax"])
-                  ,aSensOfAttractToPerformance = unname(parametros["aSensOfAttractToPerformance"])
-                  ,aReferencePerformance = unname(parametros["aReferencePerformance"])
-                  
-                  ,aInitialInvestimentoNaoRealizadoPeD = rep(unname(parametros["aInitialInvestimentoNaoRealizadoPeD"]), times = N_PLAYERS)
-                  ,aInitialPatentesRequisitadas = rep(unname(parametros["aInitialPatentesRequisitadas"]), times = N_PLAYERS)
-                  ,aInitialPatentesEmpresa = rep(unname(parametros["aInitialPatentesEmpresa"]), times = N_PLAYERS)
-                  ,aInitialsPatentesEmDominioPublicoUteis = unname(parametros["aInitialsPatentesEmDominioPublicoUteis"])
-                  ,aInitialsInvestimentoPeDDepreciar = rep(unname(parametros["aInitialsInvestimentoPeDDepreciar"]), times = N_PLAYERS)
-                  ,aPatentShare = rep(unname(parametros["aPatentShare"]), times = N_PLAYERS)
-                  
-                  
-                  ,aInitialSharePlayers = rep(unname(parametros["aInitialSharePlayers"]), times = N_PLAYERS)
-                  ,aInitialReorderShare =unname(parametros["aInitialReorderShare"])
-                  ,aTotalInitialInstalledBase = unname(parametros["aTotalInitialInstalledBase"])
-                  ,aInitialIndustryShipments = unname(parametros["aInitialIndustryShipments"])
-  )
-  
-  
-  ##### VARIÁVEIS DE ENTRADA - ESTOQUES INICIAIS, SEM AJUSTES #####
-  
-  # Informando Estoques Iniciais, sem ajustes, apenas para calcular o primeiro tempo.
-  stocks_iniciais  <- c(
-    sNPVProfit = rep(0, times = N_PLAYERS)
-    ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
-    ,sBacklog = rep(12738, times = N_PLAYERS) 
-    ,sInstalledBase = rep(0, times = N_PLAYERS)  # rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-    ,sPrice = unname(auxs$aInitialPrice)
-    ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-    ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
-    ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
-    ,sPerceivedCompTargetCapacity = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-    ,sSmoothCapacity1 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-    ,sSmoothCapacity2 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-    ,sSmoothCapacity3 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-    
-    ,sInvestimentoNaoRealizadoPeD = rep(1000, times = N_PLAYERS)
-    ,sPatentesRequisitadas = rep(1000, times = N_PLAYERS)
-    ,sPatentesEmpresa = rep(1000, times = N_PLAYERS)
-    ,sPatentesEmDominioPublicoUteis = rep(1000, times = N_PLAYERS)
-    ,sInvestimentoPeDDepreciar = rep(1000, times = N_PLAYERS)
-    
-  ) 
-  
-  # Calculando estoques para o t0.
-  iteracoes_aquecimento_estoques = 3
-  
-  for(i in 1:iteracoes_aquecimento_estoques){
-    
-    estoques_calculados = modelo(time = 0, stocks = stocks_iniciais, auxs = auxs, modo = "inicial")
-    
-    stocks_iniciais  <- c(
-      sNPVProfit = unname(stocks_iniciais[grep("sNPVProfit", x = names(stocks_iniciais))]) 
-      ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
-      ,sBacklog = unname(estoques_calculados$BacklogIni)
-      ,sInstalledBase = unname(estoques_calculados$InstalledBaseIni)
-      ,sPrice = unname(stocks_iniciais[grep("sPrice", x = names(stocks_iniciais))])
-      ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
-      ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
-      ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
-      ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
-      ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
-      ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
-      ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
-      ,sInvestimentoNaoRealizadoPeD = unname(estoques_calculados$InitialInvestimentoNaoRealizadoPeD)
-      ,sPatentesRequisitadas = unname(estoques_calculados$InitialPatentesRequisitadas)
-      ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
-      ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
-      ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
-    ) 
-    
-  }
-  
-  stocks = stocks_iniciais
-  
-  # Substituindo estoques no t0
-  # stocks  <- c(
-  #   sNPVProfit = unname(stocks_iniciais[grep("sNPVProfit", x = names(stocks_iniciais))]) 
-  #   ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
-  #   ,sBacklog = unname(estoques_calculados$BacklogIni)
-  #   ,sInstalledBase = unname(estoques_calculados$InstalledBaseIni)
-  #   ,sPrice = unname(stocks_iniciais[grep("sPrice", x = names(stocks_iniciais))])
-  #   ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
-  #   ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
-  #   ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
-  #   ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
-  #   ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
-  #   ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
-  #   ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
-  #   ,sInvestimentoNaoRealizadoPeD = unname(estoques_calculados$InitialInvestimentoNaoRealizadoPeD)
-  #   ,sPatentesRequisitadas = unname(estoques_calculados$InitialPatentesRequisitadas)
-  #   ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
-  #   ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
-  #   ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
-  # ) 
-  
-  resultado_completo = data.frame(ode(y=stocks, simtime, func = modelo, 
-                                      parms=auxs, method="euler"))
-  # Posso filtrar os resultados ou não:
-  # resultado_completo[variaveis_calibracao]
-  resultado_completo
-}
 
 getCost<-function(p, modelo, dados_calibracao){
   
@@ -857,19 +1505,42 @@ adicionar_erro_ao_ensemble = function(results, variaveis_calibracao, planilha_ca
   
   cenarios = unique(dados_modelo$Scenario)
   
+  browser()
   
-  obter_custo = function(cenario, dados_modelo, dados_calibracao, variaveis_calibracao){
+  # Obtem o Objeto ModCost que contém estatísticas de Goodness Of Fit
+  obter_modCost = function(cenario, dados_modelo, dados_calibracao, variaveis_calibracao){
     custo = modCost(model = dados_modelo[which(dados_modelo$Scenario == cenario),],
                     obs = dados_calibracao[,variaveis_a_utilizar_dados])
-    soma_SSR = custo$model
-    soma_SSR
+    custo
   }
+  
+  # Obter a Soma dos Resíduos Quadrados
+  obter_custo = function(modcost){
+    modcost$model
+  }
+  
+  # Obter Estatísticas de Goodness of Fit:
+  
+  obter_estatiticas_gof = function(modcost){
+    
+  }
+  
+  # Obter o Erro Quadrado Médio
+  obter_mse = function(ssr, n) {
+    soma_erro_quadrado / n_pontos
+  }
+  
+  # obter_bias = function(mse, )
+  
+  # obter_UM = function(v_modelo, v_)
   
   obter_custo_cenario = function(cenario){
     custo = obter_custo(cenario = cenario, dados_modelo, dados_calibracao, variaveis_calibracao)
     custo
   }
   
+  
+  # Só a partir deste ponto os calculos são realizados.
   SomaSSR =  do.call(rbind, lapply(results$Ensemble[,opcoes$VarCenarios], obter_custo_cenario))
   colnames(SomaSSR) = c("SomaSSR")
   
