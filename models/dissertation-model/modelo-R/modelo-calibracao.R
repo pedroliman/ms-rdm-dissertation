@@ -25,10 +25,10 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     # Criando uma variavel n_tempo local
     n_tempo = nrow(list.variaveis.globais$sReportedIndustryVolume)
     
-    # if(modo == "completo") {
-    #   browser()  
-    # }
-    
+    if(modo == "inicial") {
+      browser()
+    }
+
     
     ##### VETORIZANDO ESTOQUES #####
     
