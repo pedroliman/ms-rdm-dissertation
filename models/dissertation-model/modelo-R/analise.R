@@ -25,7 +25,7 @@ opcoes = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 10,
+  N = 100,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
@@ -83,7 +83,7 @@ mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=ster
 
 
 
-#### Roando um Cenário Base ####
+#### Rodando um Cenário Base ####
 ## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
 START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = TRUE; CHECK_PRECISION = 0.01; BROWSE_ON_DIFF = TRUE
@@ -113,35 +113,43 @@ names(parametros_cenariobase) = as.matrix(parametros_completos[,1])
 # Mudando o tempo de simulação para Simular o Sterman
 resultados_cenariobase = solve_modelo_dissertacao(parametros = parametros_cenariobase, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
 
-View(resultados_cenariobase)
 
 
 
 
 
-#### Calibração ####
-results$Ensemble = adicionar_erro_ao_ensemble(results = results, variaveis_calibracao = c("fIndustryOrderRate"), planilha_calibracao = "dados_calibracao.xlsx")
+
+
+
+#### Visualizando que o Cenário Base é Plausível ####
+START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.01; BROWSE_ON_DIFF = TRUE
+
+## Carregando Modelo
+source('modelo-calibracao.R', encoding = 'UTF-8')
+
+resultados_cenarioscalibracao = simularRDM_e_escolher_estrategia(inputs = "./calibracao/params_calibracao_com_estrategia.xlsx", sdmodel = sdmodel, opcoes = opcoes)
+
+resultados_cenarioscalibracao$Ensemble = adicionar_erro_ao_ensemble(results = resultados_cenarioscalibracao, variaveis_calibracao = c("fIndustryOrderRate"), planilha_calibracao = "dados_calibracao.xlsx")
 
 dados_calibracao <- as.data.frame(read_xlsx(path = "dados_calibracao.xlsx", sheet = "Plan1"))
 
-hist(results$Ensemble[,"SomaSSR"])
+hist(resultados_cenarioscalibracao$Ensemble[,"SomaSSR"])
 
-quartil1_erro = quantile(results$Ensemble[,"SomaSSR"], probs = c(0.05))
+quartil1_erro = quantile(resultados_cenarioscalibracao$Ensemble[,"SomaSSR"], probs = c(0.25))
 
-cenarios_quartis = results$Ensemble[which(results$Ensemble[,"SomaSSR"]<quartil1_erro),opcoes$VarCenarios]
+cenarios_quartis = resultados_cenarioscalibracao$Ensemble[which(resultados_cenarioscalibracao$Ensemble[,"SomaSSR"]<quartil1_erro),opcoes$VarCenarios]
 
-cenario_menor_erro = results$Ensemble[which(results$Ensemble[,"SomaSSR"]==min(results$Ensemble[,"SomaSSR"])),opcoes$VarCenarios]
-
-cenario_menor_erro = 1
+cenario_menor_erro = resultados_cenarioscalibracao$Ensemble[which(resultados_cenarioscalibracao$Ensemble[,"SomaSSR"]==min(resultados_cenarioscalibracao$Ensemble[,"SomaSSR"])),opcoes$VarCenarios]
 
 # Selecionando Pontos de Dados para Exibir no Gráfico
 time_points<-seq(from=1, to=length(SIM_TIME),by=1/STEP)
 
 time_plot = seq(from=START, to=FINISH)
 
-resultados_exibir = dplyr::filter(results$DadosSimulados, Scenario == cenario_menor_erro)[time_points,]
+resultados_exibir = dplyr::filter(resultados_cenarioscalibracao$DadosSimulados, Scenario == cenario_menor_erro)[time_points,]
 
-resultados_exibir = results$DadosSimulados[which(results$DadosSimulados[,opcoes$VarCenarios] %in% cenarios_quartis),]   [time_points,]
+
 
 p1<-ggplot()+
   geom_point(data=dados_calibracao,size=1.5,aes(time,fIndustryOrderRate,colour="Data"))+
@@ -155,6 +163,48 @@ p1<-ggplot()+
                                Model="blue"),
                       labels=c("Dados",
                                "Modelo"))
+p1
+
+
+resultados_exibir_outros_parametros = resultados_cenarioscalibracao$DadosSimulados[which(results$DadosSimulados[,opcoes$VarCenarios] %in% cenarios_quartis),]
+
+
+p2<-ggplot()+
+  geom_point(data=dados_calibracao,size=1.5,aes(time,fIndustryOrderRate,colour="Data"))+
+  geom_line(data=resultados_exibir_outros_parametros,size=0.5,aes(x=time,y=fIndustryOrderRate,colour="Model", group = Scenario, color = factor(Scenario)))+
+  ylab("Demanda da Indústria")+
+  xlab("Anos")+
+  scale_y_continuous(labels = comma)+
+  theme(legend.position="bottom")+
+  scale_colour_manual(name="",
+                      values=c(Data="red", 
+                               Model="blue"),
+                      labels=c("Dados",
+                               "Modelo"))
+p2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+plot_linha_uma_variavel_ensemble(dados = resultados_cenarioscalibracao, variavel = "fIndustryOrderRate", nome_amigavel_variavel = "Demanda Global Impressoras Profissionais", estrategia = 1)
+
+View(resultados_exibir_outros_parametros)
+
+
+
+
+
+
 
 
 #### RODADA 1 ####
