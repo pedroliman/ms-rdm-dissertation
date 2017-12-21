@@ -801,11 +801,16 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
 }
 
 getCost<-function(p, modelo, dados_calibracao){
+  
+  browser()
   output_modelo = solve_modelo_dissertacao(parametros = p, modelo = modelo, simtime = SIM_TIME)
   #output_modelo <- solve_modelo_dissertacao(parametros, modelo, simtime = SIM_TIME)
   #http://www.inside-r.org/packages/cran/FME/docs/modCost
+  browser()
   
   cost <- modCost(obs=dados_calibracao, model=output_modelo)
+  
+  browser()
   
   return(cost)
   
