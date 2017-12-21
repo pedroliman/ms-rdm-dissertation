@@ -152,6 +152,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     aPerformance = pmax(aPerfMin, pmin(aPerfMax, aPerformanceCalculada))
     
+    checkPerformance = mean(aPerformance)
+    
     aAttractivenessFromPerformance = aPeDLigado * exp(aSensOfAttractToPerformance*(aReferencePerformance/aPerformance)) + (1 - aPeDLigado)
     
     aAttractivenessFromAvailability = exp(aSensOfAttractToAvailability*(aDeliveryDelay/aReferenceDeliveryDelay))
@@ -325,6 +327,9 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     fNPVProfitChange = fNetIncome * aDiscountFactor #
     
     checkNPVProfitChange = mean(fNPVProfitChange) #
+    
+    checkNPVProfitChange1 = fNPVProfitChange[1]
+    
     
     aNPVIndustryProfits = sum(sNPVProfit) #
     
