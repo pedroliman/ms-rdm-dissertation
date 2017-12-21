@@ -751,7 +751,7 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
     sNPVProfit = rep(0, times = N_PLAYERS)
     ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
     ,sBacklog = rep(12738, times = N_PLAYERS) 
-    ,sInstalledBase = unname(auxs$aTotalInitialInstalledBase) * unname(auxs$aInitialSharePlayers)  # rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+    ,sInstalledBase = rep(0, times = N_PLAYERS)  # rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
     ,sPrice = unname(auxs$aInitialPrice)
     ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
     ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
@@ -770,28 +770,56 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   ) 
   
   # Calculando estoques para o t0.
-  estoques_calculados = modelo(time = 0, stocks = stocks_iniciais, auxs = auxs, modo = "inicial")
+  iteracoes_aquecimento_estoques = 3
+  
+  for(i in 1:iteracoes_aquecimento_estoques){
+    
+    estoques_calculados = modelo(time = 0, stocks = stocks_iniciais, auxs = auxs, modo = "inicial")
+    
+    stocks_iniciais  <- c(
+      sNPVProfit = unname(stocks_iniciais[grep("sNPVProfit", x = names(stocks_iniciais))]) 
+      ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
+      ,sBacklog = unname(estoques_calculados$BacklogIni)
+      ,sInstalledBase = unname(estoques_calculados$InstalledBaseIni)
+      ,sPrice = unname(stocks_iniciais[grep("sPrice", x = names(stocks_iniciais))])
+      ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
+      ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
+      ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
+      ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
+      ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
+      ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
+      ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
+      ,sInvestimentoNaoRealizadoPeD = unname(estoques_calculados$InitialInvestimentoNaoRealizadoPeD)
+      ,sPatentesRequisitadas = unname(estoques_calculados$InitialPatentesRequisitadas)
+      ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
+      ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
+      ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
+    ) 
+    
+  }
+  
+  stocks = stocks_iniciais
   
   # Substituindo estoques no t0
-  stocks  <- c(
-    sNPVProfit = unname(stocks_iniciais[grep("sNPVProfit", x = names(stocks_iniciais))]) 
-    ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
-    ,sBacklog = unname(estoques_calculados$BacklogIni)
-    ,sInstalledBase = unname(stocks_iniciais[grep("sInstalledBase", x = names(stocks_iniciais))]) 
-    ,sPrice = unname(stocks_iniciais[grep("sPrice", x = names(stocks_iniciais))])
-    ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
-    ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
-    ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
-    ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
-    ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
-    ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
-    ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
-    ,sInvestimentoNaoRealizadoPeD = unname(estoques_calculados$InitialInvestimentoNaoRealizadoPeD)
-    ,sPatentesRequisitadas = unname(estoques_calculados$InitialPatentesRequisitadas)
-    ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
-    ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
-    ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
-  ) 
+  # stocks  <- c(
+  #   sNPVProfit = unname(stocks_iniciais[grep("sNPVProfit", x = names(stocks_iniciais))]) 
+  #   ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
+  #   ,sBacklog = unname(estoques_calculados$BacklogIni)
+  #   ,sInstalledBase = unname(estoques_calculados$InstalledBaseIni)
+  #   ,sPrice = unname(stocks_iniciais[grep("sPrice", x = names(stocks_iniciais))])
+  #   ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
+  #   ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
+  #   ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
+  #   ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
+  #   ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
+  #   ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
+  #   ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
+  #   ,sInvestimentoNaoRealizadoPeD = unname(estoques_calculados$InitialInvestimentoNaoRealizadoPeD)
+  #   ,sPatentesRequisitadas = unname(estoques_calculados$InitialPatentesRequisitadas)
+  #   ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
+  #   ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
+  #   ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
+  # ) 
   
   resultado_completo = data.frame(ode(y=stocks, simtime, func = modelo, 
                                       parms=auxs, method="euler"))

@@ -25,9 +25,9 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     # Criando uma variavel n_tempo local
     n_tempo = nrow(list.variaveis.globais$sReportedIndustryVolume)
     
-    if(modo == "inicial") {
-      browser()
-    }
+    # if(modo == "inicial") {
+    #   browser()
+    # }
 
     
     ##### VETORIZANDO ESTOQUES #####
@@ -416,10 +416,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     InitialsInvestimentoPeDDepreciar = aInitialsInvestimentoPeDDepreciar * aPatentShare
     
-    # if(modo == "inicial") {
-    #   browser()
-    # }
-      
+
     ##### ESTOQUES - INICIAIS #####
     
     stocks_ini = list(
