@@ -86,7 +86,8 @@ mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=ster
 #### Rodando um Cenário Base ####
 ## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
 START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
-VERIFICAR_STOCKS = TRUE; VERIFICAR_CHECKS = TRUE; CHECK_PRECISION = 0.001; BROWSE_ON_DIFF = TRUE
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; BROWSE_ON_DIFF = TRUE
+VERIFICAR_GLOBAL = TRUE;
 
 ## Carregando Modelo
 source('modelo-calibracao.R', encoding = 'UTF-8')
@@ -94,12 +95,23 @@ source('modelo-calibracao.R', encoding = 'UTF-8')
 # Carregando Variáveis de Output do Ithink para Comparação
 arquivo_excel_stocks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_stocks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
 arquivo_excel_checks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_checks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
+arquivo_excel_global = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_tudo.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
+
 
 dados_ithink_stocks  = arquivo_excel_stocks$ResultadosIthink %>% dplyr::select(-Months)
 dados_ithink_checks  = arquivo_excel_checks$ResultadosIthink %>% dplyr::select(-Months)
 
+dados_ithink_global = arquivo_excel_global$ResultadosIthink %>% dplyr::select(-Months)
+
+
 variaveis_ithink_stocks = names(dados_ithink_stocks)
 variaveis_ithink_checks = names(dados_ithink_checks)
+
+
+variaveis_globais_a_verificar = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/variaveis_globais_a_verificar.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"))
+variaveis_globais_a_verificar = as.vector(variaveis_globais_a_verificar$ResultadosIthink$variaveis)
+
+
 
 # Rodando a Simulação com os Parâmetros do Sterman, rodando uma vez apenas.
 arquivo_parametros = "./calibracao/params_calibracao.xlsx"

@@ -499,6 +499,97 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       }
     }
     
+    
+    browser()
+    
+    # Forma que usa todas as variaveis do ambiente:
+    # variaveis_disponiveis_ambiente = ls()
+    # variaveis_auxiliares = variaveis_disponiveis_ambiente[grep("^[aA].*", variaveis_disponiveis_ambiente)]
+    # 
+    # Forma que usa as variaveis globais definidas em um vetor
+    variaveis_auxiliares = variaveis_globais_a_verificar
+    
+    
+    seletor_players = paste("[",1:N_PLAYERS,"]", sep = "")
+    
+    variaveis_a_verificar = expand.grid(variaveis_auxiliares, seletor_players)
+    
+    variaveis_a_verificar = paste(variaveis_a_verificar[,1], variaveis_a_verificar[,2], sep = "")
+    
+    variaveis_a_verificar_no_ithink = substring(variaveis_a_verificar, 2)
+    
+    
+    verificar_variaveis_globais = function(n_variavel){
+      valor_variavel_R = eval(parse(text = variaveis_a_verificar[n_variavel]))
+      
+      valor_variavel_ithink = dados_ithink_global[[linha,variaveis_a_verificar_no_ithink[n_variavel]]]
+      
+      if((length(valor_variavel_ithink) > 0)) {
+        decisao = !is.na(valor_variavel_ithink) & is.numeric(valor_variavel_ithink)
+        if(decisao == FALSE) {
+          valor_variavel_ithink = NA
+        }
+      } else {valor_variavel_ithink = NA}
+      
+      
+      if((length(valor_variavel_R) > 0)) {
+        decisao = !is.na(valor_variavel_R) & is.numeric(valor_variavel_R)
+        if(decisao == FALSE) {
+          valor_variavel_R = NA
+        }
+      } else {valor_variavel_R = NA}
+      
+      
+      diferenca = unname(valor_variavel_R)  - unname(valor_variavel_ithink)
+      
+      diferenca
+    }
+    
+    diferencas = lapply(X = 1:length(variaveis_a_verificar), FUN = verificar_variaveis_globais)
+    
+    diferencas = do.call(rbind, diferencas)
+    
+    matriz_diferencas = data.frame(
+      variaveis_a_verificar,
+      diferencas
+    )
+    
+    diferencas_a_reportar = subset(matriz_diferencas, diferencas > CHECK_PRECISION)
+    
+    if(nrow(diferencas_a_reportar)>1)
+    
+      # Colocar isso dentro do IF abaixo e verificar!
+      
+    
+    if(VERIFICAR_GLOBAL & modo == "completo"){
+      for (variavel in variaveis_auxiliares) {
+        # Definir o tipo de variavel
+        # Variavel é um estoque?
+        variavel_ithink_alterada = gsub(pattern = "\\[", replacement = "", x = variavel, ignore.case = TRUE)
+        variavel_ithink_alterada = gsub(pattern = "\\]", replacement = "", x = variavel_ithink_alterada, ignore.case = TRUE)
+        
+        # Verificar apenas Estoques:
+        #variavel_ithink_alterada = paste("s", variavel_ithink_alterada, sep = "")
+        
+        # Valor da Variavel Calculada
+        valor_variavel_R = eval(parse(text = variavel_ithink_alterada))
+        
+        valor_variavel_ithink = dados_ithink_checks[[linha,variavel]]
+        
+        diferenca = valor_variavel_R - valor_variavel_ithink
+        
+        if(!is.na(diferenca)){
+          if (abs(x = diferenca) > CHECK_PRECISION){
+            message(paste("Check Diff:", time, linha, variavel, diferenca, sep = " - "))
+            if(BROWSE_ON_DIFF){
+              browser()  
+            }
+          }  
+        }
+        
+      }
+    }
+    
     ##### VARIÁVEIS RETORNADAS #####
     
     ## Parar se o tempo chegou ao fim.
