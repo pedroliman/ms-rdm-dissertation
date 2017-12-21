@@ -255,7 +255,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     
     ##### Custo P e D ####
-    aTempoDepreciacao = aTempoMedioAvaliacao + aTempoVencimentoPatentes
+    aTempoDepreciacao = aTempoMedioAvaliacao + aTempoVencimentoPatentes + aTempoMedioRealizacaoPeD
     
     fDepreciacaoInvPeD = sInvestimentoPeDDepreciar / aTempoDepreciacao
     
@@ -435,9 +435,6 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       InitialsPatentesEmDominioPublicoUteis = InitialsPatentesEmDominioPublicoUteis,
       InitialsInvestimentoPeDDepreciar = InitialsInvestimentoPeDDepreciar
     )
-    
-    
-    
     
     ##### COMPARAR RESULTADOS COM O ITHINK #####
     
