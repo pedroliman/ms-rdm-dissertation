@@ -1326,6 +1326,16 @@ resumir_variavel_resposta = function(dados = dados_ano_final, var_resposta = "Ca
 
 ##### ESCOLHER ESTRATÉGIA CANDIDATA #####
 
+#' escolher_estrategia_candidata
+#'
+#' Escolhe a estratégia candidata "mais robusta" (dentre as disponíveis) a partir de dados simulados e de um resumo das estratégias contendo índices de perda de oportunidade.
+#' @param dados Dataframe com dados simulados
+#' @param resumo_estrategias dataframe de resumo das estratégias (gerado pela função calcular_e_resumir_regret).
+#' @param var_resposta VAriávei de Resposta a considerar (string).
+#' @param var_criterio Variável a usar como critério (default é o Percentil 75 do Regret Relativo).
+#' @param sentido Sentido a utilizar na análise (default é min para minimizar o regret).
+#'
+#' @return uma (ou mais) estratégias candidatas. (ID da estratégia).
 escolher_estrategia_candidata = function(dados, resumo_estrategias, var_resposta, var_criterio = "RegretPercPercentil75", sentido = "min") {
   
   var_respota_criterio = paste(var_resposta, var_criterio, sep = "")
