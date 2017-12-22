@@ -365,6 +365,14 @@ resultado_unico <- data.frame(ode(y=stocks, times=simtime, func = modelo,
 
 
 
+#### Observando dados de Fundamentos ####
+dados_fundamentos = obter_dados_fundamentos_us_fundamentals()
+
+plot_lucro_bruto_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=GrossProfit, group=empresa)) +
+  geom_line(aes(color=empresa))+
+  geom_point(aes(color=empresa)) +
+  ylab(label = "Lucro Bruto")
+
 
 
 

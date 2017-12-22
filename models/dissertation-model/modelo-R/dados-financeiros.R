@@ -7,34 +7,68 @@ library(dplyr)
 # Quandl API:
 # RsCuvs4_WjRPP_zzSzfv
 
-# Us Fundamentals API
-api_us_fundamentals = "AzfxuwuOWMDrCA28nAEUcw"
-
-empresas = c("Stratasys Inc", "3D Systems Corp", "Exone CO", "HP Inc", "Proto Labs")
-codigos = c(915735, 910638, 1561627, 47217, 1443669)
-codigos_api = paste(codigos, collapse = ",")
-
 indicadores = c("Revenues")
-indicadores_api = paste(indicadores, collapse = ",")
+
+obter_dados_fundamentos_us_fundamentals = function(api_us_fundamentals = "AzfxuwuOWMDrCA28nAEUcw", empresas = c("Stratasys Inc", "3D Systems Corp", "Exone CO", "HP Inc", "Proto Labs"), codigos = c(915735, 910638, 1561627, 47217, 1443669), indicadores = c("SalesRevenueNet ", "GrossProfit", "NetCashProvidedByUsedInOperatingActivities"), nome_amigavel_indicador = c("Sales Revenue Net","Lucro Bruto", "Fluxo de Caixa Operacional")) {
+  codigos_api = paste(codigos, collapse = ",")
+  
+  indicadores_api = paste(indicadores, collapse = ",")
+  
+  call_api = paste(
+    "https://api.usfundamentals.com/v1/indicators/xbrl?",
+    "&companies=",
+    codigos_api,
+    "&period_type=yq",
+    "&token=",
+    api_us_fundamentals
+    , sep = ""
+  )
+  
+  anos = 2011:2016
+  
+  csv_dados_us_fundamentals <- RCurl::getURL(call_api)
+  
+  dados_us_fundamentals = read.csv(textConnection(csv_dados_us_fundamentals))
+  
+  # renomeando colunas
+  colnames(dados_us_fundamentals) = c("company_id", "indicator_id", anos)
+  
+  # Gerando tabela de empresas
+  empresas_e_codigos = data.frame(company_id = codigos, empresa = empresas)
+  
+  # Indicando nome da empresa
+  dados_us_fundamentals = dplyr::inner_join(dados_us_fundamentals, empresas_e_codigos)
+  
+  
+  # Escrevendo CSV para guardar os dados antes de filtrar:
+  write.csv2(x = dados_us_fundamentals, file = "./fundamentals-data/dados_us_fundamentals.csv")
+  
+  # Filtrando só o indicador desejado, ou definindo um conjunto de indicadores
+  if (length(indicadores)> 0){
+    dados_us_fundamentals = subset(dados_us_fundamentals, indicator_id %in% indicadores)  
+  } else {indicadores = unique(dados_us_fundamentals$indicator_id)}
+  
+  dados_finais = dados_us_fundamentals %>% tidyr::gather(Ano, Valor, 3:8) %>% tidyr::spread(indicator_id, Valor)
+  
+  dados_finais  
+}
 
 
-call_api = paste(
-  "https://api.usfundamentals.com/v1/indicators/xbrl?",
-  "&companies=",
-  codigos_api,
-  "&period_type=yq",
-  "&token=",
-  api_us_fundamentals
-  , sep = ""
+
+plot_lucro_bruto_us_fundamentals = ggplot(data=dados_spread, aes(x=Ano, y=GrossProfit, group=empresa)) +
+  geom_line(aes(color=empresa))+
+  geom_point(aes(color=empresa)) +
+  ylab(label = "Lucro Bruto")
+
+list(
+  DadosVariavel = dados_spread,
+  PlotEmpresas = plot_variavel
 )
 
-csv_dados_us_fundamentals <- getURL(call_api)
-
-dados_us_fundamentals = read.csv(textConnection(csv_dados_us_fundamentals))
-
-write.csv2(x = dados_us_fundamentals, file = "./fundamentals-data/dados_us_fundamentals.csv")
 
 # Gerando Gráficos e Dados:
+
+View(dados_us_fundamentals)
 
 dados_us_fundamentals %>% dplyr::filter(indicator_id == "GrossProfit")
 
