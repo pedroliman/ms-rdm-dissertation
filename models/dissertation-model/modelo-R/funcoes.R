@@ -270,7 +270,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     sInvestimentoPeDDepreciar = stocks[grep("sInvestimentoPeDDepreciar", x = names(stocks))]
     
     #Obtendo o número da linha no qual estou
-    linha = ((START - time) * (n_tempo - 1)) / FINISH + 1
+    linha = ((time - START)* (n_tempo - 1)) / (FINISH - START) + 1
     
     # Gravando a Variável sReportedIndustryVolume no vetor global
     list.variaveis.globais$sReportedIndustryVolume[linha,] <<- sReportedIndustryVolume
@@ -402,7 +402,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     # Variavel com DELAY - A definição das constantes aqui devem ser alteradas se as condicoes iniciais do modelo mudarem
     # Esta implementacao considera que os delays sempre serao iguais. Se os delays nao forem iguais, deve-se encontrar outra forma de implementar os delays (talvez com a equacao multiplicativa 1*(time > tempodelay)
-    if(time > aTimeForHistoricalVolume) {
+    if((time - START) > aTimeForHistoricalVolume) {
       nlinhas_delay = aTimeForHistoricalVolume / STEP
       aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[(linha - nlinhas_delay),]
     } else {
@@ -415,8 +415,9 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     list.variaveis.globais$aExpectedIndustryDemand[linha,] <<- aExpectedIndustryDemand
     
+    
     # Mais uma variável com delay
-    if(time > aCapacityAcquisitionDelay) {
+    if((time - START) > aCapacityAcquisitionDelay) {
       nlinhas_delay = aCapacityAcquisitionDelay / STEP
       aLaggedVolumeForecast = list.variaveis.globais$aExpectedIndustryDemand[linha-nlinhas_delay,]
     } else {
@@ -520,7 +521,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     ##### NET INCOME SECTOR #####
     
-    aDiscountFactor = exp(-aDiscountRate*time) # 
+    aDiscountFactor = exp(-aDiscountRate*(time - START)) # 
     
     fValueOfNewOrders = fOrders * sPrice
     
@@ -838,7 +839,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
 
 #### OBJETO SDMODEL #####
 
-# Nomeando o Dataframe de Saída
+# Nomeando o Dataframe de Saída (este vetor não é mais utilizado)
 nomes_variaveis = c("Tempo", "d_NPVProfit_dt", "aDiscountFactor", "aDiscountRate", "fNPVProfitChange", "fNetIncome", "aNPVIndustryProfits")
 
 # Inicializando um list com Tudo o que é necessário para a Simulação.
@@ -865,7 +866,7 @@ sdmodel = list(
 #' @return list com resultados da simulacao e uma estratégia candidata.
 simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes) {
   
-  output_simulacao = simular_RDM(arquivo_de_inputs=inputs ,sdmodel = sdmodel, n = opcoes$N)
+  output_simulacao = simular_RDM(arquivo_de_inputs=inputs ,sdmodel = sdmodel, n = opcoes$N, opcoes = opcoes)
   
   ## Simular
   dados_simulacao = output_simulacao$DadosSimulacao
@@ -944,7 +945,7 @@ obter_lhs_ensemble = function (params, n=100, opcoes = opcoes) {
   pontos = n
   
   # Obtendo um Hypercubo com as Variáveis que eu quero
-  lhs::randomLHS <- randomLHS(pontos, nvar)
+  randomLHS <- lhs::randomLHS(pontos, nvar)
   
   p = as.data.frame(randomLHS)
   min = as.vector(params$Min)
@@ -1200,18 +1201,16 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = 
 #' @param n Número de cenarios a gerar (numeric)
 #'
 #' @return data.frame com resultados da simulação
-simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n){
+simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = opcoes$N, opcoes = opcoes){
   t_inicio = Sys.time()
   message("Bem vindo ao SIMULADOR RDM! Pedro Lima.")
   message(paste("Iniciando Simulacao RDM: ", t_inicio))
-  
-  
   
   # Carregando Inputs
   inputs = carregar_inputs(arquivo_de_inputs = arquivo_de_inputs)
   
   # Obter Ensemble LHS (Sem Variáveis das Estratégias)
-  ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = n)
+  ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = n, opcoes = opcoes)
   
   # Ampliar Ensemble com as variáveis das Estratégias
   novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
@@ -1224,7 +1223,7 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n){
   message(paste("Esta rotina realizará", nestrategias * nfuturos, "Simulacoes.\n (", nestrategias, "estratégias x", nfuturos, "futuros, em", ntempo , "periodos de tempo."))
   
   # TODO: Esta Chamada vai precisar mudar para considerar a nova funcao
-  dados_simulacao = simular(simtime = sdmodel$SimTime, modelo = sdmodel$Modelo, ensemble = novo_ensemble, nomes_variaveis_final = sdmodel$Variaveis)
+  dados_simulacao = simular(simtime = sdmodel$SimTime, modelo = sdmodel$Modelo, ensemble = novo_ensemble, nomes_variaveis_final = sdmodel$Variaveis, opcoes = opcoes)
   
   t_fim = Sys.time()
   

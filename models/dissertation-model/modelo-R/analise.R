@@ -1,21 +1,11 @@
-# Autor: Pedro Nascimento de Lima, 2017
-# Código fonte desenvolvido para a Dissertação de Mestrado.
-# Arquivo: analise.R
-# Objetivo: Este arquivo contém funções utilizadas para as análises 
-# RDM realizadas durante a dissertação.
-
-#### Início: Carregando Bibliotecas e Funções ####
-
 # Carregando Funções Úteis
 source('funcoes.R', encoding = 'UTF-8')
-
-source(file = "demonstracoes.R", encoding = "UTF-8")
 
 opcoes = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 100,
+  N = 10,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
@@ -124,16 +114,13 @@ resultados_cenariobase$a
 
 
 #### Visualizando que o Cenário Base é Plausível ####
-START<-0; FINISH<-30; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+START<-2007; FINISH<-2037; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.01; BROWSE_ON_DIFF = TRUE
 VERIFICAR_GLOBAL = FALSE;
 
-## Carregando Modelo
-source('modelo-calibracao.R', encoding = 'UTF-8')
-
 resultados_cenarioscalibracao = simularRDM_e_escolher_estrategia(inputs = "./calibracao/params_calibracao_com_estrategia.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
-resultados_cenarioscalibracao$Ensemble = adicionar_erro_ao_ensemble(results = resultados_cenarioscalibracao, variaveis_calibracao = c("fIndustryOrderRate"), planilha_calibracao = "./calibracao/dados_calibracao.xlsx")
+resultados_cenarioscalibracao$Ensemble = adicionar_erro_ao_ensemble(results = resultados_cenarioscalibracao, variaveis_calibracao = c("fIndustryOrderRate"), planilha_calibracao = "./calibracao/dados_calibracao.xlsx", opcoes = opcoes)
 
 dados_calibracao <- as.data.frame(read_xlsx(path = "./calibracao/dados_calibracao.xlsx", sheet = "Plan1"))
 
