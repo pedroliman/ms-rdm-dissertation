@@ -133,9 +133,9 @@ source('modelo-calibracao.R', encoding = 'UTF-8')
 
 resultados_cenarioscalibracao = simularRDM_e_escolher_estrategia(inputs = "./calibracao/params_calibracao_com_estrategia.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
-resultados_cenarioscalibracao$Ensemble = adicionar_erro_ao_ensemble(results = resultados_cenarioscalibracao, variaveis_calibracao = c("fIndustryOrderRate"), planilha_calibracao = "dados_calibracao.xlsx")
+resultados_cenarioscalibracao$Ensemble = adicionar_erro_ao_ensemble(results = resultados_cenarioscalibracao, variaveis_calibracao = c("fIndustryOrderRate"), planilha_calibracao = "./calibracao/dados_calibracao.xlsx")
 
-dados_calibracao <- as.data.frame(read_xlsx(path = "dados_calibracao.xlsx", sheet = "Plan1"))
+dados_calibracao <- as.data.frame(read_xlsx(path = "./calibracao/dados_calibracao.xlsx", sheet = "Plan1"))
 
 hist(resultados_cenarioscalibracao$Ensemble[,"SomaSSR"])
 
