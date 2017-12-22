@@ -28,6 +28,8 @@ library(Quandl)
 ##### CONSTANTES #####
 VAR_SCENARIO = "Scenario"
 VAR_LEVER = "Lever"
+SIM_TIME
+
 
 ##### MODELO #####
 
@@ -934,7 +936,7 @@ carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("par
 #' @param n tamanho do ensemble a montar
 #'
 #' @return dataframe com ensemble montado (pronto para a simulação)
-obter_lhs_ensemble = function (params, n=100) {
+obter_lhs_ensemble = function (params, n=100, opcoes = opcoes) {
   message("01. funcoes.R/obter_lhs_ensemble: Iniciando Obtenção do Ensemble.")
   #Obtendo DataFrame de Parâmetros
   
@@ -962,11 +964,11 @@ obter_lhs_ensemble = function (params, n=100) {
   }
   
   # Adicionando A variável "Scenario"
-  variaveis = c(c(VAR_SCENARIO),variaveis)
+  variaveis = c(c(opcoes$VarCenarios),variaveis)
   
   colnames(ensemble) = variaveis
   
-  ensemble[,VAR_SCENARIO] = 1:nrow(ensemble)
+  ensemble[,opcoes$VarCenarios] = 1:nrow(ensemble)
   
   ensemble
 }
@@ -1022,7 +1024,7 @@ ampliar_ensemble_com_levers = function(ensemble, levers) {
 #' @export
 #'
 #' @examples
-simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = TRUE, modo_paralelo = "FORK") {
+simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = TRUE, modo_paralelo = "FORK", opcoes = opcoes) {
   message("01. funcoes.R/simular: Iniciando Simulação.")
   
   # Rodando a Simulação (uma vez), com a primeira linha do ensemble - Ajuda a saber se funciona.
@@ -1038,8 +1040,8 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = 
     res = solve_modelo_dissertacao(parametros = params, modelo = modelo, simtime = simtime)
     # Gerar Matriz de Resultados
     cbind(res,
-          Lever = ensemble[n_linha_ensemble,VAR_LEVER],
-          Scenario = ensemble[n_linha_ensemble,VAR_SCENARIO])
+          Lever = ensemble[n_linha_ensemble,opcoes$VarEstrategias],
+          Scenario = ensemble[n_linha_ensemble,opcoes$VarCenarios])
   }
   
   if(paralelo == TRUE) {
@@ -1073,6 +1075,7 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = 
                                          "VERIFICAR_CHECKS",
                                          "VAR_LEVER",
                                          "VAR_SCENARIO",
+                                         "opcoes",
                                          "STEP",
                                          "solve_modelo_dissertacao"), envir = environment())  
       }
@@ -1161,10 +1164,10 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = 
       dados_simulacao[l_inicial:l_final,1:(ncolunas-2)] = resultados_simulacao
       
       # Adicionando o Número do Lever
-      dados_simulacao[l_inicial:l_final,(ncolunas-1)] = ensemble[i,VAR_LEVER]
+      dados_simulacao[l_inicial:l_final,(ncolunas-1)] = ensemble[i,opcoes$VarEstrategias]
       
       # Adicionando o Número do Cenário
-      dados_simulacao[l_inicial:l_final,ncolunas] = ensemble[i,VAR_SCENARIO]
+      dados_simulacao[l_inicial:l_final,ncolunas] = ensemble[i,opcoes$VarCenarios]
       
       # Exibindo uma Mensagem de Status
       if (i %% 5 == 0) {
@@ -1174,11 +1177,11 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = 
       j = j + linhas
     }
     # Usando nomes temporario
-    colnames(dados_simulacao) = c(nomes_temporario, VAR_LEVER, VAR_SCENARIO)
+    colnames(dados_simulacao) = c(nomes_temporario, opcoes$VarEstrategias, opcoes$VarCenarios)
     # colnames(dados_simulacao) = nomes_variaveis_final
     
     dados_simulacao = as.data.frame(dados_simulacao)
-    names(dados_simulacao) = c(nomes_temporario, VAR_LEVER, VAR_SCENARIO)
+    names(dados_simulacao) = c(nomes_temporario, opcoes$VarEstrategias, opcoes$VarCenarios)
     #names(dados_simulacao) = nomes_variaveis_final
   }
   
@@ -1504,7 +1507,7 @@ getCost<-function(p, modelo, dados_calibracao){
 }
 
 
-adicionar_erro_ao_ensemble = function(results, variaveis_calibracao, planilha_calibracao) {
+adicionar_erro_ao_ensemble = function(results, variaveis_calibracao, planilha_calibracao, opcoes = opcoes) {
   
   dados_calibracao <- as.data.frame(read_xlsx(path = planilha_calibracao, sheet = "Plan1"))
   
@@ -1740,7 +1743,7 @@ grafico_whisker_por_lever = function(dados_regret, variavel) {
 #' @return grafico plotly com a fronteira de tradeoffs conforme um determinado cenário.
 #' @export
 #'
-plot_fronteira_tradeoff_estrategia = function(results, opcoes) {
+plot_fronteira_tradeoff_estrategia = function(results, opcoes = opcoes) {
   
   dados_cenario = results$DadosUltimoPeriodo %>% dplyr::filter(AdvertisingCost  < 5.727e+04 & AverageTicket  >  1.789e+00 & AdoptionFraction  <  2.895e-02)
   
