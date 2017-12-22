@@ -1520,6 +1520,43 @@ adicionar_erro_ao_ensemble = function(results, variaveis_calibracao, planilha_ca
   
   browser()
   
+  
+  cenario = 1
+  
+  modcost = FME::modCost(model = dados_modelo[which(dados_modelo$Scenario == cenario),],
+          obs = dados_calibracao[,variaveis_a_utilizar_dados])
+  
+  # Soma dos Erros Quadrados
+  SumOfSquareResiduals = modcost$model
+  
+  # Mean Square error
+  MeanSquareError = SumOfSquareResiduals / modcost$var$N
+  
+  # Mean Absolute Error
+  MeanAbsoluteError = sum(abs(modcost$residuals$res)) / modcost$var$N
+  
+  # Mean Absolute Percent Error
+  MeanAbsolutePercentError = (sum(abs(modcost$residuals$res) / abs(modcost$residuals$obs))) / modcost$var$N
+  
+  UM_ThielBiasDiffMeans =  ((mean(modcost$residuals$mod, na.rm = TRUE) - mean(modcost$residuals$obs, na.rm = TRUE))^2) / MeanSquareError
+  
+  US_ThielUnequalVariation = ((sd(modcost$residuals$mod, na.rm = TRUE) - sd(modcost$residuals$obs, na.rm = TRUE))^2) / MeanSquareError
+  
+  UC_ThielUnequalCovariation = (1 / MeanSquareError) * sd(modcost$residuals$mod, na.rm = TRUE) * sd(modcost$residuals$obs, na.rm = TRUE) * (2 * (1 - cor(x = modcost$residuals$obs, y = modcost$residuals$mod)))
+  
+  n = modcost$var$N
+  
+  UM_ThielBiasDiffMeans =  ((mean(modcost$residuals$mod, na.rm = TRUE) - mean(modcost$residuals$obs, na.rm = TRUE))^2) / MeanSquareError
+  
+  US_ThielUnequalVariation = ((sd(modcost$residuals$mod, na.rm = TRUE)*(n-1)/n - sd(modcost$residuals$obs, na.rm = TRUE)*(n-1)/n)^2) / MeanSquareError
+  
+  UC_ThielUnequalCovariation = (1 / MeanSquareError) * sd(modcost$residuals$mod, na.rm = TRUE)*(n-1)/n * sd(modcost$residuals$obs, na.rm = TRUE)*(n-1)/n * (2 * (1 - cor(x = modcost$residuals$obs, y = modcost$residuals$mod)))
+  
+  
+  
+   #Continuar daqui. essa soma não gerou 1
+  UM_ThielBiasDiffMeans + UC_ThielUnequalCovariation + US_ThielUnequalVariation
+    
   # Obtem o Objeto ModCost que contém estatísticas de Goodness Of Fit
   obter_modCost = function(cenario, dados_modelo, dados_calibracao, variaveis_calibracao){
     custo = modCost(model = dados_modelo[which(dados_modelo$Scenario == cenario),],
@@ -1533,6 +1570,8 @@ adicionar_erro_ao_ensemble = function(results, variaveis_calibracao, planilha_ca
   }
   
   # Obter Estatísticas de Goodness of Fit:
+  
+  modcost = obter_modCost(cenario = 1, dados_modelo = dados_modelo, dados_calibracao = dados_calibracao, variaveis_calibracao = variaveis_calibracao)
   
   obter_estatiticas_gof = function(modcost){
     
