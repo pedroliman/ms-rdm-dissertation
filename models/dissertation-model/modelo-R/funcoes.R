@@ -22,7 +22,7 @@ library(FME)
 library(readxl)
 library(gdata)
 library(scales)
-
+library(Quandl)
 # library(prim)
 
 ##### CONSTANTES #####

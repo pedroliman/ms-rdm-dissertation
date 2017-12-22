@@ -373,8 +373,13 @@ plot_lucro_bruto_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=GrossP
   geom_point(aes(color=empresa)) +
   ylab(label = "Lucro Bruto")
 
+fundamentos_ddd = obter_fundamentos_financeiros_quandl("DDD")
 
+fundamentos_mtls = obter_fundamentos_financeiros_quandl("PRLB")
 
+plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "Invesitmento em P & D")
+
+plot_cash_net_income_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "NetIncome", nome_amigavel_variavel1 = "Lucro Líquido", variavel2 = "GrossProfit", nome_amigavel_variavel2 = "Lucro Bruto")
 
 ## GE
 
