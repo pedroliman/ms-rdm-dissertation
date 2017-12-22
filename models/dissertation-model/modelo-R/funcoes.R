@@ -1506,98 +1506,72 @@ getCost<-function(p, modelo, dados_calibracao){
 }
 
 
-adicionar_erro_ao_ensemble = function(results, variaveis_calibracao, planilha_calibracao, opcoes = opcoes) {
+adicionar_erro_ao_ensemble = function(results, variavel_calibracao, planilha_calibracao, lever, opcoes = opcoes) {
   
   dados_calibracao <- as.data.frame(read_xlsx(path = planilha_calibracao, sheet = "Plan1"))
   
-  variaveis_a_utilizar_modelo = c(opcoes$VarCenarios, opcoes$VarTempo, variaveis_calibracao)
+  variaveis_a_utilizar_modelo = c(opcoes$VarCenarios, opcoes$VarTempo, variavel_calibracao)
   
-  variaveis_a_utilizar_dados = c(opcoes$VarTempo, variaveis_calibracao)
+  variaveis_a_utilizar_dados = c(opcoes$VarTempo, variavel_calibracao)
   
-  dados_modelo = results$DadosSimulados[,variaveis_a_utilizar_modelo]
+  # Se um lever não foi informado, usar o primeiro do ensemble
+  if(missing(lever)){
+    # Usar o primeiro lever que eu achar
+    lever = results$DadosSimulados$Lever[1]
+  }
+  
+  dados_modelo = results$DadosSimulados[which(results$DadosSimulados$Lever == lever),variaveis_a_utilizar_modelo]
   
   cenarios = unique(dados_modelo$Scenario)
   
-  browser()
-  
-  
-  cenario = 1
-  
-  modcost = FME::modCost(model = dados_modelo[which(dados_modelo$Scenario == cenario),],
-          obs = dados_calibracao[,variaveis_a_utilizar_dados])
-  
-  # Soma dos Erros Quadrados
-  SumOfSquareResiduals = modcost$model
-  
-  # Mean Square error
-  MeanSquareError = SumOfSquareResiduals / modcost$var$N
-  
-  # Mean Absolute Error
-  MeanAbsoluteError = sum(abs(modcost$residuals$res)) / modcost$var$N
-  
-  # Mean Absolute Percent Error
-  MeanAbsolutePercentError = (sum(abs(modcost$residuals$res) / abs(modcost$residuals$obs))) / modcost$var$N
-  
-  UM_ThielBiasDiffMeans =  ((mean(modcost$residuals$mod, na.rm = TRUE) - mean(modcost$residuals$obs, na.rm = TRUE))^2) / MeanSquareError
-  
-  US_ThielUnequalVariation = ((sd(modcost$residuals$mod, na.rm = TRUE) - sd(modcost$residuals$obs, na.rm = TRUE))^2) / MeanSquareError
-  
-  UC_ThielUnequalCovariation = (1 / MeanSquareError) * sd(modcost$residuals$mod, na.rm = TRUE) * sd(modcost$residuals$obs, na.rm = TRUE) * (2 * (1 - cor(x = modcost$residuals$obs, y = modcost$residuals$mod)))
-  
-  n = modcost$var$N
-  
-  UM_ThielBiasDiffMeans =  ((mean(modcost$residuals$mod, na.rm = TRUE) - mean(modcost$residuals$obs, na.rm = TRUE))^2) / MeanSquareError
-  
-  US_ThielUnequalVariation = ((sd(modcost$residuals$mod, na.rm = TRUE)*(n-1)/n - sd(modcost$residuals$obs, na.rm = TRUE)*(n-1)/n)^2) / MeanSquareError
-  
-  UC_ThielUnequalCovariation = (1 / MeanSquareError) * sd(modcost$residuals$mod, na.rm = TRUE)*(n-1)/n * sd(modcost$residuals$obs, na.rm = TRUE)*(n-1)/n * (2 * (1 - cor(x = modcost$residuals$obs, y = modcost$residuals$mod)))
-  
-  
-  
-   #Continuar daqui. essa soma não gerou 1
-  UM_ThielBiasDiffMeans + UC_ThielUnequalCovariation + US_ThielUnequalVariation
+  # Função para Obter Estatísticas de Fit
+  obter_estatisticas_fit = function(cenario, dados_modelo = dados_modelo , dados_calibracao = dados_calibracao, variaveis_a_utilizar_dados = variaveis_a_utilizar_dados) {
+    modcost = FME::modCost(model = dados_modelo[which(dados_modelo$Scenario == cenario),],
+                           obs = dados_calibracao[,variaveis_a_utilizar_dados])
     
-  # Obtem o Objeto ModCost que contém estatísticas de Goodness Of Fit
-  obter_modCost = function(cenario, dados_modelo, dados_calibracao, variaveis_calibracao){
-    custo = modCost(model = dados_modelo[which(dados_modelo$Scenario == cenario),],
-                    obs = dados_calibracao[,variaveis_a_utilizar_dados])
-    custo
-  }
-  
-  # Obter a Soma dos Resíduos Quadrados
-  obter_custo = function(modcost){
-    modcost$model
-  }
-  
-  # Obter Estatísticas de Goodness of Fit:
-  
-  modcost = obter_modCost(cenario = 1, dados_modelo = dados_modelo, dados_calibracao = dados_calibracao, variaveis_calibracao = variaveis_calibracao)
-  
-  obter_estatiticas_gof = function(modcost){
+    # Soma dos Erros Quadrados
+    SumOfSquareResiduals = modcost$model
     
+    # Mean Square error
+    MeanSquareError = SumOfSquareResiduals / modcost$var$N
+    
+    # Mean Absolute Error
+    MeanAbsoluteError = sum(abs(modcost$residuals$res)) / modcost$var$N
+    
+    # Mean Absolute Percent Error
+    MeanAbsolutePercentError = (sum(abs(modcost$residuals$res) / abs(modcost$residuals$obs))) / modcost$var$N
+    
+    # Thiel Statistics: Morecroft (2007), pg. 399. 
+    UM_ThielBiasDiffMeans =  ((mean(modcost$residuals$mod, na.rm = TRUE) - mean(modcost$residuals$obs, na.rm = TRUE))^2) / MeanSquareError
+    
+    US_ThielUnequalVariation = ((sd(modcost$residuals$mod, na.rm = TRUE) - sd(modcost$residuals$obs, na.rm = TRUE))^2) / MeanSquareError
+    
+    UC_ThielUnequalCovariation = (1 / MeanSquareError) * (sd(modcost$residuals$mod, na.rm = TRUE) * sd(modcost$residuals$obs, na.rm = TRUE)) * (2 * (1 - cor(x = modcost$residuals$obs, y = modcost$residuals$mod)))
+    
+    stats_fit = c(SumOfSquareResiduals = SumOfSquareResiduals,
+                  MeanAbsoluteError = MeanAbsoluteError,
+                  MeanAbsolutePercentError = MeanAbsolutePercentError,
+                  UM_ThielBiasDiffMeans = UM_ThielBiasDiffMeans,
+                  US_ThielUnequalVariation = US_ThielUnequalVariation,
+                  UC_ThielUnequalCovariation = UC_ThielUnequalCovariation)
+    stats_fit
   }
   
-  # Obter o Erro Quadrado Médio
-  obter_mse = function(ssr, n) {
-    soma_erro_quadrado / n_pontos
-  }
+  stats_fit = obter_estatisticas_fit(cenario = 1, dados_modelo = dados_modelo, dados_calibracao = dados_calibracao, variaveis_a_utilizar_dados = variaveis_a_utilizar_dados)
   
-  # obter_bias = function(mse, )
+  stats_fit = lapply(1:length(cenarios), obter_estatisticas_fit, dados_modelo = dados_modelo, dados_calibracao = dados_calibracao, variaveis_a_utilizar_dados = variaveis_a_utilizar_dados)
+  stats_fit = do.call(rbind, stats_fit)
   
-  # obter_UM = function(v_modelo, v_)
+  ensemble = cbind(results$Ensemble, stats_fit)
   
-  obter_custo_cenario = function(cenario){
-    custo = obter_custo(cenario = cenario, dados_modelo, dados_calibracao, variaveis_calibracao)
-    custo
-  }
-  
-  
+  ensemble
+
   # Só a partir deste ponto os calculos são realizados.
-  SomaSSR =  do.call(rbind, lapply(results$Ensemble[,opcoes$VarCenarios], obter_custo_cenario))
-  colnames(SomaSSR) = c("SomaSSR")
-  
-  # Retornando o Ensemble com o Erro
-  cbind(results$Ensemble, SomaSSR)
+  # SomaSSR =  do.call(rbind, lapply(results$Ensemble[,opcoes$VarCenarios], obter_custo_cenario))
+  # colnames(SomaSSR) = c("SomaSSR")
+  # 
+  # # Retornando o Ensemble com o Erro
+  # cbind(results$Ensemble, SomaSSR)
   
 }
 

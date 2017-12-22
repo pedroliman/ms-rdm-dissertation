@@ -120,17 +120,17 @@ VERIFICAR_GLOBAL = FALSE;
 
 resultados_cenarioscalibracao = simularRDM_e_escolher_estrategia(inputs = "./calibracao/params_calibracao_com_estrategia.xlsx", sdmodel = sdmodel, opcoes = opcoes)
 
-resultados_cenarioscalibracao$Ensemble = adicionar_erro_ao_ensemble(results = resultados_cenarioscalibracao, variaveis_calibracao = c("fIndustryOrderRate"), planilha_calibracao = "./calibracao/dados_calibracao.xlsx", opcoes = opcoes)
+resultados_cenarioscalibracao$Ensemble = adicionar_erro_ao_ensemble(results = resultados_cenarioscalibracao, variavel_calibracao = "fIndustryOrderRate", planilha_calibracao = "./calibracao/dados_calibracao.xlsx", opcoes = opcoes)
 
 dados_calibracao <- as.data.frame(read_xlsx(path = "./calibracao/dados_calibracao.xlsx", sheet = "Plan1"))
 
-hist(resultados_cenarioscalibracao$Ensemble[,"SomaSSR"])
+hist(resultados_cenarioscalibracao$Ensemble[,"SumOfSquareResiduals"])
 
-quartil1_erro = quantile(resultados_cenarioscalibracao$Ensemble[,"SomaSSR"], probs = c(0.25))
+quartil1_erro = quantile(resultados_cenarioscalibracao$Ensemble[,"SumOfSquareResiduals"], probs = c(0.25))
 
-cenarios_quartis = resultados_cenarioscalibracao$Ensemble[which(resultados_cenarioscalibracao$Ensemble[,"SomaSSR"]<quartil1_erro),opcoes$VarCenarios]
+cenarios_quartis = resultados_cenarioscalibracao$Ensemble[which(resultados_cenarioscalibracao$Ensemble[,"SumOfSquareResiduals"]<quartil1_erro),opcoes$VarCenarios]
 
-cenario_menor_erro = resultados_cenarioscalibracao$Ensemble[which(resultados_cenarioscalibracao$Ensemble[,"SomaSSR"]==min(resultados_cenarioscalibracao$Ensemble[,"SomaSSR"])),opcoes$VarCenarios]
+cenario_menor_erro = resultados_cenarioscalibracao$Ensemble[which(resultados_cenarioscalibracao$Ensemble[,"SumOfSquareResiduals"]==min(resultados_cenarioscalibracao$Ensemble[,"SumOfSquareResiduals"])),opcoes$VarCenarios]
 
 # Selecionando Pontos de Dados para Exibir no Gráfico
 time_points<-seq(from=1, to=length(SIM_TIME),by=1/STEP)
