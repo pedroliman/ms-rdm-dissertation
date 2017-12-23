@@ -29,6 +29,10 @@ source('funcoes.R', encoding = 'UTF-8')
 resultados_casos_plausiveis = simularRDM_e_escolher_estrategia(inputs = "./calibracao/params_calibracao_com_estrategia.xlsx",
                                                                sdmodel = sdmodel,
                                                                opcoes = opcoes)
+
+variavel_calibracao = "fIndustryOrderRate"
+nome_amigavel_variavel_calibracao = "Demanda Imp. 3D > 5000 USD"
+
 # Parâmetros Utilizados
 resultados_casos_plausiveis$Inputs$Parametros
 
@@ -44,29 +48,97 @@ head(resultados_casos_plausiveis$DadosSimulados, 20)
 
 cenarios_a_exibir_grafico = sample(1:opcoes$N,size = 30)
 
-plot_demanda_pre_calibracao = plot_linha_uma_variavel_ensemble(dados = subset(resultados_casos_plausiveis$DadosSimulados, Scenario %in% cenarios_a_exibir_grafico), 
-                                 variavel = "fIndustryOrderRate", 
-                                 nome_amigavel_variavel = "Demanda Impressoras Prof.") + geom_vline(xintercept = 2017)
 
-plot_demanda_pre_calibracao
+plot_demanda_pre_calibracao = plot_linha_uma_variavel_ensemble(dados = subset(resultados_casos_plausiveis$DadosSimulados, Scenario %in% cenarios_a_exibir_grafico), 
+                                 variavel = variavel_calibracao, 
+                                 nome_amigavel_variavel = nome_amigavel_variavel_calibracao) + geom_vline(xintercept = 2017)
+
+plot_demanda_pre_calibracao + annotate("text", x = 2017.2, y = max(resultados_casos_plausiveis$DadosSimulados$fIndustryOrderRate), label=c("Hoje"),hjust=0)
 
 # Comparar Simulações com Dados históricos de Demanda
-resultados_casos_plausiveis$Ensemble = adicionar_erro_ao_ensemble(results = resultados_cenarioscalibracao, variavel_calibracao = "fIndustryOrderRate", planilha_calibracao = "./calibracao/dados_calibracao.xlsx", opcoes = opcoes)
+resultados_casos_plausiveis$Ensemble = adicionar_erro_ao_ensemble(results = resultados_casos_plausiveis, variavel_calibracao = variavel_calibracao, planilha_calibracao = "./calibracao/dados_calibracao.xlsx", opcoes = opcoes)
+ensemble_com_erro = resultados_casos_plausiveis$Ensemble
+ensemble_com_erro = as.data.frame(ensemble_com_erro)
+
 
 # Exibir Comparação com Dados Históricos.
 
+variaveis_analise_fit = c("SumOfSquareResiduals", "MeanSquareError", "MeanAbsoluteError", "MeanAbsolutePercentError", "UM_ThielBiasDiffMeans", "US_ThielUnequalVariation", "UC_ThielUnequalCovariation")
+variaveis_exibir_ensemble = c("Scenario", variaveis_analise_fit)
+cenarios_a_exibir_tabela = sample(1:opcoes$N,size = 5)
 
-# Exibir caso com melhor Fit dentre os 10.000.
+t(resultados_casos_plausiveis$Ensemble[1:5,variaveis_exibir_ensemble])
+
+# Exibindo Ordem de Grandeza dos Erros Médios Absolutos
+
+histograma_erro_percentual = ggplot(ensemble_com_erro, aes(x=MeanAbsolutePercentError)) + 
+                                geom_histogram(aes(y=..density..), colour="black", fill="white")+
+                                geom_density(alpha=.2, fill="#FF6666") +
+                                xlab("Erro Médio Percentual") + 
+                                ylab("# Casos")
+
+
+histograma_erro_percentual
+
+histograma_erro_medio_quadrado = ggplot(ensemble_com_erro, aes(x=MeanSquareError)) + 
+  geom_histogram(aes(y=..density..), colour="black", fill="white")+
+  geom_density(alpha=.2, fill="#FF6666") +
+  xlab("Erro Médio Quadrado") + 
+  ylab("# Casos")
+
+histograma_erro_medio_quadrado
+
+
+# Exibir caso com melhor Fit
+cenario_menor_erro = ensemble_com_erro[which(ensemble_com_erro[,"MeanSquareError"]==min(ensemble_com_erro[,"MeanSquareError"])),opcoes$VarCenarios]
+
+# Exibir parâmetros do cenario com menor erro:
+
+t(ensemble_com_erro[which(ensemble_com_erro[,opcoes$VarCenarios]==cenario_menor_erro),])
+
+
+
+# Plotar Gráfico do Cenário com Menor Erro:
+# Selecionando Pontos de Dados para Exibir no Gráfico
+time_points<-seq(from=1, to=length(SIM_TIME),by=1/STEP)
+time_plot = seq(from=START, to=FINISH)
+resultados_exibir = dplyr::filter(resultados_casos_plausiveis$DadosSimulados, Scenario == cenario_menor_erro)[time_points,]
 
 # Exibir Demanda Global.
 
 # Exibir Share dos Players e outras variáveis.
+
+plot_cenario_base_e_historico <-ggplot()+
+  geom_point(data=dados_calibracao,size=1.5,aes(time,fIndustryOrderRate,colour="Data"))+
+  geom_line(data=resultados_exibir,size=1,aes(x=time,y=fIndustryOrderRate,colour="Model"))+
+  ylab("Demanda Anual - Impressoras 3D > 5k USD")+
+  xlab("Anos")+
+  scale_y_continuous(labels = comma)+
+  theme(legend.position="bottom")+
+  scale_colour_manual(name="",
+                      values=c(Data="red", 
+                               Model="blue"),
+                      labels=c("Dados",
+                               "Modelo"))
+plot_cenario_base_e_historico 
 
 # Definir um threshold de aceitabilidade do Erro quadrado médio.
 
 # Definir um threshold mínimo da demanda e máximo da demanda (anual).
 
 # Definir casos considerados plausíveis.
+
+# Como critério irei utilizar apenas os casos que erram em média menos do que 30 %.
+erro_percentual_medio_maximo = 1
+
+cenarios_considerados_plausiveis = ensemble_com_erro[which(ensemble_com_erro$MeanAbsolutePercentError < erro_percentual_medio_maximo),opcoes$VarCenarios]
+
+plot_cenarios_plausiveis = plot_linha_uma_variavel_ensemble(dados = resultados_casos_plausiveis$DadosSimulados[which(resultados_casos_plausiveis$DadosSimulados$Scenario %in% cenarios_considerados_plausiveis),]
+                                 ,variavel = variavel_calibracao, nome_amigavel_variavel = nome_amigavel_variavel_calibracao)
+
+plot_cenarios_plausiveis
+
+
 
 #### 4.2 Simulação dos Casos Contra Estratégias ####
 

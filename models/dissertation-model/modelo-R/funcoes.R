@@ -1549,6 +1549,7 @@ adicionar_erro_ao_ensemble = function(results, variavel_calibracao, planilha_cal
     UC_ThielUnequalCovariation = (1 / MeanSquareError) * (sd(modcost$residuals$mod, na.rm = TRUE) * sd(modcost$residuals$obs, na.rm = TRUE)) * (2 * (1 - cor(x = modcost$residuals$obs, y = modcost$residuals$mod)))
     
     stats_fit = c(SumOfSquareResiduals = SumOfSquareResiduals,
+                  MeanSquareError = MeanSquareError,
                   MeanAbsoluteError = MeanAbsoluteError,
                   MeanAbsolutePercentError = MeanAbsolutePercentError,
                   UM_ThielBiasDiffMeans = UM_ThielBiasDiffMeans,
@@ -1561,7 +1562,7 @@ adicionar_erro_ao_ensemble = function(results, variavel_calibracao, planilha_cal
   
   stats_fit = lapply(1:length(cenarios), obter_estatisticas_fit, dados_modelo = dados_modelo, dados_calibracao = dados_calibracao, variaveis_a_utilizar_dados = variaveis_a_utilizar_dados)
   stats_fit = do.call(rbind, stats_fit)
-  
+
   ensemble = cbind(results$Ensemble, stats_fit)
   
   ensemble
