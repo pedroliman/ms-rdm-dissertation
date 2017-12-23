@@ -1633,7 +1633,7 @@ plot_cash_uma_estrategia = function(dados, estrategia) {
     labs(color = "Estratégia")
 }
 
-plot_linha_uma_variavel_ensemble = function(dados, variavel, nome_amigavel_variavel, estrategia) {
+plot_linha_uma_variavel_ensemble_uma_estrategia = function(dados, variavel, nome_amigavel_variavel, estrategia) {
   
   gr2_dados = subset(dados, (Lever %in% estrategia))
   
@@ -1652,6 +1652,32 @@ plot_linha_uma_variavel_ensemble = function(dados, variavel, nome_amigavel_varia
     theme(legend.position="bottom")  +
     labs(color = "Estratégia")
 }
+
+plot_linha_uma_variavel_ensemble = function(dados, variavel, nome_amigavel_variavel, estrategia) {
+  
+  levers_no_ensemble = unique(dados$Lever)
+  
+  # Caso exista mais de uma estratégia, usar somente a primeira.
+  if(length(levers_no_ensemble) > 1) {
+    dados = subset(dados, Lever == 1)
+  }
+  
+  call_grafico = substitute(
+    expr = ggplot2::ggplot(dados, aes(x= time, y= Variavel, color=Scenario, group= Scenario 
+    )),
+    env = list(Variavel = as.name(variavel))
+  )
+  
+  p <- eval(call_grafico)
+  
+  p + 
+    geom_line() + 
+    ylab(nome_amigavel_variavel) + 
+    xlab("Tempo (anos)") + 
+    theme(legend.position="bottom")  +
+    labs(color = "Caso")
+}
+
 
 
 plot_linha_uma_variavel = function(dados, variavel, nome_amigavel_variavel) {

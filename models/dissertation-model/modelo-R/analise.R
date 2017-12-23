@@ -1,38 +1,60 @@
 # Carregando Funções Úteis
 source('funcoes.R', encoding = 'UTF-8')
-
-opcoes = list(
-  VarResposta = "sNPVProfit1",
-  VarCenarios = "Scenario",
-  VarEstrategias = "Lever",
-  N = 10,
-  VarTempo = "time",
-  VarCriterio = "RegretPercPercentil75",
-  SentidoCriterio = "min"
-)
-
 # Parâmetros para a Geração dos Gráficos
 plots_width = 6
 plots_heigh = 3
 
-
-# Passos Anteriores:
+USAR_DADOS_SALVOS = FALSE
 
 #### 4 Geração de Casos ####
 
 #### 4.1 Seleção de Casos Plausíveis ####
 
 # Gerar casos para simulação com base em estimativa inicial de parâmetros.
-
-# Definir parâmetros mínimos e máximos.
+opcoes = list(
+  VarResposta = "sNPVProfit1",
+  VarCenarios = "Scenario",
+  VarEstrategias = "Lever",
+  N = 30,
+  VarTempo = "time",
+  VarCriterio = "RegretPercPercentil75",
+  SentidoCriterio = "min"
+)
 
 # Rodar Simulação:
+START<-2007; FINISH <-2037; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
+BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
+source('funcoes.R', encoding = 'UTF-8')
+resultados_casos_plausiveis = simularRDM_e_escolher_estrategia(inputs = "./calibracao/params_calibracao_com_estrategia.xlsx",
+                                                               sdmodel = sdmodel,
+                                                               opcoes = opcoes)
+# Parâmetros Utilizados
+resultados_casos_plausiveis$Inputs$Parametros
 
 # Mostrar Ensemble.
 
+head(resultados_casos_plausiveis$Ensemble, 10)
 # Gerar 10.000 replicações e salvar.
 
+# Mostrar Dados Simulados
+head(resultados_casos_plausiveis$DadosSimulados, 20)
+
+# Mostrar Variável de Demanda em Todos os Cenários (Sem Filtro)
+
+cenarios_a_exibir_grafico = sample(1:opcoes$N,size = 30)
+
+plot_demanda_pre_calibracao = plot_linha_uma_variavel_ensemble(dados = subset(resultados_casos_plausiveis$DadosSimulados, Scenario %in% cenarios_a_exibir_grafico), 
+                                 variavel = "fIndustryOrderRate", 
+                                 nome_amigavel_variavel = "Demanda Impressoras Prof.") + geom_vline(xintercept = 2017)
+
+plot_demanda_pre_calibracao
+
 # Comparar Simulações com Dados históricos de Demanda
+resultados_casos_plausiveis$Ensemble = adicionar_erro_ao_ensemble(results = resultados_cenarioscalibracao, variavel_calibracao = "fIndustryOrderRate", planilha_calibracao = "./calibracao/dados_calibracao.xlsx", opcoes = opcoes)
+
+# Exibir Comparação com Dados Históricos.
+
 
 # Exibir caso com melhor Fit dentre os 10.000.
 
