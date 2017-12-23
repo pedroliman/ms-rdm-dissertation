@@ -22,7 +22,7 @@ opcoes = list(
 )
 
 # Rodar Simulação:
-START<-2007; FINISH <-2037; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
@@ -56,8 +56,7 @@ plot_demanda_pre_calibracao = plot_linha_uma_variavel_ensemble(dados = subset(re
 plot_demanda_pre_calibracao + annotate("text", x = 2017.2, y = max(resultados_casos_plausiveis$DadosSimulados$fIndustryOrderRate), label=c("Hoje"),hjust=0)
 
 # Comparar Simulações com Dados históricos de Demanda
-resultados_casos_plausiveis$Ensemble = adicionar_erro_ao_ensemble(results = resultados_casos_plausiveis, variavel_calibracao = variavel_calibracao, planilha_calibracao = "./calibracao/dados_calibracao.xlsx", opcoes = opcoes)
-ensemble_com_erro = resultados_casos_plausiveis$Ensemble
+ensemble_com_erro = adicionar_erro_ao_ensemble(results = resultados_casos_plausiveis, variavel_calibracao = variavel_calibracao, planilha_calibracao = "./calibracao/dados_calibracao.xlsx", opcoes = opcoes)
 ensemble_com_erro = as.data.frame(ensemble_com_erro)
 
 
@@ -67,7 +66,7 @@ variaveis_analise_fit = c("SumOfSquareResiduals", "MeanSquareError", "MeanAbsolu
 variaveis_exibir_ensemble = c("Scenario", variaveis_analise_fit)
 cenarios_a_exibir_tabela = sample(1:opcoes$N,size = 5)
 
-t(resultados_casos_plausiveis$Ensemble[1:5,variaveis_exibir_ensemble])
+t(ensemble_com_erro[1:5,variaveis_exibir_ensemble])
 
 # Exibindo Ordem de Grandeza dos Erros Médios Absolutos
 
@@ -128,35 +127,68 @@ plot_cenario_base_e_historico
 
 # Definir casos considerados plausíveis.
 
-# Como critério irei utilizar apenas os casos que erram em média menos do que 30 %.
-erro_percentual_medio_maximo = 1
+quartil25_ssr = quantile(ensemble_com_erro[,"SumOfSquareResiduals"], probs = c(0.5))
 
-cenarios_considerados_plausiveis = ensemble_com_erro[which(ensemble_com_erro$MeanAbsolutePercentError < erro_percentual_medio_maximo),opcoes$VarCenarios]
+cenarios_quartis = ensemble_com_erro[which(ensemble_com_erro[,"SumOfSquareResiduals"] <= quartil25_ssr),opcoes$VarCenarios]
+
+cenarios_considerados_plausiveis = cenarios_quartis
+
+# Como critério irei utilizar apenas os casos que erram em média menos do que 30 %.
+#erro_percentual_medio_maximo = 0.5
+
+dados_calibracao$Scenario = 1000
+
+# cenarios_considerados_plausiveis = ensemble_com_erro[which(ensemble_com_erro$MeanAbsolutePercentError < erro_percentual_medio_maximo),opcoes$VarCenarios]
 
 plot_cenarios_plausiveis = plot_linha_uma_variavel_ensemble(dados = resultados_casos_plausiveis$DadosSimulados[which(resultados_casos_plausiveis$DadosSimulados$Scenario %in% cenarios_considerados_plausiveis),]
-                                 ,variavel = variavel_calibracao, nome_amigavel_variavel = nome_amigavel_variavel_calibracao)
+                                 ,variavel = variavel_calibracao, nome_amigavel_variavel = nome_amigavel_variavel_calibracao) + geom_point(data=dados_calibracao, size = 1.5, aes(time, fIndustryOrderRate))
 
 plot_cenarios_plausiveis
-
-
 
 #### 4.2 Simulação dos Casos Contra Estratégias ####
 
 # Definir estratégias a serem simuladas.
+ensemble_a_simular = resultados_casos_plausiveis$Ensemble[which(resultados_casos_plausiveis$Ensemble[,opcoes$VarCenarios] %in% cenarios_considerados_plausiveis),]
+
+# Mostrando a Relação entre duas variáveis no Ensemble: Tamanho do Mercado e Força da difusão do Produto.
+ggplot(as.data.frame(ensemble_a_simular), aes(x=aReferencePopulation, y=aWOMStrength)) + geom_point()
 
 # Definir primeiro ano da simulação com dados reais.
-
+START<-2007; FINISH <-2027; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
+BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
+source('funcoes.R', encoding = 'UTF-8')
 # Definir período de simulação das estratégias (e forma de "mudar a estratégia" no primeira ano.)
 
 # Simular os Casos filtrados contra as estratégias.
+results = simularRDM_e_escolher_estrategia(inputs = "./rodada1/params_rodada1.xlsx",
+                                           sdmodel = sdmodel, 
+                                           opcoes = opcoes,
+                                           ensemble = ensemble_a_simular)
+
+# Gráficos
+
+plots_rodada1 = list(
+  plot_estrategia1 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = 1),
+  plot_1_e_candidata = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = c(1, results$EstrategiaCandidata)),
+  plot_preco_estrategia10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = c(3)),
+  plot_estrategia_candidata = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = results$EstrategiaCandidata),
+  plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1RegretPerc"),
+  plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1Regret"),
+  plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1")
+)
 
 # Exibir Resultados (séries temporais contra as estratégias).
+
+plots_rodada1$plot_estrategia_candidata
 
 # Exibir Resultados da Análise de Perda de Oportunidade.
 
 # Tabela da Análise de Perda de Oportunidade
+results$AnaliseRegret$ResumoEstrategias
 
 # Gráficos para a Seleção da Estratégia Candidata (boxplot)
+plots_rodada1$plot_whisker_lever_perc_regret
 
 #### 4.3 Análise de Vulnerabilidade ####
 

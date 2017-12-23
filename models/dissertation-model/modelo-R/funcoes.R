@@ -864,9 +864,9 @@ sdmodel = list(
 #' @param opcoes list com opções para a simulação e analise de Regret.
 #'
 #' @return list com resultados da simulacao e uma estratégia candidata.
-simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes) {
+simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sdmodel, opcoes = opcoes, ensemble) {
   
-  output_simulacao = simular_RDM(arquivo_de_inputs=inputs ,sdmodel = sdmodel, n = opcoes$N, opcoes = opcoes)
+  output_simulacao = simular_RDM(arquivo_de_inputs=inputs ,sdmodel = sdmodel, n = opcoes$N, opcoes = opcoes, ensemble = ensemble)
   
   ## Simular
   dados_simulacao = output_simulacao$DadosSimulacao
@@ -1201,7 +1201,7 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = 
 #' @param n Número de cenarios a gerar (numeric)
 #'
 #' @return data.frame com resultados da simulação
-simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = opcoes$N, opcoes = opcoes){
+simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = opcoes$N, opcoes = opcoes, ensemble){
   t_inicio = Sys.time()
   message("Bem vindo ao SIMULADOR RDM! Pedro Lima.")
   message(paste("Iniciando Simulacao RDM: ", t_inicio))
@@ -1210,7 +1210,12 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = opcoes$N, o
   inputs = carregar_inputs(arquivo_de_inputs = arquivo_de_inputs)
   
   # Obter Ensemble LHS (Sem Variáveis das Estratégias)
-  ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = n, opcoes = opcoes)
+  
+  # Se um ensemble não foi informado, gerar um ensemble.
+  if(missing(ensemble)){
+    # Usar o primeiro lever que eu achar
+    ensemble = obter_lhs_ensemble(params = inputs$Parametros, n = n, opcoes = opcoes)
+  }
   
   # Ampliar Ensemble com as variáveis das Estratégias
   novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
