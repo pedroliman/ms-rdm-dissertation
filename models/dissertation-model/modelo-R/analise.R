@@ -16,52 +16,73 @@ plots_width = 6
 plots_heigh = 3
 
 
-#### Replicando Sterman ####
-## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
-START<-0; FINISH<-40; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
-VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.00001; BROWSE_ON_DIFF = FALSE
+# Passos Anteriores:
 
-## Carregando Modelo
-source('modelo-calibracao.R', encoding = 'UTF-8')
+#### 4 Geração de Casos ####
 
-# Rodando a Simulação com os Parâmetros do Sterman, rodando uma vez apenas.
-arquivo_parametros = "./analise-sterman/params_sterman.xlsx"
+#### 4.1 Seleção de Casos Plausíveis ####
 
-parametros_completos = readxl::read_xlsx(arquivo_parametros, sheet = "params")
+# Gerar casos para simulação com base em estimativa inicial de parâmetros.
 
-parametros_sterman = t(parametros_completos[,"Sterman"])[1,]
+# Definir parâmetros mínimos e máximos.
 
-names(parametros_sterman) = as.matrix(parametros_completos[,1])
+# Rodar Simulação:
 
-# Mudando o tempo de simulação para Simular o Sterman
-resultados_sterman = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
+# Mostrar Ensemble.
 
-# Gerando Gráficos
-sterman_plots = list(
-  grafico_npv_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sNPVProfit1", nome_amigavel_variavel = "Valor Presente Liquido"),
-  
-  grafico_preco_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sPrice1", nome_amigavel_variavel = "Preço Player 1"),
-  
-  grafico_demanda_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "fIndustryOrderRate", nome_amigavel_variavel = "Demanda Anual Total"),
-  
-  grafico_vpl_preco = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "sPrice1", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Preço"),
-  
-  grafico_vpl_demanda = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "fIndustryOrderRate", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Demanda Global")
-  
-)
+# Gerar 10.000 replicações e salvar.
 
-# Salvando Resultados do Sterman e Plots (para eventual verificação posterior):
-save(sdmodel, parametros_sterman, resultados_sterman, sterman_plots, file = "./analise-sterman/resultados_sterman.Rdata")
-# Para carregar depois, basta rodar:
-# load(file = "./analise-sterman/resultados_sterman.Rdata")
+# Comparar Simulações com Dados históricos de Demanda
 
-# Salvando todos os Gráficos do Sterman:
-mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=sterman_plots, width = plots_width, height = plots_heigh)
+# Exibir caso com melhor Fit dentre os 10.000.
 
+# Exibir Demanda Global.
 
-## Análise dos dados inforrmados
+# Exibir Share dos Players e outras variáveis.
 
+# Definir um threshold de aceitabilidade do Erro quadrado médio.
 
+# Definir um threshold mínimo da demanda e máximo da demanda (anual).
+
+# Definir casos considerados plausíveis.
+
+#### 4.2 Simulação dos Casos Contra Estratégias ####
+
+# Definir estratégias a serem simuladas.
+
+# Definir primeiro ano da simulação com dados reais.
+
+# Definir período de simulação das estratégias (e forma de "mudar a estratégia" no primeira ano.)
+
+# Simular os Casos filtrados contra as estratégias.
+
+# Exibir Resultados (séries temporais contra as estratégias).
+
+# Exibir Resultados da Análise de Perda de Oportunidade.
+
+# Tabela da Análise de Perda de Oportunidade
+
+# Gráficos para a Seleção da Estratégia Candidata (boxplot)
+
+#### 4.3 Análise de Vulnerabilidade ####
+
+# Definição de um Threshold de Regret.
+
+# Definir Variáveis com este Threshold.
+
+# Análises de Seleção de Variáveis (Feature Ranking).
+
+# Análise Exploratória - Landscape de Futuros Plausíveis.
+
+# Gráfico 3D e 2D.
+
+# Análise do PRIM.
+
+# Descoberta de Cenários.
+
+# Descrição dos Cenários Desafiadores para a Estratégia.
+
+#### 4.4 Análise de Tradeoffs ####
 
 #### Rodando um Cenário Base ####
 ## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
@@ -497,3 +518,47 @@ grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel =
 
 # Armazenando os Resultados
 # write.csv(dados_simulacao, file = "dados_simulados_difusao.csv", row.names = FALSE)
+
+
+#### Replicando Sterman ####
+## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
+START<-0; FINISH<-40; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.00001; BROWSE_ON_DIFF = FALSE
+
+## Carregando Modelo
+source('modelo-calibracao.R', encoding = 'UTF-8')
+
+# Rodando a Simulação com os Parâmetros do Sterman, rodando uma vez apenas.
+arquivo_parametros = "./analise-sterman/params_sterman.xlsx"
+
+parametros_completos = readxl::read_xlsx(arquivo_parametros, sheet = "params")
+
+parametros_sterman = t(parametros_completos[,"Sterman"])[1,]
+
+names(parametros_sterman) = as.matrix(parametros_completos[,1])
+
+# Mudando o tempo de simulação para Simular o Sterman
+resultados_sterman = solve_modelo_dissertacao(parametros = parametros_sterman, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
+
+# Gerando Gráficos
+sterman_plots = list(
+  grafico_npv_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sNPVProfit1", nome_amigavel_variavel = "Valor Presente Liquido"),
+  
+  grafico_preco_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "sPrice1", nome_amigavel_variavel = "Preço Player 1"),
+  
+  grafico_demanda_sterman = plot_linha_uma_variavel(dados = resultados_sterman, variavel = "fIndustryOrderRate", nome_amigavel_variavel = "Demanda Anual Total"),
+  
+  grafico_vpl_preco = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "sPrice1", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Preço"),
+  
+  grafico_vpl_demanda = plot_linha_duas_variaveis(dados = resultados_sterman, variavel1 = "sNPVProfit1", variavel2 = "fIndustryOrderRate", nome_amigavel_variavel1 = "VPL", nome_amigavel_variavel2 = "Demanda Global")
+  
+)
+
+# Salvando Resultados do Sterman e Plots (para eventual verificação posterior):
+save(sdmodel, parametros_sterman, resultados_sterman, sterman_plots, file = "./analise-sterman/resultados_sterman.Rdata")
+# Para carregar depois, basta rodar:
+# load(file = "./analise-sterman/resultados_sterman.Rdata")
+
+# Salvando todos os Gráficos do Sterman:
+mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=sterman_plots, width = plots_width, height = plots_heigh)
+

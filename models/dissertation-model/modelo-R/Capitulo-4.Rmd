@@ -268,7 +268,6 @@ Destaca-se que os componentes (a) e (b) podem ser modificados conforme o caso a 
 
 ![Análise de Perda de Oportunidade das Estratégias](images/graficos-analise-regret.png)
 
-
 # Modelo da Competição na Indústria de Impressoras 3D
 
 Esta seção descreve o modelo computacional empregado neste trabalho. Como f na seção 2.X.X, este trabalho utilizou como ponto de partida o modelo proposto por Sterman (XX), visto que este possui uma série de características aplicáveis à indústria da manufatura aditiva. Inicialmente, a estrutura geral do modelo é delineada, e o papel e funcionamento de cada um de seus módulos é sintetizado. Em seguida, a formulação matemática do modelo é justificada, e as modificações realizadas em relação ao modelo original são explicitadas.
@@ -679,6 +678,13 @@ modelo
 ```
 
 ### Rotinas para a Simulação RDM
+
+
+```{r}
+parse("funcoes.R")
+```
+
+
 
 - **Função Simular RDM e Escolher Estrategia**: Simula cenários do RDM, realiza a análise de perda de oportunidade e define a estratégia candidata utilizando um critério pré-determinado:
 
