@@ -15,7 +15,7 @@ opcoes = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 30,
+  N = 300,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min"
@@ -194,9 +194,98 @@ plots_rodada1$plot_whisker_lever_perc_regret
 
 # Definição de um Threshold de Regret.
 
-# Definir Variáveis com este Threshold.
+estrategia_candidata = results$EstrategiaCandidata
 
+# Definir Variáveis com este Threshold.
+threshold_regret_percentual = 0.05
+variavel_resposta = "sNPVProfit1RegretPerc"
 # Análises de Seleção de Variáveis (Feature Ranking).
+
+# Adicionar Flag do Aceitável
+results$AnaliseRegret$Dados$AcimaThreshold = results$AnaliseRegret$Dados[,variavel_resposta] > threshold_regret_percentual
+
+# Obter Ensemble com Dados Simulados:
+ensemble_e_resultados = dplyr::inner_join(as.data.frame(results$Ensemble), results$AnaliseRegret$Dados, by = "Scenario")
+
+ensemble_e_resultados = ensemble_e_resultados[which(ensemble_e_resultados$Lever == estrategia_candidata),]
+
+# Retirar NAs do Ensemble
+ensemble_e_resultados = na.omit(ensemble_e_resultados)
+
+#variaveis_incertas = colnames(results$Ensemble)
+
+#variaveis_incertas = variaveis_incertas[which(variaveis_incertas %in% names(ensemble_e_resultados))]
+
+parametros_completos = readxl::read_xlsx("./calibracao/params_calibracao_com_estrategia.xlsx", sheet = "params")
+
+variaveis_incertas = parametros_completos$Variavel[which(parametros_completos$Tipo=="Incerto")]
+
+
+
+# Rodar Algoritmos para Priorização de Variáveis de Descoberta de Cenários
+library(party)
+cf1 <- cforest(ensemble_e_resultados[,variavel_resposta] ~ . , data= ensemble_e_resultados[,variaveis_incertas], control=cforest_unbiased(mtry=2,ntree=50)) # fit the random forest
+varimp(cf1) # get variable importance, based on mean decrease in accuracy#=>                 Month          Day_of_month           Day_of_week #=>           0.689167598           0.115937291          -0.004641633 #=>       pressure_height            Wind_speed              Humidity #=>           5.519633507           0.125868789           3.474611356 #=>  Temperature_Sandburg   Temperature_ElMonte Inversion_base_height #=>          12.878794481          14.175901506           4.276103121 #=>     Pressure_gradient Inversion_temperature            Visibility #=>           3.234732558          11.738969777           2.283430842
+varimp(cf1, conditional=TRUE)  # conditional=True, adjusts for correlations between predictors#=>                 Month          Day_of_month           Day_of_week #=>            0.08899435            0.19311805            0.02526252 #=>       pressure_height            Wind_speed              Humidity #=>            0.35458493           -0.19089686            0.14617239 #=>  Temperature_Sandburg   Temperature_ElMonte Inversion_base_height #=>            0.74640367            1.19786882            0.69662788 #=>     Pressure_gradient Inversion_temperature            Visibility #=>            0.58295887            0.65507322            0.05380003
+varimpAUC(cf1)  # more robust towards class imbalance.#=>                 Month          Day_of_month           Day_of_week #=>            1.12821259           -0.04079495            0.07800158 #=>       pressure_height            Wind_speed              Humidity #=>            5.85160593            0.11250973            3.32289714 #=>  Temperature_Sandburg   Temperature_ElMonte Inversion_base_height #=>           11.97425093           13.66085973            3.70572939 #=>     Pressure_gradient Inversion_temperature            Visibility #=>            3.05169171           11.48762432            2.04145930
+
+
+library(relaimpo)
+lmMod <- lm(ensemble_e_resultados[,variavel_resposta] ~ . , data = ensemble_e_resultados[,variaveis_incertas])  # fit lm() model
+relImportance <- calc.relimp(lmMod, type = "lmg", rela = TRUE)
+calc.relimp(lmMod, rela = TRUE)
+# calculate relative importance scaled to 100
+sort(relImportance$lmg, decreasing=TRUE)  # rel
+
+# por algum motivo o discount Rate não está lá dentro:
+
+library(breakDown)
+br = broken(lmMod, new_observation = ensemble_e_resultados[18,])
+plot(br)
+
+
+### O resultado desta análise fez um pouco de sentido (e não é óbvio).
+library(earth)
+marsModel <- earth(ensemble_e_resultados[,variavel_resposta] ~ ., data=ensemble_e_resultados[,variaveis_incertas]) # build model
+ev <- evimp(marsModel) # estimate variable importance#=>                       nsubsets   gcv    rss#=> Temperature_ElMonte         29 100.0  100.0#=> Pressure_gradient           28  42.5   48.4#=> pressure_height             26  30.1   38.1#=> Month9                      25  26.1   34.8#=> Month5                      24  21.9   31.7#=> Month4                      23  19.9   30.0#=> Month3                      22  17.6   28.3#=> Inversion_base_height       21  14.4   26.1#=> Month11                     19  12.3   24.1#=> Visibility                  18  11.4   23.2#=> Day_of_month23              14   8.9   19.8#=> Humidity                    13   7.4   18.7#=> Month6                      11   5.1   16.6#=> Temperature_Sandburg         9   7.0   15.6#=> Wind_speed                   7   5.1   13.4#=> Month12                      6   4.2   12.3#=> Day_of_month9                3   4.6    9.1#=> Day_of_week4                 2  -3.9    5.9#=> Day_of_month7-unused         1  -4.7    2.8
+plot(ev)
+
+
+# Stepwise (Também faz sentido)
+base.mod <- lm(ensemble_e_resultados[,variavel_resposta] ~ 1 , data= ensemble_e_resultados[,variaveis_incertas])  # base intercept only model
+all.mod <- lm(ensemble_e_resultados[,variavel_resposta] ~ . , data= ensemble_e_resultados[,variaveis_incertas]) # full model with all predictors
+stepMod <- step(base.mod, scope = list(lower = base.mod, upper = all.mod), direction = "both", trace = 0, steps = 1000)  # perform step-wise algorithm
+shortlistedVars <- names(unlist(stepMod[[1]])) # get the shortlisted variable.
+shortlistedVars <- shortlistedVars[!shortlistedVars %in% "(Intercept)"]  # remove intercept 
+print(shortlistedVars)
+
+# Rodando o Algoritmo Boruta
+library(Boruta)
+# Decide if a variable is important or not using Boruta
+boruta_output <- Boruta(ensemble_e_resultados[,variavel_resposta] ~ ., data=na.omit(ensemble_e_resultados[,variaveis_incertas]), doTrace=2)  # perform Boruta search# Confirmed 10 attributes: Humidity, Inversion_base_height, Inversion_temperature, Month, Pressure_gradient and 5 more.# Rejected 3 attributes: Day_of_month, Day_of_week, Wind_speed.
+boruta_signif <- names(boruta_output$finalDecision[boruta_output$finalDecision %in% c("Confirmed", "Tentative")])  # collect Confirmed and Tentative variables
+print(boruta_signif)  # significant variables#=> [1] "Month"                 "ozone_reading"         "pressure_height"      #=> [4] "Humidity"              "Temperature_Sandburg"  "Temperature_ElMonte"  #=> [7] "Inversion_base_height" "Pressure_gradient"     "Inversion_temperature"#=> [10] "Visibility"
+plot(boruta_output, cex.axis=.7, las=2, xlab="", main="Variable Importance")  # plot variable importance
+
+variavel_1 = boruta_signif[1]
+variavel_2 = boruta_signif[2]
+
+
+landscape_estrategia1 = plot_landscape_futuros_plausiveis(
+  results, estrategia = estrategia_candidata, 
+  variavelresp = variavel_resposta,
+  nomeamigavel_variavelresp = "VPL",
+  variavel1  = variavel_1,
+  n_variavel1 = "Sensibilidade ao Preço",
+  variavel2 = variavel_2,
+  n_variavel2 = "Utilização da Capacidade"
+)
+
+
+# Não consegui ainda reconhecer nenhum padrão
+ggplot(as.data.frame(ensemble_e_resultados), aes(x=aSensOfAttractToAvailability, y=aSensOfAttractToPrice, color = AcimaThreshold))  + geom_point() + scale_color_grey() + theme_light()
+
+ggplot(as.data.frame(ensemble_e_resultados), aes(x=aSensOfAttractToAvailability, y=aSensOfAttractToPrice, color = sNPVProfit1))  + geom_point()
 
 # Análise Exploratória - Landscape de Futuros Plausíveis.
 
@@ -430,7 +519,7 @@ ensemble_e_resultados$sNPVProfit1Regret
 
 
 library(party)
-cf1 <- cforest(ensemble_e_resultados$sNPVProfit1Regret ~ . , data= ensemble_e_resultados[,variaveis_incertas], control=cforest_unbiased(mtry=2,ntree=50)) # fit the random forest
+cf1 <- cforest(ensemble_e_resultados[,variavel_resposta] ~ . , data= ensemble_e_resultados[,variaveis_incertas], control=cforest_unbiased(mtry=2,ntree=50)) # fit the random forest
 varimp(cf1) # get variable importance, based on mean decrease in accuracy#=>                 Month          Day_of_month           Day_of_week #=>           0.689167598           0.115937291          -0.004641633 #=>       pressure_height            Wind_speed              Humidity #=>           5.519633507           0.125868789           3.474611356 #=>  Temperature_Sandburg   Temperature_ElMonte Inversion_base_height #=>          12.878794481          14.175901506           4.276103121 #=>     Pressure_gradient Inversion_temperature            Visibility #=>           3.234732558          11.738969777           2.283430842
 varimp(cf1, conditional=TRUE)  # conditional=True, adjusts for correlations between predictors#=>                 Month          Day_of_month           Day_of_week #=>            0.08899435            0.19311805            0.02526252 #=>       pressure_height            Wind_speed              Humidity #=>            0.35458493           -0.19089686            0.14617239 #=>  Temperature_Sandburg   Temperature_ElMonte Inversion_base_height #=>            0.74640367            1.19786882            0.69662788 #=>     Pressure_gradient Inversion_temperature            Visibility #=>            0.58295887            0.65507322            0.05380003
 varimpAUC(cf1)  # more robust towards class imbalance.#=>                 Month          Day_of_month           Day_of_week #=>            1.12821259           -0.04079495            0.07800158 #=>       pressure_height            Wind_speed              Humidity #=>            5.85160593            0.11250973            3.32289714 #=>  Temperature_Sandburg   Temperature_ElMonte Inversion_base_height #=>           11.97425093           13.66085973            3.70572939 #=>     Pressure_gradient Inversion_temperature            Visibility #=>            3.05169171           11.48762432            2.04145930
