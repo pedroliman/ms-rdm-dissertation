@@ -46,7 +46,7 @@ SIM_TIME
 solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   
   # Número de Players no modelo
-  N_PLAYERS <<- 2
+  N_PLAYERS <<- 4
   
   # All the stocks are initialised here...
   
@@ -57,8 +57,26 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
     aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
   )
   
+  ordem_vetores_players = order(names(parametros[grep("aSwitchForCapacityStrategy", x = names(parametros))]))
+  
   ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
-  auxs    <- list(aDiscountRate = unname(parametros["aDiscountRate"])
+  auxs    <- list(
+                  # Variáveis informadas de modo Independente por Player:
+                  # Estratégia de Capacidade:
+                  # A ordem dos números a seguir obedece a ordem na planilha e a ordem na geração do ensemble.
+                  aSwitchForCapacityStrategy = unname(round(parametros[grep("aSwitchForCapacityStrategy", x = names(parametros))][c(4,1,2,3)], 0))
+                  ,aDesiredMarketShare = unname(parametros[grep("aDesiredMarketShare", x = names(parametros))][c(4,1,2,3)])
+                  # Variáveis de Decisão - Existem para o player analisado e para os outros Players:
+                  ,aOrcamentoPeD =  unname(parametros[grep("aOrcamentoPeD", x = names(parametros))][c(4,1,2,3)])
+                  ,aPercPeDAberto =  unname(parametros[grep("aPercPeDAberto", x = names(parametros))][c(4,1,2,3)])
+                  # A Initial Price
+                  ,aInitialPrice = unname(parametros[grep("aInitialPrice", x = names(parametros))])
+                  ,aPatentShare = unname(parametros[grep("aPatentShare", x = names(parametros))])
+                  ,aInitialSharePlayers = unname(parametros[grep("aInitialSharePlayers", x = names(parametros))])
+                  
+                  
+                  # Outras Variáveis.
+                  ,aDiscountRate = unname(parametros["aDiscountRate"])
                   ,aNormalDeliveryDelay = rep(unname(parametros["aNormalDeliveryDelay"]), times = N_PLAYERS)
                   ,aSwitchForCapacity = unname(parametros["aSwitchForCapacity"])
                   # Vamos testar apenas um parâmetro por enquanto
@@ -84,20 +102,15 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aLCStrength = rep(unname(parametros["aLCStrength"]), times = N_PLAYERS)
                   ,aInitialProductionExperience = rep(unname(parametros["aInitialProductionExperience"]), times = N_PLAYERS)
                   ,aRatioOfFixedToVarCost = rep(unname(parametros["aRatioOfFixedToVarCost"]), times = N_PLAYERS)
-                  ,aInitialPrice = rep(unname(parametros["aInitialPrice"]), times = N_PLAYERS)
                   ,aNormalProfitMargin = rep(unname(parametros["aNormalProfitMargin"]), times = N_PLAYERS)
                   ,aNormalCapacityUtilization = rep(unname(parametros["aNormalCapacityUtilization"]), times = N_PLAYERS)
                   #Target Capacity Sector
                   ,aMinimumEfficientScale = rep(unname(parametros["aMinimumEfficientScale"]), times = N_PLAYERS) # Original 100000
                   
                   # Esta variavel é desdobrada por player.
-                  ,aDesiredMarketShare = c(unname(parametros["aDesiredMarketShare1"]), rep(unname(parametros["aDesiredMarketShare2"]), times = N_PLAYERS - 1) )      #rep(0.5, times = N_PLAYERS)
-                  
-                  # Esta variavel deve ser arredondada, sempre.
-                  ,aSwitchForCapacityStrategy = round(c(unname(parametros["aSwitchForCapacityStrategy1"]), rep(unname(parametros["aSwitchForCapacityStrategy2"]),times = N_PLAYERS - 1)), 0)
-                  
                   ,aWeightOnSupplyLine= rep(unname(parametros["aWeightOnSupplyLine"]), times = N_PLAYERS)
                   ,aTimeToPerceiveCompTargetCapacity = rep(unname(parametros["aTimeToPerceiveCompTargetCapacity"]), times = N_PLAYERS)
+                  
                   # Price Sector
                   ,aPriceAdjustmentTime = unname(parametros["aPriceAdjustmentTime"])
                   ,aSensOfPriceToCosts = rep(unname(parametros["aSensOfPriceToCosts"]), times = N_PLAYERS)
@@ -105,12 +118,10 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aSensOfPriceToShare = rep(unname(parametros["aSensOfPriceToShare"]), times = N_PLAYERS)
                   # Capacity Sector
                   ,aSwitchForPerfectCapacity = unname(parametros["aSwitchForPerfectCapacity"])
-                  # A Initial Price
-                  ,aInitialPrice = rep(unname(parametros["aInitialPrice"]), times = N_PLAYERS)
                   
                   # Pesquisa e Desenvolvimento
                   ,aPeDLigado = unname(parametros["aPeDLigado"])
-                  ,aOrcamentoPeD = rep(unname(parametros["aOrcamentoPeD"]), times = N_PLAYERS)
+                  
                   ,aTempoMedioRealizacaoPeD = unname(parametros["aTempoMedioRealizacaoPeD"])
                   ,aCustoMedioPatente = unname(parametros["aCustoMedioPatente"])
                   ,aTempoMedioAvaliacao = unname(parametros["aTempoMedioAvaliacao"])
@@ -128,10 +139,7 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aInitialPatentesEmpresa = rep(unname(parametros["aInitialPatentesEmpresa"]), times = N_PLAYERS)
                   ,aInitialsPatentesEmDominioPublicoUteis = unname(parametros["aInitialsPatentesEmDominioPublicoUteis"])
                   ,aInitialsInvestimentoPeDDepreciar = rep(unname(parametros["aInitialsInvestimentoPeDDepreciar"]), times = N_PLAYERS)
-                  ,aPatentShare = rep(unname(parametros["aPatentShare"]), times = N_PLAYERS)
                   
-                  
-                  ,aInitialSharePlayers = rep(unname(parametros["aInitialSharePlayers"]), times = N_PLAYERS)
                   ,aInitialReorderShare =unname(parametros["aInitialReorderShare"])
                   ,aTotalInitialInstalledBase = unname(parametros["aTotalInitialInstalledBase"])
                   ,aInitialIndustryShipments = unname(parametros["aInitialIndustryShipments"])
@@ -247,7 +255,6 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     
     ##### VETORIZANDO ESTOQUES #####
-    
     #Estoques Vetorizados = substituindo estoques pela forma vetorizada (pra que seja possivel formular equações de forma mais simples).
     # Esta implementação tem por objetivo não gerar a necessidade de referenciar os estoque spelo seu nome único
     sNPVProfit = stocks[grep("sNPVProfit", x = names(stocks))]
@@ -537,13 +544,15 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     fInvestimentoPeDRealizado = sInvestimentoNaoRealizadoPeD / aTempoMedioRealizacaoPeD
     
-    fPatentesSolicitadas = fInvestimentoPeDRealizado / aCustoMedioPatente
+    fPatentesSolicitadas = ((1-aPercPeDAberto) * fInvestimentoPeDRealizado) / aCustoMedioPatente
     
     fPatentesRejeitadas = (sPatentesRequisitadas/aTempoMedioAvaliacao) * aTaxaRejeicao
     
     fPatentesConcedidas = (sPatentesRequisitadas/aTempoMedioAvaliacao) * (1-aTaxaRejeicao)
     
-    fPatentesVencidas = sPatentesEmpresa / aTempoVencimentoPatentes
+    # Estou somando as Patentes com investimenti (direto em domínio publico na equação abaixo, sem passar por outros estoques).
+    # Eventualmente é possível modelar este comportamento passando por outros estoques.
+    fPatentesVencidas = sPatentesEmpresa / aTempoVencimentoPatentes + ((aPercPeDAberto * fInvestimentoPeDRealizado) / aCustoMedioPatente)
     
     fPatentesUtilidadeExpirada = sPatentesEmDominioPublicoUteis / aTempodeInutilizacaoPatente
     
@@ -982,9 +991,14 @@ obter_lhs_ensemble = function (params, n=100, opcoes = opcoes) {
 #' @param levers conjunto de estratégias a simular
 #'
 #' @return dataframe com a combinação de todas as estratégias em todos os cenários.
-ampliar_ensemble_com_levers = function(ensemble, levers) {
+ampliar_ensemble_com_levers = function(ensemble, levers, opcoes) {
   
-  variaveis_adicionais = names(dplyr::select(levers, -LeverCode))
+  variaveis_adicionais = names(dplyr::select(levers, -LeverCode, -CasoBase))
+  
+  # Filtrar cenários a simular caso seja necessário apenas simular o Caso Base:
+  if(opcoes$SimularApenasCasoBase){
+    levers = subset(levers, as.logical(CasoBase))
+  }
   
   linhas_ensemble_incial = nrow(ensemble)
   novo_ensemble = matrix(0, nrow = nrow(ensemble)*length(levers$Lever), ncol = ncol(ensemble) + length(variaveis_adicionais))
@@ -1025,8 +1039,12 @@ ampliar_ensemble_com_levers = function(ensemble, levers) {
 #' @export
 #'
 #' @examples
-simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = TRUE, modo_paralelo = "FORK", opcoes = opcoes) {
+simular = function(simtime, modelo, ensemble, nomes_variaveis_final, opcoes = opcoes) {
   message("01. funcoes.R/simular: Iniciando Simulação.")
+  
+  paralelo = opcoes$Paralelo
+  
+  modo_paralelo = opcoes$ModoParalelo
   
   # Rodando a Simulação (uma vez), com a primeira linha do ensemble - Ajuda a saber se funciona.
   # Esta função apenas funciona com o estoque inicial fixo, será necessário implementar de outra forma depois.
@@ -1110,7 +1128,7 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, paralelo = 
       getDoParWorkers()
       
       # GErando resultado
-      browser()
+      # browser()
       dados_simulacao <- foreach(i = 1:nrow(ensemble)) %dopar% {
         # This code is executed, in parallel, across your cluster.
         solve_modelo()
@@ -1218,7 +1236,7 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = opcoes$N, o
   }
   
   # Ampliar Ensemble com as variáveis das Estratégias
-  novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers)
+  novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers, opcoes = opcoes)
   
   # Rodando a Simulação
   nestrategias = length(inputs$Levers$Lever)
@@ -1496,15 +1514,15 @@ completeFun <- function(data, desiredCols) {
 
 getCost<-function(p, modelo, dados_calibracao){
   
-  browser()
+  #browser()
   output_modelo = solve_modelo_dissertacao(parametros = p, modelo = modelo, simtime = SIM_TIME)
   #output_modelo <- solve_modelo_dissertacao(parametros, modelo, simtime = SIM_TIME)
   #http://www.inside-r.org/packages/cran/FME/docs/modCost
-  browser()
+  #browser()
   
   cost <- modCost(obs=dados_calibracao, model=output_modelo)
   
-  browser()
+  #browser()
   
   return(cost)
   

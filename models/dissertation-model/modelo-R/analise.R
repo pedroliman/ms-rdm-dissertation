@@ -15,18 +15,23 @@ opcoes = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 300,
+  N = 50,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
-  SentidoCriterio = "min"
+  SentidoCriterio = "min",
+  Paralelo = TRUE,
+  ModoParalelo = "FORK",
+  SimularApenasCasoBase = FALSE
 )
 
+planilha_inputs = "./calibracao/params_calibracao_com_estrategia.xlsx"
+
 # Rodar Simulação:
-START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+START<-2007; FINISH <-2027; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
-resultados_casos_plausiveis = simularRDM_e_escolher_estrategia(inputs = "./calibracao/params_calibracao_com_estrategia.xlsx",
+resultados_casos_plausiveis = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                                                sdmodel = sdmodel,
                                                                opcoes = opcoes)
 
@@ -161,7 +166,7 @@ source('funcoes.R', encoding = 'UTF-8')
 # Definir período de simulação das estratégias (e forma de "mudar a estratégia" no primeira ano.)
 
 # Simular os Casos filtrados contra as estratégias.
-results = simularRDM_e_escolher_estrategia(inputs = "./rodada1/params_rodada1.xlsx",
+results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                            sdmodel = sdmodel, 
                                            opcoes = opcoes,
                                            ensemble = ensemble_a_simular)
@@ -181,6 +186,14 @@ plots_rodada1 = list(
 # Exibir Resultados (séries temporais contra as estratégias).
 
 plots_rodada1$plot_estrategia_candidata
+
+plots_rodada1$plot_preco_estrategia10
+
+plots_rodada1$plot_estrategia_candidata
+
+plots_rodada1$plot_whisker_lever_regret
+
+plots_rodada1$plot_whisker_lever_profit
 
 # Exibir Resultados da Análise de Perda de Oportunidade.
 
@@ -216,7 +229,7 @@ ensemble_e_resultados = na.omit(ensemble_e_resultados)
 
 #variaveis_incertas = variaveis_incertas[which(variaveis_incertas %in% names(ensemble_e_resultados))]
 
-parametros_completos = readxl::read_xlsx("./calibracao/params_calibracao_com_estrategia.xlsx", sheet = "params")
+parametros_completos = readxl::read_xlsx(planilha_inputs, sheet = "params")
 
 variaveis_incertas = parametros_completos$Variavel[which(parametros_completos$Tipo=="Incerto")]
 
@@ -354,7 +367,7 @@ START<-2007; FINISH<-2037; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.01; BROWSE_ON_DIFF = TRUE
 VERIFICAR_GLOBAL = FALSE;
 
-resultados_cenarioscalibracao = simularRDM_e_escolher_estrategia(inputs = "./calibracao/params_calibracao_com_estrategia.xlsx", sdmodel = sdmodel, opcoes = opcoes)
+resultados_cenarioscalibracao = simularRDM_e_escolher_estrategia(inputs = planilha_inputs, sdmodel = sdmodel, opcoes = opcoes)
 
 resultados_cenarioscalibracao$Ensemble = adicionar_erro_ao_ensemble(results = resultados_cenarioscalibracao, variavel_calibracao = "fIndustryOrderRate", planilha_calibracao = "./calibracao/dados_calibracao.xlsx", opcoes = opcoes)
 

@@ -12,4 +12,16 @@ TODO para finalizar a Dissertação:
 -- Geração de Casos (Rodada 2).
 -- Descoberta de Cenários - Análise de Vulnerabilidades com o PRIM (Rodada 2).
 
+
+Hipóteses / ideias a testar:
+
+-> Estratégia Agressiva Versus Conservadora:
+ -> Como nenhum dos cenários que eu filtrei apresentou uma queda do nível de demanda a partir do ano seguinte, a estratégia agressiva ficou dominante.
+
+# Alterações a Realizar no Modelo a partir de 24/12:
+- 
+
+
+
+
 - Conclusões.
