@@ -15,13 +15,14 @@ opcoes = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 40,
+  N = 100,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min",
   Paralelo = TRUE,
   ModoParalelo = "FORK",
-  SimularApenasCasoBase = TRUE
+  SimularApenasCasoBase = TRUE,
+  FullFactorialDesign = TRUE
 )
 
 planilha_inputs = "./calibracao/params_calibracao_com_estrategia.xlsx"
@@ -171,6 +172,7 @@ results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                            sdmodel = sdmodel, 
                                            opcoes = opcoes,
                                            ensemble = ensemble_a_simular)
+
 
 # Gráficos
 

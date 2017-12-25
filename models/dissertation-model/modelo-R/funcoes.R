@@ -904,7 +904,7 @@ simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sd
 #' @param nomes_inputs Nome a ser atribuido aos dataframes de input.
 #'
 #' @return list com inputs para a simulação.
-carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("params", "levers"), nomes_inputs = c("Parametros", "Levers")) {
+carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("params", "levers", "Levers_FullDesign"), nomes_inputs = c("Parametros", "Levers", "LeversFull")) {
   
   # Criando uma list para os inputs
   message(
@@ -979,11 +979,11 @@ obter_lhs_ensemble = function (params, n=100, opcoes = opcoes) {
 #' @param levers conjunto de estratégias a simular
 #'
 #' @return dataframe com a combinação de todas as estratégias em todos os cenários.
-ampliar_ensemble_com_levers = function(ensemble, levers, opcoes) {
+ampliar_ensemble_com_levers = function(ensemble, levers, levers_full, opcoes) {
   
   variaveis_adicionais = names(dplyr::select(levers, -LeverCode, -CasoBase))
   
-  # Filtrar cenários a simular caso seja necessário apenas simular o Caso Base:
+    # Filtrar cenários a simular caso seja necessário apenas simular o Caso Base:
   if(opcoes$SimularApenasCasoBase){
     levers = subset(levers, as.logical(CasoBase))
   }
@@ -1215,6 +1215,18 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = opcoes$N, o
   # Carregando Inputs
   inputs = carregar_inputs(arquivo_de_inputs = arquivo_de_inputs)
   
+  # Substituindo Levers por Proketo Fatorial Completo, se isto foi selecionado:
+  # Gerar um Fatorial Completo das Variáveis, se for necessário
+  if(opcoes$FullFactorialDesign){
+    var_levers = na.omit(expand.grid(inputs$LeversFull))
+    n_levers = nrow(var_levers)
+    inputs$Levers = data.frame(Lever = 1:n_levers,
+                        LeverCode = as.character(1:n_levers),
+                        CasoBase = c(1, rep(0, n_levers-1)),
+                        var_levers)
+  }
+  
+  
   # Obter Ensemble LHS (Sem Variáveis das Estratégias)
   
   # Se um ensemble não foi informado, gerar um ensemble.
@@ -1224,7 +1236,7 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = opcoes$N, o
   }
   
   # Ampliar Ensemble com as variáveis das Estratégias
-  novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers, opcoes = opcoes)
+  novo_ensemble = ampliar_ensemble_com_levers(ensemble = ensemble, levers = inputs$Levers,levers_full = inputs$LeversFull, opcoes = opcoes)
   
   # Rodando a Simulação
   nestrategias = length(inputs$Levers$Lever)
