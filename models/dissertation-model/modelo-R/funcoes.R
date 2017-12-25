@@ -143,6 +143,8 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aInitialReorderShare =unname(parametros["aInitialReorderShare"])
                   ,aTotalInitialInstalledBase = unname(parametros["aTotalInitialInstalledBase"])
                   ,aInitialIndustryShipments = unname(parametros["aInitialIndustryShipments"])
+                  ,Scenario = unname(parametros["Scenario"])
+                  ,Lever = unname(parametros["Lever"])
   )
   
   
@@ -249,11 +251,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     # Criando uma variavel n_tempo local
     n_tempo = nrow(list.variaveis.globais$sReportedIndustryVolume)
     
-    # if(modo == "inicial") {
-    #   browser()
-    # }
-    
-    
+ 
     ##### VETORIZANDO ESTOQUES #####
     #Estoques Vetorizados = substituindo estoques pela forma vetorizada (pra que seja possivel formular equações de forma mais simples).
     # Esta implementação tem por objetivo não gerar a necessidade de referenciar os estoque spelo seu nome único
@@ -295,7 +293,6 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     aInitialCumulativeAdopters = aInitialCumulativeAdopters2
     
-    #browser()
     
     ##### DIFFUSION SECTOR #####
     aDemandCurveSlope = - aReferenceIndustryDemandElasticity * (aReferencePopulation / aReferencePrice )
@@ -369,6 +366,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     ##### MARKET SECTOR #####
     
     # Patentes e Performance
+    
     aPatentesEmpresaTemAcesso = sPatentesRequisitadas + sPatentesEmpresa + sPatentesEmDominioPublicoUteis
     
     aPerformanceCalculada = aPerfSlope * aPatentesEmpresaTemAcesso
@@ -552,7 +550,9 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     # Estou somando as Patentes com investimenti (direto em domínio publico na equação abaixo, sem passar por outros estoques).
     # Eventualmente é possível modelar este comportamento passando por outros estoques.
-    fPatentesVencidas = sPatentesEmpresa / aTempoVencimentoPatentes + ((aPercPeDAberto * fInvestimentoPeDRealizado) / aCustoMedioPatente)
+    fPatentesVencidas = sPatentesEmpresa / aTempoVencimentoPatentes 
+    
+    fPatentesAbertas = ((aPercPeDAberto * fInvestimentoPeDRealizado) / aCustoMedioPatente) * (1-aTaxaRejeicao)
     
     fPatentesUtilidadeExpirada = sPatentesEmDominioPublicoUteis / aTempodeInutilizacaoPatente
     
@@ -574,11 +574,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     checkNPVProfitChange1 = fNPVProfitChange[1]
     
-    
     aNPVIndustryProfits = sum(sNPVProfit) #
-    
-    
-    
     
     
     
@@ -794,12 +790,10 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       
     }
     
-    ##### VARIÁVEIS RETORNADAS #####
-    
-    ## Parar se o tempo chegou ao fim.
-    # if(time == FINISH){
-    # browser()
+    # if(modo == "completo" & time == FINISH) {
+    #   browser()
     # }
+    ##### VARIÁVEIS RETORNADAS #####
     
     resultado_completo = list(c(
       d_NPVProfit_dt
@@ -820,22 +814,16 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       ,d_PatentesEmDominioPublicoUteis_dt
       ,d_InvestimentoPeDDepreciar_dt
     )
-    ,fIndustryOrderRate = fIndustryOrderRate
-    ,aNonAdopters = aNonAdopters
-    ,fReorderRate = fReorderRate
-    ,aIndustryShipments = aIndustryShipments
-    ,aIndustryVolume = aIndustryVolume
-    ,fDiscardRate = fDiscardRate
-    ,aDiscountFactor = aDiscountFactor
-    ,aDiscountRate = aDiscountRate
-    ,fNPVProfitChange = fNPVProfitChange
-    ,fNetIncome = fNetIncome
-    ,aNPVIndustryProfits = aNPVIndustryProfits
-    ,aInitialDemandForecast = aInitialDemandForecast
-    ,aLaggedVolumeForecast = aLaggedVolumeForecast
-    ,aForecastError = aForecastError
-    ,aTargetCapacity = aTargetCapacity
-    ,aCompetitorTargetCapacity = aCompetitorTargetCapacity)
+    ,fIndustryOrderRate = unname(fIndustryOrderRate) 
+    ,aOrderShare = unname(aOrderShare)
+    ,aPerformance = unname(aPerformance)
+    ,aNonAdopters = unname(aNonAdopters)
+    ,fReorderRate = unname(fReorderRate) 
+    ,aIndustryShipments = unname(aIndustryShipments)
+    ,aIndustryVolume = unname(aIndustryVolume) 
+    ,fNPVProfitChange = unname(fNPVProfitChange) 
+    ,fNetIncome = unname(fNetIncome) 
+    ,aNPVIndustryProfits = unname(aNPVIndustryProfits))
     
     return (if(modo == "inicial"){
       stocks_ini

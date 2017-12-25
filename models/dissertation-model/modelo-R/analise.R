@@ -15,19 +15,19 @@ opcoes = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 50,
+  N = 40,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min",
   Paralelo = TRUE,
   ModoParalelo = "FORK",
-  SimularApenasCasoBase = FALSE
+  SimularApenasCasoBase = TRUE
 )
 
 planilha_inputs = "./calibracao/params_calibracao_com_estrategia.xlsx"
 
 # Rodar Simulação:
-START<-2007; FINISH <-2027; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+START<-2007; FINISH <-2027; STEP<-0.125; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
@@ -159,7 +159,8 @@ ensemble_a_simular = resultados_casos_plausiveis$Ensemble[which(resultados_casos
 ggplot(as.data.frame(ensemble_a_simular), aes(x=aReferencePopulation, y=aWOMStrength)) + geom_point()
 
 # Definir primeiro ano da simulação com dados reais.
-START<-2007; FINISH <-2027; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+opcoes$SimularApenasCasoBase = FALSE
+START<-2007; FINISH <-2027; STEP<-0.125; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
@@ -194,6 +195,8 @@ plots_rodada1$plot_estrategia_candidata
 plots_rodada1$plot_whisker_lever_regret
 
 plots_rodada1$plot_whisker_lever_profit
+
+plots_rodada1$plot_whisker_lever_perc_regret
 
 # Exibir Resultados da Análise de Perda de Oportunidade.
 
