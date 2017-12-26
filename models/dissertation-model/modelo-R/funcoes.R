@@ -1455,6 +1455,137 @@ analisar_ensemble_com_melhor_estrategia = function(ensemble, dados_regret, var_c
 }
 
 
+##### ANÁLISE DE VULNERABILIDADE #####
+
+#' obter_df_analise_vulnerabilidade
+#'
+#' @param results results da função de simulação do RDM (contendo análise de regret, necessáriamente).
+#' @param estrategia_candidata número da estratégia ser analisada.
+#' @param variavel_resposta nome da variávei de respota analisada nesta estratégia  (que deverá estar acima ou abaixo do threshold).
+#' @param threshold número acima ou abaixo do qual a variável de resposta estará para ser considerada "interessante" para a análise.
+#' @param planilha_inputs planilha de inputs com as variáveis incertas, para filtrarmos somente as variáveis incertas.
+#' @param sentido_vulnerabilidade pode ser ">=" ou "<=". Se ">=", os casos de interesse serão aqueles onde a variáveil de interesse seja >= ao threshold.
+#'
+#' @return dataframe com o ensemble, variável de resposta e indicação se cada caso é um caso de interesse ou não.
+#' @export
+obter_df_vulnerabilidade = function(results, estrategia_candidata, variavel_resposta = "sNPVProfit1RegretPerc" , threshold = 0.1, planilha_inputs, sentido_vulnerabilidade = ">=") {
+  if(sentido_vulnerabilidade == ">=") {
+    results$AnaliseRegret$Dados$CasoInteresse = as.numeric(results$AnaliseRegret$Dados[,variavel_resposta] >= threshold)  
+  } else {
+    results$AnaliseRegret$Dados$CasoInteresse = as.numeric(results$AnaliseRegret$Dados[,variavel_resposta] <= threshold)  
+  }
+  
+  # Obter Ensemble com Dados Simulados:
+  ensemble_e_resultados = dplyr::inner_join(as.data.frame(results$Ensemble), results$AnaliseRegret$Dados, by = "Scenario")
+  
+  ensemble_e_resultados = ensemble_e_resultados[which(ensemble_e_resultados$Lever == estrategia_candidata),]
+  
+  # Retirar NAs do Ensemble
+  ensemble_e_resultados = na.omit(ensemble_e_resultados)
+  
+  parametros_completos = readxl::read_xlsx(planilha_inputs, sheet = "params")
+  
+  variaveis_incertas = parametros_completos$Variavel[which(parametros_completos$Tipo=="Incerto")]
+  
+  x = ensemble_e_resultados[,c("Scenario", "Lever",variaveis_incertas)]
+  y = as.numeric(ensemble_e_resultados$CasoInteresse)
+  
+  data.frame(CasoInteresse = y, x)
+}
+
+
+#' obter_df_diff_media
+#' Esta função serve para listar as variáveis que potencialmente mais distinguem os Casos de Interesse dos demais casos.
+#' Esta função compara a média de cada variável dos casos de interesse com a média de todo o ensemble.
+#' @param df_vulnerabilidade data.frame com a análise de vulnerabilidade retornado pela função obter_df_vulnerabilidade.
+#'
+#' @return data.frame que é um ranking de variáveis.
+#' @export
+#'
+obter_df_diff_media_casos_interesse = function(df_vulnerabilidade) {
+  medias_interesse = df_vulnerabilidade %>% dplyr::filter(CasoInteresse == 1) %>% dplyr::select(-CasoInteresse, -Scenario, -Lever) %>% summarise_all(mean)
+  
+  medias_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever)  %>% dplyr::summarise_all(mean)
+  
+  max_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever) %>% dplyr::summarise_all(max)
+  
+  min_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever) %>% dplyr::summarise_all(min)
+  
+  range_global = max_global - min_global
+  
+  medias_dif = (medias_interesse - medias_global) / range_global
+  
+  v_medias_analisadas = colnames(medias_dif)
+  
+  v_medias_dif = unname(t(medias_dif)[,1])
+  
+  v_medias_global = unname(t(medias_global)[,1])
+  
+  v_range_global = unname(t(range_global)[,1])
+  
+  v_medias_interesse = unname(t(medias_interesse)[,1])
+  
+  ordem = order(abs(v_medias_dif), decreasing = TRUE)
+  
+  df_analise_medias = data.frame(
+    Ranking = 1:length(v_medias_analisadas),
+    Variavel = v_medias_analisadas[ordem],
+    DifMediaRelativa = v_medias_dif[ordem],
+    MediaCasosInteresse = v_medias_interesse[ordem],
+    MediaGlobal = v_medias_global[ordem],
+    Range = v_range_global[ordem]
+  )  
+}
+
+#' plot_violino_casos_interesse_por_variavel
+#'
+#' @param df_vulnerabilidade data.frame retornado pela função obter_df_vulnerabilidade
+#' @param variavel nome da variável incerta
+#' @param nome_amigavel_var nome amigável da variável incerta
+#'
+#' @return plot "violino" exibindo densidade da variável nos demais casos.
+#' @export
+#'
+plot_violino_casos_interesse_por_variavel  = function(df_vulnerabilidade, variavel, nome_amigavel_var) {
+  call_grafico = substitute(
+    expr = ggplot2::ggplot(df_vulnerabilidade, aes(factor(CasoInteresse), Variavel)) + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +  geom_jitter(height = 0, width = 0.1)
+    ,env = list(Variavel = as.name(variavel))
+  )
+  
+  p <- eval(call_grafico) + xlab("Estratégia Vulnerável") + ylab(nome_amigavel_var)
+  p
+}
+
+
+
+#' plot_dispersao_casos_interesse_por_variavel
+#'
+#' @param df_vulnerabilidade data.frame retornado pela função obter_df_vulnerabilidade
+#' @param variavel1 nome da variável incerta 1 a considerar
+#' @param nome_amigavel_var1 nome amigável desta variável
+#' @param variavel2 nome da variável incerta 2 a considera
+#' @param nome_amigavel_var2 nome amigável desta variável
+#'
+#' @return plot de dispersão sinalizando os casos de interesse
+#' @export
+#'
+#' @examples
+plot_dispersao_casos_interesse_por_variavel  = function(df_vulnerabilidade, variavel1, nome_amigavel_var1,  variavel2, nome_amigavel_var2) {
+  call_grafico = substitute(
+    expr =  ggplot(as.data.frame(df_vulnerabilidade), aes(x=Variavel1, y=Variavel2, color = as.factor(CasoInteresse)))
+    ,env = list(Variavel1 = as.name(variavel1), Variavel2 = as.name(variavel2))
+  )
+  
+  p =  eval(call_grafico)
+  
+  p = p + geom_point() + scale_color_manual(values = c("blue", "red"), name = "Caso de Interesse") + theme(legend.position = "bottom")
+  
+  p = p + xlab(nome_amigavel_var1) + ylab(nome_amigavel_var2)
+  
+  p
+  
+}
+
 ##### FUNÇÕES AUXILIARES #####
 
 library(dplyr)

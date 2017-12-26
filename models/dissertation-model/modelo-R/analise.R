@@ -208,36 +208,52 @@ results$AnaliseRegret$ResumoEstrategias
 # Gráficos para a Seleção da Estratégia Candidata (boxplot)
 plots_rodada1$plot_whisker_lever_perc_regret
 
+
 #### 4.3 Análise de Vulnerabilidade ####
 
-# Definição de um Threshold de Regret.
-estrategia_candidata = results$EstrategiaCandidata
+# Visualizando um histograma do Regret da Estratégia Candidata
 
-# Definir Variáveis com este Threshold.
-threshold_regret_percentual = 0.1
-variavel_resposta = "sNPVProfit1RegretPerc"
-# Análises de Seleção de Variáveis (Feature Ranking).
+regret_perc_estrategia_candidata = results$AnaliseRegret$Dados$sNPVProfit1RegretPerc[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata)]
 
-# Adicionar Flag do Aceitável
-results$AnaliseRegret$Dados$AcimaThreshold = results$AnaliseRegret$Dados[,variavel_resposta] > threshold_regret_percentual
+hist(regret_perc_estrategia_candidata)
 
-# Obter Ensemble com Dados Simulados:
-ensemble_e_resultados = dplyr::inner_join(as.data.frame(results$Ensemble), results$AnaliseRegret$Dados, by = "Scenario")
+summary(regret_perc_estrategia_candidata)
 
-ensemble_e_resultados = ensemble_e_resultados[which(ensemble_e_resultados$Lever == estrategia_candidata),]
-
-# Retirar NAs do Ensemble
-ensemble_e_resultados = na.omit(ensemble_e_resultados)
-
-parametros_completos = readxl::read_xlsx(planilha_inputs, sheet = "params")
-
-variaveis_incertas = parametros_completos$Variavel[which(parametros_completos$Tipo=="Incerto")]
-
-x = ensemble_e_resultados[,variaveis_incertas]
-y = vector(Acima_Threshold = as.numeric(ensemble_e_resultados$AcimaThreshold))
+quartis = quantile(regret_perc_estrategia_candidata, c(0.25, 0.5, 0.75))
 
 
-# Rodar Algoritmos para Priorização de Variáveis de Descoberta de Cenários
+# Gerando DataFrame propício para a análise de vulnerabilidade.
+df_vulnerabilidade = obter_df_vulnerabilidade(results = results, 
+                                              estrategia_candidata = results$EstrategiaCandidata, 
+                                              variavel_resposta = "sNPVProfit1RegretPerc" , 
+                                              threshold = 0.2, 
+                                              planilha_inputs = planilha_inputs, 
+                                              sentido_vulnerabilidade = ">=")
+
+# Gerando Ranking de Variáveis considerando médias.
+ranking_variaveis_por_media = obter_df_diff_media_casos_interesse(df_vulnerabilidade = df_vulnerabilidade)
+
+ranking_variaveis_por_media
+
+
+plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel = "aPerfSlope", nome_amigavel_var = "Impacto Patentes sobre Performance")
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aPerfSlope", nome_amigavel_var1 = "Impacto Patentes sobre Performance",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aDesiredMarketShare3", nome_amigavel_var1 = "MktShareDesejadoPlayer3",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aTempoMedioAvaliacao", nome_amigavel_var1 = "Tempo de Avaliação das Patentes",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
+
+# Definindo Variáveis x e y para as análises seguintes:
+n_variaveis_shortlist = 10
+variaveis_shortlist = as.vector(ranking_variaveis_por_media$Variavel[1:n_variaveis_shortlist])
+
+y = df_vulnerabilidade$CasoInteresse
+x = df_vulnerabilidade[,variaveis_shortlist]
+
+#### 4.3.1 - Feature Ranking - Outros Algoritmos ####
+
+# Rodar Algoritmos para Priorização de Variáveis de Descoberta de Cenários.
 # Random Forest
 library(party)
 cf1 <- cforest(y ~ . , data= x, control=cforest_unbiased(mtry=2,ntree=50))
@@ -245,7 +261,7 @@ varimp(cf1)
 varimp(cf1, conditional=TRUE)
 varimpAUC(cf1)
 
-
+# Usando as Variáveis com Shortlist, o resultado funcionou.
 library(relaimpo)
 lmMod <- lm(y ~ . , data = x)
 relImportance <- calc.relimp(lmMod, type = "lmg", rela = TRUE)
@@ -262,8 +278,8 @@ plot(br)
 
 ### O resultado desta análise fez um pouco de sentido (e não é óbvio).
 library(earth)
-marsModel <- earth(ensemble_e_resultados[,variavel_resposta] ~ ., data=ensemble_e_resultados[,variaveis_incertas]) # build model
-ev <- evimp(marsModel) # estimate variable importance#=>                       nsubsets   gcv    rss#=> Temperature_ElMonte         29 100.0  100.0#=> Pressure_gradient           28  42.5   48.4#=> pressure_height             26  30.1   38.1#=> Month9                      25  26.1   34.8#=> Month5                      24  21.9   31.7#=> Month4                      23  19.9   30.0#=> Month3                      22  17.6   28.3#=> Inversion_base_height       21  14.4   26.1#=> Month11                     19  12.3   24.1#=> Visibility                  18  11.4   23.2#=> Day_of_month23              14   8.9   19.8#=> Humidity                    13   7.4   18.7#=> Month6                      11   5.1   16.6#=> Temperature_Sandburg         9   7.0   15.6#=> Wind_speed                   7   5.1   13.4#=> Month12                      6   4.2   12.3#=> Day_of_month9                3   4.6    9.1#=> Day_of_week4                 2  -3.9    5.9#=> Day_of_month7-unused         1  -4.7    2.8
+marsModel <- earth(y ~ ., data= x) 
+ev <- evimp(marsModel)
 plot(ev)
 
 
@@ -290,69 +306,15 @@ variavel_2 = boruta_signif[2]
 landscape_estrategia = plot_landscape_futuros_plausiveis(
   results, estrategia = estrategia_candidata, 
   variavelresp = variavel_resposta,
-  nomeamigavel_variavelresp = "VPL",
+  nomeamigavel_variavelresp = "LOF Percentual",
   variavel1  = variavel_1,
   n_variavel1 = "Sensibilidade ao Preço",
   variavel2 = variavel_2,
   n_variavel2 = "Utilização da Capacidade"
 )
 
+#### 4.3.2 - CART ####
 
-# Não consegui ainda reconhecer nenhum padrão
-ggplot(as.data.frame(ensemble_e_resultados), aes(x=aTaxaRejeicao, y=aPerfSlope, color = AcimaThreshold))  + geom_point() + scale_color_grey() + theme_light()
-
-ggplot(as.data.frame(ensemble_e_resultados), aes(x=aDesiredMarketShare2, y=aSwitchForCapacityStrategy2, color = AcimaThreshold))  + geom_point() + scale_color_grey() + theme_light()
-
-
-ggplot(as.data.frame(ensemble_e_resultados), aes(x=aDesiredMarketShare2, y=aSwitchForCapacityStrategy2, color = sNPVProfit1))  + geom_point()
-
-# Análise Exploratória - Landscape de Futuros Plausíveis.
-
-# Gráfico 3D e 2D.
-
-# Análise do PRIM.
-
-### Tentando Rodar o PRIM:
-
-library(prim)
-
-library(MASS)
-
-data("Boston")
-
-x = Boston[,5:6]
-y = Boston[,1]
-
-boston.prim = prim.box(x = x, y = y, threshold.type = 1)
-
-summary(boston.prim, print.box = TRUE)
-
-plot(boston.prim, col="transparent")
-points(x[y>3.5,])
-
-
-
-
-write.csv2(x, file = "incertezas.csv")
-
-write.csv2(y, file = "resposta.csv")
-
-
-results.prim = prim.box(x = x, y = y)
-
-results.prim = prim.box(x = x[,boruta_signif], y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.5)
-
-results.prim = prim.box(x = x, y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
-
-summary(results.prim, print.box = TRUE)
-
-plot(results.prim, col="transparent")
-points(x[,boruta_signif])
-
-
-
-
-# Classification Tree with rpart
 # CONSEGUI RODAR O CART, mas ainda não entendi (não gerei cenários).
 library(rpart)
 
@@ -363,7 +325,41 @@ printcp(cart_fit) # display the results
 plotcp(cart_fit) # visualize cross-validation results
 summary(cart_fit) # detailed summary of splits
 
+# Observando a Importância das Variáveis
+cart_fit$variable.importance
+
+summary(cart_fit)
+
 rpart.plot::prp(fit, digits = 3, clip.right.labs = FALSE, varlen = 0)
+
+#### 4.3.2 - PRIM ####
+
+library(prim)
+
+results.prim = prim.box(x = x[,1:2], y = y, threshold.type = 1, peel.alpha = 0.05, paste.alpha = 0.05, threshold = 0.25)
+
+# results.prim = prim.box(x = x, y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
+
+
+summary(results.prim, print.box = TRUE)
+
+plot(results.prim, splom=FALSE)
+
+results.prim
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aSwitchForCapacityStrategy2", variavel2 = "aDesiredMarketShare4", nome_amigavel_var1 = "aSwitchForCapacityStrategy2", nome_amigavel_var2 = "aDesiredMarketShare4")
+
+plot(results.prim, col="transparent")
+
+plot(results.prim)
+points(x)
+
+library(subgroup.discovery)
+
+subgroup.discovery::prim.
+
+
+# Classification Tree with rpart
 
 results.prim = prim.box(x = x, y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
 
