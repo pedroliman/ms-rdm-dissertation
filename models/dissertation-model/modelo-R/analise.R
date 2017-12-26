@@ -211,11 +211,10 @@ plots_rodada1$plot_whisker_lever_perc_regret
 #### 4.3 Análise de Vulnerabilidade ####
 
 # Definição de um Threshold de Regret.
-
 estrategia_candidata = results$EstrategiaCandidata
 
 # Definir Variáveis com este Threshold.
-threshold_regret_percentual = 0.05
+threshold_regret_percentual = 0.1
 variavel_resposta = "sNPVProfit1RegretPerc"
 # Análises de Seleção de Variáveis (Feature Ranking).
 
@@ -230,26 +229,25 @@ ensemble_e_resultados = ensemble_e_resultados[which(ensemble_e_resultados$Lever 
 # Retirar NAs do Ensemble
 ensemble_e_resultados = na.omit(ensemble_e_resultados)
 
-#variaveis_incertas = colnames(results$Ensemble)
-
-#variaveis_incertas = variaveis_incertas[which(variaveis_incertas %in% names(ensemble_e_resultados))]
-
 parametros_completos = readxl::read_xlsx(planilha_inputs, sheet = "params")
 
 variaveis_incertas = parametros_completos$Variavel[which(parametros_completos$Tipo=="Incerto")]
 
+x = ensemble_e_resultados[,variaveis_incertas]
+y = vector(Acima_Threshold = as.numeric(ensemble_e_resultados$AcimaThreshold))
 
 
 # Rodar Algoritmos para Priorização de Variáveis de Descoberta de Cenários
+# Random Forest
 library(party)
-cf1 <- cforest(ensemble_e_resultados[,variavel_resposta] ~ . , data= ensemble_e_resultados[,variaveis_incertas], control=cforest_unbiased(mtry=2,ntree=50)) # fit the random forest
-varimp(cf1) # get variable importance, based on mean decrease in accuracy#=>                 Month          Day_of_month           Day_of_week #=>           0.689167598           0.115937291          -0.004641633 #=>       pressure_height            Wind_speed              Humidity #=>           5.519633507           0.125868789           3.474611356 #=>  Temperature_Sandburg   Temperature_ElMonte Inversion_base_height #=>          12.878794481          14.175901506           4.276103121 #=>     Pressure_gradient Inversion_temperature            Visibility #=>           3.234732558          11.738969777           2.283430842
-varimp(cf1, conditional=TRUE)  # conditional=True, adjusts for correlations between predictors#=>                 Month          Day_of_month           Day_of_week #=>            0.08899435            0.19311805            0.02526252 #=>       pressure_height            Wind_speed              Humidity #=>            0.35458493           -0.19089686            0.14617239 #=>  Temperature_Sandburg   Temperature_ElMonte Inversion_base_height #=>            0.74640367            1.19786882            0.69662788 #=>     Pressure_gradient Inversion_temperature            Visibility #=>            0.58295887            0.65507322            0.05380003
-varimpAUC(cf1)  # more robust towards class imbalance.#=>                 Month          Day_of_month           Day_of_week #=>            1.12821259           -0.04079495            0.07800158 #=>       pressure_height            Wind_speed              Humidity #=>            5.85160593            0.11250973            3.32289714 #=>  Temperature_Sandburg   Temperature_ElMonte Inversion_base_height #=>           11.97425093           13.66085973            3.70572939 #=>     Pressure_gradient Inversion_temperature            Visibility #=>            3.05169171           11.48762432            2.04145930
+cf1 <- cforest(y ~ . , data= x, control=cforest_unbiased(mtry=2,ntree=50))
+varimp(cf1)
+varimp(cf1, conditional=TRUE)
+varimpAUC(cf1)
 
 
 library(relaimpo)
-lmMod <- lm(ensemble_e_resultados[,variavel_resposta] ~ . , data = ensemble_e_resultados[,variaveis_incertas])  # fit lm() model
+lmMod <- lm(y ~ . , data = x)
 relImportance <- calc.relimp(lmMod, type = "lmg", rela = TRUE)
 calc.relimp(lmMod, rela = TRUE)
 # calculate relative importance scaled to 100
@@ -270,26 +268,26 @@ plot(ev)
 
 
 # Stepwise (Também faz sentido)
-base.mod <- lm(ensemble_e_resultados[,variavel_resposta] ~ 1 , data= ensemble_e_resultados[,variaveis_incertas])  # base intercept only model
-all.mod <- lm(ensemble_e_resultados[,variavel_resposta] ~ . , data= ensemble_e_resultados[,variaveis_incertas]) # full model with all predictors
+base.mod <- lm(y ~ 1 , data= x)  # base intercept only model
+all.mod <- lm(y ~ . , data= x) # full model with all predictors
 stepMod <- step(base.mod, scope = list(lower = base.mod, upper = all.mod), direction = "both", trace = 0, steps = 1000)  # perform step-wise algorithm
 shortlistedVars <- names(unlist(stepMod[[1]])) # get the shortlisted variable.
 shortlistedVars <- shortlistedVars[!shortlistedVars %in% "(Intercept)"]  # remove intercept 
 print(shortlistedVars)
 
+
 # Rodando o Algoritmo Boruta
 library(Boruta)
 # Decide if a variable is important or not using Boruta
-boruta_output <- Boruta(ensemble_e_resultados[,variavel_resposta] ~ ., data=na.omit(ensemble_e_resultados[,variaveis_incertas]), doTrace=2)  # perform Boruta search# Confirmed 10 attributes: Humidity, Inversion_base_height, Inversion_temperature, Month, Pressure_gradient and 5 more.# Rejected 3 attributes: Day_of_month, Day_of_week, Wind_speed.
-boruta_signif <- names(boruta_output$finalDecision[boruta_output$finalDecision %in% c("Confirmed", "Tentative")])  # collect Confirmed and Tentative variables
-print(boruta_signif)  # significant variables#=> [1] "Month"                 "ozone_reading"         "pressure_height"      #=> [4] "Humidity"              "Temperature_Sandburg"  "Temperature_ElMonte"  #=> [7] "Inversion_base_height" "Pressure_gradient"     "Inversion_temperature"#=> [10] "Visibility"
+boruta_output <- Boruta(y ~ ., data=na.omit(x), doTrace=2)
+boruta_signif <- names(boruta_output$finalDecision[boruta_output$finalDecision %in% c("Confirmed", "Tentative")])
+print(boruta_signif)
 plot(boruta_output, cex.axis=.7, las=2, xlab="", main="Variable Importance")  # plot variable importance
 
 variavel_1 = boruta_signif[1]
 variavel_2 = boruta_signif[2]
 
-
-landscape_estrategia1 = plot_landscape_futuros_plausiveis(
+landscape_estrategia = plot_landscape_futuros_plausiveis(
   results, estrategia = estrategia_candidata, 
   variavelresp = variavel_resposta,
   nomeamigavel_variavelresp = "VPL",
@@ -301,9 +299,12 @@ landscape_estrategia1 = plot_landscape_futuros_plausiveis(
 
 
 # Não consegui ainda reconhecer nenhum padrão
-ggplot(as.data.frame(ensemble_e_resultados), aes(x=aSensOfAttractToAvailability, y=aSensOfAttractToPrice, color = AcimaThreshold))  + geom_point() + scale_color_grey() + theme_light()
+ggplot(as.data.frame(ensemble_e_resultados), aes(x=aTaxaRejeicao, y=aPerfSlope, color = AcimaThreshold))  + geom_point() + scale_color_grey() + theme_light()
 
-ggplot(as.data.frame(ensemble_e_resultados), aes(x=aSensOfAttractToAvailability, y=aSensOfAttractToPrice, color = sNPVProfit1))  + geom_point()
+ggplot(as.data.frame(ensemble_e_resultados), aes(x=aDesiredMarketShare2, y=aSwitchForCapacityStrategy2, color = AcimaThreshold))  + geom_point() + scale_color_grey() + theme_light()
+
+
+ggplot(as.data.frame(ensemble_e_resultados), aes(x=aDesiredMarketShare2, y=aSwitchForCapacityStrategy2, color = sNPVProfit1))  + geom_point()
 
 # Análise Exploratória - Landscape de Futuros Plausíveis.
 
@@ -311,7 +312,148 @@ ggplot(as.data.frame(ensemble_e_resultados), aes(x=aSensOfAttractToAvailability,
 
 # Análise do PRIM.
 
+### Tentando Rodar o PRIM:
+
+library(prim)
+
+library(MASS)
+
+data("Boston")
+
+x = Boston[,5:6]
+y = Boston[,1]
+
+boston.prim = prim.box(x = x, y = y, threshold.type = 1)
+
+summary(boston.prim, print.box = TRUE)
+
+plot(boston.prim, col="transparent")
+points(x[y>3.5,])
+
+
+
+
+write.csv2(x, file = "incertezas.csv")
+
+write.csv2(y, file = "resposta.csv")
+
+
+results.prim = prim.box(x = x, y = y)
+
+results.prim = prim.box(x = x[,boruta_signif], y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.5)
+
+results.prim = prim.box(x = x, y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
+
+summary(results.prim, print.box = TRUE)
+
+plot(results.prim, col="transparent")
+points(x[,boruta_signif])
+
+
+
+
+# Classification Tree with rpart
+# CONSEGUI RODAR O CART, mas ainda não entendi (não gerei cenários).
+library(rpart)
+
+# grow tree
+cart_fit = rpart(y ~., data = x, method = "class")
+
+printcp(cart_fit) # display the results
+plotcp(cart_fit) # visualize cross-validation results
+summary(cart_fit) # detailed summary of splits
+
+rpart.plot::prp(fit, digits = 3, clip.right.labs = FALSE, varlen = 0)
+
+results.prim = prim.box(x = x, y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
+
+summary(results.prim, print.box = TRUE)
+
+write.csv(ensemble_e_resultados)
+
+arquivo_ensemble_e_resultados = "ensemble_e_resultados.rda"
+
+arquivo_salvar = ensemble_e_resultados[,c(variavel_resposta,variaveis_incertas)]
+
+save(arquivo_salvar, file = arquivo_ensemble_e_resultados)
+
+library(sdtoolkit)
+
+
+sdtoolkit::sdprim(x = x, y = y)
+
+sdtoolkit::sd.start()
+
+
 # Descoberta de Cenários.
+
+#### Descoberta de Cenários - Com ajuda do OpenMORDM ####
+assign("mordm.globals", new.env())
+factors = x[,boruta_signif]
+response = y
+
+
+box = prim.box(x = x[,boruta_signif], y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
+
+bounds = NULL
+which.box=1
+
+
+box <- prim.box(factors, response)
+
+marks <- lapply(1:box$num.hdr.class, function(i) {
+  i <- eval(i)
+  colnames(box$box[[i]]) <- colnames(factors)
+  mordm.mark.box(box$box[[i]], box$y.fun[i], box$mass[i])
+})
+
+if (is.null(bounds)) {
+  bounds <- apply(factors, 2, range)
+}
+
+dummy.data <- list()
+attr(dummy.data, "nvars") <- ncol(factors)
+attr(dummy.data, "bounds") <- bounds
+mordm.plot.box(dummy.data, marks[[which.box]])
+
+varargs$threshold.type = -1
+# compute density and coverage of the box
+varargs <- list(...)
+
+if (is.null(varargs$threshold.type) || varargs$threshold.type==0) {
+  
+} else if (varargs$threshold.type == -1) {
+  threshold <- mean(response)
+  total.interesting = sum(response <= threshold)
+  
+  captured.indices <- mordm.select.indices(factors, mordm.mark.union(marks))
+  captured.interesting = sum(response[captured.indices] <= threshold)
+  
+  cat("Coverage: ")
+  cat(captured.interesting / total.interesting)
+  cat("\n")
+  cat("Density: ")
+  cat(captured.interesting / length(captured.indices))
+  cat("\n")
+} else {
+  threshold <- mean(response)
+  total.interesting = sum(response >= threshold)
+  
+  captured.indices <- mordm.select.indices(factors, mordm.mark.union(marks))
+  captured.interesting = sum(response[captured.indices] >= threshold)
+  
+  cat("Coverage: ")
+  cat(captured.interesting / total.interesting)
+  cat("\n")
+  cat("Density: ")
+  cat(captured.interesting / length(captured.indices))
+  cat("\n")
+}
+
+invisible(marks)
+
+
+
 
 # Descrição dos Cenários Desafiadores para a Estratégia.
 
@@ -361,7 +503,20 @@ resultados_cenariobase = solve_modelo_dissertacao(parametros = parametros_cenari
 
 
 
-resultados_cenariobase$a
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -519,7 +674,7 @@ ggsave(filename = "./images/plot_estrategias_incertezas.png", plot = plot_estrat
 ### Rodadno Feature Selection para Saber as Incertezas mais relevantes (computacionalmente):
 # https://www.linkedin.com/pulse/r-finding-most-important-predictor-variables-saranya-anandh/
 # Gerando um ensemble ampliado para a estratégia 4:
-estrategia = 2
+estrategia = results$EstrategiaCandidata
 ensemble_e_resultados = dplyr::inner_join(as.data.frame(results$Ensemble), results$AnaliseRegret$Dados, by = "Scenario")
 
 ensemble_e_resultados = ensemble_e_resultados[which(ensemble_e_resultados$Lever == estrategia),]
@@ -594,7 +749,37 @@ landscape_estrategia1 = plot_landscape_futuros_plausiveis(
 
 
 
-#### RODADA 2 ####
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## RODADA 2 ####
 
 ## Gerar Capitulo 4:
 rmarkdown::render(input = "Capitulo-4.Rmd")
@@ -676,7 +861,7 @@ grafico_whisker_por_lever(dados_regret = results$AnaliseRegret$Dados, variavel =
 # 
 # # A biblioteca plotly entra em conflito com uma função usada pelo OpenMORDM!
 # library(OpenMORDM)
-# assign("mordm.globals", new.env())
+assign("mordm.globals", new.env())
 # # Tentando fazer scenario discovery
 # # assign("mordm.globals", new.env(), envir=parent.env(environment()))
 # 
