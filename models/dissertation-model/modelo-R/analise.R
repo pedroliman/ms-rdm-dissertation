@@ -332,11 +332,15 @@ summary(cart_fit)
 
 rpart.plot::prp(fit, digits = 3, clip.right.labs = FALSE, varlen = 0)
 
+
 #### 4.3.2 - PRIM ####
 
 library(prim)
 
 results.prim = prim.box(x = x[,1:2], y = y, threshold.type = 1, peel.alpha = 0.05, paste.alpha = 0.05, threshold = 0.25)
+
+
+teste_prim_mordm = analyse.prim(factors = x, response = y, bounds=NULL, which.box=1, show.plot=TRUE, method="prim", ...)
 
 # results.prim = prim.box(x = x, y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
 
@@ -385,17 +389,16 @@ sdtoolkit::sd.start()
 
 #### Descoberta de Cenários - Com ajuda do OpenMORDM ####
 assign("mordm.globals", new.env())
-factors = x[,boruta_signif]
+factors = x 
 response = y
 
 
-box = prim.box(x = x[,boruta_signif], y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
+box = prim.box(x = x, y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
 
 bounds = NULL
 which.box=1
 
-
-box <- prim.box(factors, response)
+box <- prim.box(x = factors, y = response, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
 
 marks <- lapply(1:box$num.hdr.class, function(i) {
   i <- eval(i)
