@@ -11,7 +11,7 @@ USAR_DADOS_SALVOS = FALSE
 #### 4.1 Seleção de Casos Plausíveis ####
 
 # Gerar casos para simulação com base em estimativa inicial de parâmetros.
-opcoes = list(
+opcoes_iniciais = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
@@ -24,6 +24,8 @@ opcoes = list(
   SimularApenasCasoBase = TRUE,
   FullFactorialDesign = TRUE
 )
+
+opcoes = opcoes_iniciais
 
 planilha_inputs = "./calibracao/params_calibracao_com_estrategia.xlsx"
 
@@ -59,7 +61,7 @@ plot_demanda_pre_calibracao = plot_linha_uma_variavel_ensemble(dados = subset(re
                                  variavel = variavel_calibracao, 
                                  nome_amigavel_variavel = nome_amigavel_variavel_calibracao) + geom_vline(xintercept = 2017)
 
-plot_demanda_pre_calibracao + annotate("text", x = 2017.2, y = max(resultados_casos_plausiveis$DadosSimulados$fIndustryOrderRate), label=c("Hoje"),hjust=0)
+plot_demanda_pre_calibracao = plot_demanda_pre_calibracao + annotate("text", x = 2017.2, y = max(resultados_casos_plausiveis$DadosSimulados$fIndustryOrderRate), label=c("Hoje"),hjust=0)
 
 # Comparar Simulações com Dados históricos de Demanda
 ensemble_com_erro = adicionar_erro_ao_ensemble(results = resultados_casos_plausiveis, variavel_calibracao = variavel_calibracao, planilha_calibracao = "./calibracao/dados_calibracao.xlsx", opcoes = opcoes)
@@ -80,7 +82,7 @@ histograma_erro_percentual = ggplot(ensemble_com_erro, aes(x=MeanAbsolutePercent
                                 geom_histogram(aes(y=..density..), colour="black", fill="white")+
                                 geom_density(alpha=.2, fill="#FF6666") +
                                 xlab("Erro Médio Percentual") + 
-                                ylab("# Casos")
+                                ylab("Densidade")
 
 
 histograma_erro_percentual
@@ -89,7 +91,7 @@ histograma_erro_medio_quadrado = ggplot(ensemble_com_erro, aes(x=MeanSquareError
   geom_histogram(aes(y=..density..), colour="black", fill="white")+
   geom_density(alpha=.2, fill="#FF6666") +
   xlab("Erro Médio Quadrado") + 
-  ylab("# Casos")
+  ylab("Densidade")
 
 histograma_erro_medio_quadrado
 
@@ -99,9 +101,9 @@ cenario_menor_erro = ensemble_com_erro[which(ensemble_com_erro[,"MeanSquareError
 
 # Exibir parâmetros do cenario com menor erro:
 
-t(ensemble_com_erro[which(ensemble_com_erro[,opcoes$VarCenarios]==cenario_menor_erro),])
+parametros_cenario_menor_erro = t(ensemble_com_erro[which(ensemble_com_erro[,opcoes$VarCenarios]==cenario_menor_erro),])
 
-
+parametros_cenario_menor_erro
 
 # Plotar Gráfico do Cenário com Menor Erro:
 # Selecionando Pontos de Dados para Exibir no Gráfico
@@ -116,7 +118,7 @@ resultados_exibir = dplyr::filter(resultados_casos_plausiveis$DadosSimulados, Sc
 plot_cenario_base_e_historico <-ggplot()+
   geom_point(data=dados_calibracao,size=1.5,aes(time,fIndustryOrderRate,colour="Data"))+
   geom_line(data=resultados_exibir,size=1,aes(x=time,y=fIndustryOrderRate,colour="Model"))+
-  ylab("Demanda Anual - Impressoras 3D > 5k USD")+
+  ylab("Demanda Total")+
   xlab("Anos")+
   scale_y_continuous(labels = comma)+
   theme(legend.position="bottom")+
@@ -133,9 +135,11 @@ plot_cenario_base_e_historico
 
 # Definir casos considerados plausíveis.
 
-quartil25_ssr = quantile(ensemble_com_erro[,"SumOfSquareResiduals"], probs = c(0.5))
+percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
-cenarios_quartis = ensemble_com_erro[which(ensemble_com_erro[,"SumOfSquareResiduals"] <= quartil25_ssr),opcoes$VarCenarios]
+percentil_ssr = quantile(ensemble_com_erro[,"SumOfSquareResiduals"], probs = c(percentil_utilizado_como_criterio))
+
+cenarios_quartis = ensemble_com_erro[which(ensemble_com_erro[,"SumOfSquareResiduals"] <= percentil_ssr),opcoes$VarCenarios]
 
 cenarios_considerados_plausiveis = cenarios_quartis
 
@@ -190,6 +194,8 @@ plots_rodada1 = list(
 
 plots_rodada1$plot_estrategia_candidata
 
+plots_rodada1$plot_1_e_candidata
+
 plots_rodada1$plot_preco_estrategia10
 
 plots_rodada1$plot_estrategia_candidata
@@ -215,22 +221,35 @@ plots_rodada1$plot_whisker_lever_perc_regret
 
 regret_perc_estrategia_candidata = results$AnaliseRegret$Dados$sNPVProfit1RegretPerc[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata)]
 
-hist(regret_perc_estrategia_candidata)
 
-summary(regret_perc_estrategia_candidata)
+# O critério para realizar a análise de vulnerabilidade foi o mesmo usado para definir a estratégia candidata:
+threshold_analise_vulnerabilidade = as.numeric(results$AnaliseRegret$ResumoEstrategias[which(results$AnaliseRegret$ResumoEstrategias$Lever==results$EstrategiaCandidata),paste(opcoes$VarResposta, opcoes$VarCriterio, sep="")]) 
 
-quartis = quantile(regret_perc_estrategia_candidata, c(0.25, 0.5, 0.75))
 
+histograma_regret_estrategia_candidata = ggplot(results$AnaliseRegret$Dados[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata),], aes(x=sNPVProfit1RegretPerc)) + 
+  geom_histogram(aes(y=..density..), colour="black", fill="white")+
+  geom_density(alpha=.2, fill="#FF6666") +
+  xlab("Perda de Oportunidade %") + 
+  ylab("Densidade") + 
+  geom_vline(xintercept = threshold_analise_vulnerabilidade) 
+
+y_max = max(ggplot_build(histograma_regret_estrategia_candidata)$layout$panel_ranges[[1]]$y.rang)
+
+histograma_regret_estrategia_candidata = histograma_regret_estrategia_candidata + annotate("text", x = threshold_analise_vulnerabilidade + 0.05, y = y_max, label=c("-> Casos de Interesse"),hjust=0)
+
+histograma_regret_estrategia_candidata
 
 # Gerando DataFrame propício para a análise de vulnerabilidade.
 df_vulnerabilidade = obter_df_vulnerabilidade(results = results, 
                                               estrategia_candidata = results$EstrategiaCandidata, 
                                               variavel_resposta = "sNPVProfit1RegretPerc" , 
-                                              threshold = 0.2, 
+                                              threshold = threshold_analise_vulnerabilidade, 
                                               planilha_inputs = planilha_inputs, 
                                               sentido_vulnerabilidade = ">=")
 
-# Gerando Ranking de Variáveis considerando médias.
+
+
+#### 4.3.0 - Gerando Ranking de Variáveis considerando médias. ####
 ranking_variaveis_por_media = obter_df_diff_media_casos_interesse(df_vulnerabilidade = df_vulnerabilidade)
 
 ranking_variaveis_por_media
@@ -245,8 +264,8 @@ plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilid
 plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aTempoMedioAvaliacao", nome_amigavel_var1 = "Tempo de Avaliação das Patentes",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
 
 # Definindo Variáveis x e y para as análises seguintes:
-n_variaveis_shortlist = 10
-variaveis_shortlist = as.vector(ranking_variaveis_por_media$Variavel[1:n_variaveis_shortlist])
+n_variaveis_shortlist = 100
+variaveis_shortlist = as.vector(ranking_variaveis_por_media$Variavel[1:(min(n_variaveis_shortlist, nrow(ranking_variaveis_por_media)))])
 
 y = df_vulnerabilidade$CasoInteresse
 x = df_vulnerabilidade[,variaveis_shortlist]
@@ -254,12 +273,15 @@ x = df_vulnerabilidade[,variaveis_shortlist]
 #### 4.3.1 - Feature Ranking - Outros Algoritmos ####
 
 # Rodar Algoritmos para Priorização de Variáveis de Descoberta de Cenários.
+# http://r-statistics.co/Variable-Selection-and-Importance-With-R.html
 # Random Forest
+set.seed(2)
 library(party)
-cf1 <- cforest(y ~ . , data= x, control=cforest_unbiased(mtry=2,ntree=50))
-varimp(cf1)
+cf1 <- party::cforest(y ~ . , data= x, control=cforest_unbiased(mtry=2,ntree=50))
+importancia_party = varimp(cf1)
 varimp(cf1, conditional=TRUE)
-varimpAUC(cf1)
+
+View(importancia_party)
 
 # Usando as Variáveis com Shortlist, o resultado funcionou.
 library(relaimpo)
@@ -299,6 +321,9 @@ boruta_output <- Boruta(y ~ ., data=na.omit(x), doTrace=2)
 boruta_signif <- names(boruta_output$finalDecision[boruta_output$finalDecision %in% c("Confirmed", "Tentative")])
 print(boruta_signif)
 plot(boruta_output, cex.axis=.7, las=2, xlab="", main="Variable Importance")  # plot variable importance
+
+boruta_output$ImpHistory
+
 
 variavel_1 = boruta_signif[1]
 variavel_2 = boruta_signif[2]
@@ -745,10 +770,6 @@ landscape_estrategia1 = plot_landscape_futuros_plausiveis(
   variavel2 = "aNormalCapacityUtilization",
   n_variavel2 = "Utilização da Capacidade"
 )
-
-
-
-
 
 
 

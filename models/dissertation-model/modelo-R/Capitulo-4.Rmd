@@ -4,8 +4,6 @@ author: "Pedro Nascimento de Lima"
 abstract: "Este documento contém os resultados da dissertação, e é escrito diretamente no R. Os capítulos do projeto da dissertação (1,2 e 3) não estão reproduzidos por completo neste documento, mas sua estrutura e argumentos utilizados está representado para alinharmos o trabalho como um todo, e decidirmos o local de cada argumento. Por hora, vou gerar e escrever o documento no R para agilizar a geração dos gráficos e fórmulas. Após a estabilização do documento, vou levá-lo para o word e formatar."
 date: "Versão Preliminar - R"
 output:
-  word_document: 
-    fig_caption: yes
   pdf_document: 
     fig_caption: yes
     fig_height: 3
@@ -13,6 +11,8 @@ output:
     number_sections: yes
     toc: yes
     toc_depth: 4
+  word_document: 
+    fig_caption: yes
 header-includes:
 - \usepackage{booktabs}
 - \usepackage{longtable}
@@ -148,13 +148,13 @@ As discussões desta seção provavelmente irão para o final do capítulo 2.
 ## Principais Players do Mercado
 
 ```{r, fig.cap="Receita e Investimento - 3D Systems"}
-print(plot_receita_investimento_3dsystems)
+#print(plot_receita_investimento_3dsystems)
 ```
 
 
 
 ```{r, fig.cap="Lucro Líquido - 3D Systems"}
-print(plot_cash_net_income_3dsystems)
+# print(plot_cash_net_income_3dsystems)
 ```
 
 
@@ -495,7 +495,7 @@ O modelo matemático descrito na seção anterior foi implementado no software R
 Os resultados deste trabalho podem ser observados no link bit.ly/reproddissertpnl.
 
 ```{r vpl_preco_sterman, fig.cap= "Preço e VPL - Resultados do Modelo"}
-print(grafico_vpl_preco)
+# print(grafico_vpl_preco)
 ```
 
 
@@ -511,9 +511,11 @@ Considerando a característica estratégica da maior parte dos dados relacionado
 
 
 ```{r}
-nomes_variaveis_fundamentos = c("Código da Variável", "Nome da variável", "Descrição")
-kable(fundamentos_ddd$Variaveis, format = "latex",longtable = T, col.names = nomes_variaveis_fundamentos, caption = "Variáveis Coletadas por Empresa") %>% kable_styling(full_width = T, font_size = 9, latex_options =c("repeat_header"))  %>%
-  column_spec(3, width = "8cm")
+#nomes_variaveis_fundamentos = c("Código da Variável", "Nome da variável", "Descrição")
+#kable(fundamentos_ddd$Variaveis, format = "latex",longtable = T, col.names = nomes_variaveis_fundamentos, caption = "Variáveis Coletadas por Empresa") %>% kable_styling(full_width = T, font_size = 9, latex_options =c("repeat_header"))  %>%
+#  column_spec(3, width = "8cm")
+
+
 #   column_spec(column = 1, width = "1in") %>%
 #   column_spec(column = 2, width = "1in") %>%
 #   column_spec(column = 3, width = "4in")
@@ -528,8 +530,8 @@ kable(fundamentos_ddd$Variaveis, format = "latex",longtable = T, col.names = nom
 #nomes_variaveis_fundamentos = c("Código da Variável", "Nome da variável", "Descrição")
 # knitr::kable(fundamentos_ddd$Dados, caption = "Fundamentos Financeiros - 3D Systems")
 
-kable(fundamentos_ddd$Dados, caption = "Fundamentos Financeiros - 3D Systems", format = "latex", booktabs = T) %>% 
-  kable_styling(latex_options =c("striped", "scale_down"))
+# kable(fundamentos_ddd$Dados, caption = "Fundamentos Financeiros - 3D Systems", format = "latex", booktabs = T) %>% 
+#  kable_styling(latex_options =c("striped", "scale_down"))
 ```
 
 
@@ -587,73 +589,211 @@ Parâmetros calibrados com este procedimento:
 
 ### XLRM
 
-### Geração de Casos (Rodada 1)
+### Geração de Casos
 
-**Parâmetros:**
+#### Geração inicial de Casos Plausíveis
+
+Estas são as opções Iniciais utilizadas para a geração dos casos plausíveis.
+
+```{r}
+opcoes_iniciais
+```
+
+
+- Parâmetros dos Casos Plausíveis (primeira rodada).
+
 
 ```{r parametros1, fig.cap="Tabela de Parâmetros"}
-colunas = c("Variavel","Min", "Max", "Unidade")
-nomes = c("Variável", "Mínimo", "Máximo", "Unidade")
-knitr::kable(results$Inputs$Parametros[colunas], digits = 3, col.names = nomes, caption = "Ranges de Parâmetros - Rodada 1")
+#colunas = c("Variavel","Min", "Max", "Unidade")
+#nomes = c("Variável", "Mínimo", "Máximo", "Unidade")
+#knitr::kable(resultados_casos_plausiveis$Inputs$Parametros[colunas], digits = 3, col.names = nomes, caption = "Ranges de Parâmetros - Rodada 1")
+
+kable(resultados_casos_plausiveis$Inputs$Parametros)
+
 ```
 
 
-**Estratégias**
+- Ensemble Gerado:
 
-
-```{r levers1, fig.cap="Tabela de Estratégias"}
-colunas = c("Variavel","Min", "Max", "Unidade")
-nomes = c("Estratégia", "Código", "Estratégia de Capacidade", "Market Share Alvo")
-knitr::kable(results$Inputs$Levers, digits = 3, col.names = nomes, caption = "Estratégias Simuladas - Rodada 1")
-```
-
-**Geração do Ensemble**
-
-```{r ensemble1, fig.cap="Tabela de Estratégias"}
-nomes = c("Caso 1", "Caso 2", "Caso 3", "Caso 4")
-knitr::kable(t(head(results$Ensemble, n = 4)), digits = 3, col.names = nomes, format.args = list(scientific = FALSE), caption = "Primeiros 4 casos do Ensemble de Casos")
+```{r}
+kable(head(resultados_casos_plausiveis$Ensemble, 10))
 ```
 
 
-**Resultados da Simulação**
+- Dados Simulados:
 
-
-```{r estrategia1, fig.cap="Trajetórias Simuladas de duas Estratégias"}
-print(plot_estrategia1e10)
+```{r}
+kable(head(resultados_casos_plausiveis$DadosSimulados, 20))
 ```
 
 
-** Plot Preço**
+- Curvas de Demanda Simuladas (Antes de Filtrar os Casos).
 
-```{r preco1, fig.cap="Trajetórias Simuladas de duas Estratégias - Impacto Sobre Preço"}
-print(plot_preco_estrategia10)
+```{r}
+print(plot_demanda_pre_calibracao)
+```
+
+#### Comparação das Simulações com Série Histórica
+
+Exemplo de 5 Casos Comparados com o Histórico:
+
+```{r}
+kable(t(ensemble_com_erro[1:5,variaveis_exibir_ensemble]))
 ```
 
 
-** Análise de Perda de Oportunidade **
+- Exibindo Erro dos Casos Simulados em Relação aos Dados históricos (erro médio percentual).
 
-- Lucro Possível:
-
-```{r fig.cap="Comparação VPL Possível das Estratégias"}
-print(plot_whisker_lever_profit)
+```{r}
+histograma_erro_percentual
 ```
 
 
-- Perda de Oportunidade Absoluta:
+- Exibindo Erro dos Casos Simulados em Relação aos Dados históricos (erro médio quadrado).
 
-```{r fig.cap="Comparação Perda de Oportunidade das Estratégias"}
-print(plot_whisker_lever_regret)
+
+```{r}
+histograma_erro_medio_quadrado
 ```
 
 
-- Perda de Oportunidade Relativa:
+- Identificando o Cenário Simulado com o Menor Erro Médio Quadrado (MSE):
 
-```{r fig.cap="Comparação Perda de Oportunidade Relativa das Estratégias"}
-print(plot_whisker_lever_perc_regret)
+```{r}
+cenario_menor_erro
+```
+
+- Observando os Parâmetros deste Cenário:
+
+```{r}
+kable(parametros_cenario_menor_erro)
+```
+
+- Comparando Dados Simulados e Histórico Observado:
+
+```{r}
+plot_cenario_base_e_historico
 ```
 
 
-### Análise de Vulnerabilidades (Rodada 1)
+
+#### Definindo Casos a Simular
+
+- Definindo Casos Considerados plausíveis
+
+critério: A metade dos casos com menor Soma do Erro Médio Quadrado.
+
+```{r}
+percentil_utilizado_como_criterio
+percentil_ssr
+```
+
+- Definindo casos Considerados plausíveis (aqueles com erro quadrado médio menor do que o percentil). Exibindo casos:
+
+```{r}
+plot_cenarios_plausiveis
+```
+
+- Exibindo propriedades do ensemble a simular:
+
+```{r}
+str(ensemble_a_simular)
+```
+
+
+#### Simulando o Comportamento de Estratégias nos Casos
+
+- Observando Combinações de Estratégias a Simular:
+
+```{r}
+kable(t(results$Inputs$LeversFull))
+```
+
+
+- Projeto de Experimentos: Fatorial Completo. Gera-se o quadro de estratégias abaixo.
+
+```{r}
+kable(results$Inputs$Levers)
+```
+
+
+- Exibindo Resultados das Simulações
+
+```{r}
+plots_rodada1$plot_estrategia_candidata
+```
+
+
+#### Comparação das Estratégias - Análise da Perda de Oportunidade
+
+
+- Tabela de Análise da Perda de Oportunidade
+
+```{r}
+kable(results$AnaliseRegret$ResumoEstrategias)
+```
+
+- Gráficos para Comparação das Estratégias - NPV Profit:
+
+```{r}
+plots_rodada1$plot_whisker_lever_profit
+```
+
+- Gráficos para Comparação das Estratégias - NPV Regret:
+
+```{r}
+plots_rodada1$plot_whisker_lever_regret
+```
+
+- Gráficos para Comparação das Estratégias - NPV Regret Percentual:
+
+```{r}
+plots_rodada1$plot_whisker_lever_perc_regret
+```
+
+- Qual é a Estratégia Robusta?
+
+```{r}
+kable(t(results$Inputs$Levers[which(results$Inputs$Levers$Lever == results$EstrategiaCandidata),]))
+```
+
+### Análise de Vulnerabilidades da Estratégia Candidata
+
+- Dada que a estratégia mais robusta dentre as opções disponíveis foi identificada, em que circunstância esta estratégia tende a falhar?
+
+- Primeiro, é necessário definir um critério sobre o que é "falhar". Usamos o mesmo critério utilizado para a seleção desta estratégia (Percentil 75% do Regret Percentual).
+
+Ou seja, quando o regret percentual é maior do que:
+```{r}
+threshold_analise_vulnerabilidade
+```
+
+Visualizando este critério:
+
+```{r}
+histograma_regret_estrategia_candidata
+```
+
+
+A próxima pergunta a fazer é: "Em que circunstâncias esta estratégia leva a um arrependimento percentual maior do que o critério definido"? Ou seja, em que circunstâncias a empresa pode se arrepender desta estratégia?
+
+#### Random Forest - Feature Selection
+
+Aplica-se aqui a técnica Random Forest para prever a variável de interesse (estratégia fracassa ou não) em função das variáveis incertas. Utiliza-se a importância da variável definida pela redução média da acuracidade de predição
+
+
+
+#### Diferença entre Médias
+
+Uma possível abordagem é calcular a diferença entre as médias das variáveis incertas nos casos onde há alto regret versus os casos onde há baixo regret, para cada variável incerta.
+
+Quanto maior for a diferença entre estas médias, mais é possível que haja uma relação entre a variável incerta e o fracasso da estratégia definida.
+
+```{r}
+kable(ranking_variaveis_por_media)
+```
+
+
 
 ### Modificações do Modelo para a segunda Rodada
 
@@ -669,101 +809,14 @@ print(plot_whisker_lever_perc_regret)
 
 # Apêndices
 
-## Códigos da Ferramenta Computacional
-
-### Modelo Computacional:
-
-```{r}
-modelo
-```
-
-### Rotinas para a Simulação RDM
-
+## Código Fonte da Ferramenta Computacional
 
 ```{r}
 parse("funcoes.R")
 ```
 
 
-
-- **Função Simular RDM e Escolher Estrategia**: Simula cenários do RDM, realiza a análise de perda de oportunidade e define a estratégia candidata utilizando um critério pré-determinado:
-
+## Algoritmo para a Replicação dos Resultados
 ```{r}
-simularRDM_e_escolher_estrategia
-```
-
-- **Carregar Inputs**:
-
-```{r}
-carregar_inputs
-```
-
-- **Obter LHS Ensemble**: 
-
-```{r}
-obter_lhs_ensemble
-```
-
-- **Ampliar Ensemble como Levers**: 
-
-```{r}
-ampliar_ensemble_com_levers
-```
-
-
-
-- **Simular**: 
-
-```{r}
-simular
-```
-
-
-
-- **Simular RDM**: 
-
-```{r}
-simular_RDM
-```
-
-
-
-- **Calcular Regret**: 
-
-```{r}
-calcular_regret
-```
-
-
-
-- **Resumir Variável Resposta**: 
-
-```{r}
-resumir_variavel_resposta
-```
-
-
-
-- **Escolher Estratégia Candidata**: 
-
-```{r}
-escolher_estrategia_candidata
-```
-
-- **Calcular e Resumir Regret**: 
-
-```{r}
-calcular_e_resumir_regret
-```
-
-- **Analisar Ensemble com Melhor Estratégia**: 
-
-```{r}
-analisar_ensemble_com_melhor_estrategia
-```
-
-- **Funções do Aplicativo Web** :
-
-```{r}
-# server
+parse("analise.R")
 ```
