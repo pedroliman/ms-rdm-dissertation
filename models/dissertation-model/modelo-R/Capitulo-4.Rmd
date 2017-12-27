@@ -587,9 +587,48 @@ Parâmetros calibrados com este procedimento:
 
 ## Análise RDM
 
+### Processos Dinâmicos e Hipóteses Dinâmicas
+
+Pontos a usar
+
+- Evolução da Demanda de Novos Produtos.
+
+- O Processo de Difusão das Impressoras 3D.
+
+- Proteção de Propriedade Intelectual e Expiração de Patentes.
+
+https://techcrunch.com/2016/05/15/how-expiring-patents-are-ushering-in-the-next-generation-of-3d-printing/
+
+https://3dprintingindustry.com/news/3d-printing-patents-overview-81253/
+
+
+
+
+- Entrada de Novos Players.
+
+Hipóteses Dinâmicas a Testar:
+
+- Processo de Difusão do Produto:
+ - Incerteza Principal: Tamanho do Mercado e Velocidade da Difusão do produto.
+
+- Preço:
+ - Sensibilidade do Preço aos fatores que pressionam os preços do player.
+ 
+- Níveis de Investimento em P e D e relação com a Expiração de Patentes.
+
+
+- O que é melhor para uma empresa?
+- Investir muito ou pouco em PeD?
+- Investir em PeD protegendo sua propriedade intelectual ou fechando seu investimento protegendo-o com Patentes?
+
+
 ### XLRM
 
 ### Geração de Casos
+
+#### Definição de Parâmetros
+
+Patentes:
 
 #### Geração inicial de Casos Plausíveis
 

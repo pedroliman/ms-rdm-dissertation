@@ -8,6 +8,41 @@ USAR_DADOS_SALVOS = FALSE
 
 #### 4 Geração de Casos ####
 
+#### 4.0 Estimação de Parâmetros com Dados da 3D Systems ####
+
+#### Observando dados de Fundamentos ####
+dados_fundamentos = obter_dados_fundamentos_us_fundamentals()
+
+plot_lucro_bruto_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=GrossProfit, group=empresa)) +
+  geom_line(aes(color=empresa))+
+  geom_point(aes(color=empresa)) +
+  ylab(label = "Lucro Bruto")
+
+fundamentos_ddd = obter_fundamentos_financeiros_quandl("DDD")
+
+fundamentos_mtls = obter_fundamentos_financeiros_quandl("PRLB")
+
+plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "Invesitmento em P & D")
+
+plot_cash_net_income_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "NetIncome", nome_amigavel_variavel1 = "Lucro Líquido", variavel2 = "GrossProfit", nome_amigavel_variavel2 = "Lucro Bruto")
+
+
+
+fundamentos_3DSYSTEMS = obter_fundamentos_financeiros_quandl(company_code = "DDD")
+
+fundamentos_GE = obter_fundamentos_financeiros_quandl(company_code = "GE")
+
+fundamentos_3DSYSTEMS$Dados$OrcamentoPeD = fundamentos_3DSYSTEMS$Dados$ResearchAndDevelopmentExpenses / fundamentos_3DSYSTEMS$Dados$Revenue
+
+
+plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_3DSYSTEMS$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "Despesas com P & D")
+
+plot_orcamentoPeD__3dsystems = plot_linha_uma_variavel(fundamentos_3DSYSTEMS$Dados, variavel = "OrcamentoPeD", nome_amigavel_variavel = "OrçamentoPeD / Receita")
+
+
+# Despesas em Pesquisa e Desenvolvimento da 3D Systems em relação a PeD
+plot_orcamento_PeD_3DSystems = ggplot(DDD.orcamentoPeD)
+
 #### 4.1 Seleção de Casos Plausíveis ####
 
 # Gerar casos para simulação com base em estimativa inicial de parâmetros.
@@ -15,7 +50,7 @@ opcoes_iniciais = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 20,
+  N = 300,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min",
@@ -189,7 +224,11 @@ plots_rodada1 = list(
   plot_estrategia_candidata = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = results$EstrategiaCandidata),
   plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1RegretPerc"),
   plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1Regret"),
-  plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1")
+  plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1"),
+  plot_whisker_lever_share = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare1"),
+  plot_whisker_lever_industry_order_rate = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "fIndustryOrderRate"),
+  plot_whisker_lever_price = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sPrice1"),
+  plot_whisker_lever_installed_base = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sInstalledBase1")
 )
 
 # Exibir Resultados (séries temporais contra as estratégias).
@@ -262,10 +301,6 @@ plot_patentes_players = plot_linha_uma_variavel_players_um_cenario(dados = resul
                                                                    variavel = "aPatentesEmpresaTemAcesso", 
                                                                    nome_amigavel_variavel = "Patentes acessadas pela Empresa", 
                                                                    opcoes = opcoes)
-
-
-
-
 
 
 
@@ -948,21 +983,6 @@ resultado_unico <- data.frame(ode(y=stocks, times=simtime, func = modelo,
 
 
 
-#### Observando dados de Fundamentos ####
-dados_fundamentos = obter_dados_fundamentos_us_fundamentals()
-
-plot_lucro_bruto_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=GrossProfit, group=empresa)) +
-  geom_line(aes(color=empresa))+
-  geom_point(aes(color=empresa)) +
-  ylab(label = "Lucro Bruto")
-
-fundamentos_ddd = obter_fundamentos_financeiros_quandl("DDD")
-
-fundamentos_mtls = obter_fundamentos_financeiros_quandl("PRLB")
-
-plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "Invesitmento em P & D")
-
-plot_cash_net_income_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "NetIncome", nome_amigavel_variavel1 = "Lucro Líquido", variavel2 = "GrossProfit", nome_amigavel_variavel2 = "Lucro Bruto")
 
 ## GE
 
