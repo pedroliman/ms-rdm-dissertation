@@ -15,7 +15,7 @@ opcoes_iniciais = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 100,
+  N = 20,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min",
@@ -217,6 +217,61 @@ results$AnaliseRegret$ResumoEstrategias
 plots_rodada1$plot_whisker_lever_perc_regret
 
 
+## Código para Entender o Comportamento de Variáveis que são desdobradas por players.
+
+# Gerando um Plot para observar uma mesma variável em relação à varios players
+
+estrategia_plot_players = results$EstrategiaCandidata
+cenario_plot_players = unique(results$Ensemble[,"Scenario"])[1]
+
+
+
+plot_vpl_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                              estrategia = estrategia_plot_players, 
+                                                              cenario = cenario_plot_players, 
+                                                              variavel = "sNPVProfit", 
+                                                              nome_amigavel_variavel = "VPL", 
+                                                              opcoes = opcoes)
+
+plot_share_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                                estrategia = estrategia_plot_players, 
+                                                                cenario = cenario_plot_players, 
+                                                                variavel = "aOrderShare", 
+                                                                nome_amigavel_variavel = "Market Share", 
+                                                                opcoes = opcoes)
+
+
+plot_net_income_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                                     estrategia = estrategia_plot_players, 
+                                                                     cenario = cenario_plot_players, 
+                                                                     variavel = "fNetIncome", 
+                                                                     nome_amigavel_variavel = "Lucro Líquido", 
+                                                                     opcoes = opcoes)
+
+
+plot_performance_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                                      estrategia = estrategia_plot_players, 
+                                                                      cenario = cenario_plot_players, 
+                                                                      variavel = "aPerformance", 
+                                                                      nome_amigavel_variavel = "Performance do Produto", 
+                                                                      opcoes = opcoes)
+
+plot_patentes_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                                   estrategia = estrategia_plot_players, 
+                                                                   cenario = cenario_plot_players, 
+                                                                   variavel = "aPatentesEmpresaTemAcesso", 
+                                                                   nome_amigavel_variavel = "Patentes acessadas pela Empresa", 
+                                                                   opcoes = opcoes)
+
+
+
+
+
+
+
+
+
+
 #### 4.3 Análise de Vulnerabilidade ####
 
 # Visualizando um histograma do Regret da Estratégia Candidata
@@ -375,6 +430,7 @@ ranking_variaveis_por_media
 plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel = "aPerfSlope", nome_amigavel_var = "Impacto Patentes sobre Performance")
 
 plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aPerfSlope", nome_amigavel_var1 = "Impacto Patentes sobre Performance",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
+
 
 plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aDesiredMarketShare3", nome_amigavel_var1 = "MktShareDesejadoPlayer3",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
 
@@ -856,51 +912,6 @@ landscape_estrategia1 = plot_landscape_futuros_plausiveis(
   variavel2 = "aNormalCapacityUtilization",
   n_variavel2 = "Utilização da Capacidade"
 )
-
-
-## Código para Entender o Comportamento de Variáveis que são desdobradas por players.
-
-# Gerando um Plot para observar uma mesma variável em relação à varios players
-
-estrategia_plot_players = results$EstrategiaCandidata
-cenario_plot_players = unique(results$Ensemble[,"Scenario"])[1]
-
-plot_vpl_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                              estrategia = estrategia_plot_players, 
-                                                              cenario = cenario_plot_players, 
-                                                              variavel = "sNPVProfit", 
-                                                              nome_amigavel_variavel = "VPL", 
-                                                              opcoes = opcoes)
-
-plot_share_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                              estrategia = estrategia_plot_players, 
-                                                              cenario = cenario_plot_players, 
-                                                              variavel = "aOrderShare", 
-                                                              nome_amigavel_variavel = "Market Share", 
-                                                              opcoes = opcoes)
-
-
-plot_net_income_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                                estrategia = estrategia_plot_players, 
-                                                                cenario = cenario_plot_players, 
-                                                                variavel = "fNetIncome", 
-                                                                nome_amigavel_variavel = "Lucro Líquido", 
-                                                                opcoes = opcoes)
-
-
-plot_performance_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                                     estrategia = estrategia_plot_players, 
-                                                                     cenario = cenario_plot_players, 
-                                                                     variavel = "aPerformance", 
-                                                                     nome_amigavel_variavel = "Performance do Produto", 
-                                                                     opcoes = opcoes)
-
-plot_patentes_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                                      estrategia = estrategia_plot_players, 
-                                                                      cenario = cenario_plot_players, 
-                                                                      variavel = "aPatentesEmpresaTemAcesso", 
-                                                                      nome_amigavel_variavel = "Patentes acessadas pela Empresa", 
-                                                                      opcoes = opcoes)
 
 
 
