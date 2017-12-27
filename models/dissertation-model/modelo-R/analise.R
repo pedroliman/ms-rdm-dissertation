@@ -30,7 +30,7 @@ opcoes = opcoes_iniciais
 planilha_inputs = "./calibracao/params_calibracao_com_estrategia.xlsx"
 
 # Rodar Simulação:
-START<-2007; FINISH <-2027; STEP<-0.125; SIM_TIME <- seq(START, FINISH, by=STEP)
+START<-2007; FINISH <-2027; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
@@ -165,7 +165,7 @@ ggplot(as.data.frame(ensemble_a_simular), aes(x=aReferencePopulation, y=aWOMStre
 
 # Definir primeiro ano da simulação com dados reais.
 opcoes$SimularApenasCasoBase = FALSE
-START<-2007; FINISH <-2027; STEP<-0.125; SIM_TIME <- seq(START, FINISH, by=STEP)
+START<-2007; FINISH <-2027; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
