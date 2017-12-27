@@ -63,6 +63,8 @@ plot_demanda_pre_calibracao = plot_linha_uma_variavel_ensemble(dados = subset(re
 
 plot_demanda_pre_calibracao = plot_demanda_pre_calibracao + annotate("text", x = 2017.2, y = max(resultados_casos_plausiveis$DadosSimulados$fIndustryOrderRate), label=c("Hoje"),hjust=0)
 
+plot_demanda_pre_calibracao
+
 # Comparar Simulações com Dados históricos de Demanda
 ensemble_com_erro = adicionar_erro_ao_ensemble(results = resultados_casos_plausiveis, variavel_calibracao = variavel_calibracao, planilha_calibracao = "./calibracao/dados_calibracao.xlsx", opcoes = opcoes)
 ensemble_com_erro = as.data.frame(ensemble_com_erro)
