@@ -856,9 +856,49 @@ landscape_estrategia1 = plot_landscape_futuros_plausiveis(
 )
 
 
+## Código para Entender o Comportamento de Variáveis que são desdobradas por players.
+
+# Gerando um Plot para observar uma mesma variável em relação à varios players
+
+estrategia_plot_players = results$EstrategiaCandidata
+cenario_plot_players = unique(results$Ensemble[,"Scenario"])[1]
+
+plot_vpl_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                              estrategia = estrategia_plot_players, 
+                                                              cenario = cenario_plot_players, 
+                                                              variavel = "sNPVProfit", 
+                                                              nome_amigavel_variavel = "VPL", 
+                                                              opcoes = opcoes)
+
+plot_share_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                              estrategia = estrategia_plot_players, 
+                                                              cenario = cenario_plot_players, 
+                                                              variavel = "aOrderShare", 
+                                                              nome_amigavel_variavel = "Market Share", 
+                                                              opcoes = opcoes)
 
 
+plot_net_income_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                                estrategia = estrategia_plot_players, 
+                                                                cenario = cenario_plot_players, 
+                                                                variavel = "fNetIncome", 
+                                                                nome_amigavel_variavel = "Lucro Líquido", 
+                                                                opcoes = opcoes)
 
+
+plot_performance_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                                     estrategia = estrategia_plot_players, 
+                                                                     cenario = cenario_plot_players, 
+                                                                     variavel = "aPerformance", 
+                                                                     nome_amigavel_variavel = "Performance do Produto", 
+                                                                     opcoes = opcoes)
+
+plot_patentes_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                                      estrategia = estrategia_plot_players, 
+                                                                      cenario = cenario_plot_players, 
+                                                                      variavel = "aPatentesEmpresaTemAcesso", 
+                                                                      nome_amigavel_variavel = "Patentes acessadas pela Empresa", 
+                                                                      opcoes = opcoes)
 
 
 

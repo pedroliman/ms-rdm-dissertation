@@ -23,6 +23,8 @@ library(readxl)
 library(gdata)
 library(scales)
 library(Quandl)
+library(tidyr)
+
 # library(prim)
 
 ##### CONSTANTES #####
@@ -817,6 +819,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     ,fIndustryOrderRate = unname(fIndustryOrderRate) 
     ,aOrderShare = unname(aOrderShare)
     ,aPerformance = unname(aPerformance)
+    ,aPatentesEmpresaTemAcesso = unname(aPatentesEmpresaTemAcesso)
     ,aNonAdopters = unname(aNonAdopters)
     ,fReorderRate = unname(fReorderRate) 
     ,aIndustryShipments = unname(aIndustryShipments)
@@ -1807,6 +1810,29 @@ plot_linha_uma_variavel_ensemble_uma_estrategia = function(dados, variavel, nome
     theme(legend.position="bottom")  +
     labs(color = "Estratégia")
 }
+
+plot_linha_uma_variavel_players_um_cenario = function(dados = results$DadosSimulados, estrategia = 1, cenario = 4, variavel = "sNPVProfit", nome_amigavel_variavel = "VPL", opcoes = opcoes){
+  variaveis_players = paste(variavel, 1:N_PLAYERS, sep="")
+  # Filtrando Dados de Interesse
+  dados = dados[,c(opcoes$VarTempo, opcoes$VarCenarios, opcoes$VarEstrategias, variaveis_players)] %>% subset(., Lever == estrategia & Scenario == cenario)
+  
+  # Trazer Dados Simulados para o formato "Longo" para permitir que o gráfico seja realizado
+  dados_longo = tidyr::gather(dados, player, variavel, 4:(3+N_PLAYERS))
+  
+  # Removendo Nome longo da Variável
+  dados_longo$player =  gsub(variavel,"P", dados_longo$player,ignore.case=T)
+  
+  # Adicionar ruído à variável para o gráfico distinguir melhor os players
+  
+  p = ggplot2::ggplot(dados_longo, aes(x= time, y= variavel, color=player, group = player))
+  p + geom_line() +
+    ylab(nome_amigavel_variavel) + 
+    xlab("Tempo (anos)") + 
+    theme(legend.position="bottom")  +
+    labs(color = "Player")
+}
+
+
 
 plot_linha_uma_variavel_ensemble = function(dados, variavel, nome_amigavel_variavel, estrategia) {
   
