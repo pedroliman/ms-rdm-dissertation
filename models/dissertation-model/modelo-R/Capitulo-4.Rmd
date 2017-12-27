@@ -779,7 +779,54 @@ A próxima pergunta a fazer é: "Em que circunstâncias esta estratégia leva a 
 
 #### Random Forest - Feature Selection
 
-Aplica-se aqui a técnica Random Forest para prever a variável de interesse (estratégia fracassa ou não) em função das variáveis incertas. Utiliza-se a importância da variável definida pela redução média da acuracidade de predição
+Aplica-se aqui a técnica Random Forest para prever a variável de interesse (estratégia fracassa ou não) em função das variáveis incertas. Utiliza-se a importância da variável definida pela redução média da acuracidade de predição.
+
+- Tabela de Seleção de Variáveis:
+```{r}
+kable(print(tabela_random_forest,row.names = F))
+```
+
+
+- Visualizando a Importância das Variáveis:
+
+```{r}
+randomForest::varImpPlot(forest)
+```
+
+
+Este gráfico mostra aproximadamente a chance do caso ser de interese à medida que o market share desejado do player 2 aumenta:
+
+```{r}
+plot_random_forest_1d
+```
+
+
+E este gráfico mostra duas dimensões combinadas, usando o random forest:
+
+```{r}
+plot_parcial2d
+```
+
+É possível observar que os gráficos fazem sentido com os dados simulados. Observando a relação entre estas duas variáveis identificadas com o random forest com um gráfico simples de dispersão:
+
+```{r}
+dispersao_variaveis_random_forest
+```
+
+Este comportamento também pode ser observado quando observa-se a variável de perda de oportunidade diretamente.
+
+```{r}
+landscape_estrategia_comparacao
+```
+
+
+
+
+#### Algoritmo Boruta - Feature Selection
+
+```{r}
+plot(boruta_output, cex.axis=.5, las=3, xlab="", main="Importância das Variáveis")
+```
 
 
 
@@ -818,5 +865,5 @@ parse("funcoes.R")
 
 ## Algoritmo para a Replicação dos Resultados
 ```{r}
-parse("analise.R")
+# parse("analise.R")
 ```

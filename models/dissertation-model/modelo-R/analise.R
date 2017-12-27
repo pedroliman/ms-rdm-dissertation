@@ -221,7 +221,6 @@ plots_rodada1$plot_whisker_lever_perc_regret
 
 regret_perc_estrategia_candidata = results$AnaliseRegret$Dados$sNPVProfit1RegretPerc[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata)]
 
-
 # O critério para realizar a análise de vulnerabilidade foi o mesmo usado para definir a estratégia candidata:
 threshold_analise_vulnerabilidade = as.numeric(results$AnaliseRegret$ResumoEstrategias[which(results$AnaliseRegret$ResumoEstrategias$Lever==results$EstrategiaCandidata),paste(opcoes$VarResposta, opcoes$VarCriterio, sep="")]) 
 
@@ -248,27 +247,10 @@ df_vulnerabilidade = obter_df_vulnerabilidade(results = results,
                                               sentido_vulnerabilidade = ">=")
 
 
-
-#### 4.3.0 - Gerando Ranking de Variáveis considerando médias. ####
-ranking_variaveis_por_media = obter_df_diff_media_casos_interesse(df_vulnerabilidade = df_vulnerabilidade)
-
-ranking_variaveis_por_media
+y = factor(df_vulnerabilidade$CasoInteresse)
+x = df_vulnerabilidade[,4:ncol(df_vulnerabilidade)]
 
 
-plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel = "aPerfSlope", nome_amigavel_var = "Impacto Patentes sobre Performance")
-
-plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aPerfSlope", nome_amigavel_var1 = "Impacto Patentes sobre Performance",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
-
-plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aDesiredMarketShare3", nome_amigavel_var1 = "MktShareDesejadoPlayer3",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
-
-plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aTempoMedioAvaliacao", nome_amigavel_var1 = "Tempo de Avaliação das Patentes",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
-
-# Definindo Variáveis x e y para as análises seguintes:
-n_variaveis_shortlist = 100
-variaveis_shortlist = as.vector(ranking_variaveis_por_media$Variavel[1:(min(n_variaveis_shortlist, nrow(ranking_variaveis_por_media)))])
-
-y = df_vulnerabilidade$CasoInteresse
-x = df_vulnerabilidade[,variaveis_shortlist]
 
 #### 4.3.1 - Feature Ranking - Outros Algoritmos ####
 
@@ -280,29 +262,83 @@ library(party)
 cf1 <- party::cforest(y ~ . , data= x, control=cforest_unbiased(mtry=2,ntree=50))
 importancia_party = varimp(cf1)
 varimp(cf1, conditional=TRUE)
-
 View(importancia_party)
 
+caret::varImp(cf1)
+
+# Usando uma Random forest "padrão"
+library(randomForest)
+forest = randomForest::randomForest(factor(y)~., data = x)
+plot_importancia_forest = randomForest::varImpPlot(forest)
+
+tabela_random_forest = as.data.frame(randomForest::importance(forest)) 
+
+tabela_random_forest$Variavel = rownames(tabela_random_forest)
+
+tabela_random_forest = tabela_random_forest[order(-tabela_random_forest$MeanDecreaseGini),]
+
+tabela_random_forest$Rank = 1:nrow(tabela_random_forest)
+
+tabela_random_forest = tabela_random_forest[,c(3,2,1)]
+
+rownames(tabela_random_forest) = NULL
+
+tabela_random_forest
+
+plot_importancia_forest
+
+
+library(randomForestExplainer)
+library(pdp)
+
+
+pdp1 = pdp::partial(forest, tabela_random_forest$Variavel[2])
+plot_random_forest_1d = pdp::plotPartial(pdp1)
+
+
+pdp2 = pdp::partial(forest, tabela_random_forest$Variavel[1:2])
+
+plot_parcial2d = pdp::plotPartial(pdp2)
+
+
+landscape_estrategia_comparacao = plot_landscape_futuros_plausiveis(
+  results, estrategia = estrategia_candidata, 
+  variavelresp = variavel_resposta,
+  nomeamigavel_variavelresp = "LOF Percentual",
+  variavel1  = tabela_random_forest$Variavel[1],
+  n_variavel1 = "Estratégia Capacidade Player2",
+  variavel2 = tabela_random_forest$Variavel[2],
+  n_variavel2 = "Mkt Share Desejado Player 2"
+)
+
+
+dispersao_variaveis_random_forest = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade,
+                                            variavel1 = tabela_random_forest$Variavel[1],
+                                            nome_amigavel_var1 = "Estratégia Capacidade Player2",
+                                            variavel2 = tabela_random_forest$Variavel[2],
+                                            nome_amigavel_var2 = "Mkt Share Desejado Player 2")
+
+
 # Usando as Variáveis com Shortlist, o resultado funcionou.
-library(relaimpo)
-lmMod <- lm(y ~ . , data = x)
-relImportance <- calc.relimp(lmMod, type = "lmg", rela = TRUE)
-calc.relimp(lmMod, rela = TRUE)
-# calculate relative importance scaled to 100
-sort(relImportance$lmg, decreasing=TRUE)  # rel
+# library(relaimpo)
+# lmMod <- lm(y ~ . , data = x)
+# relImportance <- calc.relimp(lmMod, type = "lmg", rela = TRUE)
+# calc.relimp(lmMod, rela = TRUE)
+# # calculate relative importance scaled to 100
+# sort(relImportance$lmg, decreasing=TRUE)  # rel
 
 # por algum motivo o discount Rate não está lá dentro:
 
-library(breakDown)
-br = broken(lmMod, new_observation = ensemble_e_resultados[18,])
-plot(br)
+# library(breakDown)
+# br = broken(lmMod, new_observation = ensemble_e_resultados[18,])
+# plot(br)
 
 
 ### O resultado desta análise fez um pouco de sentido (e não é óbvio).
-library(earth)
-marsModel <- earth(y ~ ., data= x) 
-ev <- evimp(marsModel)
-plot(ev)
+# library(earth)
+# marsModel <- earth(y ~ ., data= x) 
+# ev <- evimp(marsModel)
+# plot(ev)
 
 
 # Stepwise (Também faz sentido)
@@ -320,9 +356,32 @@ library(Boruta)
 boruta_output <- Boruta(y ~ ., data=na.omit(x), doTrace=2)
 boruta_signif <- names(boruta_output$finalDecision[boruta_output$finalDecision %in% c("Confirmed", "Tentative")])
 print(boruta_signif)
-plot(boruta_output, cex.axis=.7, las=2, xlab="", main="Variable Importance")  # plot variable importance
+plot_boruta = plot(boruta_output, cex.axis=.5, las=3, xlab="", main="Variable Importance")  # plot variable importance
 
-boruta_output$ImpHistory
+
+plot_boruta = plot(boruta_output, cex.axis=.7, las=2, mar=c(5,8,4,2), xlab="", main="Variable Importance")  # plot variable importance
+
+
+plot_boruta
+
+#### 4.3.1 - Gerando Ranking de Variáveis considerando apenas médias.####
+ranking_variaveis_por_media = obter_df_diff_media_casos_interesse(df_vulnerabilidade = df_vulnerabilidade)
+
+ranking_variaveis_por_media
+
+
+plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel = "aPerfSlope", nome_amigavel_var = "Impacto Patentes sobre Performance")
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aPerfSlope", nome_amigavel_var1 = "Impacto Patentes sobre Performance",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aDesiredMarketShare3", nome_amigavel_var1 = "MktShareDesejadoPlayer3",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aTempoMedioAvaliacao", nome_amigavel_var1 = "Tempo de Avaliação das Patentes",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
+
+
+
+
+
 
 
 variavel_1 = boruta_signif[1]
@@ -337,6 +396,14 @@ landscape_estrategia = plot_landscape_futuros_plausiveis(
   variavel2 = variavel_2,
   n_variavel2 = "Utilização da Capacidade"
 )
+
+
+# Definindo Variáveis x e y para as análises seguintes:
+n_variaveis_shortlist = 100
+variaveis_shortlist = as.vector(ranking_variaveis_por_media$Variavel[1:(min(n_variaveis_shortlist, nrow(ranking_variaveis_por_media)))])
+
+
+
 
 #### 4.3.2 - CART ####
 
@@ -353,9 +420,26 @@ summary(cart_fit) # detailed summary of splits
 # Observando a Importância das Variáveis
 cart_fit$variable.importance
 
+View(cart_fit$variable.importance)
+
 summary(cart_fit)
 
+plot(cart_fit$variable.importance)
+
+
+caret::varImp(cart_fit)
+
 rpart.plot::prp(fit, digits = 3, clip.right.labs = FALSE, varlen = 0)
+
+### Rodando o CART com o caret
+library(caret)
+cartFit <- train(y ~ ., #i.e., "Class is defined as all variables in the data frame
+                 data = x, #defining the dataframe as Sonar, from mlbench
+                 method="rpart",
+                 trControl = trainControl(method = "boot",
+                                          returnResamp="all"))
+varImp(cartFit)
+
 
 
 #### 4.3.2 - PRIM ####
