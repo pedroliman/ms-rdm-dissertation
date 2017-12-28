@@ -53,12 +53,6 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   
   n_tempo = length(simtime)
   
-  list.variaveis.globais <<- list(
-    # sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
-    sReportedIndustryVolume = matrix(NA, ncol = 1, nrow = n_tempo),
-    aExpectedIndustryDemand = matrix(NA, ncol = 1, nrow = n_tempo)
-  )
-  
   ordem_vetores_players = order(names(parametros[grep("aSwitchForCapacityStrategy", x = names(parametros))]))
   
   ##### VARIÁVEIS DE ENTRADA - AUXILIARES #####
@@ -155,24 +149,24 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   # Informando Estoques Iniciais, sem ajustes, apenas para calcular o primeiro tempo.
   stocks_iniciais  <- c(
     sNPVProfit = rep(0, times = N_PLAYERS)
-    ,sValueOfBacklog = rep(12738001, times = N_PLAYERS)
-    ,sBacklog = rep(12738, times = N_PLAYERS) 
-    ,sInstalledBase = rep(0, times = N_PLAYERS)  # rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+    ,sValueOfBacklog = rep(100000, times = N_PLAYERS)
+    ,sBacklog = rep(100, times = N_PLAYERS) 
+    ,sInstalledBase = rep(2000, times = N_PLAYERS)  # rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
     ,sPrice = unname(auxs$aInitialPrice)
-    ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
+    ,sCumulativeAdopters = 2000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
     # Teste 28/12/10:05: Removendo a Replicação Inicial desta variável.
     # ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
-    ,sReportedIndustryVolume = 101904
+    ,sReportedIndustryVolume = 100
     ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
-    ,sPerceivedCompTargetCapacity = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-    ,sSmoothCapacity1 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-    ,sSmoothCapacity2 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
-    ,sSmoothCapacity3 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
+    ,sPerceivedCompTargetCapacity = rep(1000, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity1 = rep(100, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity2 = rep(100, times = N_PLAYERS) # Este estoque possui formula
+    ,sSmoothCapacity3 = rep(100, times = N_PLAYERS) # Este estoque possui formula
     
     ,sInvestimentoNaoRealizadoPeD = rep(1000, times = N_PLAYERS)
-    ,sPatentesRequisitadas = rep(1000, times = N_PLAYERS)
-    ,sPatentesEmpresa = rep(1000, times = N_PLAYERS)
-    ,sPatentesEmDominioPublicoUteis = 1000
+    ,sPatentesRequisitadas = rep(100, times = N_PLAYERS)
+    ,sPatentesEmpresa = rep(100, times = N_PLAYERS)
+    ,sPatentesEmDominioPublicoUteis = 200
     ,sInvestimentoPeDDepreciar = rep(1000, times = N_PLAYERS)
     
   ) 
@@ -182,7 +176,14 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   
   for(i in 1:iteracoes_aquecimento_estoques){
     
-    estoques_calculados = modelo(time = 0, stocks = stocks_iniciais, auxs = auxs, modo = "inicial")
+    # Criando List com variaveis globais - Antes de Inicializar o Modelo.
+    list.variaveis.globais <<- list(
+      # sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
+      sReportedIndustryVolume = matrix(NA, ncol = 1, nrow = n_tempo),
+      aExpectedIndustryDemand = matrix(NA, ncol = 1, nrow = n_tempo)
+    )
+    
+    estoques_calculados = modelo(time = START, stocks = stocks_iniciais, auxs = auxs, modo = "inicial")
     
     stocks_iniciais  <- c(
       sNPVProfit = unname(stocks_iniciais[grep("sNPVProfit", x = names(stocks_iniciais))]) 
@@ -229,6 +230,15 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   #   ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
   # ) 
   
+  
+  # Criando List Novamente, para manter a list limpa.
+  list.variaveis.globais <<- list(
+    # sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
+    sReportedIndustryVolume = matrix(NA, ncol = 1, nrow = n_tempo),
+    aExpectedIndustryDemand = matrix(NA, ncol = 1, nrow = n_tempo)
+  )
+  
+  
   resultado_completo = data.frame(deSolve::ode(y=stocks, simtime, func = modelo, 
                                       parms=auxs, method="euler"))
   # Posso filtrar os resultados ou não:
@@ -261,6 +271,13 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       ano_futuro_inicial = START
     }
     
+    
+    ## Browser: Se o Tempo for igual ao Start, verificar se existe algum estoque negativo.
+    if(time == START){
+      if(any(stocks<0)){
+        browser ()
+      }
+    }
     
     variaveis_periodo_historico = list(
       # Todas as Estratégias no Cenário Base são agressivas
@@ -330,8 +347,9 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     aInitialNewAdoptersOrderRate = aInitialIndustryShipments*(1-aInitialReorderShare)
     
     aInitialAdoptionRate = aInitialNewAdoptersOrderRate / aUnitsPerHousehold
-    
-    aInitialCumulativeAdopters2 = ((aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))-aInnovatorAdoptionFraction)*(aPopulation/aWOMStrength)
+    # Formula Original (Está gerando números negativos por causa do Innovator Adoption Fraction).
+    # aInitialCumulativeAdopters2 = ((aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))-aInnovatorAdoptionFraction)*(aPopulation/aWOMStrength)
+    aInitialCumulativeAdopters2 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
     
     aInitialCumulativeAdopters = aInitialCumulativeAdopters2
     
@@ -456,6 +474,9 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[1,]
     }
     
+    if(aLaggedIndustryVolume < 0) {
+      browser()
+    }
 
     aExpGrowthInVolume =  log(sReportedIndustryVolume/aLaggedIndustryVolume)/aTimeForHistoricalVolume
     
