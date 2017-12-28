@@ -56,7 +56,7 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   list.variaveis.globais <<- list(
     # sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
     sReportedIndustryVolume = matrix(NA, ncol = 1, nrow = n_tempo),
-    aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
+    aExpectedIndustryDemand = matrix(NA, ncol = 1, nrow = n_tempo)
   )
   
   ordem_vetores_players = order(names(parametros[grep("aSwitchForCapacityStrategy", x = names(parametros))]))
@@ -79,7 +79,7 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   
                   # Outras Variáveis.
                   ,aDiscountRate = unname(parametros["aDiscountRate"])
-                  ,aNormalDeliveryDelay = rep(unname(parametros["aNormalDeliveryDelay"]), times = N_PLAYERS)
+                  ,aNormalDeliveryDelay = unname(parametros["aNormalDeliveryDelay"])
                   ,aSwitchForCapacity = unname(parametros["aSwitchForCapacity"])
                   # Vamos testar apenas um parâmetro por enquanto
                   ,aFractionalDiscardRate = unname(parametros["aFractionalDiscardRate"]) # unname(pars["aFractionalDiscardRate"]) # Original 0.1
@@ -93,7 +93,7 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aUnitsPerHousehold = unname(parametros["aUnitsPerHousehold"])
                   ,aSwitchForShipmentsInForecast = unname(parametros["aSwitchForShipmentsInForecast"])
                   ,aVolumeReportingDelay = unname(parametros["aVolumeReportingDelay"])
-                  ,aForecastHorizon = rep(unname(parametros["aForecastHorizon"]), times = N_PLAYERS)
+                  ,aForecastHorizon = unname(parametros["aForecastHorizon"])
                   ,aCapacityAcquisitionDelay = unname(parametros["aCapacityAcquisitionDelay"])
                   ,aTimeForHistoricalVolume = unname(parametros["aTimeForHistoricalVolume"])
                   # Market Sector
@@ -101,23 +101,23 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aSensOfAttractToAvailability = unname(parametros["aSensOfAttractToAvailability"])
                   ,aSensOfAttractToPrice = unname(parametros["aSensOfAttractToPrice"])
                   # Learning Curve Params
-                  ,aLCStrength = rep(unname(parametros["aLCStrength"]), times = N_PLAYERS)
+                  ,aLCStrength = unname(parametros["aLCStrength"])
                   ,aInitialProductionExperience = rep(unname(parametros["aInitialProductionExperience"]), times = N_PLAYERS)
-                  ,aRatioOfFixedToVarCost = rep(unname(parametros["aRatioOfFixedToVarCost"]), times = N_PLAYERS)
-                  ,aNormalProfitMargin = rep(unname(parametros["aNormalProfitMargin"]), times = N_PLAYERS)
-                  ,aNormalCapacityUtilization = rep(unname(parametros["aNormalCapacityUtilization"]), times = N_PLAYERS)
+                  ,aRatioOfFixedToVarCost = unname(parametros["aRatioOfFixedToVarCost"])
+                  ,aNormalProfitMargin = unname(parametros["aNormalProfitMargin"])
+                  ,aNormalCapacityUtilization = unname(parametros["aNormalCapacityUtilization"])
                   #Target Capacity Sector
-                  ,aMinimumEfficientScale = rep(unname(parametros["aMinimumEfficientScale"]), times = N_PLAYERS) # Original 100000
+                  ,aMinimumEfficientScale = unname(parametros["aMinimumEfficientScale"]) # Original 100000
                   
                   # Esta variavel é desdobrada por player.
-                  ,aWeightOnSupplyLine= rep(unname(parametros["aWeightOnSupplyLine"]), times = N_PLAYERS)
-                  ,aTimeToPerceiveCompTargetCapacity = rep(unname(parametros["aTimeToPerceiveCompTargetCapacity"]), times = N_PLAYERS)
+                  ,aWeightOnSupplyLine= unname(parametros["aWeightOnSupplyLine"])
+                  ,aTimeToPerceiveCompTargetCapacity = unname(parametros["aTimeToPerceiveCompTargetCapacity"])
                   
                   # Price Sector
                   ,aPriceAdjustmentTime = unname(parametros["aPriceAdjustmentTime"])
-                  ,aSensOfPriceToCosts = rep(unname(parametros["aSensOfPriceToCosts"]), times = N_PLAYERS)
-                  ,aSensOfPriceToDSBalance = rep(unname(parametros["aSensOfPriceToDSBalance"]), times = N_PLAYERS)
-                  ,aSensOfPriceToShare = rep(unname(parametros["aSensOfPriceToShare"]), times = N_PLAYERS)
+                  ,aSensOfPriceToCosts = unname(parametros["aSensOfPriceToCosts"])
+                  ,aSensOfPriceToDSBalance = unname(parametros["aSensOfPriceToDSBalance"])
+                  ,aSensOfPriceToShare = unname(parametros["aSensOfPriceToShare"])
                   # Capacity Sector
                   ,aSwitchForPerfectCapacity = unname(parametros["aSwitchForPerfectCapacity"])
                   
@@ -456,10 +456,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[1,]
     }
     
-    if(modo=="completo"){
-      browser()
-    }
-    
+
     aExpGrowthInVolume =  log(sReportedIndustryVolume/aLaggedIndustryVolume)/aTimeForHistoricalVolume
     
     aExpectedIndustryDemand = sReportedIndustryVolume*exp(aForecastHorizon*aCapacityAcquisitionDelay*aExpGrowthInVolume)
