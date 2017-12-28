@@ -62,7 +62,8 @@ opcoes_iniciais = list(
   Paralelo = TRUE,
   ModoParalelo = "FORK",
   SimularApenasCasoBase = TRUE,
-  FullFactorialDesign = TRUE
+  FullFactorialDesign = TRUE,
+  FiltrarCasosPlausiveis = TRUE
 )
 
 opcoes = opcoes_iniciais
@@ -80,7 +81,7 @@ planilha_opcao2.1_futuro = planilha_simulacao_calibracao_historico
 percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
-n_casos_total = 400
+n_casos_total = 32 # 400
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_calibracao_historico, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
@@ -368,89 +369,6 @@ salvar_plots_result(results = results2.1,
 
 
 # 
-
-#' salvar_plots_result
-#'
-#' Esta função gera uma série de gráficos a partir de um objeto de resultados
-#' @param results  objeto de resultados retornado pela função simular_RDM
-#' @param cenario_plot_players um cenário escolhido para exibir plots comparando os players.
-#' @param estrategia_candidata o número de uma estratégia candidata a testar para filtrar os plots
-#' @param opcoes variável global de opções.
-#'
-#' @return não gera nenhum retorno. Esta função salva os gráficos na pasta /imagem.
-#' @export
-#'
-salvar_plots_result = function(results, cenario_plot_players, estrategia_candidata, opcoes = opcoes){
-  # Nome Objeto
-  nome_resultado = deparse(substitute(results))
-  
-  estrategia_plot_players = estrategia_candidata
-  
-  plots_linha_geral = list(
-    plot_estrategia_candidata_vpl = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = estrategia_candidata),
-    plot_estrategia_candidata_preco = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = estrategia_candidata),
-    plot_estrategia_candidata_share = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "aOrderShare1", nome_amigavel_variavel = "Market Share", estrategia = estrategia_candidata),
-    plot_estrategia_candidata_demanda_global = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "fIndustryOrderRate", nome_amigavel_variavel = "Demanda Global", estrategia = estrategia_candidata)
-  )
-  
-  plots_whisker = list(
-    plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1RegretPerc"),
-    plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1Regret"),
-    plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1"),
-    plot_whisker_lever_share = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare1"),
-    plot_whisker_lever_industry_order_rate = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "fIndustryOrderRate"),
-    plot_whisker_lever_price = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sPrice1"),
-    plot_whisker_lever_installed_base = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sInstalledBase1")
-  )
-  
-  plots_players = list(
-    plot_players_vpl = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                                  estrategia = estrategia_plot_players, 
-                                                                  cenario = cenario_plot_players, 
-                                                                  variavel = "sNPVProfit", 
-                                                                  nome_amigavel_variavel = "VPL", 
-                                                                  opcoes = opcoes)
-    
-    ,plot_players_vpl = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                                   estrategia = estrategia_plot_players, 
-                                                                   cenario = cenario_plot_players, 
-                                                                   variavel = "aOrderShare", 
-                                                                   nome_amigavel_variavel = "Market Share", 
-                                                                   opcoes = opcoes)
-    
-    
-    ,plot_players_net_income = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                                          estrategia = estrategia_plot_players, 
-                                                                          cenario = cenario_plot_players, 
-                                                                          variavel = "fNetIncome", 
-                                                                          nome_amigavel_variavel = "Lucro Líquido", 
-                                                                          opcoes = opcoes)
-    
-    
-    ,plot_players_performance = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                                           estrategia = estrategia_plot_players, 
-                                                                           cenario = cenario_plot_players, 
-                                                                           variavel = "aPerformance", 
-                                                                           nome_amigavel_variavel = "Performance do Produto", 
-                                                                           opcoes = opcoes)
-    
-    ,plot_players_pantes = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                                      estrategia = estrategia_plot_players, 
-                                                                      cenario = cenario_plot_players, 
-                                                                      variavel = "aPatentesEmpresaTemAcesso", 
-                                                                      nome_amigavel_variavel = "Patentes acessadas pela Empresa", 
-                                                                      opcoes = opcoes)
-  )
-  
-  
-  # Salvando os Gráficos
-  mapply(ggsave, file=paste0("./images/",nome_resultado,"-estrat",estrategia_candidata,"-",names(plots_linha_geral), ".png"), plot=plots_linha_geral, width = plots_width, height = plots_heigh)
-  
-  mapply(ggsave, file=paste0("./images/",nome_resultado,"-", names(plots_whisker), ".png"), plot=plots_whisker, width = plots_width, height = plots_heigh)
-  
-  mapply(ggsave, file=paste0("./images/",nome_resultado,"-cenario",cenario_plot_players,"-", names(plots_players), ".png"), plot=plots_players, width = plots_width, height = plots_heigh)
-  
-}
 
 
 

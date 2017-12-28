@@ -583,13 +583,18 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     aDemandSupplyBalance = aDesiredShipments/(aNormalCapacityUtilization*aCapacity)
     
-    aTargetPrice = 
-      pmax(aUnitVariableCost,
-           sPrice*
-             (1+aSensOfPriceToCosts*((aBasePrice/sPrice)-1))*
-             (1+aSensOfPriceToDSBalance*(aDemandSupplyBalance-1))*
-             (1+aSensOfPriceToShare*((aTargetMarketShare-aMarketShare))))
+    # Trava do Preço: Os players nunca precificarão acima de 2 vezes o preço inicial
     
+    aTargetPrice = 
+      pmin(aInitialPrice * 2,
+           pmax(aUnitVariableCost,
+                sPrice*
+                  (1+aSensOfPriceToCosts*((aBasePrice/sPrice)-1))*
+                  (1+aSensOfPriceToDSBalance*(aDemandSupplyBalance-1))*
+                  (1+aSensOfPriceToShare*((aTargetMarketShare-aMarketShare))))
+           )
+
+
     checkTargetPrice = mean(aTargetPrice)
     
     fChangeInPrice = (aTargetPrice - sPrice) / aPriceAdjustmentTime
@@ -1008,6 +1013,67 @@ simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sd
 }
 
 
+filtrar_casos_plausiveis = function(dados_simulacao, ensemble, ranges, opcoes = opcoes){
+  
+  n_cenarios_simulados = length(unique(dados_simulacao[,opcoes$VarCenarios]))
+  
+  cenarios_fora_do_range = sapply(1:nrow(ranges), definir_cenarios_fora_range, ranges = ranges, dados_simulacao = dados_simulacao, opcoes = opcoes)
+  
+  cenarios_fora_do_range = unique(unlist(cenarios_fora_do_range))
+  
+  if(length(cenarios_fora_do_range > 0)){
+    message(paste0("Filtrando ",length(cenarios_fora_do_range), " ( ", round(100 * length(cenarios_fora_do_range)/n_cenarios_simulados,2)," %) dos ", n_cenarios_simulados ," cenarios simulados."))
+  }
+  
+  dados_simulacao_filtrados = subset(dados_simulacao, !(Scenario %in% cenarios_fora_do_range)) 
+  ensemble_filtrado = subset(dados_simulacao, !(Scenario %in% cenarios_fora_do_range)) 
+  
+  list(
+    dados_simulacao_filtrados = dados_simulacao_filtrados,
+    ensemble_filtrado = ensemble_filtrado,
+    cenarios_fora_do_range = cenarios_fora_do_range
+  )
+}
+
+
+#' definir_cenarios_fora_range
+#' #' Esta função retorna o número dos cenários fora dos ranges definidos. Isto pode ser usado para filtrar cenários plausíveis ou ainda definir se um caso está ou não em um cenário (obtido com o PRIM, por exemplo).
+#' 
+#' @param n_var índice da variavel no data.frame de ranges
+#' @param ranges data.framde de ranges (com as colunas Variavel, Min, e Max)
+#' @param dados_simulacao data.frame com colunas correspondendo às variáveis do range.
+#' @param opcoes objeto de opções.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+definir_cenarios_fora_range = function(n_var, ranges = ranges, dados_simulacao = dados_simulacao, opcoes = opcoes) {
+  
+  variavel = ranges$Variavel[n_var]
+  minimo = ranges$Min[n_var]
+  maximo = ranges$Max[n_var]
+  
+  # cenarios onde a variavel não está no range:
+  cenarios_viola_maximo = unique(dados_simulacao[which(dados_simulacao[,variavel] > maximo),opcoes$VarCenarios])
+  cenarios_viola_minimo = unique(dados_simulacao[which(dados_simulacao[,variavel] < minimo),opcoes$VarCenarios])
+  
+  cenarios_fora_range = c(cenarios_viola_maximo, cenarios_viola_minimo)
+  
+  # informar o que aconteceu:
+  if(length(cenarios_viola_maximo)>0){
+    message(paste("Variavel", variavel, "acima do máximo(",maximo,").",  length(cenarios_viola_maximo), "cenarios descartados."))
+  }
+  
+  # informar o que aconteceu:
+  if(length(cenarios_viola_minimo)>0){
+    message(paste("Variavel", variavel, "abaixo do minimo(",minimo,").", length(cenarios_viola_minimo), "cenarios descartados."))
+  }
+  
+  cenarios_fora_range
+}
+
+
 ##### CARREGAR INPUTS #####
 
 #' carregar_inputs
@@ -1017,7 +1083,7 @@ simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sd
 #' @param nomes_inputs Nome a ser atribuido aos dataframes de input.
 #'
 #' @return list com inputs para a simulação.
-carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("params", "levers", "Levers_FullDesign"), nomes_inputs = c("Parametros", "Levers", "LeversFull"), opcoes = opcoes) {
+carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("params", "levers", "Levers_FullDesign", "RangesPlausiveis"), nomes_inputs = c("Parametros", "Levers", "LeversFull", "RangesPlausiveis"), opcoes = opcoes) {
   
   # Criando uma list para os inputs
   message(
@@ -1379,6 +1445,17 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = opcoes$N, o
   t_fim = Sys.time()
   
   message("Finalizando Simulacao. Tempo de Simulacao: ", t_fim - t_inicio)
+  
+  
+  # Filtrando Cenarios que sao plausiveis
+  if(opcoes$FiltrarCasosPlausiveis) {
+    message("Filtrando Casos Plausiveis.")
+    resultados_filtrados = filtrar_casos_plausiveis(dados_simulacao, ensemble = novo_ensemble, ranges = inputs$RangesPlausiveis, opcoes = opcoes)  
+    dados_simulacao = resultados_filtrados$dados_simulacao_filtrados
+    novo_ensemble = resultados_filtrados$ensemble_filtrado
+    message(paste("Índices dos Cenarios Filtrados:", resultados_filtrados$cenarios_fora_do_range, collapse = ", "))
+  }
+  
   
   output = list(
     Inputs = inputs,
