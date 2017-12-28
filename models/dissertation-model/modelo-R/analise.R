@@ -81,7 +81,7 @@ planilha_opcao2.1_futuro = planilha_simulacao_calibracao_historico
 percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
-n_casos_total = 32 # 400
+n_casos_total = 800 # 400
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_calibracao_historico, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
@@ -111,7 +111,7 @@ SIMULAR_HISTORICO_DIFERENTE = FALSE
 ANO_INICIO_AVALIACAO = 2018
 planilha_inputs = planilha_simulacao_calibracao_historico
 opcoes$Paralelo = TRUE
-
+opcoes$FiltrarCasosPlausiveis = FALSE
 # Rodar Simulação:
 START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
@@ -268,6 +268,7 @@ plot_cenarios_plausiveis
 #### 4.2.2 Opção 1: Apenas Futuro ####
 # Opção 1: Dados para Simular o Futuro, sem comparação com o Passado. Usar filtro para a demanda máxima e mínima a posteriori.
 # Esta opção é inspirada na abordagem utilizada por Lempert.
+opcoes$FiltrarCasosPlausiveis = TRUE
 opcoes$SimularApenasCasoBase = FALSE
 opcoes$N = n_ensemble_total
 INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
