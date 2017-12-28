@@ -369,6 +369,17 @@ salvar_plots_result(results = results2.1,
 
 # 
 
+#' salvar_plots_result
+#'
+#' Esta função gera uma série de gráficos a partir de um objeto de resultados
+#' @param results  objeto de resultados retornado pela função simular_RDM
+#' @param cenario_plot_players um cenário escolhido para exibir plots comparando os players.
+#' @param estrategia_candidata o número de uma estratégia candidata a testar para filtrar os plots
+#' @param opcoes variável global de opções.
+#'
+#' @return não gera nenhum retorno. Esta função salva os gráficos na pasta /imagem.
+#' @export
+#'
 salvar_plots_result = function(results, cenario_plot_players, estrategia_candidata, opcoes = opcoes){
   # Nome Objeto
   nome_resultado = deparse(substitute(results))
