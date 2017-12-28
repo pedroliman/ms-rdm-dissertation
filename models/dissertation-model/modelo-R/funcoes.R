@@ -54,7 +54,8 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   n_tempo = length(simtime)
   
   list.variaveis.globais <<- list(
-    sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
+    # sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
+    sReportedIndustryVolume = matrix(NA, ncol = 1, nrow = n_tempo),
     aExpectedIndustryDemand = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo)
   )
   
@@ -91,7 +92,7 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aPopulation = unname(parametros["aPopulation"]) #100000000 # Original Sterman: 100000000
                   ,aUnitsPerHousehold = unname(parametros["aUnitsPerHousehold"])
                   ,aSwitchForShipmentsInForecast = unname(parametros["aSwitchForShipmentsInForecast"])
-                  ,aVolumeReportingDelay = rep(unname(parametros["aVolumeReportingDelay"]), times = N_PLAYERS)
+                  ,aVolumeReportingDelay = unname(parametros["aVolumeReportingDelay"])
                   ,aForecastHorizon = rep(unname(parametros["aForecastHorizon"]), times = N_PLAYERS)
                   ,aCapacityAcquisitionDelay = unname(parametros["aCapacityAcquisitionDelay"])
                   ,aTimeForHistoricalVolume = unname(parametros["aTimeForHistoricalVolume"])
@@ -159,7 +160,9 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
     ,sInstalledBase = rep(0, times = N_PLAYERS)  # rep(30000, times = N_PLAYERS) # Este estoque possui uma fórmula, verificar como fazer aqui no R.
     ,sPrice = unname(auxs$aInitialPrice)
     ,sCumulativeAdopters = 60000 # Este estoque possui uma fórmula, verificar como fazer aqui no R.
-    ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
+    # Teste 28/12/10:05: Removendo a Replicação Inicial desta variável.
+    # ,sReportedIndustryVolume = rep(101904, times = N_PLAYERS)
+    ,sReportedIndustryVolume = 101904
     ,sCumulativeProduction = rep(1e+007, times = N_PLAYERS) # Este estoque possui formula
     ,sPerceivedCompTargetCapacity = rep(63690, times = N_PLAYERS) # Este estoque possui formula
     ,sSmoothCapacity1 = rep(63690, times = N_PLAYERS) # Este estoque possui formula
@@ -169,7 +172,7 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
     ,sInvestimentoNaoRealizadoPeD = rep(1000, times = N_PLAYERS)
     ,sPatentesRequisitadas = rep(1000, times = N_PLAYERS)
     ,sPatentesEmpresa = rep(1000, times = N_PLAYERS)
-    ,sPatentesEmDominioPublicoUteis = rep(1000, times = N_PLAYERS)
+    ,sPatentesEmDominioPublicoUteis = 1000
     ,sInvestimentoPeDDepreciar = rep(1000, times = N_PLAYERS)
     
   ) 
@@ -250,9 +253,10 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
 modelo <- function(time, stocks, auxs, modo = "completo"){
   with(as.list(c(stocks, auxs)),{
     
-    # Variáveis Necessárias 
+    
+    # Variáveis Necessárias para tratar período histórico de modo diferente.
     if(SIMULAR_HISTORICO_DIFERENTE){
-      ano_futuro_inicial = 2018  
+      ano_futuro_inicial = ANO_INICIO_AVALIACAO  
     } else {
       ano_futuro_inicial = START
     }
@@ -450,6 +454,10 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[(linha - nlinhas_delay),]
     } else {
       aLaggedIndustryVolume = list.variaveis.globais$sReportedIndustryVolume[1,]
+    }
+    
+    if(modo=="completo"){
+      browser()
     }
     
     aExpGrowthInVolume =  log(sReportedIndustryVolume/aLaggedIndustryVolume)/aTimeForHistoricalVolume
@@ -906,6 +914,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     ,fNetIncome = unname(fNetIncome) 
     ,aNPVIndustryProfits = unname(aNPVIndustryProfits))
     
+    
     return (if(modo == "inicial"){
       stocks_ini
     } else {
@@ -985,7 +994,7 @@ simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sd
 #' @param nomes_inputs Nome a ser atribuido aos dataframes de input.
 #'
 #' @return list com inputs para a simulação.
-carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("params", "levers", "Levers_FullDesign"), nomes_inputs = c("Parametros", "Levers", "LeversFull")) {
+carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("params", "levers", "Levers_FullDesign"), nomes_inputs = c("Parametros", "Levers", "LeversFull"), opcoes = opcoes) {
   
   # Criando uma list para os inputs
   message(
@@ -1001,8 +1010,23 @@ carregar_inputs = function (arquivo_de_inputs="params.xlsx", abas_a_ler = c("par
     inputs[[n_aba]] = readxl::read_excel(arquivo_de_inputs,sheet = aba)
   }
   
+  
+  # Substituir Levers aqui mesmo:
+  # Substituindo Levers por Proketo Fatorial Completo, se isto foi selecionado:
+  # Gerar um Fatorial Completo das Variáveis, se for necessário
+  if(opcoes$FullFactorialDesign){
+    var_levers = na.omit(expand.grid(inputs$LeversFull))
+    n_levers = nrow(var_levers)
+    inputs$Levers = data.frame(Lever = 1:n_levers,
+                               LeverCode = as.character(1:n_levers),
+                               CasoBase = c(1, rep(0, n_levers-1)),
+                               var_levers)
+  }
+  
   message("01. funcoes.R/carregar_inputs: Finalizando Carregamento de Inputs.")
   return(inputs)
+  
+  
   
 }
 
@@ -1294,19 +1318,19 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = opcoes$N, o
   message(paste("Iniciando Simulacao RDM: ", t_inicio))
   
   # Carregando Inputs
-  inputs = carregar_inputs(arquivo_de_inputs = arquivo_de_inputs)
+  inputs = carregar_inputs(arquivo_de_inputs = arquivo_de_inputs, opcoes = opcoes)
   
   # Substituindo Levers por Proketo Fatorial Completo, se isto foi selecionado:
   # Gerar um Fatorial Completo das Variáveis, se for necessário
-  if(opcoes$FullFactorialDesign){
-    var_levers = na.omit(expand.grid(inputs$LeversFull))
-    n_levers = nrow(var_levers)
-    inputs$Levers = data.frame(Lever = 1:n_levers,
-                        LeverCode = as.character(1:n_levers),
-                        CasoBase = c(1, rep(0, n_levers-1)),
-                        var_levers)
-  }
-  
+  # if(opcoes$FullFactorialDesign){
+  #   var_levers = na.omit(expand.grid(inputs$LeversFull))
+  #   n_levers = nrow(var_levers)
+  #   inputs$Levers = data.frame(Lever = 1:n_levers,
+  #                       LeverCode = as.character(1:n_levers),
+  #                       CasoBase = c(1, rep(0, n_levers-1)),
+  #                       var_levers)
+  # }
+  # 
   
   # Obter Ensemble LHS (Sem Variáveis das Estratégias)
   
