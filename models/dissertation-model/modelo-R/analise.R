@@ -1,17 +1,16 @@
 # Carregando Funções Úteis
+START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
+BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
 # Parâmetros para a Geração dos Gráficos
 plots_width = 6
 plots_heigh = 3
 
 USAR_DADOS_SALVOS = FALSE
-SIMULAR_HISTORICO_DIFERENTE = TRUE
+SIMULAR_HISTORICO_DIFERENTE = FALSE
 
-#### 4 Geração de Casos ####
-
-#### 4.0 Estimação de Parâmetros com Dados da 3D Systems ####
-
-#### Observando dados de Fundamentos ####
+#### 3 Observando dados de Fundamentos ####
 dados_fundamentos = obter_dados_fundamentos_us_fundamentals()
 
 plot_lucro_bruto_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=GrossProfit, group=empresa)) +
@@ -45,7 +44,11 @@ plot_orcamentoPeD__3dsystems = plot_linha_uma_variavel(fundamentos_3DSYSTEMS$Dad
 # Despesas em Pesquisa e Desenvolvimento da 3D Systems em relação a PeD
 plot_orcamento_PeD_3DSystems = ggplot(DDD.orcamentoPeD)
 
-#### 4.1 Seleção de Casos Plausíveis ####
+
+
+#### 4 Geração de Casos ####
+
+#### 4.0 Configurando Simulações ####
 
 # Gerar casos para simulação com base em estimativa inicial de parâmetros.
 opcoes_iniciais = list(
@@ -74,17 +77,17 @@ planilha_opcao2.0_passado_e_futuro = planilha_simulacao_calibracao_historico
 
 planilha_opcao2.1_futuro = planilha_simulacao_calibracao_historico
 
-percentil_utilizado_como_criterio = c(PercentilCriterio = 0.3)
+percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
-n_casos_total = 100
+n_casos_total = 400
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_calibracao_historico, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
 n_ensemble_total = round(n_casos_total / n_estrategias, 0) 
 
 # Tamanho do ensemble para calibração.
-n_ensemble_calibracao = n_ensemble_total / percentil_utilizado_como_criterio
+n_ensemble_calibracao = round(n_ensemble_total / percentil_utilizado_como_criterio,0)
 
 # Definindo Filtros a usar para Filtrar Casos após a simulação.
 DemandaMaximaAnual = 12000 * 10
@@ -93,9 +96,7 @@ DemandaMinimaAnual = 12000 / 10
 PrecoMaximo = 200000 * 5
 PrecoMinimo = 200000 / 5
 
-
-###
-# CALIBRAÇÃO COM DADOS HISTÓRICOS
+#### 4.1 Calibração com Dados Históricos de Demanda ####
 # Simulação 0: Simulando Histórico e Observando Fit do Modelo:
 ###
 opcoes$SimularApenasCasoBase = TRUE
@@ -108,7 +109,7 @@ SIMULAR_HISTORICO_DIFERENTE = FALSE
 # modificado enquanto até o ANO_INICIO_AVALIACAO. Se não ativado, a simulação ocorre normalmente.
 ANO_INICIO_AVALIACAO = 2018
 planilha_inputs = planilha_simulacao_calibracao_historico
-opcoes$Paralelo = FALSE
+opcoes$Paralelo = TRUE
 
 # Rodar Simulação:
 START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
@@ -118,6 +119,10 @@ source('funcoes.R', encoding = 'UTF-8')
 resultados_casos_plausiveis = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                                                sdmodel = sdmodel,
                                                                opcoes = opcoes)
+
+# Salvar resultados com casos plausíveis:
+save(resultados_casos_plausiveis, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
+
 
 variavel_calibracao = "fIndustryOrderRate"
 nome_amigavel_variavel_calibracao = "Demanda Imp. 3D > 5000 USD"
@@ -254,36 +259,76 @@ plot_cenarios_plausiveis
 
 #### 4.2 Simulação dos Casos Contra Estratégias ####
 
+# CALIBRAÇÃO COM DADOS HISTÓRICOS
+# Simulação 0: Simulando Histórico e Observando Fit do Modelo:
+###
 
 
-
-# Opção 1: Dados para Simular o Futuro, sem comparação com o Passado. Usar filtro para a demanda máxima e mínima.
+#### 4.2.2 Opção 1: Apenas Futuro ####
+# Opção 1: Dados para Simular o Futuro, sem comparação com o Passado. Usar filtro para a demanda máxima e mínima a posteriori.
 # Esta opção é inspirada na abordagem utilizada por Lempert.
 opcoes$SimularApenasCasoBase = FALSE
-opcoes$N = n_ensemble
+opcoes$N = n_ensemble_total
 INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
+SIMULAR_HISTORICO_DIFERENTE = FALSE
+ANO_INICIO_AVALIACAO = 2018
+planilha_inputs = planilha_simulacao_opcao1_futuro
 opcoes$Paralelo = TRUE
 START<-2018; FINISH <-2028; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
 
-planilha_inputs = "./calibracao/params_calibracao_opcao1.xlsx"
-
 # Simular
 results1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                             sdmodel = sdmodel, 
                                             opcoes = opcoes)
 
+# Salvar resultados:
+save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
 
+# Aqui ainda seria necessário filtar os resultados com o critério definido.
 
-# Definir estratégias a serem simuladas.
+#### 4.2.2 Opção 2.0: Passado + Futuro Filtrado ####
+# Opção 2.0 - Atual: Rodar Passado e Futuro, e tomar providências para que os resultados do passado não sejam levadosem consideração.
+# Esta opção é mais alinhada ao procedimento de calibração utilizado na dinâmica de sistemas, porém admite diferentes trajetórias das variáveis, inclusive no passado.
+# Por um lado, esta opção é mais conservadora (porque limita o que o futuro pode ser com base no histórico).
 ensemble_a_simular = resultados_casos_plausiveis$Ensemble[which(resultados_casos_plausiveis$Ensemble[,opcoes$VarCenarios] %in% cenarios_considerados_plausiveis),]
 
-# Definir primeiro ano da simulação com dados reais.
 opcoes$SimularApenasCasoBase = FALSE
+opcoes$N = n_ensemble_total
+INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
+SIMULAR_HISTORICO_DIFERENTE = TRUE
+ANO_INICIO_AVALIACAO = 2018
+planilha_inputs = planilha_opcao2.0_passado_e_futuro
+opcoes$Paralelo = TRUE
+START<-2007; FINISH <-2028; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
+BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
+source('funcoes.R', encoding = 'UTF-8')
+# Definir período de simulação das estratégias (e forma de "mudar a estratégia" no primeira ano.)
+
+results2.0 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+                                           sdmodel = sdmodel, 
+                                           opcoes = opcoes,
+                                           ensemble = ensemble_a_simular)
+
+# Salvar resultados:
+save(results2.0, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results2.0.rda")
+
+
+#### 4.2.2 Opção 2.1: Futuro Filtrado com Condições Iniciais do Caso Base####
+# Opção 2.1: Rodar Apenas futuro, usando condições iniciais do caso base, e filtrando ensemble com parâmetros plausíveis do passado.
+# Esta opção é uma derivacao da opção 2, porém admite que o passado foi igual ao cenário base.
+# Esta opção funciona da seguinte maneira: Os estoques (condições iniciais do modelo) são retirados do cenário base definido.
+# Em seguida, Todos os parâmetros do modelo podem mudar, no ano inicial de simulação.
+opcoes$SimularApenasCasoBase = FALSE
+opcoes$N = n_ensemble_total
 INICIALIZAR_ESTOQUES_COM_CASO_BASE = TRUE
+SIMULAR_HISTORICO_DIFERENTE = FALSE
+ANO_INICIO_AVALIACAO = 2018
+planilha_inputs = planilha_opcao2.0_passado_e_futuro
 opcoes$Paralelo = TRUE
 START<-2018; FINISH <-2028; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
@@ -291,129 +336,110 @@ BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
 # Definir período de simulação das estratégias (e forma de "mudar a estratégia" no primeira ano.)
 
+results2.1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+                                              sdmodel = sdmodel, 
+                                              opcoes = opcoes,
+                                              ensemble = ensemble_a_simular)
+
+# Salvar resultados:
+save(results2.1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results2.1.rda")
 
 
+#### 4.3 Análise dos Resultados ####
+
+# Gerar Gráficos para Analisar os Resultados:
+
+# Gerando Resultados da Opção 1 - Estratégia Candidata 1, e Cenário 1
+salvar_plots_result(results = results1, 
+                    cenario_plot_players = results1$DadosUltimoPeriodo$Scenario[1],
+                    estrategia_candidata = results1$EstrategiaCandidata$Lever[1],
+                    opcoes = opcoes)
+
+salvar_plots_result(results = results2.0, 
+                    cenario_plot_players = results2.0$DadosUltimoPeriodo$Scenario[1],
+                    estrategia_candidata = results2.0$EstrategiaCandidata$Lever[1],
+                    opcoes = opcoes)
 
 
+salvar_plots_result(results = results2.1, 
+                    cenario_plot_players = results2.1$DadosUltimoPeriodo$Scenario[1],
+                    estrategia_candidata = results2.1$EstrategiaCandidata$Lever[1],
+                    opcoes = opcoes)
 
 
+# 
 
-# Opção 2.0 - Atual: Rodar Passado e Futuro, e tomar providências para que os resultados do passado não sejam levadosem consideração.
-# Esta opção é mais alinhada ao procedimento de calibração utilizado na dinâmica de sistemas, porém admite diferentes trajetórias das variáveis, inclusive no passado.
-# Por um lado, esta opção é mais conservadora (porque limita o que o futuro pode ser com base no histórico).
-
-results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
-                                           sdmodel = sdmodel, 
-                                           opcoes = opcoes,
-                                           ensemble = ensemble_a_simular)
-
-
-
-# Opção 2.1: Rodar Apenas futuro, usando condições iniciais do caso base, e filtrando ensemble com parâmetros plausíveis do passado.
-# Esta opção é uma derivacao da opção 2, porém admite que o passado foi igual ao cenário base.
-# Esta opção funciona da seguinte maneira: Os estoques (condições iniciais do modelo) são retirados do cenário base definido.
-# Em seguida, Todos os parâmetros do modelo podem mudar, no ano inicial de simulação.
-
-
-
-results2 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
-                                           sdmodel = sdmodel, 
-                                           opcoes = opcoes)
-
-
-
-
-
-# Gráficos
-
-plots_rodada1 = list(
-  plot_estrategia1 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = 1),
-  plot_1_e_candidata = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = c(1, results$EstrategiaCandidata)),
-  plot_preco_estrategia10 = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = c(3)),
-  plot_estrategia_candidata = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = results$EstrategiaCandidata),
-  plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1RegretPerc"),
-  plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1Regret"),
-  plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1"),
-  plot_whisker_lever_share = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare1"),
-  plot_whisker_lever_industry_order_rate = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "fIndustryOrderRate"),
-  plot_whisker_lever_price = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sPrice1"),
-  plot_whisker_lever_installed_base = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sInstalledBase1")
-)
-
-# Exibir Resultados (séries temporais contra as estratégias).
-
-
-
-plots_rodada1$plot_estrategia_candidata
-
-plots_rodada1$plot_1_e_candidata
-
-plots_rodada1$plot_preco_estrategia10
-
-plots_rodada1$plot_estrategia_candidata
-
-plots_rodada1$plot_whisker_lever_regret
-
-plots_rodada1$plot_whisker_lever_profit
-
-plots_rodada1$plot_whisker_lever_perc_regret
-
-# Exibir Resultados da Análise de Perda de Oportunidade.
-
-# Tabela da Análise de Perda de Oportunidade
-results$AnaliseRegret$ResumoEstrategias
-
-# Gráficos para a Seleção da Estratégia Candidata (boxplot)
-plots_rodada1$plot_whisker_lever_perc_regret
-
-
-## Código para Entender o Comportamento de Variáveis que são desdobradas por players.
-
-# Gerando um Plot para observar uma mesma variável em relação à varios players
-
-estrategia_plot_players = results$EstrategiaCandidata
-cenario_plot_players = unique(results$Ensemble[,"Scenario"])[1]
-
-
-
-plot_vpl_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                              estrategia = estrategia_plot_players, 
-                                                              cenario = cenario_plot_players, 
-                                                              variavel = "sNPVProfit", 
-                                                              nome_amigavel_variavel = "VPL", 
-                                                              opcoes = opcoes)
-
-plot_share_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                                estrategia = estrategia_plot_players, 
-                                                                cenario = cenario_plot_players, 
-                                                                variavel = "aOrderShare", 
-                                                                nome_amigavel_variavel = "Market Share", 
-                                                                opcoes = opcoes)
-
-
-plot_net_income_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                                     estrategia = estrategia_plot_players, 
-                                                                     cenario = cenario_plot_players, 
-                                                                     variavel = "fNetIncome", 
-                                                                     nome_amigavel_variavel = "Lucro Líquido", 
-                                                                     opcoes = opcoes)
-
-
-plot_performance_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
-                                                                      estrategia = estrategia_plot_players, 
-                                                                      cenario = cenario_plot_players, 
-                                                                      variavel = "aPerformance", 
-                                                                      nome_amigavel_variavel = "Performance do Produto", 
-                                                                      opcoes = opcoes)
-
-plot_patentes_players = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+salvar_plots_result = function(results, cenario_plot_players, estrategia_candidata, opcoes = opcoes){
+  # Nome Objeto
+  nome_resultado = deparse(substitute(results))
+  
+  estrategia_plot_players = estrategia_candidata
+  
+  plots_linha_geral = list(
+    plot_estrategia_candidata_vpl = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = estrategia_candidata),
+    plot_estrategia_candidata_preco = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = estrategia_candidata),
+    plot_estrategia_candidata_share = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "aOrderShare1", nome_amigavel_variavel = "Market Share", estrategia = estrategia_candidata),
+    plot_estrategia_candidata_demanda_global = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "fIndustryOrderRate", nome_amigavel_variavel = "Demanda Global", estrategia = estrategia_candidata)
+  )
+  
+  plots_whisker = list(
+    plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1RegretPerc"),
+    plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1Regret"),
+    plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1"),
+    plot_whisker_lever_share = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare1"),
+    plot_whisker_lever_industry_order_rate = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "fIndustryOrderRate"),
+    plot_whisker_lever_price = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sPrice1"),
+    plot_whisker_lever_installed_base = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sInstalledBase1")
+  )
+  
+  plots_players = list(
+    plot_players_vpl = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                                  estrategia = estrategia_plot_players, 
+                                                                  cenario = cenario_plot_players, 
+                                                                  variavel = "sNPVProfit", 
+                                                                  nome_amigavel_variavel = "VPL", 
+                                                                  opcoes = opcoes)
+    
+    ,plot_players_vpl = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
                                                                    estrategia = estrategia_plot_players, 
                                                                    cenario = cenario_plot_players, 
-                                                                   variavel = "aPatentesEmpresaTemAcesso", 
-                                                                   nome_amigavel_variavel = "Patentes acessadas pela Empresa", 
+                                                                   variavel = "aOrderShare", 
+                                                                   nome_amigavel_variavel = "Market Share", 
                                                                    opcoes = opcoes)
-
-
+    
+    
+    ,plot_players_net_income = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                                          estrategia = estrategia_plot_players, 
+                                                                          cenario = cenario_plot_players, 
+                                                                          variavel = "fNetIncome", 
+                                                                          nome_amigavel_variavel = "Lucro Líquido", 
+                                                                          opcoes = opcoes)
+    
+    
+    ,plot_players_performance = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                                           estrategia = estrategia_plot_players, 
+                                                                           cenario = cenario_plot_players, 
+                                                                           variavel = "aPerformance", 
+                                                                           nome_amigavel_variavel = "Performance do Produto", 
+                                                                           opcoes = opcoes)
+    
+    ,plot_players_pantes = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
+                                                                      estrategia = estrategia_plot_players, 
+                                                                      cenario = cenario_plot_players, 
+                                                                      variavel = "aPatentesEmpresaTemAcesso", 
+                                                                      nome_amigavel_variavel = "Patentes acessadas pela Empresa", 
+                                                                      opcoes = opcoes)
+  )
+  
+  
+  # Salvando os Gráficos
+  mapply(ggsave, file=paste0("./images/",nome_resultado,"-estrat",estrategia_candidata,"-",names(plots_linha_geral), ".png"), plot=plots_linha_geral, width = plots_width, height = plots_heigh)
+  
+  mapply(ggsave, file=paste0("./images/",nome_resultado,"-", names(plots_whisker), ".png"), plot=plots_whisker, width = plots_width, height = plots_heigh)
+  
+  mapply(ggsave, file=paste0("./images/",nome_resultado,"-cenario",cenario_plot_players,"-", names(plots_players), ".png"), plot=plots_players, width = plots_width, height = plots_heigh)
+  
+}
 
 
 

@@ -771,6 +771,11 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       )  
     }
     
+    if(time == START){
+      if(any(unlist(stocks_ini)<0)){
+        browser()  
+      }
+    }
     
     ##### COMPARAR RESULTADOS COM O ITHINK #####
     
@@ -993,7 +998,7 @@ simularRDM_e_escolher_estrategia = function(inputs = "params.xlsx", sdmodel = sd
     AnaliseRegret = analise_regret,
     Inputs = output_simulacao$Inputs,
     Ensemble = output_simulacao$Ensemble,
-    EstrategiaCandidata =  as.numeric(estrategia_candidata[opcoes$VarEstrategias]),
+    EstrategiaCandidata =  estrategia_candidata[opcoes$VarEstrategias],
     Opcoes = opcoes,
     SdModel = sdmodel
   )
