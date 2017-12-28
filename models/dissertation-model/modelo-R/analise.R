@@ -5,6 +5,7 @@ plots_width = 6
 plots_heigh = 3
 
 USAR_DADOS_SALVOS = FALSE
+SIMULAR_HISTORICO_DIFERENTE = TRUE
 
 #### 4 Geração de Casos ####
 
@@ -16,7 +17,10 @@ dados_fundamentos = obter_dados_fundamentos_us_fundamentals()
 plot_lucro_bruto_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=GrossProfit, group=empresa)) +
   geom_line(aes(color=empresa))+
   geom_point(aes(color=empresa)) +
-  ylab(label = "Lucro Bruto")
+  ylab(label = "Lucro Bruto") +
+  scale_y_continuous(labels = format_for_humans)
+
+plot_lucro_bruto_us_fundamentals
 
 fundamentos_ddd = obter_fundamentos_financeiros_quandl("DDD")
 
@@ -50,7 +54,7 @@ opcoes_iniciais = list(
   VarResposta = "sNPVProfit1",
   VarCenarios = "Scenario",
   VarEstrategias = "Lever",
-  N = 300,
+  N = 30,
   VarTempo = "time",
   VarCriterio = "RegretPercPercentil75",
   SentidoCriterio = "min",
@@ -62,10 +66,10 @@ opcoes_iniciais = list(
 
 opcoes = opcoes_iniciais
 
-planilha_inputs = "./calibracao/params_calibracao_com_estrategia.xlsx"
+planilha_inputs = "./calibracao/params_calibracao_com_estrategia_v2.xlsx"
 
 # Rodar Simulação:
-START<-2007; FINISH <-2027; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+START<-2007; FINISH <-2017; STEP<-0.125; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
@@ -89,7 +93,7 @@ head(resultados_casos_plausiveis$DadosSimulados, 20)
 
 # Mostrar Variável de Demanda em Todos os Cenários (Sem Filtro)
 
-cenarios_a_exibir_grafico = sample(1:opcoes$N,size = 30)
+cenarios_a_exibir_grafico = sample(1:opcoes$N,size = min(30,opcoes$N))
 
 
 plot_demanda_pre_calibracao = plot_linha_uma_variavel_ensemble(dados = subset(resultados_casos_plausiveis$DadosSimulados, Scenario %in% cenarios_a_exibir_grafico), 
@@ -138,9 +142,22 @@ cenario_menor_erro = ensemble_com_erro[which(ensemble_com_erro[,"MeanSquareError
 
 # Exibir parâmetros do cenario com menor erro:
 
+params_cenario_menor_erro = ensemble_com_erro[which(ensemble_com_erro[,opcoes$VarCenarios]==cenario_menor_erro),]
+
 parametros_cenario_menor_erro = t(ensemble_com_erro[which(ensemble_com_erro[,opcoes$VarCenarios]==cenario_menor_erro),])
 
 parametros_cenario_menor_erro
+
+
+
+# Condições Iniciais do cenário com Menor Erro:
+
+resultados_casos_plausiveis$DadosUltimoPeriodo[which(resultados_casos_plausiveis$DadosUltimoPeriodo$Scenario==cenario_menor_erro),]
+
+# Condições Finais do Cenário com Menor erro (pode ser usado como base):
+
+VARIAVEIS_FINAIS_CASO_BASE = resultados_casos_plausiveis$DadosUltimoPeriodo[which(resultados_casos_plausiveis$DadosUltimoPeriodo$Scenario==cenario_menor_erro),]
+
 
 # Plotar Gráfico do Cenário com Menor Erro:
 # Selecionando Pontos de Dados para Exibir no Gráfico
@@ -149,7 +166,7 @@ time_plot = seq(from=START, to=FINISH)
 resultados_exibir = dplyr::filter(resultados_casos_plausiveis$DadosSimulados, Scenario == cenario_menor_erro)[time_points,]
 
 # Exibir Demanda Global.
-
+dados_calibracao <- as.data.frame(read_xlsx(path = "./calibracao/dados_calibracao.xlsx", sheet = "Plan1"))
 # Exibir Share dos Players e outras variáveis.
 
 plot_cenario_base_e_historico <-ggplot()+
@@ -157,7 +174,7 @@ plot_cenario_base_e_historico <-ggplot()+
   geom_line(data=resultados_exibir,size=1,aes(x=time,y=fIndustryOrderRate,colour="Model"))+
   ylab("Demanda Total")+
   xlab("Anos")+
-  scale_y_continuous(labels = comma)+
+  scale_y_continuous(labels = format_for_humans)+
   theme(legend.position="bottom")+
   scale_colour_manual(name="",
                       values=c(Data="red", 
@@ -202,17 +219,46 @@ ggplot(as.data.frame(ensemble_a_simular), aes(x=aReferencePopulation, y=aWOMStre
 
 # Definir primeiro ano da simulação com dados reais.
 opcoes$SimularApenasCasoBase = FALSE
-START<-2007; FINISH <-2027; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+INICIALIZAR_ESTOQUES_COM_CASO_BASE = TRUE
+opcoes$Paralelo = TRUE
+START<-2018; FINISH <-2028; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
 # Definir período de simulação das estratégias (e forma de "mudar a estratégia" no primeira ano.)
 
+
+# Opção 1: Dados para Simular o Futuro, sem comparação com o Passado:
+opcoes$SimularApenasCasoBase = FALSE
+opcoes$N = 100
+INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
+opcoes$Paralelo = TRUE
+START<-2018; FINISH <-2028; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
+BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
+source('funcoes.R', encoding = 'UTF-8')
+
+planilha_inputs = "./calibracao/params_calibracao_opcao1.xlsx"
+
 # Simular os Casos filtrados contra as estratégias.
+results1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+                                           sdmodel = sdmodel, 
+                                           opcoes = opcoes)
+
+
+
 results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                            sdmodel = sdmodel, 
                                            opcoes = opcoes,
                                            ensemble = ensemble_a_simular)
+
+
+results2 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+                                           sdmodel = sdmodel, 
+                                           opcoes = opcoes)
+
+
+
 
 
 # Gráficos
@@ -232,6 +278,8 @@ plots_rodada1 = list(
 )
 
 # Exibir Resultados (séries temporais contra as estratégias).
+
+
 
 plots_rodada1$plot_estrategia_candidata
 
@@ -387,14 +435,22 @@ library(pdp)
 pdp1 = pdp::partial(forest, tabela_random_forest$Variavel[2])
 plot_random_forest_1d = pdp::plotPartial(pdp1)
 
+plot_random_forest_1d
+
 
 pdp2 = pdp::partial(forest, tabela_random_forest$Variavel[1:2])
 
 plot_parcial2d = pdp::plotPartial(pdp2)
 
+plot_parcial2d
+
+estrategia_candidata = results$EstrategiaCandidata
+
+variavel_resposta = "sNPVProfit1"
+
 
 landscape_estrategia_comparacao = plot_landscape_futuros_plausiveis(
-  results, estrategia = estrategia_candidata, 
+  results, estrategia = results$EstrategiaCandidata, 
   variavelresp = variavel_resposta,
   nomeamigavel_variavelresp = "LOF Percentual",
   variavel1  = tabela_random_forest$Variavel[1],

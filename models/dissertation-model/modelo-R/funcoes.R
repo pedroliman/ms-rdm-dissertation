@@ -30,7 +30,6 @@ library(tidyr)
 ##### CONSTANTES #####
 VAR_SCENARIO = "Scenario"
 VAR_LEVER = "Lever"
-SIM_TIME
 
 
 ##### MODELO #####
@@ -189,7 +188,7 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
       ,sInstalledBase = unname(estoques_calculados$InstalledBaseIni)
       ,sPrice = unname(stocks_iniciais[grep("sPrice", x = names(stocks_iniciais))])
       ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
-      ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
+      ,sReportedIndustryVolume = unname(estoques_calculados$ReportedIndustryVolumeIni)
       ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
       ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
       ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
@@ -250,6 +249,43 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
 #'
 modelo <- function(time, stocks, auxs, modo = "completo"){
   with(as.list(c(stocks, auxs)),{
+    
+    # Variáveis Necessárias 
+    if(SIMULAR_HISTORICO_DIFERENTE){
+      ano_futuro_inicial = 2018  
+    } else {
+      ano_futuro_inicial = START
+    }
+    
+    
+    variaveis_periodo_historico = list(
+      # Todas as Estratégias no Cenário Base são agressivas
+      aSwitchForCapacityStrategy = rep(1, times = N_PLAYERS),
+      
+      # O Lucro não é computado no período Histórico,
+      fNPVProfitChange = rep(0, times = N_PLAYERS),
+      
+      # Nenhum Player possui política de PeD aberto, com excessão do player 4 (outros).
+      aPercPeDAberto = c(rep(0, times = N_PLAYERS-1), 0.1),
+      
+      # Os players desejam o mesmo market share inicial que tem inicialmente.
+      aDesiredMarketShare = unname(aInitialSharePlayers),
+      
+      # O Orçamento de P e D de todos os players é 0.06 (valor inicial da 3D Systems).
+      aOrcamentoPeD = rep(0.6, N_PLAYERS)
+    )
+    
+    # Variáveis que podem ser definidas no início (são parâmetros não calculados):
+    # Se estou no período de histórico da simulação, usar parâmetros do período histórico.
+    if(time < ano_futuro_inicial) {
+      aSwitchForCapacityStrategy = variaveis_periodo_historico$aSwitchForCapacityStrategy
+      aPercPeDAberto = variaveis_periodo_historico$aPercPeDAberto
+      aDesiredMarketShare = variaveis_periodo_historico$aDesiredMarketShare
+      aOrcamentoPeD = variaveis_periodo_historico$aOrcamentoPeD
+    }
+    
+
+    
     # Criando uma variavel n_tempo local
     n_tempo = nrow(list.variaveis.globais$sReportedIndustryVolume)
     
@@ -447,6 +483,10 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     aUncontestedMarketShare = aUncontestedDemand / aExpectedIndustryDemand
     
+    # Definindo Estratégia no Cenário Base
+    
+    
+    
     aSwitchForCapacityStrategy1 = ifelse(aSwitchForCapacityStrategy == 1, 1, 0)
     aSwitchForCapacityStrategy2 = ifelse(aSwitchForCapacityStrategy == 2, 1, 0)
     aSwitchForCapacityStrategy3 = ifelse(aSwitchForCapacityStrategy == 3, 1, 0)
@@ -460,8 +500,10 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     }
     
     
+    
     aTargetCapacity = pmax(aMinimumEfficientScale,
                            aTargetMarketShare*aExpectedIndustryDemand/aNormalCapacityUtilization)
+    
     
     aTargetNormalProduction = aTargetCapacity * aNormalCapacityUtilization
     
@@ -528,7 +570,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     ##### NET INCOME SECTOR #####
     
-    aDiscountFactor = exp(-aDiscountRate*(time - START)) # 
+    aDiscountFactor = exp(-aDiscountRate*(time - ano_futuro_inicial)) # 
     
     fValueOfNewOrders = fOrders * sPrice
     
@@ -572,12 +614,21 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     fNPVProfitChange = fNetIncome * aDiscountFactor #
     
+    # Considerar a Mudança do Lucro igual a zero enquanto a simulação estiver no período histórico.
+    if(time < ano_futuro_inicial) {
+      fNPVProfitChange = variaveis_periodo_historico$fNPVProfitChange
+    }
+    
+    
+    # if(modo=="completo" & time %in% c(2008, 2019)){
+    #   browser()
+    # }
+    
     checkNPVProfitChange = mean(fNPVProfitChange) #
     
     checkNPVProfitChange1 = fNPVProfitChange[1]
     
     aNPVIndustryProfits = sum(sNPVProfit) #
-    
     
     
     ##### ESTOQUES #####
@@ -651,22 +702,49 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     ##### ESTOQUES - INICIAIS #####
     
-    stocks_ini = list(
-      BacklogIni = BacklogIni,
-      InstalledBaseIni = InstalledBaseIni,
-      CumulativeAdoptersIni = CumulativeAdoptersIni,
-      ValueOfBacklogIni = ValueOfBacklogIni,
-      ReportedIndustryVolumeIni = ReportedIndustryVolumeIni,
-      CumulativeProductionIni = CumulativeProductionIni,
-      PerceivedCompTargetCapacityIni = PerceivedCompTargetCapacityIni,
-      CapacityIni = CapacityIni,
+    if(INICIALIZAR_ESTOQUES_COM_CASO_BASE){
       
-      InitialInvestimentoNaoRealizadoPeD = InitialInvestimentoNaoRealizadoPeD,
-      InitialPatentesRequisitadas = InitialPatentesRequisitadas,
-      InitialPatentesEmpresa = InitialPatentesEmpresa,
-      InitialsPatentesEmDominioPublicoUteis = InitialsPatentesEmDominioPublicoUteis,
-      InitialsInvestimentoPeDDepreciar = InitialsInvestimentoPeDDepreciar
-    )
+      stocks_ini = list(
+        BacklogIni = VARIAVEIS_FINAIS_CASO_BASE[grep("sBacklog", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        InstalledBaseIni = VARIAVEIS_FINAIS_CASO_BASE[grep("sInstalledBase", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        CumulativeAdoptersIni = VARIAVEIS_FINAIS_CASO_BASE[grep("sCumulativeAdopters", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        ValueOfBacklogIni = VARIAVEIS_FINAIS_CASO_BASE[grep("sValueOfBacklog", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        ReportedIndustryVolumeIni = VARIAVEIS_FINAIS_CASO_BASE[grep("sReportedIndustryVolume", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        CumulativeProductionIni = VARIAVEIS_FINAIS_CASO_BASE[grep("sCumulativeProduction", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        PerceivedCompTargetCapacityIni = VARIAVEIS_FINAIS_CASO_BASE[grep("sPerceivedCompTargetCapacity", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        CapacityIni = VARIAVEIS_FINAIS_CASO_BASE[grep("sSmoothCapacity3", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        
+        InitialInvestimentoNaoRealizadoPeD = VARIAVEIS_FINAIS_CASO_BASE[grep("sInvestimentoNaoRealizadoPeD", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        InitialPatentesRequisitadas = VARIAVEIS_FINAIS_CASO_BASE[grep("sPatentesRequisitadas", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        InitialPatentesEmpresa = VARIAVEIS_FINAIS_CASO_BASE[grep("sPatentesEmpresa", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        InitialsPatentesEmDominioPublicoUteis = VARIAVEIS_FINAIS_CASO_BASE[grep("sPatentesEmDominioPublicoUteis", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        InitialsInvestimentoPeDDepreciar = VARIAVEIS_FINAIS_CASO_BASE[grep("sInvestimentoPeDDepreciar", x = names(VARIAVEIS_FINAIS_CASO_BASE))]
+        )
+      
+      # Estes valores vieram como colunas e devem se transformar em vetores:
+      stocks_ini = lapply(stocks_ini, transf_colunas_em_vetor)
+      
+      
+      
+    } else {
+      stocks_ini = list(
+        BacklogIni = BacklogIni,
+        InstalledBaseIni = InstalledBaseIni,
+        CumulativeAdoptersIni = CumulativeAdoptersIni,
+        ValueOfBacklogIni = ValueOfBacklogIni,
+        ReportedIndustryVolumeIni = ReportedIndustryVolumeIni,
+        CumulativeProductionIni = CumulativeProductionIni,
+        PerceivedCompTargetCapacityIni = PerceivedCompTargetCapacityIni,
+        CapacityIni = CapacityIni,
+        
+        InitialInvestimentoNaoRealizadoPeD = InitialInvestimentoNaoRealizadoPeD,
+        InitialPatentesRequisitadas = InitialPatentesRequisitadas,
+        InitialPatentesEmpresa = InitialPatentesEmpresa,
+        InitialsPatentesEmDominioPublicoUteis = InitialsPatentesEmDominioPublicoUteis,
+        InitialsInvestimentoPeDDepreciar = InitialsInvestimentoPeDDepreciar
+      )  
+    }
+    
     
     ##### COMPARAR RESULTADOS COM O ITHINK #####
     
@@ -1808,7 +1886,8 @@ plot_linha_uma_variavel_ensemble_uma_estrategia = function(dados, variavel, nome
     ylab(nome_amigavel_variavel) + 
     xlab("Tempo (anos)") + 
     theme(legend.position="bottom")  +
-    labs(color = "Estratégia")
+    labs(color = "Estratégia") +
+    scale_y_continuous(labels = format_for_humans)
 }
 
 plot_linha_uma_variavel_players_um_cenario = function(dados = results$DadosSimulados, estrategia = 1, cenario = 4, variavel = "sNPVProfit", nome_amigavel_variavel = "VPL", opcoes = opcoes){
@@ -1829,7 +1908,8 @@ plot_linha_uma_variavel_players_um_cenario = function(dados = results$DadosSimul
     ylab(nome_amigavel_variavel) + 
     xlab("Tempo (anos)") + 
     theme(legend.position="bottom")  +
-    labs(color = "Player")
+    labs(color = "Player") +
+    scale_y_continuous(labels = format_for_humans)
 }
 
 
@@ -1856,7 +1936,8 @@ plot_linha_uma_variavel_ensemble = function(dados, variavel, nome_amigavel_varia
     ylab(nome_amigavel_variavel) + 
     xlab("Tempo (anos)") + 
     theme(legend.position="bottom")  +
-    labs(color = "Caso")
+    labs(color = "Caso") +
+    scale_y_continuous(labels = format_for_humans)
 }
 
 
@@ -1874,7 +1955,8 @@ plot_linha_uma_variavel = function(dados, variavel, nome_amigavel_variavel) {
     geom_line() + 
     ylab(nome_amigavel_variavel) + 
     xlab("Tempo (anos)") + 
-    theme(legend.position="bottom")
+    theme(legend.position="bottom") +
+    scale_y_continuous(labels = format_for_humans)
 }
 
 
@@ -1900,7 +1982,7 @@ plot_linha_duas_variaveis = function(dados, variavel1, nome_amigavel_variavel1, 
   
   # now adding the secondary axis, following the example in the help file ?scale_y_continuous
   # and, very important, reverting the above transformation
-  p <- p + scale_y_continuous(sec.axis = sec_axis(~./razaovariavel, name = nome_amigavel_variavel2))
+  p <- p + scale_y_continuous(sec.axis = sec_axis(~./razaovariavel, name = nome_amigavel_variavel2), labels = format_for_humans)
   
   # modifying colours and theme options
   p <- p + scale_colour_manual(values = c("blue", "red"))
@@ -1949,7 +2031,7 @@ grafico_whisker_por_lever = function(dados_regret, variavel) {
   )
   
   p <- eval(call_grafico)
-  p + geom_boxplot()
+  p + geom_boxplot()  + scale_y_continuous(labels = format_for_humans)
 }
 
 #' plot_fronteira_tradeoff_estrategia
@@ -2566,3 +2648,13 @@ analyze.cart <- function(factors, response) {
   rpart.plot::prp(fit, type=2, extra=1)
 }
 
+# Funcao para formatar números para humanos.
+# https://stackoverflow.com/questions/46657442/understanding-vectorisation
+format_for_humans <- function(x, digits = 3){
+  grouping <- pmax(floor(log(abs(x), 1000)), 0)
+  paste0(signif(x / (1000 ^ grouping), digits = digits), 
+         c('', 'K', 'M', 'B', 'T')[grouping + 1])
+}
+
+
+transf_colunas_em_vetor = function(x) {as.vector(t(x))}
