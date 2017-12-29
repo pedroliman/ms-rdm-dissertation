@@ -124,6 +124,8 @@ resultados_casos_plausiveis = simularRDM_e_escolher_estrategia(inputs = planilha
 # Salvar resultados com casos plausíveis:
 save(resultados_casos_plausiveis, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
 
+load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
+
 
 variavel_calibracao = "fIndustryOrderRate"
 nome_amigavel_variavel_calibracao = "Demanda Imp. 3D > 5000 USD"
@@ -289,6 +291,7 @@ results1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
 # Salvar resultados:
 save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
+load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
 # Aqui ainda seria necessário filtar os resultados com o critério definido.
 
@@ -371,6 +374,9 @@ salvar_plots_result(results = results2.1,
 
 # 
 
+results = results1
+
+
 
 
 
@@ -378,13 +384,14 @@ salvar_plots_result(results = results2.1,
 
 # Visualizando um histograma do Regret da Estratégia Candidata
 
-regret_perc_estrategia_candidata = results$AnaliseRegret$Dados$sNPVProfit1RegretPerc[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata)]
+regret_perc_estrategia_candidata = results$AnaliseRegret$Dados$sNPVProfit1RegretPerc[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata$Lever)]
 
 # O critério para realizar a análise de vulnerabilidade foi o mesmo usado para definir a estratégia candidata:
-threshold_analise_vulnerabilidade = as.numeric(results$AnaliseRegret$ResumoEstrategias[which(results$AnaliseRegret$ResumoEstrategias$Lever==results$EstrategiaCandidata),paste(opcoes$VarResposta, opcoes$VarCriterio, sep="")]) 
+threshold_analise_vulnerabilidade = as.numeric(results$AnaliseRegret$ResumoEstrategias[which(results$AnaliseRegret$ResumoEstrategias$Lever==results$EstrategiaCandidata$Lever),paste(opcoes$VarResposta, opcoes$VarCriterio, sep="")]) 
 
+threshold_analise_vulnerabilidade = 0.25
 
-histograma_regret_estrategia_candidata = ggplot(results$AnaliseRegret$Dados[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata),], aes(x=sNPVProfit1RegretPerc)) + 
+histograma_regret_estrategia_candidata = ggplot(results$AnaliseRegret$Dados[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata$Lever),], aes(x=sNPVProfit1RegretPerc)) + 
   geom_histogram(aes(y=..density..), colour="black", fill="white")+
   geom_density(alpha=.2, fill="#FF6666") +
   xlab("Perda de Oportunidade %") + 
@@ -399,12 +406,28 @@ histograma_regret_estrategia_candidata
 
 # Gerando DataFrame propício para a análise de vulnerabilidade.
 df_vulnerabilidade = obter_df_vulnerabilidade(results = results, 
-                                              estrategia_candidata = results$EstrategiaCandidata, 
+                                              estrategia_candidata = results$EstrategiaCandidata$Lever, 
                                               variavel_resposta = "sNPVProfit1RegretPerc" , 
                                               threshold = threshold_analise_vulnerabilidade, 
                                               planilha_inputs = planilha_inputs, 
                                               sentido_vulnerabilidade = ">=")
 
+ensemble_analisado_melhor_estrategia = analisar_ensemble_com_melhor_estrategia(ensemble = results$Ensemble,
+                                                             dados_regret = results$AnaliseRegret$Dados, 
+                                                             var_cenarios = opcoes$VarCenarios, 
+                                                             var_estrategias = opcoes$VarEstrategias, 
+                                                             var_resposta = opcoes$VarResposta, 
+                                                             estrategia_candidata = results$EstrategiaCandidata$Lever)
+
+
+melhor_estrategia_por_cenario = ensemble_analisado_melhor_estrategia %>% dplyr::select(Scenario, Lever)
+
+names(melhor_estrategia_por_cenario) = c("Scenario", "MelhorEstrategia")
+
+
+df_vulnerabilidade = dplyr::inner_join(melhor_estrategia_por_cenario, df_vulnerabilidade)
+
+write.csv(df_vulnerabilidade, file = "df_vulnerabilidade.csv")
 
 y = factor(df_vulnerabilidade$CasoInteresse)
 x = df_vulnerabilidade[,4:ncol(df_vulnerabilidade)]
@@ -612,7 +635,20 @@ varImp(cartFit)
 
 #### 4.3.2 - PRIM ####
 
+# Rodando a Análise do PRIM no python (chamando por aqui.)
+# Edite o script do python para que isto funcione corretamente.
+
+system('python analise_prim.py')
+
+
+
+
 library(prim)
+
+
+
+
+
 
 results.prim = prim.box(x = x[,1:2], y = y, threshold.type = 1, peel.alpha = 0.05, paste.alpha = 0.05, threshold = 0.25)
 

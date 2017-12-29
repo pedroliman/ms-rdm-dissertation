@@ -1674,6 +1674,7 @@ analisar_ensemble_com_melhor_estrategia = function(ensemble, dados_regret, var_c
 #' @return dataframe com o ensemble, variável de resposta e indicação se cada caso é um caso de interesse ou não.
 #' @export
 obter_df_vulnerabilidade = function(results, estrategia_candidata, variavel_resposta = "sNPVProfit1RegretPerc" , threshold = 0.1, planilha_inputs, sentido_vulnerabilidade = ">=") {
+  
   if(sentido_vulnerabilidade == ">=") {
     results$AnaliseRegret$Dados$CasoInteresse = as.numeric(results$AnaliseRegret$Dados[,variavel_resposta] >= threshold)  
   } else {
@@ -1692,7 +1693,7 @@ obter_df_vulnerabilidade = function(results, estrategia_candidata, variavel_resp
   
   variaveis_incertas = parametros_completos$Variavel[which(parametros_completos$Tipo=="Incerto")]
   
-  x = ensemble_e_resultados[,c("Scenario", "Lever",variaveis_incertas)]
+  x = ensemble_e_resultados[,c(variavel_resposta,"Scenario", "Lever",variaveis_incertas)]
   y = as.numeric(ensemble_e_resultados$CasoInteresse)
   
   data.frame(CasoInteresse = y, x)
