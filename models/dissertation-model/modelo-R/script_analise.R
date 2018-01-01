@@ -82,6 +82,7 @@ resultados_casos_plausiveis = simularRDM_e_escolher_estrategia(inputs = planilha
 save(resultados_casos_plausiveis, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
 
 
+
 variavel_calibracao = "fIndustryOrderRate"
 nome_amigavel_variavel_calibracao = "Demanda Imp. 3D > 5000 USD"
 
@@ -301,5 +302,5 @@ results2.1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                               ensemble = ensemble_a_simular)
 
 # Salvar resultados:
-save(results2.1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results2.1.rda")
+save(results2.1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results2.1_bc.rda")
 

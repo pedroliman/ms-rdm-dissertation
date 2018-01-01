@@ -81,7 +81,7 @@ planilha_opcao2.1_futuro = planilha_simulacao_calibracao_historico
 percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
-n_casos_total = 800 # 400
+n_casos_total = 54*25 # 400
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_calibracao_historico, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
@@ -89,13 +89,6 @@ n_ensemble_total = round(n_casos_total / n_estrategias, 0)
 
 # Tamanho do ensemble para calibração.
 n_ensemble_calibracao = round(n_ensemble_total / percentil_utilizado_como_criterio,0)
-
-# Definindo Filtros a usar para Filtrar Casos após a simulação.
-DemandaMaximaAnual = 12000 * 10
-DemandaMinimaAnual = 12000 / 10
-
-PrecoMaximo = 200000 * 5
-PrecoMinimo = 200000 / 5
 
 #### 4.1 Calibração com Dados Históricos de Demanda ####
 # Simulação 0: Simulando Histórico e Observando Fit do Modelo:
@@ -128,7 +121,7 @@ load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados
 
 
 variavel_calibracao = "fIndustryOrderRate"
-nome_amigavel_variavel_calibracao = "Demanda Imp. 3D > 5000 USD"
+nome_amigavel_variavel_calibracao = "Demanda Global"
 
 # Parâmetros Utilizados
 resultados_casos_plausiveis$Inputs$Parametros
@@ -148,9 +141,9 @@ cenarios_a_exibir_grafico = sample(1:opcoes$N,size = min(30,opcoes$N))
 
 plot_demanda_pre_calibracao = plot_linha_uma_variavel_ensemble(dados = subset(resultados_casos_plausiveis$DadosSimulados, Scenario %in% cenarios_a_exibir_grafico), 
                                  variavel = variavel_calibracao, 
-                                 nome_amigavel_variavel = nome_amigavel_variavel_calibracao) + geom_vline(xintercept = 2017)
+                                 nome_amigavel_variavel = nome_amigavel_variavel_calibracao) #+ geom_vline(xintercept = 2017)
 
-plot_demanda_pre_calibracao = plot_demanda_pre_calibracao + annotate("text", x = 2017.2, y = max(resultados_casos_plausiveis$DadosSimulados$fIndustryOrderRate), label=c("Hoje"),hjust=0)
+plot_demanda_pre_calibracao = plot_demanda_pre_calibracao # + annotate("text", x = 2017.2, y = max(resultados_casos_plausiveis$DadosSimulados$fIndustryOrderRate), label=c("Hoje"),hjust=0)
 
 plot_demanda_pre_calibracao
 
@@ -165,7 +158,11 @@ variaveis_analise_fit = c("SumOfSquareResiduals", "MeanSquareError", "MeanAbsolu
 variaveis_exibir_ensemble = c("Scenario", variaveis_analise_fit)
 cenarios_a_exibir_tabela = sample(1:opcoes$N,size = 5)
 
-t(ensemble_com_erro[1:5,variaveis_exibir_ensemble])
+# Demonstração do erro calculado
+
+tabela_de_erro_calculado = t(ensemble_com_erro[1:5,variaveis_exibir_ensemble])
+
+tabela_de_erro_calculado
 
 # Exibindo Ordem de Grandeza dos Erros Médios Absolutos
 
@@ -199,7 +196,6 @@ parametros_cenario_menor_erro = t(ensemble_com_erro[which(ensemble_com_erro[,opc
 parametros_cenario_menor_erro
 
 
-
 # Condições Iniciais do cenário com Menor Erro:
 
 resultados_casos_plausiveis$DadosUltimoPeriodo[which(resultados_casos_plausiveis$DadosUltimoPeriodo$Scenario==cenario_menor_erro),]
@@ -207,6 +203,8 @@ resultados_casos_plausiveis$DadosUltimoPeriodo[which(resultados_casos_plausiveis
 # Condições Finais do Cenário com Menor erro (pode ser usado como base):
 
 VARIAVEIS_FINAIS_CASO_BASE = resultados_casos_plausiveis$DadosUltimoPeriodo[which(resultados_casos_plausiveis$DadosUltimoPeriodo$Scenario==cenario_menor_erro),]
+
+
 
 
 # Plotar Gráfico do Cenário com Menor Erro:
@@ -233,14 +231,11 @@ plot_cenario_base_e_historico <-ggplot()+
                                "Modelo"))
 plot_cenario_base_e_historico 
 
-# Definir um threshold de aceitabilidade do Erro quadrado médio.
-
-# Definir um threshold mínimo da demanda e máximo da demanda (anual).
-
-# Definir casos considerados plausíveis.
 
 
 
+
+# Definição de Casos Considerados Plausíveis para a Geração de Ensemble 2.0 e 2.1
 
 percentil_ssr = quantile(ensemble_com_erro[,"SumOfSquareResiduals"], probs = c(percentil_utilizado_como_criterio))
 
@@ -259,6 +254,31 @@ plot_cenarios_plausiveis = plot_linha_uma_variavel_ensemble(dados = resultados_c
                                  ,variavel = variavel_calibracao, nome_amigavel_variavel = nome_amigavel_variavel_calibracao) + geom_point(data=dados_calibracao, size = 1.5, aes(time, fIndustryOrderRate))
 
 plot_cenarios_plausiveis
+
+
+
+# Gerando Gráficos da Calibração
+plots_calibracao = list(
+  calibracao_plot_cenarios_plausiveis = plot_cenarios_plausiveis,
+  calibracao_plot_cenario_base_e_historico = plot_cenario_base_e_historico,
+  calibracao_plot_demanda_pre_calibracao = plot_demanda_pre_calibracao,
+  calibracao_histograma_erro_percentual = histograma_erro_percentual,
+  calibracao_histograma_erro_medio_quadrado = histograma_erro_medio_quadrado
+)
+
+# Salvando Gráficos da Calibração.
+mapply(ggsave, file=paste0("./images/", names(plots_calibracao), ".png"), plot=plots_calibracao, width = plots_width, height = plots_heigh)
+
+
+# Salvando Tabelas da Calibração:
+parametros_cenario_menor_erro
+tabela_de_erro_calculado
+VARIAVEIS_FINAIS_CASO_BASE
+
+
+
+
+
 
 #### 4.2 Simulação dos Casos Contra Estratégias ####
 
@@ -291,7 +311,14 @@ results1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
 # Salvar resultados:
 save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
+save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.2.rda")
+
+
+
 load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
+
+results = results1
+
 
 # Aqui ainda seria necessário filtar os resultados com o critério definido.
 
@@ -351,11 +378,11 @@ save(results2.1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-tem
 
 
 #### 4.3 Análise dos Resultados ####
-
+results1 = results
 # Gerar Gráficos para Analisar os Resultados:
 
 # Gerando Resultados da Opção 1 - Estratégia Candidata 1, e Cenário 1
-salvar_plots_result(results = results1, 
+plots_results = salvar_plots_result(results = results1, 
                     cenario_plot_players = results1$DadosUltimoPeriodo$Scenario[1],
                     estrategia_candidata = results1$EstrategiaCandidata$Lever[1],
                     opcoes = opcoes)
@@ -424,15 +451,20 @@ melhor_estrategia_por_cenario = ensemble_analisado_melhor_estrategia %>% dplyr::
 
 names(melhor_estrategia_por_cenario) = c("Scenario", "MelhorEstrategia")
 
-
 df_vulnerabilidade = dplyr::inner_join(melhor_estrategia_por_cenario, df_vulnerabilidade)
 
 write.csv(df_vulnerabilidade, file = "df_vulnerabilidade.csv")
 
 y = factor(df_vulnerabilidade$CasoInteresse)
-x = df_vulnerabilidade[,4:ncol(df_vulnerabilidade)]
+x = df_vulnerabilidade[,6:ncol(df_vulnerabilidade)]
 
 
+# Quando a Estratégia Candidata gera alto Regret, qual é a melhor estratégia?
+
+# Filtrando Casos de Interesse:
+estrategias_melhores_casos_interesse = df_vulnerabilidade[which(df_vulnerabilidade$CasoInteresse == 1),]
+
+estrategias_melhores_casos_interesse %>% dplyr::group_by(MelhorEstrategia) %>% dplyr::summarise(count)
 
 #### 4.3.1 - Feature Ranking - Outros Algoritmos ####
 
@@ -448,10 +480,14 @@ View(importancia_party)
 
 caret::varImp(cf1)
 
+
 # Usando uma Random forest "padrão"
 library(randomForest)
 forest = randomForest::randomForest(factor(y)~., data = x)
 plot_importancia_forest = randomForest::varImpPlot(forest)
+
+randomForest::varUsed(forest)
+
 
 tabela_random_forest = as.data.frame(randomForest::importance(forest)) 
 
@@ -770,6 +806,14 @@ invisible(marks)
 # Descrição dos Cenários Desafiadores para a Estratégia.
 
 #### 4.4 Análise de Tradeoffs ####
+
+
+
+plot_fronteira_tradeoff_estrategia(results = results, opcoes = opcoes)
+
+
+
+
 
 #### Rodando um Cenário Base ####
 ## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)

@@ -755,16 +755,33 @@ kable(t(results$Inputs$LeversFull))
 kable(results$Inputs$Levers)
 ```
 
+- Simulando os Resultados:
 
-- Exibindo Resultados das Simulações
+- Tabela de Dados Simulados:
 
 ```{r}
-plots_rodada1$plot_estrategia_candidata
+str(results$DadosSimulados)
+```
+
+- Dados Selecionados do Último Período:
+
+```{r}
+summary(results$DadosUltimoPeriodo)
+```
+
+
+
+- Exibindo Resultados das Simulações:
+
+
+```{r}
+plots_results$plots_linha_geral$plot_estrategia_candidata_vpl
 ```
 
 
 #### Comparação das Estratégias - Análise da Perda de Oportunidade
 
+- As 54 Estratégias definidas foram simuladas em 200 casos, cada uma, totalizando 10800 simulações. 
 
 - Tabela de Análise da Perda de Oportunidade
 
@@ -775,25 +792,25 @@ kable(results$AnaliseRegret$ResumoEstrategias)
 - Gráficos para Comparação das Estratégias - NPV Profit:
 
 ```{r}
-plots_rodada1$plot_whisker_lever_profit
+plots_results$plots_whisker$plot_whisker_lever_profit
 ```
 
 - Gráficos para Comparação das Estratégias - NPV Regret:
 
 ```{r}
-plots_rodada1$plot_whisker_lever_regret
+plots_results$plots_whisker$plot_whisker_lever_regret
 ```
 
 - Gráficos para Comparação das Estratégias - NPV Regret Percentual:
 
 ```{r}
-plots_rodada1$plot_whisker_lever_perc_regret
+plots_results$plots_whisker$plot_whisker_lever_perc_regret
 ```
 
-- Qual é a Estratégia Robusta?
+- Qual é a Estratégia mais Robusta?
 
 ```{r}
-kable(t(results$Inputs$Levers[which(results$Inputs$Levers$Lever == results$EstrategiaCandidata),]))
+kable(t(results$Inputs$Levers[which(results$Inputs$Levers$Lever == results$EstrategiaCandidata$Lever),]))
 ```
 
 ### Análise de Vulnerabilidades da Estratégia Candidata

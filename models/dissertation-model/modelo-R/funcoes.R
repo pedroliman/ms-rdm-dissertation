@@ -2372,6 +2372,12 @@ salvar_plots_result = function(results, cenario_plot_players, estrategia_candida
   
   mapply(ggsave, file=paste0("./images/",nome_resultado,"-cenario",cenario_plot_players,"-", names(plots_players), ".png"), plot=plots_players, width = plots_width, height = plots_heigh)
   
+  # Retornar objeto com todos os plots:
+  list(
+    plots_players = plots_players,
+    plots_whisker = plots_whisker,
+    plots_linha_geral = plots_linha_geral
+  )
 }
 
 
