@@ -180,7 +180,8 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
     list.variaveis.globais <<- list(
       # sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
       sReportedIndustryVolume = matrix(NA, ncol = 1, nrow = n_tempo),
-      aExpectedIndustryDemand = matrix(NA, ncol = 1, nrow = n_tempo)
+      aExpectedIndustryDemand = matrix(NA, ncol = 1, nrow = n_tempo),
+      aIndustryShipments = matrix(NA, ncol = 1, nrow = n_tempo)
     )
     
     estoques_calculados = modelo(time = START, stocks = stocks_iniciais, auxs = auxs, modo = "inicial")
@@ -235,7 +236,8 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
   list.variaveis.globais <<- list(
     # sReportedIndustryVolume = matrix(NA, ncol = N_PLAYERS, nrow = n_tempo),
     sReportedIndustryVolume = matrix(NA, ncol = 1, nrow = n_tempo),
-    aExpectedIndustryDemand = matrix(NA, ncol = 1, nrow = n_tempo)
+    aExpectedIndustryDemand = matrix(NA, ncol = 1, nrow = n_tempo),
+    aIndustryShipments = matrix(NA, ncol = 1, nrow = n_tempo)
   )
   
   
@@ -339,6 +341,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     # Gravando a Variável sReportedIndustryVolume no vetor global
     list.variaveis.globais$sReportedIndustryVolume[linha,] <<- sReportedIndustryVolume
     
+    # O initialReorderShare deve depender do tempo de vida médio considerado pelo modelo:
+    aInitialReorderShare = (aFractionalDiscardRate * aTotalInitialInstalledBase) / aInitialIndustryShipments # Reorders / IndustryShipments => (aFractionalDiscardRate * InstalledBase / InitialIndustryShipments)
     
     ### Calculando Variáveis para o Estoque Inicial de Cumulative Adopters
     
@@ -416,6 +420,19 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     aCapacityUtilization = fShipments / aCapacity
     
     aIndustryShipments = sum(fShipments)
+    
+    list.variaveis.globais$aIndustryShipments[linha,] <<- aIndustryShipments
+    
+    # Calculando a Variação no Industry Shipments - Ajuda a Calcular a Variação Percentual em Demanda para Avaliar a Plausibilidade do Modelo (principalmente em relação às condições iniciais).
+    VariacaoDemanda = if(time == START){
+      ((aIndustryShipments - aInitialIndustryShipments) / aInitialIndustryShipments)
+    } else {
+      ((aIndustryShipments - list.variaveis.globais$aIndustryShipments[linha-1,]) / list.variaveis.globais$aIndustryShipments[linha-1,])
+    }
+    
+    if(modo == "completo"){
+      browser()
+    }
     
     aMarketShare = fShipments / aIndustryShipments
     
@@ -704,9 +721,19 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     # Variaveis de Estoques Iniciais
     
+    # Alteração para CAlibração de dados Iniciais: Calibrar o Backlog inicial com a Demanda Inicial Informada.
     BacklogIni = aInitialSharePlayers * fIndustryOrderRate * aNormalDeliveryDelay
     
-    InstalledBaseIni = aInitialCumulativeAdopters * aInitialSharePlayers * aUnitsPerHousehold
+    # Alteração Importante para a Calibração dos Dados Iniciais do Modelo!
+    # A variável de Base de Usuários inicial deve partir da mesma estimativa
+    
+    # Antes da Alteração:
+    # InstalledBaseIni = aInitialCumulativeAdopters * aInitialSharePlayers * aUnitsPerHousehold
+    
+    #Depois:
+    # O Reorder Share deve depender do tempo de vida médio:
+    # 
+    InstalledBaseIni = aTotalInitialInstalledBase * aInitialSharePlayers
     
     CumulativeAdoptersIni = aInitialCumulativeAdopters
     
@@ -940,7 +967,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     ,aIndustryVolume = unname(aIndustryVolume) 
     ,fNPVProfitChange = unname(fNPVProfitChange) 
     ,fNetIncome = unname(fNetIncome) 
-    ,aNPVIndustryProfits = unname(aNPVIndustryProfits))
+    ,aNPVIndustryProfits = unname(aNPVIndustryProfits)
+    ,VariacaoDemanda = unname(VariacaoDemanda))
     
     
     return (if(modo == "inicial"){

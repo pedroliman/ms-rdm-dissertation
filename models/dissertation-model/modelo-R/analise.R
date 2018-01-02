@@ -22,7 +22,7 @@ opcoes_iniciais = list(
   VarTempo = "time",
   VarCriterio = "RegretPercentil75",
   SentidoCriterio = "min",
-  Paralelo = TRUE,
+  Paralelo = FALSE,
   ModoParalelo = "FORK",
   SimularApenasCasoBase = TRUE,
   FullFactorialDesign = TRUE,
@@ -45,7 +45,7 @@ planilha_opcao2.1_futuro = planilha_simulacao_calibracao_historico
 percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
-n_casos_total = 54*100 # 400
+n_casos_total = 54*4 # 400
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_calibracao_historico, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
@@ -58,7 +58,7 @@ n_ensemble_calibracao = round(n_ensemble_total / percentil_utilizado_como_criter
 # Simulação 0: Simulando Histórico e Observando Fit do Modelo:
 ###
 opcoes$SimularApenasCasoBase = TRUE
-opcoes$N = n_ensemble_calibracao
+opcoes$N = 4
 # Esta opção faz com que os estoques sejam inicializados com o valor inicial dos estoques no cenário base.
 INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
 SIMULAR_HISTORICO_DIFERENTE = FALSE
@@ -67,7 +67,6 @@ SIMULAR_HISTORICO_DIFERENTE = FALSE
 # modificado enquanto até o ANO_INICIO_AVALIACAO. Se não ativado, a simulação ocorre normalmente.
 ANO_INICIO_AVALIACAO = 2018
 planilha_inputs = planilha_simulacao_calibracao_historico
-opcoes$Paralelo = TRUE
 opcoes$FiltrarCasosPlausiveis = FALSE
 # Rodar Simulação:
 START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
@@ -250,7 +249,6 @@ INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
 SIMULAR_HISTORICO_DIFERENTE = FALSE
 ANO_INICIO_AVALIACAO = 2018
 planilha_inputs = planilha_simulacao_opcao1_futuro
-opcoes$Paralelo = TRUE
 START<-2018; FINISH <-2028; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
