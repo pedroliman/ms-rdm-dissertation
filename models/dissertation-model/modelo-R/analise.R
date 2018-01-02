@@ -81,7 +81,7 @@ planilha_opcao2.1_futuro = planilha_simulacao_calibracao_historico
 percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
-n_casos_total = 54*25 # 400
+n_casos_total = 54*100 # 400
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_calibracao_historico, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
@@ -117,7 +117,7 @@ resultados_casos_plausiveis = simularRDM_e_escolher_estrategia(inputs = planilha
 # Salvar resultados com casos plausíveis:
 save(resultados_casos_plausiveis, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
 
-load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
+#load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
 
 
 variavel_calibracao = "fIndustryOrderRate"
@@ -311,11 +311,8 @@ results1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
 # Salvar resultados:
 save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
-save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.2.rda")
-
-
-
-load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
+#save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.2.rda")
+#load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
 results = results1
 
