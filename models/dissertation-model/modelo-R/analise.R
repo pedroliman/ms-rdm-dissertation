@@ -400,9 +400,6 @@ ranking_estrategias = dplyr::arrange(ranking_estrategias, sNPVProfit1RegretPercP
 
 ranking_estrategias
 
-grafico_whisker_por_lever(dados_regret = results1$AnaliseRegret$Dados, variavel = "sNPVProfit1")
-
-
 
 # Gerando Resultados da Opção 1 - Estratégia Candidata 1, e Cenário 1
 plots_results = salvar_plots_result(results = results1, 
@@ -438,10 +435,17 @@ results = results1
 
 regret_perc_estrategia_candidata = results$AnaliseRegret$Dados$sNPVProfit1RegretPerc[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata$Lever)]
 
+
+regret_estrategia_candidata = results$AnaliseRegret$Dados$sNPVProfit1Regret[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata$Lever)]
+
+
 # O critério para realizar a análise de vulnerabilidade foi o mesmo usado para definir a estratégia candidata:
 threshold_analise_vulnerabilidade = as.numeric(results$AnaliseRegret$ResumoEstrategias[which(results$AnaliseRegret$ResumoEstrategias$Lever==results$EstrategiaCandidata$Lever),paste(opcoes$VarResposta, opcoes$VarCriterio, sep="")]) 
 
-threshold_analise_vulnerabilidade = 0.25
+threshold_analise_vulnerabilidade = as.numeric(results$AnaliseRegret$ResumoEstrategias[which(results$AnaliseRegret$ResumoEstrategias$Lever==results$EstrategiaCandidata$Lever),paste(opcoes$VarResposta, opcoes$VarCriterio, sep="")]) 
+
+
+threshold_analise_vulnerabilidade = 0.35
 
 histograma_regret_estrategia_candidata = ggplot(results$AnaliseRegret$Dados[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata$Lever),], aes(x=sNPVProfit1RegretPerc)) + 
   geom_histogram(aes(y=..density..), colour="black", fill="white")+
@@ -472,16 +476,24 @@ ensemble_analisado_melhor_estrategia = analisar_ensemble_com_melhor_estrategia(e
                                                              estrategia_candidata = results$EstrategiaCandidata$Lever)
 
 
-melhor_estrategia_por_cenario = ensemble_analisado_melhor_estrategia %>% dplyr::select(Scenario, Lever)
+# melhor_estrategia_por_cenario = ensemble_analisado_melhor_estrategia %>% dplyr::select(Scenario, Lever)
+# 
+# names(melhor_estrategia_por_cenario) = c("Scenario", "MelhorEstrategia")
+# 
+# df_vulnerabilidade = dplyr::inner_join(melhor_estrategia_por_cenario, df_vulnerabilidade)
 
-names(melhor_estrategia_por_cenario) = c("Scenario", "MelhorEstrategia")
+View(df_vulnerabilidade)
 
-df_vulnerabilidade = dplyr::inner_join(melhor_estrategia_por_cenario, df_vulnerabilidade)
 
 write.csv(df_vulnerabilidade, file = "df_vulnerabilidade.csv")
 
 y = factor(df_vulnerabilidade$CasoInteresse)
-x = df_vulnerabilidade[,6:ncol(df_vulnerabilidade)]
+x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
+
+write.csv(y, file = "resposta.csv")
+
+write.csv(x, file = "incertezas.csv")
+
 
 
 # Quando a Estratégia Candidata gera alto Regret, qual é a melhor estratégia?
@@ -491,19 +503,89 @@ estrategias_melhores_casos_interesse = df_vulnerabilidade[which(df_vulnerabilida
 
 estrategias_melhores_casos_interesse %>% dplyr::group_by(MelhorEstrategia) %>% dplyr::summarise(count)
 
+#### 4.3.1 - Ranking de Variáveis considerando apenas médias.####
+ranking_variaveis_por_media = obter_df_diff_media_casos_interesse(df_vulnerabilidade = df_vulnerabilidade)
+
+ranking_variaveis_por_media
+
+View(ranking_variaveis_por_media)
+
+
+ranking_variaveis_por_media = droplevels(as.data.frame(ranking_variaveis_por_media))
+
+ranking_variaveis_por_media$Variavel = droplevels(ranking_variaveis_por_media$Variavel)
+
+
+
+# Plotando Primeiras Variáveis da Diferença entre Médias
+plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                          variavel = as.character(ranking_variaveis_por_media$Variavel[1]), 
+                                          nome_amigavel_var = as.character(ranking_variaveis_por_media$Variavel[1]))
+
+
+plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                          variavel = as.character(ranking_variaveis_por_media$Variavel[2]), 
+                                          nome_amigavel_var = as.character(ranking_variaveis_por_media$Variavel[2]))
+
+plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                          variavel = as.character(ranking_variaveis_por_media$Variavel[3]), 
+                                          nome_amigavel_var = as.character(ranking_variaveis_por_media$Variavel[3]))
+
+plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                          variavel = as.character(ranking_variaveis_por_media$Variavel[4]), 
+                                          nome_amigavel_var = as.character(ranking_variaveis_por_media$Variavel[4]))
+
+plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                          variavel = as.character(ranking_variaveis_por_media$Variavel[5]), 
+                                          nome_amigavel_var = as.character(ranking_variaveis_por_media$Variavel[5]))
+
+plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                          variavel = as.character(ranking_variaveis_por_media$Variavel[6]), 
+                                          nome_amigavel_var = as.character(ranking_variaveis_por_media$Variavel[6]))
+
+
+
+
+# Plotando Primeira e Terceira VAriável
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                            variavel1 = as.character(ranking_variaveis_por_media$Variavel[1]), 
+                                            nome_amigavel_var1 = as.character(ranking_variaveis_por_media$Variavel[1]),  
+                                            variavel2 = as.character(ranking_variaveis_por_media$Variavel[2]), 
+                                            nome_amigavel_var2 = as.character(ranking_variaveis_por_media$Variavel[2]))
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                            variavel1 = as.character(ranking_variaveis_por_media$Variavel[1]), 
+                                            nome_amigavel_var1 = as.character(ranking_variaveis_por_media$Variavel[1]),  
+                                            variavel2 = as.character(ranking_variaveis_por_media$Variavel[3]), 
+                                            nome_amigavel_var2 = as.character(ranking_variaveis_por_media$Variavel[3]))
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                            variavel1 = as.character(ranking_variaveis_por_media$Variavel[2]), 
+                                            nome_amigavel_var1 = as.character(ranking_variaveis_por_media$Variavel[2]),  
+                                            variavel2 = as.character(ranking_variaveis_por_media$Variavel[3]), 
+                                            nome_amigavel_var2 = as.character(ranking_variaveis_por_media$Variavel[3]))
+
+
+
+
+
+
+
+
 #### 4.3.1 - Feature Ranking - Outros Algoritmos ####
 
 # Rodar Algoritmos para Priorização de Variáveis de Descoberta de Cenários.
 # http://r-statistics.co/Variable-Selection-and-Importance-With-R.html
 # Random Forest
 set.seed(2)
-library(party)
-cf1 <- party::cforest(y ~ . , data= x, control=cforest_unbiased(mtry=2,ntree=50))
-importancia_party = varimp(cf1)
-varimp(cf1, conditional=TRUE)
-View(importancia_party)
-
-caret::varImp(cf1)
+# library(party)
+# cf1 <- party::cforest(y ~ . , data= x, control=cforest_unbiased(mtry=2,ntree=50))
+# importancia_party = varimp(cf1)
+# varimp(cf1, conditional=TRUE)
+# View(importancia_party)
+# 
+# caret::varImp(cf1)
 
 
 # Usando uma Random forest "padrão"
@@ -530,18 +612,52 @@ tabela_random_forest
 
 plot_importancia_forest
 
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                            variavel1 = as.character(tabela_random_forest$Variavel[1]), 
+                                            nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[1]),  
+                                            variavel2 = as.character(tabela_random_forest$Variavel[2]), 
+                                            nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[2]))
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                            variavel1 = as.character(tabela_random_forest$Variavel[1]), 
+                                            nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[1]),  
+                                            variavel2 = as.character(tabela_random_forest$Variavel[3]), 
+                                            nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[3]))
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                            variavel1 = as.character(tabela_random_forest$Variavel[2]), 
+                                            nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[2]),  
+                                            variavel2 = as.character(tabela_random_forest$Variavel[3]), 
+                                            nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[3]))
+
+
+
+
 
 library(randomForestExplainer)
 library(pdp)
 
 
-pdp1 = pdp::partial(forest, tabela_random_forest$Variavel[2])
-plot_random_forest_1d = pdp::plotPartial(pdp1)
+pdp1.1 = pdp::partial(forest, as.character(tabela_random_forest$Variavel[1]))
+plot_random_forest_1d.1 = pdp::plotPartial(pdp1.1)
 
-plot_random_forest_1d
+plot_random_forest_1d.1
 
 
-pdp2 = pdp::partial(forest, tabela_random_forest$Variavel[1:2])
+pdp1.2 = pdp::partial(forest, as.character(tabela_random_forest$Variavel[2]))
+plot_random_forest_1d.2 = pdp::plotPartial(pdp1.2)
+
+plot_random_forest_1d.2
+
+
+pdp1.3 = pdp::partial(forest, as.character(tabela_random_forest$Variavel[3]))
+plot_random_forest_1d.3 = pdp::plotPartial(pdp1.3)
+
+plot_random_forest_1d.3
+
+
+
+pdp2 = pdp::partial(forest,  as.character(tabela_random_forest$Variavel[1:2]))
 
 plot_parcial2d = pdp::plotPartial(pdp2)
 
@@ -549,17 +665,17 @@ plot_parcial2d
 
 estrategia_candidata = results$EstrategiaCandidata
 
-variavel_resposta = "sNPVProfit1"
+variavel_resposta = "sNPVProfit1RegretPerc"
 
 
 landscape_estrategia_comparacao = plot_landscape_futuros_plausiveis(
-  results, estrategia = results$EstrategiaCandidata, 
+  results, estrategia = results$EstrategiaCandidata$Lever, 
   variavelresp = variavel_resposta,
   nomeamigavel_variavelresp = "LOF Percentual",
-  variavel1  = tabela_random_forest$Variavel[1],
-  n_variavel1 = "Estratégia Capacidade Player2",
-  variavel2 = tabela_random_forest$Variavel[2],
-  n_variavel2 = "Mkt Share Desejado Player 2"
+  variavel1  = as.character(tabela_random_forest$Variavel[1]),
+  n_variavel1 = as.character(tabela_random_forest$Variavel[1]),
+  variavel2 = as.character(tabela_random_forest$Variavel[2]),
+  n_variavel2 = as.character(tabela_random_forest$Variavel[2])
 )
 
 
@@ -615,38 +731,21 @@ plot_boruta = plot(boruta_output, cex.axis=.7, las=2, mar=c(5,8,4,2), xlab="", m
 
 plot_boruta
 
-#### 4.3.1 - Gerando Ranking de Variáveis considerando apenas médias.####
-ranking_variaveis_por_media = obter_df_diff_media_casos_interesse(df_vulnerabilidade = df_vulnerabilidade)
-
-ranking_variaveis_por_media
-
-
-plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel = "aPerfSlope", nome_amigavel_var = "Impacto Patentes sobre Performance")
-
-plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aPerfSlope", nome_amigavel_var1 = "Impacto Patentes sobre Performance",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
-
-
-plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aDesiredMarketShare3", nome_amigavel_var1 = "MktShareDesejadoPlayer3",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
-
-plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aTempoMedioAvaliacao", nome_amigavel_var1 = "Tempo de Avaliação das Patentes",  variavel2 = "aTaxaRejeicao", nome_amigavel_var2 = "Taxa de Rejeição de Patentes")
-
-
-
-
 
 
 
 variavel_1 = boruta_signif[1]
 variavel_2 = boruta_signif[2]
 
+
 landscape_estrategia = plot_landscape_futuros_plausiveis(
-  results, estrategia = estrategia_candidata, 
+  results, estrategia = results$EstrategiaCandidata$Lever, 
   variavelresp = variavel_resposta,
   nomeamigavel_variavelresp = "LOF Percentual",
   variavel1  = variavel_1,
-  n_variavel1 = "Sensibilidade ao Preço",
+  n_variavel1 = variavel_1,
   variavel2 = variavel_2,
-  n_variavel2 = "Utilização da Capacidade"
+  n_variavel2 = variavel_1
 )
 
 

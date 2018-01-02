@@ -1713,13 +1713,13 @@ obter_df_vulnerabilidade = function(results, estrategia_candidata, variavel_resp
 #' @export
 #'
 obter_df_diff_media_casos_interesse = function(df_vulnerabilidade) {
-  medias_interesse = df_vulnerabilidade %>% dplyr::filter(CasoInteresse == 1) %>% dplyr::select(-CasoInteresse, -Scenario, -Lever) %>% summarise_all(mean)
+  medias_interesse = df_vulnerabilidade %>% dplyr::filter(CasoInteresse == 1) %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1RegretPerc) %>% summarise_all(mean)
   
-  medias_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever)  %>% dplyr::summarise_all(mean)
+  medias_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1RegretPerc)  %>% dplyr::summarise_all(mean)
   
-  max_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever) %>% dplyr::summarise_all(max)
+  max_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1RegretPerc) %>% dplyr::summarise_all(max)
   
-  min_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever) %>% dplyr::summarise_all(min)
+  min_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1RegretPerc) %>% dplyr::summarise_all(min)
   
   range_global = max_global - min_global
   
