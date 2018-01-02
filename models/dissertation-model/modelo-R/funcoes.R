@@ -1276,6 +1276,10 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, opcoes = op
                                          "VERIFICAR_CHECKS",
                                          "VAR_LEVER",
                                          "VAR_SCENARIO",
+                                         "INICIALIZAR_ESTOQUES_COM_CASO_BASE",
+                                         "SIMULAR_HISTORICO_DIFERENTE",
+                                         "ANO_INICIO_AVALIACAO",
+                                         "VERIFICAR_GLOBAL",
                                          "opcoes",
                                          "STEP",
                                          "solve_modelo_dissertacao"), envir = environment())  
