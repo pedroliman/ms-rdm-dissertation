@@ -50,6 +50,28 @@ plot_orcamento_PeD_3DSystems = ggplot(DDD.orcamentoPeD)
 
 #### 4.0 Configurando Simulações ####
 
+# Opções, mudando a Variável de Critério:
+opcoes_iniciais = list(
+  VarResposta = "sNPVProfit1",
+  VarCenarios = "Scenario",
+  VarEstrategias = "Lever",
+  N = 30,
+  VarTempo = "time",
+  VarCriterio = "RegretPercentil75",
+  SentidoCriterio = "min",
+  Paralelo = TRUE,
+  ModoParalelo = "FORK",
+  SimularApenasCasoBase = TRUE,
+  FullFactorialDesign = TRUE,
+  FiltrarCasosPlausiveis = TRUE
+)
+
+opcoes = opcoes_iniciais
+
+
+
+
+
 # Gerar casos para simulação com base em estimativa inicial de parâmetros.
 opcoes_iniciais = list(
   VarResposta = "sNPVProfit1",
@@ -447,7 +469,7 @@ threshold_analise_vulnerabilidade = as.numeric(results$AnaliseRegret$ResumoEstra
 
 threshold_analise_vulnerabilidade = 0.35
 
-histograma_regret_estrategia_candidata = ggplot(results$AnaliseRegret$Dados[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata$Lever),], aes(x=sNPVProfit1RegretPerc)) + 
+histograma_regret_estrategia_candidata = ggplot(results$AnaliseRegret$Dados[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata$Lever),], aes(x=sNPVProfit1Regret)) + 
   geom_histogram(aes(y=..density..), colour="black", fill="white")+
   geom_density(alpha=.2, fill="#FF6666") +
   xlab("Perda de Oportunidade %") + 
@@ -463,7 +485,7 @@ histograma_regret_estrategia_candidata
 # Gerando DataFrame propício para a análise de vulnerabilidade.
 df_vulnerabilidade = obter_df_vulnerabilidade(results = results, 
                                               estrategia_candidata = results$EstrategiaCandidata$Lever, 
-                                              variavel_resposta = "sNPVProfit1RegretPerc" , 
+                                              variavel_resposta = "sNPVProfit1Regret" , 
                                               threshold = threshold_analise_vulnerabilidade, 
                                               planilha_inputs = planilha_inputs, 
                                               sentido_vulnerabilidade = ">=")
@@ -484,15 +506,6 @@ ensemble_analisado_melhor_estrategia = analisar_ensemble_com_melhor_estrategia(e
 
 View(df_vulnerabilidade)
 
-
-write.csv(df_vulnerabilidade, file = "df_vulnerabilidade.csv")
-
-y = factor(df_vulnerabilidade$CasoInteresse)
-x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
-
-write.csv(y, file = "resposta.csv")
-
-write.csv(x, file = "incertezas.csv")
 
 
 
@@ -665,7 +678,7 @@ plot_parcial2d
 
 estrategia_candidata = results$EstrategiaCandidata
 
-variavel_resposta = "sNPVProfit1RegretPerc"
+variavel_resposta = "sNPVProfit1Regret"
 
 
 landscape_estrategia_comparacao = plot_landscape_futuros_plausiveis(
@@ -681,9 +694,9 @@ landscape_estrategia_comparacao = plot_landscape_futuros_plausiveis(
 
 dispersao_variaveis_random_forest = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade,
                                             variavel1 = tabela_random_forest$Variavel[1],
-                                            nome_amigavel_var1 = "Estratégia Capacidade Player2",
+                                            nome_amigavel_var1 = tabela_random_forest$Variavel[1],
                                             variavel2 = tabela_random_forest$Variavel[2],
-                                            nome_amigavel_var2 = "Mkt Share Desejado Player 2")
+                                            nome_amigavel_var2 = tabela_random_forest$Variavel[2])
 
 
 # Usando as Variáveis com Shortlist, o resultado funcionou.
@@ -749,7 +762,7 @@ landscape_estrategia = plot_landscape_futuros_plausiveis(
 )
 
 
-# Definindo Variáveis x e y para as análises seguintes:
+# Definindo Variávseis x e y para as análises seguintes:
 n_variaveis_shortlist = 100
 variaveis_shortlist = as.vector(ranking_variaveis_por_media$Variavel[1:(min(n_variaveis_shortlist, nrow(ranking_variaveis_por_media)))])
 
@@ -798,16 +811,20 @@ varImp(cartFit)
 # Rodando a Análise do PRIM no python (chamando por aqui.)
 # Edite o script do python para que isto funcione corretamente.
 
+y = factor(df_vulnerabilidade$sNPVProfit1Regret)
+x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
+
+write.csv(y, file = "resposta.csv")
+
+write.csv(x, file = "incertezas.csv")
+
+View(y)
+View(x)
+
+threshold_analise_vulnerabilidade
+
+
 system('python analise_prim.py')
-
-
-
-
-library(prim)
-
-
-
-
 
 
 results.prim = prim.box(x = x[,1:2], y = y, threshold.type = 1, peel.alpha = 0.05, paste.alpha = 0.05, threshold = 0.25)

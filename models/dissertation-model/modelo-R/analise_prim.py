@@ -20,16 +20,20 @@ df_vulnerabilidade = pd.read_csv(path, index_col=0, parse_dates=True)
 df_vulnerabilidade
 
 # Gerando a Resposta:
-resposta = pd.read_csv("df_resposta.csv", index_col=0, parse_dates=True)
+resposta = pd.read_csv("resposta.csv", index_col=0, parse_dates=True)
+
+# Convertendo resposta em um array unidimensional
+resposta = resposta["x"]
+
 #resposta = df_vulnerabilidade["sNPVProfit1RegretPerc"]
 
 # Variaveis de Entrada:
 #incertezas = df_vulnerabilidade.iloc[:,4:42]
 
-incertezas = pd.read_csv("df_incertezas.csv", index_col=0, parse_dates=True)
+incertezas = pd.read_csv("incertezas.csv", index_col=0, parse_dates=True)
 
 
-p = prim.Prim(incertezas, resposta, threshold=0.30, threshold_type=">")
+p = prim.Prim(incertezas, resposta, threshold=260207766, threshold_type=">")
 
 box = p.find_box()
 

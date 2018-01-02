@@ -1713,13 +1713,13 @@ obter_df_vulnerabilidade = function(results, estrategia_candidata, variavel_resp
 #' @export
 #'
 obter_df_diff_media_casos_interesse = function(df_vulnerabilidade) {
-  medias_interesse = df_vulnerabilidade %>% dplyr::filter(CasoInteresse == 1) %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1RegretPerc) %>% summarise_all(mean)
+  medias_interesse = df_vulnerabilidade %>% dplyr::filter(CasoInteresse == 1) %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1Regret) %>% summarise_all(mean)
   
-  medias_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1RegretPerc)  %>% dplyr::summarise_all(mean)
+  medias_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1Regret)  %>% dplyr::summarise_all(mean)
   
-  max_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1RegretPerc) %>% dplyr::summarise_all(max)
+  max_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1Regret) %>% dplyr::summarise_all(max)
   
-  min_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1RegretPerc) %>% dplyr::summarise_all(min)
+  min_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1Regret) %>% dplyr::summarise_all(min)
   
   range_global = max_global - min_global
   
@@ -1762,7 +1762,7 @@ plot_violino_casos_interesse_por_variavel  = function(df_vulnerabilidade, variav
     ,env = list(Variavel = as.name(variavel))
   )
   
-  p <- eval(call_grafico) + xlab("Estratégia Vulnerável") + ylab(nome_amigavel_var)
+  p <- eval(call_grafico) + xlab("Estratégia Vulnerável") + ylab(nome_amigavel_var) + scale_y_continuous(labels = format_for_humans)
   p
 }
 
@@ -1790,7 +1790,7 @@ plot_dispersao_casos_interesse_por_variavel  = function(df_vulnerabilidade, vari
   
   p = p + geom_point() + scale_color_manual(values = c("blue", "red"), name = "Caso de Interesse") + theme(legend.position = "bottom")
   
-  p = p + xlab(nome_amigavel_var1) + ylab(nome_amigavel_var2)
+  p = p + xlab(nome_amigavel_var1) + ylab(nome_amigavel_var2) + scale_y_continuous(labels = format_for_humans) + scale_x_continuous(labels = format_for_humans)
   
   p
   
