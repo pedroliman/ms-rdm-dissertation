@@ -2160,7 +2160,7 @@ grafico_whisker_por_lever = function(dados_regret, variavel) {
   )
   
   p <- eval(call_grafico)
-  p + geom_boxplot()  + scale_y_continuous(labels = format_for_humans)
+  p + geom_boxplot()  + scale_y_continuous(labels = format_for_humans) + theme(axis.text.x = element_text(size=7))
 }
 
 #' plot_fronteira_tradeoff_estrategia

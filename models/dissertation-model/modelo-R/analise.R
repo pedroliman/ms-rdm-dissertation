@@ -4,8 +4,8 @@ VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001;
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
 # Parâmetros para a Geração dos Gráficos
-plots_width = 6
-plots_heigh = 3
+plots_width = 7
+plots_heigh = 4
 
 USAR_DADOS_SALVOS = FALSE
 SIMULAR_HISTORICO_DIFERENTE = FALSE
@@ -375,8 +375,34 @@ save(results2.1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-tem
 
 
 #### 4.3 Análise dos Resultados ####
+
+estrategias_analisadas = results1$Inputs$Levers
+
 results1 = results
 # Gerar Gráficos para Analisar os Resultados:
+
+load("/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
+
+results1$EstrategiaCandidata
+
+
+## Obter um ranking das estratégias selecionadas
+
+results = results1
+
+# Gerando Ranking de Estratégias
+
+ranking_estrategias = results$AnaliseRegret$ResumoEstrategias[,c("Lever", "sNPVProfit1RegretPercPercentil75")]
+
+ranking_estrategias = dplyr::inner_join(ranking_estrategias, estrategias_analisadas)
+
+ranking_estrategias = dplyr::arrange(ranking_estrategias, sNPVProfit1RegretPercPercentil75)
+
+ranking_estrategias
+
+grafico_whisker_por_lever(dados_regret = results1$AnaliseRegret$Dados, variavel = "sNPVProfit1")
+
+
 
 # Gerando Resultados da Opção 1 - Estratégia Candidata 1, e Cenário 1
 plots_results = salvar_plots_result(results = results1, 
@@ -405,6 +431,8 @@ results = results1
 
 
 #### 4.3 Análise de Vulnerabilidade ####
+
+# Rodando análise de Vulnerabilidade com cada Futuro:
 
 # Visualizando um histograma do Regret da Estratégia Candidata
 
