@@ -2175,7 +2175,24 @@ grafico_whisker_por_lever = function(dados_regret, variavel) {
 #'
 plot_fronteira_tradeoff_estrategia = function(results, opcoes = opcoes) {
   
-  dados_cenario = results$DadosUltimoPeriodo %>% dplyr::filter(AdvertisingCost  < 5.727e+04 & AverageTicket  >  1.789e+00 & AdoptionFraction  <  2.895e-02)
+  
+  browser()
+  
+  ensemble = as.data.frame(results$Ensemble)
+  
+  # Na linha abaixo as variáveis devem ser definidas.
+  cenarios_escolhidos = subset(ensemble,
+                               aReferenceIndustryDemandElasticity > 0.127 &
+                                 aReferenceIndustryDemandElasticity < 0.940 &
+                                 aFractionalDiscardRate > 0.143 &
+                                 aReferencePopulation > 5.3 * 10 ^ 4)
+  
+  
+  numero_cenarios_escolhidos = cenarios_escolhidos$Scenario
+  
+  dados_cenario = subset(results$DadosUltimoPeriodo, Scenario %in% numero_cenarios_escolhidos)
+  
+  #dados_cenario = results$DadosUltimoPeriodo %>% dplyr::filter(AdvertisingCost  < 5.727e+04 & AverageTicket  >  1.789e+00 & AdoptionFraction  <  2.895e-02)
   
   analise_regret_cenario = calcular_e_resumir_regret(dados = dados_cenario, var_resposta = opcoes$VarResposta, var_cenarios = opcoes$VarCenarios, var_estrategias = opcoes$VarEstrategias)
   
@@ -2199,7 +2216,12 @@ plot_fronteira_tradeoff_estrategia = function(results, opcoes = opcoes) {
   
   dados_join = dplyr::left_join(regret_todos_os_futuros, regret_cenario)
   
-  plot_ly(data = dados_join, x = ~PerdaOportunidadeTodosOsCenarios, y = ~PerdaOportunidadeNoCenario, color = ~Lever, text = ~Lever)
+  dados_join = dplyr::inner_join(dados_join, results$Inputs$Levers)
+  
+  # Esta descrição é customizada para os cenários definidos aqui.
+  dados_join$Descricao = paste("CS",dados_join$aSwitchForCapacityStrategy1,"MS",dados_join$aDesiredMarketShare1,"OR",dados_join$aOrcamentoPeD1,"AB",dados_join$aPercPeDAberto1, sep = ".")
+  
+  plot_ly(data = dados_join, x = ~PerdaOportunidadeTodosOsCenarios, y = ~PerdaOportunidadeNoCenario, color = ~aOrcamentoPeD1, text = ~Lever)
   
 }
 

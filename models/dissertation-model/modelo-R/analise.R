@@ -1,3 +1,4 @@
+####Configurando Simulações ####
 # Carregando Funções Úteis
 START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
@@ -10,45 +11,7 @@ plots_heigh = 4
 USAR_DADOS_SALVOS = FALSE
 SIMULAR_HISTORICO_DIFERENTE = FALSE
 
-#### 3 Observando dados de Fundamentos ####
-dados_fundamentos = obter_dados_fundamentos_us_fundamentals()
 
-plot_lucro_bruto_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=GrossProfit, group=empresa)) +
-  geom_line(aes(color=empresa))+
-  geom_point(aes(color=empresa)) +
-  ylab(label = "Lucro Bruto") +
-  scale_y_continuous(labels = format_for_humans)
-
-plot_lucro_bruto_us_fundamentals
-
-fundamentos_ddd = obter_fundamentos_financeiros_quandl("DDD")
-
-fundamentos_mtls = obter_fundamentos_financeiros_quandl("PRLB")
-
-plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "Invesitmento em P & D")
-
-plot_cash_net_income_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "NetIncome", nome_amigavel_variavel1 = "Lucro Líquido", variavel2 = "GrossProfit", nome_amigavel_variavel2 = "Lucro Bruto")
-
-fundamentos_3DSYSTEMS = obter_fundamentos_financeiros_quandl(company_code = "DDD")
-
-fundamentos_GE = obter_fundamentos_financeiros_quandl(company_code = "GE")
-
-fundamentos_3DSYSTEMS$Dados$OrcamentoPeD = fundamentos_3DSYSTEMS$Dados$ResearchAndDevelopmentExpenses / fundamentos_3DSYSTEMS$Dados$Revenue
-
-
-plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_3DSYSTEMS$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "Despesas com P & D")
-
-plot_orcamentoPeD__3dsystems = plot_linha_uma_variavel(fundamentos_3DSYSTEMS$Dados, variavel = "OrcamentoPeD", nome_amigavel_variavel = "OrçamentoPeD / Receita")
-
-
-# Despesas em Pesquisa e Desenvolvimento da 3D Systems em relação a PeD
-plot_orcamento_PeD_3DSystems = ggplot(DDD.orcamentoPeD)
-
-
-
-#### 4 Geração de Casos ####
-
-#### 4.0 Configurando Simulações ####
 
 # Opções, mudando a Variável de Critério:
 opcoes_iniciais = list(
@@ -68,28 +31,7 @@ opcoes_iniciais = list(
 
 opcoes = opcoes_iniciais
 
-
-
-
-
 # Gerar casos para simulação com base em estimativa inicial de parâmetros.
-opcoes_iniciais = list(
-  VarResposta = "sNPVProfit1",
-  VarCenarios = "Scenario",
-  VarEstrategias = "Lever",
-  N = 30,
-  VarTempo = "time",
-  VarCriterio = "RegretPercPercentil75",
-  SentidoCriterio = "min",
-  Paralelo = TRUE,
-  ModoParalelo = "FORK",
-  SimularApenasCasoBase = TRUE,
-  FullFactorialDesign = TRUE,
-  FiltrarCasosPlausiveis = TRUE
-)
-
-opcoes = opcoes_iniciais
-
 
 # Planilhas de Configuração das Simulação:
 planilha_simulacao_calibracao_historico = "./calibracao/params_calibracao_com_estrategia_v2.xlsx"
@@ -112,7 +54,7 @@ n_ensemble_total = round(n_casos_total / n_estrategias, 0)
 # Tamanho do ensemble para calibração.
 n_ensemble_calibracao = round(n_ensemble_total / percentil_utilizado_como_criterio,0)
 
-#### 4.1 Calibração com Dados Históricos de Demanda ####
+#### 4.1 Teste com Dados Históricos de Demanda ####
 # Simulação 0: Simulando Histórico e Observando Fit do Modelo:
 ###
 opcoes$SimularApenasCasoBase = TRUE
@@ -139,7 +81,7 @@ resultados_casos_plausiveis = simularRDM_e_escolher_estrategia(inputs = planilha
 # Salvar resultados com casos plausíveis:
 save(resultados_casos_plausiveis, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
 
-#load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
+load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
 
 
 variavel_calibracao = "fIndustryOrderRate"
@@ -299,18 +241,7 @@ VARIAVEIS_FINAIS_CASO_BASE
 
 
 
-
-
-
 #### 4.2 Simulação dos Casos Contra Estratégias ####
-
-# CALIBRAÇÃO COM DADOS HISTÓRICOS
-# Simulação 0: Simulando Histórico e Observando Fit do Modelo:
-###
-
-
-#### 4.2.2 Opção 1: Apenas Futuro ####
-# Opção 1: Dados para Simular o Futuro, sem comparação com o Passado. Usar filtro para a demanda máxima e mínima a posteriori.
 # Esta opção é inspirada na abordagem utilizada por Lempert.
 opcoes$FiltrarCasosPlausiveis = TRUE
 opcoes$SimularApenasCasoBase = FALSE
@@ -334,111 +265,52 @@ results1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
 save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
 #save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.2.rda")
-#load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
+load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
 results = results1
 
-
 # Aqui ainda seria necessário filtar os resultados com o critério definido.
-
-#### 4.2.2 Opção 2.0: Passado + Futuro Filtrado ####
-# Opção 2.0 - Atual: Rodar Passado e Futuro, e tomar providências para que os resultados do passado não sejam levadosem consideração.
-# Esta opção é mais alinhada ao procedimento de calibração utilizado na dinâmica de sistemas, porém admite diferentes trajetórias das variáveis, inclusive no passado.
-# Por um lado, esta opção é mais conservadora (porque limita o que o futuro pode ser com base no histórico).
-ensemble_a_simular = resultados_casos_plausiveis$Ensemble[which(resultados_casos_plausiveis$Ensemble[,opcoes$VarCenarios] %in% cenarios_considerados_plausiveis),]
-
-opcoes$SimularApenasCasoBase = FALSE
-opcoes$N = n_ensemble_total
-INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
-SIMULAR_HISTORICO_DIFERENTE = TRUE
-ANO_INICIO_AVALIACAO = 2018
-planilha_inputs = planilha_opcao2.0_passado_e_futuro
-opcoes$Paralelo = TRUE
-START<-2007; FINISH <-2028; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
-VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
-BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
-source('funcoes.R', encoding = 'UTF-8')
-# Definir período de simulação das estratégias (e forma de "mudar a estratégia" no primeira ano.)
-
-results2.0 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
-                                           sdmodel = sdmodel, 
-                                           opcoes = opcoes,
-                                           ensemble = ensemble_a_simular)
-
-# Salvar resultados:
-save(results2.0, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results2.0.rda")
-
-
-#### 4.2.2 Opção 2.1: Futuro Filtrado com Condições Iniciais do Caso Base####
-# Opção 2.1: Rodar Apenas futuro, usando condições iniciais do caso base, e filtrando ensemble com parâmetros plausíveis do passado.
-# Esta opção é uma derivacao da opção 2, porém admite que o passado foi igual ao cenário base.
-# Esta opção funciona da seguinte maneira: Os estoques (condições iniciais do modelo) são retirados do cenário base definido.
-# Em seguida, Todos os parâmetros do modelo podem mudar, no ano inicial de simulação.
-opcoes$SimularApenasCasoBase = FALSE
-opcoes$N = n_ensemble_total
-INICIALIZAR_ESTOQUES_COM_CASO_BASE = TRUE
-SIMULAR_HISTORICO_DIFERENTE = FALSE
-ANO_INICIO_AVALIACAO = 2018
-planilha_inputs = planilha_opcao2.0_passado_e_futuro
-opcoes$Paralelo = TRUE
-START<-2018; FINISH <-2028; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
-VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
-BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
-source('funcoes.R', encoding = 'UTF-8')
-# Definir período de simulação das estratégias (e forma de "mudar a estratégia" no primeira ano.)
-
-results2.1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
-                                              sdmodel = sdmodel, 
-                                              opcoes = opcoes,
-                                              ensemble = ensemble_a_simular)
-
-# Salvar resultados:
-save(results2.1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results2.1.rda")
 
 
 #### 4.3 Análise dos Resultados ####
 
-estrategias_analisadas = results1$Inputs$Levers
+# Escolher Estratégia Candidata de acordo com a definição de Critério:
+results$EstrategiaCandidata = escolher_estrategia_candidata(dados = results$AnaliseRegret$Dados, resumo_estrategias = results$AnaliseRegret$ResumoEstrategias, var_resposta = opcoes$VarResposta, var_criterio = opcoes$VarCriterio, sentido = opcoes$SentidoCriterio)
 
-results1 = results
+
 # Gerar Gráficos para Analisar os Resultados:
 
-load("/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
+# Gerando Resultados da Opção 1 - Estratégia Candidata 1, e Cenário 1
+plots_results = salvar_plots_result(results = results, 
+                                    cenario_plot_players = results$DadosUltimoPeriodo$Scenario[1],
+                                    estrategia_candidata = results$EstrategiaCandidata$Lever[1],
+                                    opcoes = opcoes)
 
-results1$EstrategiaCandidata
+# Observando Resultados
+
+plots_results$plots_whisker$plot_whisker_lever_regret
 
 
-## Obter um ranking das estratégias selecionadas
+plots_results$plots_whisker$plot_whisker_lever_profit
 
-results = results1
+plots_results$plots_whisker$plot_whisker_lever_share
+
 
 # Gerando Ranking de Estratégias
 
-ranking_estrategias = results$AnaliseRegret$ResumoEstrategias[,c("Lever", "sNPVProfit1RegretPercPercentil75")]
+ranking_estrategias = results$AnaliseRegret$ResumoEstrategias[,c("Lever", "sNPVProfit1RegretPercPercentil75", "sNPVProfit1RegretPercentil75")]
 
 ranking_estrategias = dplyr::inner_join(ranking_estrategias, estrategias_analisadas)
 
-ranking_estrategias = dplyr::arrange(ranking_estrategias, sNPVProfit1RegretPercPercentil75)
+ranking_estrategias = dplyr::arrange(ranking_estrategias, sNPVProfit1RegretPercentil75)
 
-ranking_estrategias
-
-
-# Gerando Resultados da Opção 1 - Estratégia Candidata 1, e Cenário 1
-plots_results = salvar_plots_result(results = results1, 
-                    cenario_plot_players = results1$DadosUltimoPeriodo$Scenario[1],
-                    estrategia_candidata = results1$EstrategiaCandidata$Lever[1],
-                    opcoes = opcoes)
-
-salvar_plots_result(results = results2.0, 
-                    cenario_plot_players = results2.0$DadosUltimoPeriodo$Scenario[1],
-                    estrategia_candidata = results2.0$EstrategiaCandidata$Lever[1],
-                    opcoes = opcoes)
+View(ranking_estrategias)
 
 
-salvar_plots_result(results = results2.1, 
-                    cenario_plot_players = results2.1$DadosUltimoPeriodo$Scenario[1],
-                    estrategia_candidata = results2.1$EstrategiaCandidata$Lever[1],
-                    opcoes = opcoes)
+resultados_analise = list(
+  plots_results = plots_results,
+  ranking_estrategias = ranking_estrategias
+)
 
 
 # 
@@ -464,17 +336,18 @@ regret_estrategia_candidata = results$AnaliseRegret$Dados$sNPVProfit1Regret[whic
 # O critério para realizar a análise de vulnerabilidade foi o mesmo usado para definir a estratégia candidata:
 threshold_analise_vulnerabilidade = as.numeric(results$AnaliseRegret$ResumoEstrategias[which(results$AnaliseRegret$ResumoEstrategias$Lever==results$EstrategiaCandidata$Lever),paste(opcoes$VarResposta, opcoes$VarCriterio, sep="")]) 
 
-threshold_analise_vulnerabilidade = as.numeric(results$AnaliseRegret$ResumoEstrategias[which(results$AnaliseRegret$ResumoEstrategias$Lever==results$EstrategiaCandidata$Lever),paste(opcoes$VarResposta, opcoes$VarCriterio, sep="")]) 
+# threshold_analise_vulnerabilidade = 0.35
 
+threshold_analise_vulnerabilidade = 5*10^8
 
-threshold_analise_vulnerabilidade = 0.35
 
 histograma_regret_estrategia_candidata = ggplot(results$AnaliseRegret$Dados[which(results$AnaliseRegret$Dados$Lever == results$EstrategiaCandidata$Lever),], aes(x=sNPVProfit1Regret)) + 
   geom_histogram(aes(y=..density..), colour="black", fill="white")+
   geom_density(alpha=.2, fill="#FF6666") +
-  xlab("Perda de Oportunidade %") + 
+  xlab("Perda de Oportunidade") + 
   ylab("Densidade") + 
-  geom_vline(xintercept = threshold_analise_vulnerabilidade) 
+  geom_vline(xintercept = threshold_analise_vulnerabilidade) +
+  scale_x_continuous(labels = format_for_humans) 
 
 y_max = max(ggplot_build(histograma_regret_estrategia_candidata)$layout$panel_ranges[[1]]$y.rang)
 
@@ -506,6 +379,10 @@ ensemble_analisado_melhor_estrategia = analisar_ensemble_com_melhor_estrategia(e
 
 View(df_vulnerabilidade)
 
+
+# Gerando Y e X para as Análises de Vulnerabilidade:
+y = factor(df_vulnerabilidade$CasoInteresse)
+x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
 
 
 
@@ -746,7 +623,6 @@ plot_boruta
 
 
 
-
 variavel_1 = boruta_signif[1]
 variavel_2 = boruta_signif[2]
 
@@ -758,20 +634,170 @@ landscape_estrategia = plot_landscape_futuros_plausiveis(
   variavel1  = variavel_1,
   n_variavel1 = variavel_1,
   variavel2 = variavel_2,
-  n_variavel2 = variavel_1
+  n_variavel2 = variavel_2
 )
 
 
-# Definindo Variávseis x e y para as análises seguintes:
-n_variaveis_shortlist = 100
-variaveis_shortlist = as.vector(ranking_variaveis_por_media$Variavel[1:(min(n_variaveis_shortlist, nrow(ranking_variaveis_por_media)))])
 
 
 
 
-#### 4.3.2 - CART ####
+#### 4.3.2 - PRIM ####
 
-# CONSEGUI RODAR O CART, mas ainda não entendi (não gerei cenários).
+# Rodando a Análise do PRIM no python (chamando por aqui.)
+# Edite o script do python para que isto funcione corretamente.
+
+y = df_vulnerabilidade$sNPVProfit1Regret
+x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
+
+write.csv(y, file = "resposta.csv")
+
+write.csv(x, file = "incertezas.csv")
+
+View(y)
+View(x)
+
+threshold_analise_vulnerabilidade
+
+
+
+#### 4.4 Análise de Tradeoffs ####
+
+plot_fronteira_tradeoff_estrategia(results = results, opcoes = opcoes)
+
+
+# results.prim = prim.box(x = x, y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
+
+
+summary(results.prim, print.box = TRUE)
+
+plot(results.prim, splom=FALSE)
+
+results.prim
+
+plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aSwitchForCapacityStrategy2", variavel2 = "aDesiredMarketShare4", nome_amigavel_var1 = "aSwitchForCapacityStrategy2", nome_amigavel_var2 = "aDesiredMarketShare4")
+
+plot(results.prim, col="transparent")
+
+plot(results.prim)
+points(x)
+
+library(subgroup.discovery)
+
+subgroup.discovery::prim.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Dados de Fundamentos ####
+dados_fundamentos = obter_dados_fundamentos_us_fundamentals()
+
+plot_lucro_bruto_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=GrossProfit, group=empresa)) +
+  geom_line(aes(color=empresa))+
+  geom_point(aes(color=empresa)) +
+  ylab(label = "Lucro Bruto") +
+  scale_y_continuous(labels = format_for_humans)
+
+plot_lucro_bruto_us_fundamentals
+
+fundamentos_ddd = obter_fundamentos_financeiros_quandl("DDD")
+
+fundamentos_mtls = obter_fundamentos_financeiros_quandl("PRLB")
+
+plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "Invesitmento em P & D")
+
+plot_cash_net_income_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "NetIncome", nome_amigavel_variavel1 = "Lucro Líquido", variavel2 = "GrossProfit", nome_amigavel_variavel2 = "Lucro Bruto")
+
+fundamentos_3DSYSTEMS = obter_fundamentos_financeiros_quandl(company_code = "DDD")
+
+fundamentos_GE = obter_fundamentos_financeiros_quandl(company_code = "GE")
+
+fundamentos_3DSYSTEMS$Dados$OrcamentoPeD = fundamentos_3DSYSTEMS$Dados$ResearchAndDevelopmentExpenses / fundamentos_3DSYSTEMS$Dados$Revenue
+
+
+plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_3DSYSTEMS$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "Despesas com P & D")
+
+plot_orcamentoPeD__3dsystems = plot_linha_uma_variavel(fundamentos_3DSYSTEMS$Dados, variavel = "OrcamentoPeD", nome_amigavel_variavel = "OrçamentoPeD / Receita")
+
+
+# Despesas em Pesquisa e Desenvolvimento da 3D Systems em relação a PeD
+plot_orcamento_PeD_3DSystems = ggplot(DDD.orcamentoPeD)
+
+
+
+#### Código Não utilizado ####
+
+#### 4.2.2 Opção 2.0: Passado + Futuro Filtrado 
+# Opção 2.0 - Atual: Rodar Passado e Futuro, e tomar providências para que os resultados do passado não sejam levadosem consideração.
+# Esta opção é mais alinhada ao procedimento de calibração utilizado na dinâmica de sistemas, porém admite diferentes trajetórias das variáveis, inclusive no passado.
+# Por um lado, esta opção é mais conservadora (porque limita o que o futuro pode ser com base no histórico).
+ensemble_a_simular = resultados_casos_plausiveis$Ensemble[which(resultados_casos_plausiveis$Ensemble[,opcoes$VarCenarios] %in% cenarios_considerados_plausiveis),]
+
+opcoes$SimularApenasCasoBase = FALSE
+opcoes$N = n_ensemble_total
+INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
+SIMULAR_HISTORICO_DIFERENTE = TRUE
+ANO_INICIO_AVALIACAO = 2018
+planilha_inputs = planilha_opcao2.0_passado_e_futuro
+opcoes$Paralelo = TRUE
+START<-2007; FINISH <-2028; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
+BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
+source('funcoes.R', encoding = 'UTF-8')
+# Definir período de simulação das estratégias (e forma de "mudar a estratégia" no primeira ano.)
+
+results2.0 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+                                              sdmodel = sdmodel, 
+                                              opcoes = opcoes,
+                                              ensemble = ensemble_a_simular)
+
+# Salvar resultados:
+save(results2.0, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results2.0.rda")
+
+# load("/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results2.0.rda")
+
+
+#### 4.2.2 Opção 2.1: Futuro Filtrado com Condições Iniciais do Caso Base
+# Opção 2.1: Rodar Apenas futuro, usando condições iniciais do caso base, e filtrando ensemble com parâmetros plausíveis do passado.
+# Esta opção é uma derivacao da opção 2, porém admite que o passado foi igual ao cenário base.
+# Esta opção funciona da seguinte maneira: Os estoques (condições iniciais do modelo) são retirados do cenário base definido.
+# Em seguida, Todos os parâmetros do modelo podem mudar, no ano inicial de simulação.
+opcoes$SimularApenasCasoBase = FALSE
+opcoes$N = n_ensemble_total
+INICIALIZAR_ESTOQUES_COM_CASO_BASE = TRUE
+SIMULAR_HISTORICO_DIFERENTE = FALSE
+ANO_INICIO_AVALIACAO = 2018
+planilha_inputs = planilha_opcao2.0_passado_e_futuro
+opcoes$Paralelo = TRUE
+START<-2018; FINISH <-2028; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
+BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
+source('funcoes.R', encoding = 'UTF-8')
+# Definir período de simulação das estratégias (e forma de "mudar a estratégia" no primeira ano.)
+
+results2.1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+                                              sdmodel = sdmodel, 
+                                              opcoes = opcoes,
+                                              ensemble = ensemble_a_simular)
+
+# Salvar resultados:
+save(results2.1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results2.1.rda")
+
+
+
+
+
+# CART
 library(rpart)
 
 # grow tree
@@ -806,53 +832,6 @@ varImp(cartFit)
 
 
 
-#### 4.3.2 - PRIM ####
-
-# Rodando a Análise do PRIM no python (chamando por aqui.)
-# Edite o script do python para que isto funcione corretamente.
-
-y = factor(df_vulnerabilidade$sNPVProfit1Regret)
-x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
-
-write.csv(y, file = "resposta.csv")
-
-write.csv(x, file = "incertezas.csv")
-
-View(y)
-View(x)
-
-threshold_analise_vulnerabilidade
-
-
-system('python analise_prim.py')
-
-
-results.prim = prim.box(x = x[,1:2], y = y, threshold.type = 1, peel.alpha = 0.05, paste.alpha = 0.05, threshold = 0.25)
-
-
-teste_prim_mordm = analyse.prim(factors = x, response = y, bounds=NULL, which.box=1, show.plot=TRUE, method="prim", ...)
-
-# results.prim = prim.box(x = x, y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
-
-
-summary(results.prim, print.box = TRUE)
-
-plot(results.prim, splom=FALSE)
-
-results.prim
-
-plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel1 = "aSwitchForCapacityStrategy2", variavel2 = "aDesiredMarketShare4", nome_amigavel_var1 = "aSwitchForCapacityStrategy2", nome_amigavel_var2 = "aDesiredMarketShare4")
-
-plot(results.prim, col="transparent")
-
-plot(results.prim)
-points(x)
-
-library(subgroup.discovery)
-
-subgroup.discovery::prim.
-
-
 # Classification Tree with rpart
 
 results.prim = prim.box(x = x, y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)
@@ -877,7 +856,7 @@ sdtoolkit::sd.start()
 
 # Descoberta de Cenários.
 
-#### Descoberta de Cenários - Com ajuda do OpenMORDM ####
+# Descoberta de Cenários - Com ajuda do OpenMORDM
 assign("mordm.globals", new.env())
 factors = x 
 response = y
@@ -946,17 +925,12 @@ invisible(marks)
 
 # Descrição dos Cenários Desafiadores para a Estratégia.
 
-#### 4.4 Análise de Tradeoffs ####
-
-
-
-plot_fronteira_tradeoff_estrategia(results = results, opcoes = opcoes)
 
 
 
 
 
-#### Rodando um Cenário Base ####
+# Rodando um Cenário Base
 ## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
 START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; BROWSE_ON_DIFF = TRUE
@@ -1019,7 +993,7 @@ resultados_cenariobase = solve_modelo_dissertacao(parametros = parametros_cenari
 
 
 
-#### Visualizando que o Cenário Base é Plausível ####
+# Visualizando que o Cenário Base é Plausível
 START<-2007; FINISH<-2037; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.01; BROWSE_ON_DIFF = TRUE
 VERIFICAR_GLOBAL = FALSE;
@@ -1103,7 +1077,7 @@ View(resultados_exibir_outros_parametros)
 
 
 
-#### RODADA 1 ####
+# RODADA 1
 
 ## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
 START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
@@ -1267,7 +1241,7 @@ landscape_estrategia1 = plot_landscape_futuros_plausiveis(
 
 
 
-## RODADA 2 ####
+# RODADA 2
 
 ## Gerar Capitulo 4:
 rmarkdown::render(input = "Capitulo-4.Rmd")
@@ -1411,7 +1385,7 @@ assign("mordm.globals", new.env())
 # write.csv(dados_simulacao, file = "dados_simulados_difusao.csv", row.names = FALSE)
 
 
-#### Replicando Sterman ####
+# Replicando Sterman
 ## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
 START<-0; FINISH<-40; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.00001; BROWSE_ON_DIFF = FALSE
