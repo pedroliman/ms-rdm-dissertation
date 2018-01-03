@@ -33,7 +33,7 @@ resposta = resposta["x"]
 incertezas = pd.read_csv("incertezas.csv", index_col=0, parse_dates=True)
 
 
-p = prim.Prim(incertezas, resposta, threshold=500000000, threshold_type=">")
+p = prim.Prim(incertezas, resposta, threshold=257320778, threshold_type=">")
 
 box = p.find_box()
 

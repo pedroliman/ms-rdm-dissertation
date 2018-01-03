@@ -2248,17 +2248,22 @@ grafico_whisker_por_lever = function(dados_regret, variavel) {
 #'
 plot_fronteira_tradeoff_estrategia = function(results, opcoes = opcoes) {
   
-  
-  browser()
-  
   ensemble = as.data.frame(results$Ensemble)
   
   # Na linha abaixo as variáveis devem ser definidas.
+  # Resultados da Análise em 2/01
+  # cenarios_escolhidos = subset(ensemble,
+  #                              aReferenceIndustryDemandElasticity > 0.127 &
+  #                                aReferenceIndustryDemandElasticity < 0.940 &
+  #                                aFractionalDiscardRate > 0.143 &
+  #                                aReferencePopulation > 5.3 * 10 ^ 4)
+  
+  # Resultados em 03/01:
+  
   cenarios_escolhidos = subset(ensemble,
-                               aReferenceIndustryDemandElasticity > 0.127 &
-                                 aReferenceIndustryDemandElasticity < 0.940 &
-                                 aFractionalDiscardRate > 0.143 &
-                                 aReferencePopulation > 5.3 * 10 ^ 4)
+                                 aInitialReorderShare > 0.290 &
+                                 aReferencePopulation > 4.6 * 10 ^ 4)
+  
   
   
   numero_cenarios_escolhidos = cenarios_escolhidos$Scenario
@@ -2294,7 +2299,13 @@ plot_fronteira_tradeoff_estrategia = function(results, opcoes = opcoes) {
   # Esta descrição é customizada para os cenários definidos aqui.
   dados_join$Descricao = paste("CS",dados_join$aSwitchForCapacityStrategy1,"MS",dados_join$aDesiredMarketShare1,"OR",dados_join$aOrcamentoPeD1,"AB",dados_join$aPercPeDAberto1, sep = ".")
   
-  plot_ly(data = dados_join, x = ~PerdaOportunidadeTodosOsCenarios, y = ~PerdaOportunidadeNoCenario, color = ~aOrcamentoPeD1, text = ~Lever)
+  ggplot2::ggplot(dados_join, aes(x=PerdaOportunidadeTodosOsCenarios, y=PerdaOportunidadeNoCenario, fill=aPercPeDAberto1)) +
+    geom_label(label=as.character(dados_join$Lever), color="white", size=3) +
+    scale_y_continuous(labels = format_for_humans) + 
+    scale_x_continuous(labels = format_for_humans) +
+    ylab("Perda de Oportunidade (Perc. 75%) - Cenário Definido") +
+    xlab("Perda de Oportunidade (Perc. 75%) - Todos os Cenários")
+  
   
 }
 
