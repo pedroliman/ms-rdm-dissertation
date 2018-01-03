@@ -22,7 +22,7 @@ opcoes_iniciais = list(
   VarTempo = "time",
   VarCriterio = "RegretPercentil75",
   SentidoCriterio = "min",
-  Paralelo = FALSE,
+  Paralelo = TRUE,
   ModoParalelo = "FORK",
   SimularApenasCasoBase = TRUE,
   FullFactorialDesign = TRUE,
@@ -45,7 +45,7 @@ planilha_opcao2.1_futuro = planilha_simulacao_calibracao_historico
 percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
-n_casos_total = 54*4 # 400
+n_casos_total = 54*100 # 400
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_calibracao_historico, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
@@ -58,7 +58,7 @@ n_ensemble_calibracao = round(n_ensemble_total / percentil_utilizado_como_criter
 # Simulação 0: Simulando Histórico e Observando Fit do Modelo:
 ###
 opcoes$SimularApenasCasoBase = TRUE
-opcoes$N = 4
+opcoes$N = n_ensemble_calibracao
 # Esta opção faz com que os estoques sejam inicializados com o valor inicial dos estoques no cenário base.
 INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
 SIMULAR_HISTORICO_DIFERENTE = FALSE
@@ -84,6 +84,7 @@ load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados
 
 
 variavel_calibracao = "fIndustryOrderRate"
+variavel_calibracao = "aIndustryShipments"
 nome_amigavel_variavel_calibracao = "Demanda Global"
 
 # Parâmetros Utilizados
@@ -181,8 +182,8 @@ dados_calibracao <- as.data.frame(read_xlsx(path = "./calibracao/dados_calibraca
 # Exibir Share dos Players e outras variáveis.
 
 plot_cenario_base_e_historico <-ggplot()+
-  geom_point(data=dados_calibracao,size=1.5,aes(time,fIndustryOrderRate,colour="Data"))+
-  geom_line(data=resultados_exibir,size=1,aes(x=time,y=fIndustryOrderRate,colour="Model"))+
+  geom_point(data=dados_calibracao,size=1.5,aes(time,aIndustryShipments,colour="Data"))+
+  geom_line(data=resultados_exibir,size=1,aes(x=time,y=aIndustryShipments,colour="Model"))+
   ylab("Demanda Total")+
   xlab("Anos")+
   scale_y_continuous(labels = format_for_humans)+
@@ -193,8 +194,6 @@ plot_cenario_base_e_historico <-ggplot()+
                       labels=c("Dados",
                                "Modelo"))
 plot_cenario_base_e_historico 
-
-
 
 
 
@@ -266,7 +265,7 @@ save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/
 load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
 results = results1
-
+rm(results1)
 # Aqui ainda seria necessário filtar os resultados com o critério definido.
 
 
@@ -284,6 +283,10 @@ plots_results = salvar_plots_result(results = results,
                                     estrategia_candidata = results$EstrategiaCandidata$Lever[1],
                                     opcoes = opcoes)
 
+plots_results$plots_linha_geral$plot_estrategia_candidata_demanda_global
+
+
+
 # Observando Resultados
 
 plots_results$plots_whisker$plot_whisker_lever_regret
@@ -294,7 +297,11 @@ plots_results$plots_whisker$plot_whisker_lever_profit
 plots_results$plots_whisker$plot_whisker_lever_share
 
 
+
+
 # Gerando Ranking de Estratégias
+
+estrategias_analisadas = analisar_ensemble_com_melhor_estrategia()
 
 ranking_estrategias = results$AnaliseRegret$ResumoEstrategias[,c("Lever", "sNPVProfit1RegretPercPercentil75", "sNPVProfit1RegretPercentil75")]
 

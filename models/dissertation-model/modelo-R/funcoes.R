@@ -341,8 +341,28 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     # Gravando a Variável sReportedIndustryVolume no vetor global
     list.variaveis.globais$sReportedIndustryVolume[linha,] <<- sReportedIndustryVolume
     
+    # # O Total Initial Installed Base deve ser coerente com o Fractional Discard Rate e o Tempo de Vida útil Médio.
+    # # Este valor é um valor estimado, considera-se que a base de usuários é proporcional à vida útil do equipamento e à demanda inicial
+    # aTotalInitialInstalledBase = aInitialIndustryShipments / aFractionalDiscardRate
+    # 
+    # # O initialReorderShare deve depender do tempo de vida médio considerado pelo modelo:
+    # aInitialReorderShare = (aFractionalDiscardRate * aTotalInitialInstalledBase) / aInitialIndustryShipments # Reorders / IndustryShipments => (aFractionalDiscardRate * InstalledBase / InitialIndustryShipments)
+    # 
+    
+    # O Total Initial Installed Base deve ser coerente com o Fractional Discard Rate e o Tempo de Vida útil Médio.
+    # Este valor é um valor estimado, considera-se que a base de usuários é proporcional à vida útil do equipamento e à demanda inicial
+    
+    # Solução possível para o problema: Considerar que a variável TotalInitialInstalledBase nunca poderá ser maior do que a DemandaReferencia (é um pressuposto razoável, e pode ser verificado.)
+    
+    aTotalInitialInstalledBase = min(aReferencePopulation,
+                                     (aInitialReorderShare * aInitialIndustryShipments) / aFractionalDiscardRate) 
+    
     # O initialReorderShare deve depender do tempo de vida médio considerado pelo modelo:
-    aInitialReorderShare = (aFractionalDiscardRate * aTotalInitialInstalledBase) / aInitialIndustryShipments # Reorders / IndustryShipments => (aFractionalDiscardRate * InstalledBase / InitialIndustryShipments)
+    # aInitialReorderShare = (aFractionalDiscardRate * aTotalInitialInstalledBase) / aInitialIndustryShipments # Reorders / IndustryShipments => (aFractionalDiscardRate * InstalledBase / InitialIndustryShipments)
+    
+    
+    
+    
     
     ### Calculando Variáveis para o Estoque Inicial de Cumulative Adopters
     
@@ -353,9 +373,26 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     aInitialAdoptionRate = aInitialNewAdoptersOrderRate / aUnitsPerHousehold
     # Formula Original (Está gerando números negativos por causa do Innovator Adoption Fraction).
     # aInitialCumulativeAdopters2 = ((aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))-aInnovatorAdoptionFraction)*(aPopulation/aWOMStrength)
-    aInitialCumulativeAdopters2 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
+    #aInitialCumulativeAdopters2 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
     
-    aInitialCumulativeAdopters = aInitialCumulativeAdopters2
+    #aInitialCumulativeAdopters = aInitialCumulativeAdopters2
+    
+    
+    # Estou usando População Total para Calibrar o Valor inicial de initialcumulative adopters, enquanto deveria estar usando ReferencePopulation!
+    # Antes de Modificar:
+    #aInitialCumulativeAdopters2 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
+    # A original era a 2.0 (com a formulação do novo Initial Cumulative Adopters)
+    aInitialCumulativeAdopters2.0 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
+    # A opção 2.1 parece a forma mais razoável
+    aInitialCumulativeAdopters2.1 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aReferencePopulation/aWOMStrength)
+    # 2.2 não pode ser:
+    aInitialCumulativeAdopters2.2 = (aInitialAdoptionRate/(aReferencePopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
+    
+    # 2.3: Não pode ser, Gera número negativo:
+    aInitialCumulativeAdopters2.3 = (aInitialAdoptionRate/(aReferencePopulation-aEstimatedAdopters))*(aReferencePopulation/aWOMStrength)
+    aInitialCumulativeAdopters = aInitialCumulativeAdopters2.0
+    
+    
     
     
     ##### DIFFUSION SECTOR #####
@@ -399,6 +436,11 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     fIndustryOrderRate = fReorderRate + aInitialOrderRate
     
+    # if(modo == "completo") {
+    #   browser()
+    # }
+    
+    
     checkIndustryOrderRate = fIndustryOrderRate
     
     ##### ORDERS SECTOR - PT 2 #####
@@ -430,9 +472,9 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       ((aIndustryShipments - list.variaveis.globais$aIndustryShipments[linha-1,]) / list.variaveis.globais$aIndustryShipments[linha-1,])
     }
     
-    if(modo == "completo"){
-      browser()
-    }
+    # if(modo == "completo"){
+    #   browser()
+    # }
     
     aMarketShare = fShipments / aIndustryShipments
     
@@ -721,8 +763,9 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     # Variaveis de Estoques Iniciais
     
-    # Alteração para CAlibração de dados Iniciais: Calibrar o Backlog inicial com a Demanda Inicial Informada.
-    BacklogIni = aInitialSharePlayers * fIndustryOrderRate * aNormalDeliveryDelay
+    # Alteração para Calibração de dados Iniciais: Calibrar o Backlog inicial com a Demanda Inicial Informada.
+    # BacklogIni = aInitialSharePlayers * fIndustryOrderRate * aNormalDeliveryDelay
+    BacklogIni = aInitialSharePlayers * aInitialIndustryShipments * aNormalDeliveryDelay
     
     # Alteração Importante para a Calibração dos Dados Iniciais do Modelo!
     # A variável de Base de Usuários inicial deve partir da mesma estimativa
@@ -737,7 +780,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     CumulativeAdoptersIni = aInitialCumulativeAdopters
     
-    ValueOfBacklogIni = aInitialSharePlayers * fIndustryOrderRate * aNormalDeliveryDelay * aInitialPrice
+    # Alterando o Valor do Backlog para considerar a demanda inicial:
+    ValueOfBacklogIni = aInitialSharePlayers * aInitialIndustryShipments * aNormalDeliveryDelay * aInitialPrice
     
     ReportedIndustryVolumeIni = aIndustryVolume
     
@@ -745,7 +789,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     PerceivedCompTargetCapacityIni = aCompetitorCapacity
     
-    CapacityIni = aInitialSharePlayers * fIndustryOrderRate / aNormalCapacityUtilization
+    # Alterando a Capacidade para Considerar a Demanda Inicial
+    CapacityIni = aInitialSharePlayers * aInitialIndustryShipments / aNormalCapacityUtilization
     
     InitialInvestimentoNaoRealizadoPeD = aInitialInvestimentoNaoRealizadoPeD * aPatentShare
     
@@ -2366,7 +2411,7 @@ salvar_plots_result = function(results, cenario_plot_players, estrategia_candida
     plot_estrategia_candidata_vpl = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = estrategia_candidata),
     plot_estrategia_candidata_preco = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = estrategia_candidata),
     plot_estrategia_candidata_share = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "aOrderShare1", nome_amigavel_variavel = "Market Share", estrategia = estrategia_candidata),
-    plot_estrategia_candidata_demanda_global = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "fIndustryOrderRate", nome_amigavel_variavel = "Demanda Global", estrategia = estrategia_candidata)
+    plot_estrategia_candidata_demanda_global = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "aIndustryShipments", nome_amigavel_variavel = "Demanda Global", estrategia = estrategia_candidata)
   )
   
   plots_whisker = list(
