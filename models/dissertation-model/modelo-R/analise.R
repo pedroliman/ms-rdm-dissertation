@@ -304,6 +304,10 @@ ranking_estrategias = dplyr::inner_join(ranking_estrategias, results$Inputs$Leve
 
 ranking_estrategias = dplyr::arrange(ranking_estrategias, sNPVProfit1RegretPercentil75)
 
+ranking_estrategias_formatado = ranking_estrategias
+
+ranking_estrategias_formatado$sNPVProfit1RegretPercentil75 = format_for_humans(ranking_estrategias_formatado$sNPVProfit1RegretPercentil75)
+
 View(ranking_estrategias)
 
 resultados_analise = list(
