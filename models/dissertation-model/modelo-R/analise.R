@@ -23,7 +23,7 @@ opcoes_iniciais = list(
   VarCriterio = "RegretPercentil75",
   SentidoCriterio = "min",
   Paralelo = TRUE,
-  ModoParalelo = "FORK",
+  ModoParalelo = "PSOCK",
   SimularApenasCasoBase = TRUE,
   FullFactorialDesign = TRUE,
   FiltrarCasosPlausiveis = TRUE
@@ -45,7 +45,7 @@ planilha_opcao2.1_futuro = planilha_simulacao_calibracao_historico
 percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
-n_casos_total = 54*100 # 400
+n_casos_total = 54*200 # 400
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_calibracao_historico, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
@@ -53,6 +53,22 @@ n_ensemble_total = round(n_casos_total / n_estrategias, 0)
 
 # Tamanho do ensemble para calibração.
 n_ensemble_calibracao = round(n_ensemble_total / percentil_utilizado_como_criterio,0)
+
+
+
+####Verificação - Comparação de Simulações com o Ithink ####
+
+
+
+
+
+
+
+
+
+
+
+
 
 #### 4.1 Teste com Dados Históricos de Demanda ####
 # Simulação 0: Simulando Histórico e Observando Fit do Modelo:
@@ -78,9 +94,13 @@ resultados_casos_plausiveis = simularRDM_e_escolher_estrategia(inputs = planilha
                                                                opcoes = opcoes)
 
 # Salvar resultados com casos plausíveis:
-save(resultados_casos_plausiveis, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
+#save(resultados_casos_plausiveis, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
 
-load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
+
+save(resultados_casos_plausiveis, file = "resultados_casos_plausiveis.rda")
+
+
+# load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
 
 
 variavel_calibracao = "fIndustryOrderRate"
@@ -100,7 +120,7 @@ head(resultados_casos_plausiveis$DadosSimulados, 20)
 
 # Mostrar Variável de Demanda em Todos os Cenários (Sem Filtro)
 
-cenarios_a_exibir_grafico = sample(1:opcoes$N,size = min(30,opcoes$N))
+cenarios_a_exibir_grafico = sample(1:opcoes$N,size = min(50,opcoes$N))
 
 
 plot_demanda_pre_calibracao = plot_linha_uma_variavel_ensemble(dados = subset(resultados_casos_plausiveis$DadosSimulados, Scenario %in% cenarios_a_exibir_grafico), 
@@ -259,10 +279,10 @@ results1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                             opcoes = opcoes)
 
 # Salvar resultados:
-save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
+#save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
 #save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.2.rda")
-load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
+#load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
 results = results1
 rm(results1)

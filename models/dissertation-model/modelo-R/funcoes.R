@@ -400,8 +400,6 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       aInitialCumulativeAdopters3
     }
     
-    browser()
-    
     ##### DIFFUSION SECTOR  - PT 2 #####
     
     aNonAdopters = aIndustryDemand - sCumulativeAdopters
@@ -1333,7 +1331,8 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, opcoes = op
         # Exportando objetos que preciso ter nos clusters:
         clusterExport(cl, varlist = list("ensemble", 
                                          "modelo", 
-                                         "simtime", 
+                                         "simtime",
+                                         "START",
                                          "FINISH", 
                                          "VERIFICAR_STOCKS", 
                                          "solve_modelo", 
