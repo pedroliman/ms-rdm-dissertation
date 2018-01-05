@@ -58,9 +58,11 @@ n_ensemble_calibracao = round(n_ensemble_total / percentil_utilizado_como_criter
 
 ####Verificação - Comparação de Simulações com o Ithink ####
 
-
-
-
+opcoes$ModoParalelo = FALSE
+START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
+BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
+source('funcoes.R', encoding = 'UTF-8')
 
 
 
