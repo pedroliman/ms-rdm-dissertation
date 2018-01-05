@@ -136,9 +136,16 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aInitialsPatentesEmDominioPublicoUteis = unname(parametros["aInitialsPatentesEmDominioPublicoUteis"])
                   ,aInitialsInvestimentoPeDDepreciar = rep(unname(parametros["aInitialsInvestimentoPeDDepreciar"]), times = N_PLAYERS)
                   
+                  # Novas Variáveis de Condições Iniciais:
+                  
                   ,aInitialReorderShare =unname(parametros["aInitialReorderShare"])
                   ,aTotalInitialInstalledBase = unname(parametros["aTotalInitialInstalledBase"])
                   ,aInitialIndustryShipments = unname(parametros["aInitialIndustryShipments"])
+                  ,aModoInitialCumulativeAdopters = unname(parametros["aModoInitialCumulativeAdopters"])
+                  
+                  
+                  
+                  # Variáveis Adicionais
                   ,Scenario = unname(parametros["Scenario"])
                   ,Lever = unname(parametros["Lever"])
   )
@@ -341,61 +348,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     # Gravando a Variável sReportedIndustryVolume no vetor global
     list.variaveis.globais$sReportedIndustryVolume[linha,] <<- sReportedIndustryVolume
     
-    # # O Total Initial Installed Base deve ser coerente com o Fractional Discard Rate e o Tempo de Vida útil Médio.
-    # # Este valor é um valor estimado, considera-se que a base de usuários é proporcional à vida útil do equipamento e à demanda inicial
-    # aTotalInitialInstalledBase = aInitialIndustryShipments / aFractionalDiscardRate
-    # 
-    # # O initialReorderShare deve depender do tempo de vida médio considerado pelo modelo:
-    # aInitialReorderShare = (aFractionalDiscardRate * aTotalInitialInstalledBase) / aInitialIndustryShipments # Reorders / IndustryShipments => (aFractionalDiscardRate * InstalledBase / InitialIndustryShipments)
-    # 
     
-    # O Total Initial Installed Base deve ser coerente com o Fractional Discard Rate e o Tempo de Vida útil Médio.
-    # Este valor é um valor estimado, considera-se que a base de usuários é proporcional à vida útil do equipamento e à demanda inicial
-    
-    # Solução possível para o problema: Considerar que a variável TotalInitialInstalledBase nunca poderá ser maior do que a DemandaReferencia (é um pressuposto razoável, e pode ser verificado.)
-    
-    aTotalInitialInstalledBase = min(aReferencePopulation,
-                                     (aInitialReorderShare * aInitialIndustryShipments) / aFractionalDiscardRate) 
-    
-    # O initialReorderShare deve depender do tempo de vida médio considerado pelo modelo:
-    # aInitialReorderShare = (aFractionalDiscardRate * aTotalInitialInstalledBase) / aInitialIndustryShipments # Reorders / IndustryShipments => (aFractionalDiscardRate * InstalledBase / InitialIndustryShipments)
-    
-    
-    
-    
-    
-    ### Calculando Variáveis para o Estoque Inicial de Cumulative Adopters
-    
-    aEstimatedAdopters = aTotalInitialInstalledBase / aUnitsPerHousehold
-    
-    aInitialNewAdoptersOrderRate = aInitialIndustryShipments*(1-aInitialReorderShare)
-    
-    aInitialAdoptionRate = aInitialNewAdoptersOrderRate / aUnitsPerHousehold
-    # Formula Original (Está gerando números negativos por causa do Innovator Adoption Fraction).
-    # aInitialCumulativeAdopters2 = ((aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))-aInnovatorAdoptionFraction)*(aPopulation/aWOMStrength)
-    #aInitialCumulativeAdopters2 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
-    
-    #aInitialCumulativeAdopters = aInitialCumulativeAdopters2
-    
-    
-    # Estou usando População Total para Calibrar o Valor inicial de initialcumulative adopters, enquanto deveria estar usando ReferencePopulation!
-    # Antes de Modificar:
-    #aInitialCumulativeAdopters2 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
-    # A original era a 2.0 (com a formulação do novo Initial Cumulative Adopters)
-    aInitialCumulativeAdopters2.0 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
-    # A opção 2.1 parece a forma mais razoável
-    aInitialCumulativeAdopters2.1 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aReferencePopulation/aWOMStrength)
-    # 2.2 não pode ser:
-    aInitialCumulativeAdopters2.2 = (aInitialAdoptionRate/(aReferencePopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
-    
-    # 2.3: Não pode ser, Gera número negativo:
-    aInitialCumulativeAdopters2.3 = (aInitialAdoptionRate/(aReferencePopulation-aEstimatedAdopters))*(aReferencePopulation/aWOMStrength)
-    aInitialCumulativeAdopters = aInitialCumulativeAdopters2.0
-    
-    
-    
-    
-    ##### DIFFUSION SECTOR #####
+    ##### DIFFUSION SECTOR  - PT 1 #####
     aDemandCurveSlope = - aReferenceIndustryDemandElasticity * (aReferencePopulation / aReferencePrice )
     
     aLowestPrice = min(sPrice)
@@ -410,8 +364,45 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     checkIndustryDemand = aIndustryDemand
     
-    # A fórmula abaixo não é mais utilizada.
-    # aInitialCumulativeAdopters = aInitialDiffusionFraction * aIndustryDemand
+    
+    ##### CONDIÇÕES INICIAIS - CUMULATIVE ADOPTERS #####
+    
+    # Calculando Variáveis Necessárias para Definir os Cumulative Adopters
+    
+    aTotalInitialInstalledBase = min(aIndustryDemand,
+                                     (aInitialReorderShare * aInitialIndustryShipments) / aFractionalDiscardRate) 
+    
+    aEstimatedAdopters = aTotalInitialInstalledBase / aUnitsPerHousehold
+    
+    aInitialNewAdoptersOrderRate = aInitialIndustryShipments*(1-aInitialReorderShare)
+    
+    aInitialAdoptionRate = aInitialNewAdoptersOrderRate / aUnitsPerHousehold
+    
+    
+    
+    # Initial Cumulative Adopters 1 - Opção Original
+    aInitialCumulativeAdopters1 = aInitialDiffusionFraction * aIndustryDemand
+    
+    
+    # Initial Cumulative Adopters 2 - Opção Calculada pelo Reorder Share
+    aInitialCumulativeAdopters2 = aTotalInitialInstalledBase / aUnitsPerHousehold
+    
+    
+    # Initial Cumulative Adopters 3 - Opção calculada pelo Initial Adoption Rate:
+    aInitialCumulativeAdopters3 = (aInitialAdoptionRate/(aIndustryDemand-aEstimatedAdopters))*(aPopulation/aWOMStrength)
+    
+    
+    aInitialCumulativeAdopters = if(aModoInitialCumulativeAdopters == 1) {
+      aInitialCumulativeAdopters1
+    } else if (aModoInitialCumulativeAdopters == 2) {
+      aInitialCumulativeAdopters2
+    } else {
+      aInitialCumulativeAdopters3
+    }
+    
+    browser()
+    
+    ##### DIFFUSION SECTOR  - PT 2 #####
     
     aNonAdopters = aIndustryDemand - sCumulativeAdopters
     
@@ -776,7 +767,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     #Depois:
     # O Reorder Share deve depender do tempo de vida médio:
     # 
-    InstalledBaseIni = aTotalInitialInstalledBase * aInitialSharePlayers
+    InstalledBaseIni = aInitialCumulativeAdopters * aInitialSharePlayers
     
     CumulativeAdoptersIni = aInitialCumulativeAdopters
     
