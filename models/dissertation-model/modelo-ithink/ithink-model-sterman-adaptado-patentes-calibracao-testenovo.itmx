@@ -1,0 +1,3619 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xmile version="1.0" level="3" xmlns="http://www.systemdynamics.org/XMILE" xmlns:isee="http://iseesystems.com/XMILE">
+    <header>
+        <smile version="1.0" namespace="std, isee">
+            <uses_arrays>1</uses_arrays>
+        </smile>
+        <name>ithink-model-sterman-adaptado-patentes-calibracao-testenovo</name>
+        <uuid>02ddc2c5-26cc-4ce1-814e-72b03bf226e2</uuid>
+        <vendor>isee systems, inc.</vendor>
+        <product version="10.0.3" lang="en">iThink</product>
+    </header>
+    <style>
+        <model font-family="Arial" font-size="9" />
+        <interface font-family="Arial" font-size="9" />
+    </style>
+    <sim_specs method="Euler" time_units="Months">
+        <start>0</start>
+        <stop>10</stop>
+        <dt>0.0625</dt>
+    </sim_specs>
+    <dimensions>
+        <dim name="Company" size="2" />
+    </dimensions>
+    <model_units />
+    <data>
+        <export type="Excel" frequency="on_demand" interval="0.0625" url="D:\dev\ms-rdm-dissertation\models\dissertation-model\modelo-ithink\dados_ithink_tudo.xlsx" worksheet="Plan1">
+            <all />
+        </export>
+        <export type="Excel" frequency="on_demand" interval="1" url="D:\dev\ms-rdm-dissertation\models\dissertation-model\modelo-ithink\dados_ithink_excel_stocks.xlsx" worksheet="Plan1">
+            <table name="interface:Table 1: p1" use_settings="true" />
+        </export>
+        <export type="Excel" frequency="on_demand" interval="1" url="D:\dev\ms-rdm-dissertation\models\dissertation-model\modelo-ithink\dados_ithink_excel_checks.xlsx" worksheet="Plan1">
+            <table name="interface:Table 2: p1" use_settings="true" />
+        </export>
+        <import type="Excel" frequency="on_demand" url="D:\dev\ms-rdm-dissertation\models\dissertation-model\modelo-R\dados_calibracao.xlsx" worksheet="Ithink" />
+    </data>
+    <isee:prefs layer="model" grid_width="20" grid_height="50" divide_by_zero_alert="true" hide_taskbar="true" show_module_prefix="true">
+        <isee:window width="1366" height="685" />
+        <isee:security />
+        <isee:print_setup width="595" height="842" />
+    </isee:prefs>
+    <isee:equation_prefs order_by="module" />
+    <model>
+        <stock name="NPVProfit">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0</eqn>
+            <inflow>NPVProfitChange</inflow>
+            <display x="259" y="2662" color="#009802" />
+        </stock>
+        <flow name="NPVProfitChange">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>NetIncome*DiscountFactor</eqn>
+            <display x="189" y="2661" color="#009802">
+                <pts>
+                    <pt x="142" y="2661" />
+                    <pt x="237" y="2661" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="DiscountRate">
+            <eqn>0.04</eqn>
+            <display x="169" y="2741" color="#009802" />
+        </aux>
+        <aux name="DiscountFactor">
+            <eqn>EXP(-DiscountRate*Time)</eqn>
+            <display x="199" y="2699" color="#009802" />
+        </aux>
+        <aux name="NetIncome" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Revenue-Cost-InvestimentoPeD</eqn>
+            <display x="271" y="2713" color="blue" />
+        </aux>
+        <aux name="NPVIndustryProfits">
+            <eqn>SUM(NPVProfit[*])</eqn>
+            <display x="326" y="2637" color="#009802" label_side="top" label_angle="77" />
+        </aux>
+        <aux name="Cost">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>VariableCost+FixedCost</eqn>
+            <display x="331" y="2706" color="blue" />
+        </aux>
+        <aux name="FixedCost">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Capacitys*(UnitFixedCost-(PeDUnitCost*PeDLigado))</eqn>
+            <display x="391" y="2681" color="blue" />
+        </aux>
+        <aux name="VariableCost" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Shipments*UnitVariableCost</eqn>
+            <display x="395" y="2728" color="blue" />
+        </aux>
+        <stock name="ValueOfBacklog">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InitialSharePlayers*IndustryOrderRate*NormalDeliveryDelay*InitialPrice</eqn>
+            <inflow>ValueOfNewOrders</inflow>
+            <outflow>Revenue</outflow>
+            <display x="256" y="2793" color="blue" />
+        </stock>
+        <flow name="Revenue">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Shipments*AveragePriceofOrderBook</eqn>
+            <non_negative />
+            <display x="335" y="2790" color="blue">
+                <pts>
+                    <pt x="278" y="2790" />
+                    <pt x="393" y="2790" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="ValueOfNewOrders">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Price*Orders</eqn>
+            <non_negative />
+            <display x="197" y="2792" color="blue">
+                <pts>
+                    <pt x="161" y="2792" />
+                    <pt x="234" y="2792" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="AveragePriceOfOrderBook">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>ValueOfBacklog / Backlog</eqn>
+            <display x="315" y="2829" color="blue" />
+        </aux>
+        <stock name="Backlog">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InitialSharePlayers*IndustryOrderRate*NormalDeliveryDelay</eqn>
+            <inflow>Orders</inflow>
+            <outflow>Shipments</outflow>
+            <display x="531" y="669" color="blue" />
+        </stock>
+        <flow name="Orders">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>IndustryOrderRate*OrderShare</eqn>
+            <non_negative />
+            <display x="478" y="671" color="blue">
+                <pts>
+                    <pt x="447" y="671" />
+                    <pt x="509" y="671" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="Shipments">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>{Se o Switch esta ligado}&#x0A;SwitchForCapacity*MIN(DesiredShipments[Company],Capacitys[Company]) + &#x0A;{Se nao esta ligado}&#x0A;(1-SwitchForCapacity)*DesiredShipments</eqn>
+            <non_negative />
+            <display x="593" y="670" color="blue">
+                <pts>
+                    <pt x="553" y="670" />
+                    <pt x="634" y="670" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="CumulativeAdopters">
+            <eqn>InitialCumulativeAdopters</eqn>
+            <inflow>AdoptionRate</inflow>
+            <non_negative />
+            <display x="360" y="224" color="blue" />
+        </stock>
+        <flow name="AdoptionRate">
+            <eqn>(NonAdoptersTheoretical) *&#x0A;(InnovatorAdoptionFraction + WOMStrength*CumulativeAdopters/Population)</eqn>
+            <non_negative />
+            <display x="286" y="220" color="blue">
+                <pts>
+                    <pt x="234" y="220" />
+                    <pt x="338" y="220" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="InstalledBase">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InitialInstalledBase</eqn>
+            <inflow>Shipments</inflow>
+            <outflow>DiscardRate</outflow>
+            <display x="656" y="672" color="blue" />
+        </stock>
+        <flow name="DiscardRate">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InstalledBase*FractionalDiscardRate</eqn>
+            <non_negative />
+            <display x="729" y="672" color="blue">
+                <pts>
+                    <pt x="678" y="672" />
+                    <pt x="781" y="672" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="Price">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InitialPrice</eqn>
+            <inflow>ChangeInPrice</inflow>
+            <display x="192" y="2367" color="blue" />
+        </stock>
+        <flow name="ChangeInPrice">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(TargetPrice-Price)/PriceAdjustmentTime</eqn>
+            <display x="128" y="2362" color="blue">
+                <pts>
+                    <pt x="86" y="2362" />
+                    <pt x="170" y="2362" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="CumulativeProduction">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InitialProductionExperience</eqn>
+            <inflow>Production</inflow>
+            <display x="149" y="2118" color="blue" />
+        </stock>
+        <flow name="Production">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Shipments</eqn>
+            <display x="102" y="2120" color="blue">
+                <pts>
+                    <pt x="77" y="2120" />
+                    <pt x="127" y="2120" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="Capacitys">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>SwitchForPerfectCapacity * (DesiredShipments / NormalCapacityUtilization) + (1-SwitchForPerfectCapacity) * SmoothCapacity3</eqn>
+            <display x="232" y="823" color="blue" />
+        </aux>
+        <aux name="UnitFixedCost">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InitialUnitFixedCost*Learning+PeDUnitCost*PeDLigado</eqn>
+            <display x="269" y="2058" color="blue" />
+        </aux>
+        <aux name="UnitVariableCost">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InitialUnitVariableCost*Learning</eqn>
+            <display x="282" y="2183" color="blue" />
+        </aux>
+        <aux name="DeliveryDelay" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Backlog/Shipments</eqn>
+            <display x="534" y="615" color="blue" label_side="top" label_angle="94" />
+        </aux>
+        <aux name="FractionalDiscardRate">
+            <eqn>1/3</eqn>
+            <display x="780" y="644" color="blue" label_side="top" label_angle="99" />
+        </aux>
+        <aux name="NormalDeliveryDelay">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0.25</eqn>
+            <display x="498" y="750" color="blue" />
+        </aux>
+        <aux name="DesiredShipments">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Backlog/NormalDeliveryDelay</eqn>
+            <display x="570" y="716" color="blue" />
+        </aux>
+        <aux name="SwitchForCapacity">
+            <eqn>1</eqn>
+            <display x="621" y="739" color="blue" label_angle="261" />
+        </aux>
+        <flow name="IndustryOrderRate">
+            <eqn>InitialOrderRate+ReorderRate</eqn>
+            <non_negative />
+            <display x="115" y="453" color="blue">
+                <scale min="0" max="20000" />
+                <pts>
+                    <pt x="66" y="453" />
+                    <pt x="165" y="453" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="OrderShare">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Attractiveness/TotalAttractiveness</eqn>
+            <display x="214" y="1192" color="blue" />
+        </aux>
+        <aux name="Population">
+            <eqn>50000</eqn>
+            <display x="152" y="134" color="blue" />
+        </aux>
+        <aux name="WOMStrength">
+            <eqn>0.4</eqn>
+            <display x="408" y="262" color="blue" />
+        </aux>
+        <aux name="InnovatorAdoptionFraction">
+            <eqn>0.001</eqn>
+            <display x="197" y="266" color="blue" />
+        </aux>
+        <aux name="LowestPrice">
+            <eqn>MIN(Price[*])</eqn>
+            <display x="325" y="56" color="blue" />
+        </aux>
+        <aux name="ReferencePrice">
+            <eqn>200000</eqn>
+            <display x="272" y="58" color="blue" label_side="top" label_angle="94" />
+        </aux>
+        <aux name="ReferenceIndustryDemandElasticity">
+            <eqn>0.2</eqn>
+            <display x="124" y="72" color="blue" label_side="top" label_angle="99" />
+        </aux>
+        <aux name="ReferencePopulation">
+            <eqn>50000</eqn>
+            <display x="96" y="98" color="blue" label_angle="257" />
+        </aux>
+        <aux name="DemandCurveSlope">
+            <eqn>(- ReferencePopulation * ReferenceIndustryDemandElasticity ) / ( ReferencePrice )</eqn>
+            <display x="199" y="84" color="blue" label_side="top" label_angle="99" />
+        </aux>
+        <aux name="IndustryDemand">
+            <eqn>MIN(Population,&#x0A;ReferencePopulation * MAX(&#x0A;0, &#x0A;1+DemandCurveSlope * (LowestPrice - ReferencePrice) / ReferencePopulation&#x0A;)&#x0A;)</eqn>
+            <display x="243" y="127" color="blue" />
+        </aux>
+        <aux name="InitialDiffusionFraction">
+            <eqn>0.05</eqn>
+            <display x="389" y="132" color="blue" label_side="top" label_angle="77" />
+        </aux>
+        <aux name="InitialCumulativeAdopters">
+            <eqn>IF ModoInitialCumulativeAdopters = 1 THEN IndustryDemand * InitialDiffusionFraction&#x0A;ELSE IF ModoInitialCumulativeAdopters = 2 THEN TotalInitialInstalledBase / UnitsPerHousehold ELSE IF ModoInitialCumulativeAdopters = 3 THEN InitialCumulativeAdopters2 ELSE 0</eqn>
+            <display x="494" y="204" color="red" />
+        </aux>
+        <aux name="NonAdoptersTheoretical">
+            <eqn>IndustryDemand - CumulativeAdopters&#x0A;&#x0A;{SMTH1(IndustryDemand - CumulativeAdopters, DT)}&#x0A;&#x0A;{orig: IndustryDemand - CumulativeAdopters}&#x0A;&#x0A;{Esta Variável está modelada no modelo original como um estoque. Verificar se há diferenca de calculo devido a ela.}</eqn>
+            <display x="108" y="184" color="red" label_side="top" label_angle="122" />
+        </aux>
+        <aux name="UnitsPerHousehold">
+            <eqn>1</eqn>
+            <display x="290" y="393" color="blue" />
+        </aux>
+        <aux name="InitialOrderRate" flow_concept="true">
+            <eqn>AdoptionRate*UnitsPerHousehold</eqn>
+            <display x="219" y="423" color="blue" label_side="right" label_angle="356" />
+        </aux>
+        <flow name="ReorderRate">
+            <eqn>SUM(DiscardRate)</eqn>
+            <non_negative />
+            <display x="110" y="392" color="blue">
+                <pts>
+                    <pt x="60" y="392" />
+                    <pt x="160" y="392" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="InitialInstalledBase">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InitialCumulativeAdopters*UnitsPerHousehold*InitialSharePlayers</eqn>
+            <display x="685" y="754" color="blue" />
+        </aux>
+        <aux name="NPLAYERS">
+            <eqn>SIZE(NPVProfit)</eqn>
+            <display x="74" y="2625" color="blue" />
+        </aux>
+        <aux name="InitialSharePlayers">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0.5</eqn>
+            <display x="597" y="784" color="blue" />
+        </aux>
+        <aux name="InitialDemandForecast" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>ReorderRate</eqn>
+            <display x="150" y="1284" color="blue" />
+        </aux>
+        <aux name="IndustryShipments" flow_concept="true">
+            <eqn>SUM(Shipments)</eqn>
+            <display x="690" y="619" color="blue" label_side="top" label_angle="86">
+                <scale min="0" max="20000" />
+            </display>
+        </aux>
+        <aux name="SwitchForShipmentsInForecast">
+            <eqn>0</eqn>
+            <display x="228" y="1289" color="blue" label_side="top" label_angle="81" />
+        </aux>
+        <aux name="IndustryVolume" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>MAX(InitialDemandForecast[Company],&#x0A;SwitchForShipmentsInForecast*IndustryShipments+&#x0A;(1-SwitchForShipmentsInForecast)*IndustryOrderRate)</eqn>
+            <display x="156" y="1336" color="blue" />
+        </aux>
+        <aux name="VolumeReportingDelay">
+            <eqn>0.25</eqn>
+            <display x="239" y="1353" color="blue" label_side="top" label_angle="73" />
+        </aux>
+        <aux name="LaggedIndustryVolume" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>DELAY(ReportedIndustryVolume,TimeForHistoricalVolume,ReportedIndustryVolume)</eqn>
+            <display x="143" y="1472" color="#008F44" />
+        </aux>
+        <aux name="TimeForHistoricalVolume" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>1</eqn>
+            <display x="143" y="1526" color="#008F44" />
+        </aux>
+        <aux name="ExpGrowthInVolume" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>LN(ReportedIndustryVolume[Company]/LaggedIndustryVolume[Company])&#x0A;/&#x0A;TimeForHistoricalVolume</eqn>
+            <display x="233" y="1505" color="blue" />
+        </aux>
+        <aux name="ForecastHorizon" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>1</eqn>
+            <display x="305" y="1504" color="blue" />
+        </aux>
+        <aux name="CapacityAcquisitionDelay" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>1</eqn>
+            <display x="373" y="1403" color="blue" />
+        </aux>
+        <aux name="ExpectedIndustryDemand" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>ReportedIndustryVolume*EXP(ForecastHorizon[Company]*CapacityAcquisitionDelay[Company]*ExpGrowthInVolume[Company])</eqn>
+            <display x="289" y="1450" color="blue" />
+        </aux>
+        <aux name="LaggedVolumeForecast" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>DELAY(ExpectedIndustryDemand,CapacityAcquisitionDelay,ExpectedIndustryDemand)</eqn>
+            <display x="310" y="1352" color="blue" />
+        </aux>
+        <aux name="ForecastError" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(LaggedVolumeForecast-IndustryVolume)/(1e-009+IndustryVolume)</eqn>
+            <display x="292" y="1290" color="blue" />
+        </aux>
+        <stock name="ReportedIndustryVolume">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>IndustryVolume&#x0A;{101904.00781}</eqn>
+            <inflow>change</inflow>
+            <display x="230" y="1415" color="blue" />
+        </stock>
+        <flow name="change">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(IndustryVolume-ReportedIndustryVolume)/VolumeReportingDelay</eqn>
+            <display x="165" y="1414" color="blue">
+                <pts>
+                    <pt x="123" y="1414" />
+                    <pt x="208" y="1414" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="LCStrength">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0.7</eqn>
+            <display x="97" y="2048" color="blue" />
+        </aux>
+        <aux name="LCExponent">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>LN(LCStrength[Company])/LN(2)</eqn>
+            <display x="159" y="2046" color="blue" />
+        </aux>
+        <aux name="Learning">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(CumulativeProduction/InitialProductionExperience)^LCExponent</eqn>
+            <display x="223" y="2112" color="blue" />
+        </aux>
+        <aux name="InitialProductionExperience">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>100000</eqn>
+            <display x="193" y="2160" color="blue" />
+        </aux>
+        <aux name="RatioOfFixedToVarCost">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>3</eqn>
+            <display x="298" y="2111" color="blue" />
+        </aux>
+        <aux name="InitialPrice">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>200000</eqn>
+            <display x="466" y="2095" color="blue" />
+        </aux>
+        <aux name="NormalCapacityUtilization">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0.8</eqn>
+            <display x="466" y="2166" color="blue" />
+        </aux>
+        <aux name="NormalProfitMargin">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0.2</eqn>
+            <display x="411" y="2035" color="blue" />
+        </aux>
+        <aux name="InitialUnitVariableCost">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(InitialPrice/(1+NormalProfitMargin))*(1/(1+RatioOfFixedToVarCost/NormalCapacityUtilization))</eqn>
+            <display x="359" y="2162" color="blue" />
+        </aux>
+        <aux name="InitialUnitFixedCost">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(InitialPrice/(1+NormalProfitMargin))*RatioOfFixedToVarCost*(1/(1+RatioOfFixedToVarCost/NormalCapacityUtilization))</eqn>
+            <display x="355" y="2078" color="blue" />
+        </aux>
+        <aux name="MarketShare" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Shipments/IndustryShipments&#x0A;</eqn>
+            <display x="609" y="598" color="blue" label_side="top" label_angle="86" />
+        </aux>
+        <aux name="ReferenceDeliveryDelay">
+            <eqn>0.25</eqn>
+            <display x="91" y="1067" color="blue" />
+        </aux>
+        <aux name="SensOfAttractToAvailability">
+            <eqn>-4</eqn>
+            <display x="95" y="1133" color="blue" />
+        </aux>
+        <aux name="SensOfAttractToPrice">
+            <eqn>-8</eqn>
+            <display x="363" y="1108" color="blue" />
+        </aux>
+        <aux name="AttractivenessFromPrice">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>EXP(SensOfAttractToPrice*(Price[Company]/ReferencePrice&#x0A;))</eqn>
+            <display x="263" y="1093" color="blue" />
+        </aux>
+        <aux name="AttractivenessFromAvailability">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>EXP(SensOfAttractToAvailability*(DeliveryDelay[Company]/ReferenceDeliveryDelay))</eqn>
+            <display x="162" y="1081" color="blue" />
+        </aux>
+        <aux name="Attractiveness">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>AttractivenessFromPrice*AttractivenessFromAvailability*AttractivenessFromPerformance</eqn>
+            <display x="206" y="1143" color="blue" />
+        </aux>
+        <aux name="TotalAttractiveness">
+            <eqn>SUM(Attractiveness)</eqn>
+            <display x="115" y="1191" color="blue" />
+        </aux>
+        <aux name="TimeToPerceiveCompTargetCapacity">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0.25</eqn>
+            <display x="120" y="1810" color="blue" label_angle="279" />
+        </aux>
+        <aux name="CompetitorTargetCapacity">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>IndustryTotalTargetCapacity-TargetCapacity</eqn>
+            <display x="172" y="1670" color="blue" />
+        </aux>
+        <aux name="ExpectedCompCapacity">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>NormalCapacityUtilization*(WeightOnSupplyLine*PerceivedCompTargetCapacity+(1-WeightOnSupplyLine)*CompetitorCapacity)</eqn>
+            <display x="238" y="1893" color="blue" />
+        </aux>
+        <aux name="UncontestedDemand">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>MAX(0,ExpectedIndustryDemand[Company] - ExpectedCompCapacity[Company])</eqn>
+            <display x="422" y="1858" color="blue" />
+        </aux>
+        <aux name="CompetitorCapacity">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>IndustryCapacity-Capacitys</eqn>
+            <display x="174" y="1856" color="blue" />
+        </aux>
+        <aux name="IndustryCapacity">
+            <eqn>SUM(Capacitys)</eqn>
+            <display x="119" y="1909" color="blue" />
+        </aux>
+        <aux name="WeightOnSupplyLine">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>1</eqn>
+            <display x="443" y="1908" color="blue" />
+        </aux>
+        <aux name="UncontestedMarketShare">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>UncontestedDemand/ExpectedIndustryDemand</eqn>
+            <display x="448" y="1785" color="blue" />
+        </aux>
+        <aux name="TargetMarketShare">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>SwitchforCapacityStrategy1*MAX(DesiredMarketShare[Company],UncontestedMarketShare[Company]) +&#x0A;SwitchforCapacityStrategy2*MIN(DesiredMarketShare[Company],UncontestedMarketShare[Company]) +&#x0A;SwitchforCapacityStrategy3*DesiredMarketShare[Company] +&#x0A;SwitchforCapacityStrategy4*UncontestedMarketShare[Company]</eqn>
+            <display x="452" y="1706" color="blue" />
+        </aux>
+        <array name="DesiredMarketShare">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <aux subscript="1">
+                <eqn>0.3</eqn>
+            </aux>
+            <aux subscript="2">
+                <eqn>0.7</eqn>
+            </aux>
+            <display x="392" y="1647" color="blue" />
+        </array>
+        <aux name="TargetCapacity">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>MAX(MinimumEfficientScale[Company],&#x0A;TargetMarketShare[Company]*ExpectedIndustryDemand[Company]/NormalCapacityUtilization[Company])</eqn>
+            <display x="269" y="1641" color="blue" />
+        </aux>
+        <aux name="MinimumEfficientScale">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>10</eqn>
+            <display x="372" y="1612" color="blue" />
+        </aux>
+        <aux name="IndustryTotalTargetCapacity">
+            <eqn>SUM(TargetCapacity)</eqn>
+            <display x="159" y="1639" color="blue" label_side="top" label_angle="162" />
+        </aux>
+        <stock name="PerceivedCompTargetCapacity">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>CompetitorCapacity</eqn>
+            <inflow>changePerceivedCompTargetCapacity</inflow>
+            <display x="189" y="1759" color="blue" />
+        </stock>
+        <flow name="changePerceivedCompTargetCapacity">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(CompetitorTargetCapacity - PerceivedCompTargetCapacity)/TimeToPerceiveCompTargetCapacity</eqn>
+            <display x="117" y="1757" color="blue">
+                <pts>
+                    <pt x="67" y="1757" />
+                    <pt x="167" y="1757" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="SwitchForCapacityStrategy">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>1</eqn>
+            <display x="279" y="1755" color="blue" />
+        </aux>
+        <aux name="SwitchForCapacityStrategy1">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>IF SwitchForCapacityStrategy = 1 THEN 1 ELSE 0</eqn>
+            <display x="360" y="1691" color="blue" />
+        </aux>
+        <aux name="SwitchForCapacityStrategy2">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>IF SwitchForCapacityStrategy = 2 THEN 1 ELSE 0</eqn>
+            <display x="357" y="1732" color="blue" />
+        </aux>
+        <aux name="SwitchForCapacityStrategy3">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>IF SwitchForCapacityStrategy = 3 THEN 1 ELSE 0</eqn>
+            <display x="359" y="1771" color="blue" />
+        </aux>
+        <aux name="SwitchForCapacityStrategy4">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>IF SwitchForCapacityStrategy = 4 THEN 1 ELSE 0</eqn>
+            <display x="361" y="1817" color="blue" />
+        </aux>
+        <aux name="BasePrice">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(1+NormalProfitMargin)*(UnitVariableCost+UnitFixedCost/NormalCapacityUtilization)</eqn>
+            <display x="344" y="2393" color="blue" />
+        </aux>
+        <aux name="DemandSupplyBalance">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>DesiredShipments/(NormalCapacityUtilization*Capacitys)</eqn>
+            <display x="374" y="2483" color="blue" />
+        </aux>
+        <aux name="SensOfPriceToCosts">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>1</eqn>
+            <display x="121" y="2509" color="blue" />
+        </aux>
+        <aux name="SensOfPriceToDSBalance">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0.25</eqn>
+            <display x="208" y="2532" color="blue" />
+        </aux>
+        <aux name="SensOfPriceToShare">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>-0.1</eqn>
+            <display x="307" y="2522" color="blue" />
+        </aux>
+        <aux name="TargetPrice">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>MAX(UnitVariableCost[Company],&#x0A;Price[Company]*&#x0A;(1+SensOfPricetoCosts[Company]*((BasePrice[Company]/Price[Company])-1))*&#x0A;(1+SensOfPricetoDSBalance[Company]*(DemandSupplyBalance[Company]-1))*&#x0A;(1+SensOfPricetoShare[Company]*((TargetMarketShare[Company]-MarketShare[Company]))))</eqn>
+            <display x="256" y="2469" color="blue" />
+        </aux>
+        <aux name="PriceAdjustmentTime">
+            <eqn>0.25</eqn>
+            <display x="76" y="2400" color="blue" />
+        </aux>
+        <aux name="CapacityUtilization" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Shipments/Capacitys</eqn>
+            <display x="196" y="880" color="blue" />
+        </aux>
+        <aux name="checkAdoptionRate" flow_concept="true">
+            <eqn>AdoptionRate</eqn>
+            <display x="328" y="264" color="blue" />
+        </aux>
+        <aux name="checkIndustryOrderRate" flow_concept="true">
+            <eqn>IndustryOrderRate</eqn>
+            <display x="253" y="466" color="blue" />
+        </aux>
+        <aux name="checkIndustryShipments">
+            <eqn>IndustryShipments</eqn>
+            <display x="723" y="582" color="blue" label_side="top" label_angle="77" />
+        </aux>
+        <aux name="checkOrders" flow_concept="true">
+            <eqn>SUM(Orders)</eqn>
+            <display x="446" y="712" color="blue" />
+        </aux>
+        <aux name="checkLaggedVolumeForecast">
+            <eqn>MEAN(LaggedVolumeForecast)</eqn>
+            <display x="371" y="1304" color="blue" label_side="top" label_angle="81" />
+        </aux>
+        <aux name="checkCompetitorTargetCapacity">
+            <eqn>MEAN(CompetitorTargetCapacity)</eqn>
+            <display x="85" y="1653" color="blue" />
+        </aux>
+        <aux name="checkUnitFixedCost">
+            <eqn>MEAN(UnitFixedCost)</eqn>
+            <display x="371" y="2024" color="blue" label_side="top" label_angle="99" />
+        </aux>
+        <aux name="checkUnitVariableCost">
+            <eqn>MEAN(UnitVariableCost)</eqn>
+            <display x="277" y="2228" color="blue" />
+        </aux>
+        <aux name="checkTargetPrice">
+            <eqn>MEAN(TargetPrice)</eqn>
+            <display x="264" y="2418" color="blue" label_side="top" label_angle="86" />
+        </aux>
+        <aux name="aCheckProfitChange" flow_concept="true">
+            <eqn>MEAN(NPVProfitChange)</eqn>
+            <display x="115" y="2721" color="blue" />
+        </aux>
+        <aux name="SwitchForPerfectCapacity">
+            <eqn>0</eqn>
+            <display x="244" y="923" color="blue" />
+        </aux>
+        <stock name="SmoothCapacity1">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>IndustryOrderRate*InitialSharePlayers / NormalCapacityUtilization</eqn>
+            <inflow>changeSmoothCapacity1</inflow>
+            <display x="311" y="599" color="blue" />
+        </stock>
+        <flow name="changeSmoothCapacity1">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(TargetCapacity - SmoothCapacity1) / ( CapacityAcquisitionDelay/3)</eqn>
+            <display x="230" y="599" color="blue">
+                <pts>
+                    <pt x="172" y="599" />
+                    <pt x="289" y="599" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="SmoothCapacity2">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>IndustryOrderRate*InitialSharePlayers / NormalCapacityUtilization</eqn>
+            <inflow>changeSmoothCapacity2</inflow>
+            <display x="309" y="671" color="blue" />
+        </stock>
+        <flow name="changeSmoothCapacity2">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(SmoothCapacity1 - SmoothCapacity2) / ( CapacityAcquisitionDelay/3)</eqn>
+            <display x="229" y="668" color="blue">
+                <pts>
+                    <pt x="171" y="668" />
+                    <pt x="287" y="668" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="SmoothCapacity3">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>IndustryOrderRate*InitialSharePlayers / NormalCapacityUtilization</eqn>
+            <inflow>changeSmoothCapacity3</inflow>
+            <display x="310" y="746" color="blue" />
+        </stock>
+        <flow name="changeSmoothCapacity3">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(SmoothCapacity2 - SmoothCapacity3) / ( CapacityAcquisitionDelay/3)</eqn>
+            <display x="228" y="746" color="blue">
+                <pts>
+                    <pt x="168" y="746" />
+                    <pt x="288" y="746" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="NormalProduction">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>Capacitys*NormalCapacityUtilization</eqn>
+            <display x="108" y="844" color="blue" />
+        </aux>
+        <aux name="IndustryNormalProduction">
+            <eqn>SUM(NormalProduction)</eqn>
+            <display x="95" y="886" color="blue" />
+        </aux>
+        <aux name="TargetNormalProduction">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>TargetCapacity*NormalCapacityUtilization</eqn>
+            <display x="86" y="739" color="blue" />
+        </aux>
+        <aux name="checkIndustryDemand" flow_concept="true">
+            <eqn>IndustryDemand</eqn>
+            <display x="311" y="115" color="blue" label_side="top" label_angle="62" />
+        </aux>
+        <aux name="checkValueOfNewOrders1" flow_concept="true">
+            <eqn>ValueOfNewOrders[1]</eqn>
+            <display x="168" y="2839" color="blue" />
+        </aux>
+        <aux name="checkRevenue1" flow_concept="true">
+            <eqn>Revenue[1]</eqn>
+            <display x="424" y="2823" color="blue" />
+        </aux>
+        <stock name="NonAdopters">
+            <eqn>IndustryDemand - CumulativeAdopters</eqn>
+            <inflow>newNonAdopters</inflow>
+            <outflow>AdoptionRate</outflow>
+            <non_negative />
+            <display x="212" y="220" color="blue" />
+        </stock>
+        <flow name="newNonAdopters">
+            <eqn>(NonAdoptersTheoretical - NonAdopters) / DT</eqn>
+            <display x="156" y="220" color="blue">
+                <pts>
+                    <pt x="123" y="220" />
+                    <pt x="190" y="220" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="checkNonAdopters" flow_concept="true">
+            <eqn>NonAdoptersTheoretical</eqn>
+            <display x="81" y="247" color="blue" label_angle="302" />
+        </aux>
+        <flow name="InvestimentoPeD">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>OrcamentoPeD*Revenue*PeDLigado</eqn>
+            <non_negative />
+            <display x="180" y="3074" color="blue">
+                <pts>
+                    <pt x="118" y="3074" />
+                    <pt x="242" y="3074" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="InvestimentoNaoRealizadoPeD">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>PatentShare*InitialInvestimentoNaoRealizadoPeD</eqn>
+            <inflow>InvestimentoPeD</inflow>
+            <outflow>InvestimentoPeDRealizado</outflow>
+            <display x="264" y="3072" color="blue" />
+        </stock>
+        <aux name="CustoMedioPatente">
+            <eqn>100000</eqn>
+            <display x="192" y="3129" color="blue" label_side="left" label_angle="184" />
+        </aux>
+        <flow name="PatentesConcedidas">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(PatentesRequisitadas/TempoMedioAvaliacao)*(1-TaxaRejeicao)</eqn>
+            <non_negative />
+            <display x="397" y="3162" color="blue">
+                <pts>
+                    <pt x="338" y="3162" />
+                    <pt x="456" y="3162" />
+                </pts>
+            </display>
+        </flow>
+        <flow name="PatentesVencidas">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>PatentesEmpresa/TempoVencimentoPatentes</eqn>
+            <non_negative />
+            <display x="557" y="3163" color="blue">
+                <pts>
+                    <pt x="500" y="3163" />
+                    <pt x="614" y="3163" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="PatentesRequisitadas">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>PatentShare*InitialPatentesRequisitadas</eqn>
+            <inflow>PatentesSolicitadas</inflow>
+            <outflow>PatentesConcedidas</outflow>
+            <outflow>PatentesRejeitadas</outflow>
+            <display x="316" y="3161" color="blue" />
+        </stock>
+        <flow name="PatentesSolicitadas">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InvestimentoPeDRealizado/CustoMedioPatente</eqn>
+            <non_negative />
+            <display x="240" y="3161" color="blue">
+                <pts>
+                    <pt x="186" y="3161" />
+                    <pt x="294" y="3161" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="PatentesEmDominioPublicoUteis">
+            <eqn>InitialPatentesEmDominioPublicoUteis</eqn>
+            <inflow>PatentesVencidas</inflow>
+            <outflow>PatentesUtilidadeExpirada</outflow>
+            <display x="636" y="3166" color="blue" />
+        </stock>
+        <aux name="TempoVencimentoPatentes">
+            <eqn>20-2</eqn>
+            <display x="599" y="3237" color="blue" label_side="right" label_angle="273" />
+        </aux>
+        <stock name="PatentesEmpresa">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>PatentShare*InitialPatentesEmpresa</eqn>
+            <inflow>PatentesConcedidas</inflow>
+            <outflow>PatentesVencidas</outflow>
+            <display x="478" y="3163" color="blue" />
+        </stock>
+        <flow name="PatentesRejeitadas">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>(PatentesRequisitadas/TempoMedioAvaliacao)*TaxaRejeicao</eqn>
+            <non_negative />
+            <display x="320" y="3217" color="blue" label_side="left">
+                <pts>
+                    <pt x="320" y="3178" />
+                    <pt x="320" y="3256" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="OrcamentoPeD">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0.001</eqn>
+            <display x="81" y="2992" color="blue" label_side="top" />
+        </aux>
+        <flow name="InvestimentoPeDRealizado">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InvestimentoNaoRealizadoPeD/TempoMedioRealizacaoPeD</eqn>
+            <non_negative />
+            <display x="364" y="3076" color="blue">
+                <pts>
+                    <pt x="286" y="3076" />
+                    <pt x="443" y="3076" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="TempoMedioAvaliacao">
+            <eqn>2</eqn>
+            <display x="475" y="3222" color="blue" label_side="top" label_angle="23" />
+        </aux>
+        <aux name="TempoMedioRealizacaoPeD">
+            <eqn>4</eqn>
+            <display x="436" y="3114" color="blue" label_side="top" label_angle="45" />
+        </aux>
+        <aux name="TaxaRejeicao">
+            <eqn>0.4</eqn>
+            <display x="367" y="3238" color="blue" />
+        </aux>
+        <flow name="PatentesUtilidadeExpirada">
+            <eqn>PatentesEmDominioPublicoUteis/TempodeInutilizacaodaPatente</eqn>
+            <non_negative />
+            <display x="715" y="3169" color="blue">
+                <pts>
+                    <pt x="658" y="3169" />
+                    <pt x="773" y="3169" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="Performance">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>MAX(PerfMin, MIN(PerfMax, PerformanceCalculada[Company]))</eqn>
+            <display x="573" y="3050" color="blue" label_side="right" label_angle="8" />
+        </aux>
+        <aux name="IndustryShipmentsReference">
+            <eqn>TIME</eqn>
+            <gf>
+                <xscale min="0" max="10" />
+                <yscale min="0" max="100" />
+                <ypts>2600,3500,4000,5000,5050,4600,6100,6500,7771,10310.5,12850</ypts>
+            </gf>
+            <display x="456" y="557" color="blue">
+                <scale min="0" max="20000" />
+            </display>
+        </aux>
+        <aux name="SensOfAttractToPerformance">
+            <eqn>-4</eqn>
+            <display x="478" y="1152" color="blue" label_side="top" label_angle="65" />
+        </aux>
+        <aux name="ReferencePerformance">
+            <eqn>10</eqn>
+            <display x="470" y="1186" color="blue" />
+        </aux>
+        <aux name="AttractivenessFromPerformance">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>EXP(SensOfAttractToPerformance*(ReferencePerformance/Performance[Company]))*PeDLigado&#x0A;+ (1-PeDLigado)</eqn>
+            <display x="272" y="1159" color="blue" label_side="right" label_angle="12" />
+        </aux>
+        <aux name="PatentesEmpresaTemAcesso">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>PatentesRequisitadas+PatentesEmpresa+PatentesEmDominioPublicoUteis</eqn>
+            <display x="557" y="3114" color="blue" label_side="right" label_angle="20" />
+        </aux>
+        <aux name="TempodeInutilizacaodaPatente">
+            <eqn>10</eqn>
+            <display x="722" y="3213" color="blue" label_angle="238" />
+        </aux>
+        <flow name="investimentoaDepreciar">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InvestimentoPeD</eqn>
+            <non_negative />
+            <display x="154" y="3313" color="blue">
+                <pts>
+                    <pt x="96" y="3313" />
+                    <pt x="212" y="3313" />
+                </pts>
+            </display>
+        </flow>
+        <stock name="InvestimentoPeDDepreciar">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>PatentShare*InitialInvestimentoPeDDepreciar</eqn>
+            <inflow>investimentoaDepreciar</inflow>
+            <outflow>DepreciacaoInvPeD</outflow>
+            <display x="234" y="3313" color="blue" />
+        </stock>
+        <flow name="DepreciacaoInvPeD">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>InvestimentoPeDDepreciar/TempoDepreciacao</eqn>
+            <non_negative />
+            <display x="316" y="3317" color="blue">
+                <pts>
+                    <pt x="256" y="3317" />
+                    <pt x="376" y="3317" />
+                </pts>
+            </display>
+        </flow>
+        <aux name="TempoDepreciacao">
+            <eqn>TempoMedioRealizacaoPeD+TempoMedioAvaliacao+TempoVencimentoPatentes</eqn>
+            <display x="479" y="3274" color="blue" label_angle="338" />
+        </aux>
+        <aux name="PeDLigado">
+            <eqn>1</eqn>
+            <display x="202" y="2997" color="blue" label_side="top" label_angle="69" />
+        </aux>
+        <aux name="PeDUnitCost" flow_concept="true">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>DepreciacaoInvPeD/Shipments</eqn>
+            <display x="224" y="2016" color="blue" />
+        </aux>
+        <aux name="PerfMin">
+            <eqn>0</eqn>
+            <display x="507" y="3031" color="blue" label_side="right" />
+        </aux>
+        <aux name="PerfMax">
+            <eqn>10</eqn>
+            <display x="511" y="3056" color="blue" label_side="right" />
+        </aux>
+        <aux name="PerfSlope">
+            <eqn>1 / 30 {Unidades de Performance / Patente}</eqn>
+            <display x="713" y="3065" color="blue" label_side="right" label_angle="356" />
+        </aux>
+        <aux name="PerformanceCalculada">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>PerfSlope*PatentesEmpresaTemAcesso</eqn>
+            <display x="600" y="3087" color="blue" label_side="right" label_angle="8" />
+        </aux>
+        <aux name="InitialIndustryShipments" flow_concept="true">
+            <eqn>1831</eqn>
+            <display x="667" y="427" color="blue" label_side="right" label_angle="356" />
+        </aux>
+        <aux name="InitalNewAdoptersOrderRate" flow_concept="true">
+            <eqn>InitialIndustryShipments*(1-InitialReorderShare)</eqn>
+            <display x="564" y="397" color="blue" label_side="right" label_angle="356" />
+        </aux>
+        <aux name="InitialReorderShare" flow_concept="true">
+            <eqn>0.4</eqn>
+            <display x="811" y="459" color="blue" label_angle="274" />
+        </aux>
+        <aux name="InitalReorderRate" flow_concept="true">
+            <eqn>1831</eqn>
+            <display x="397" y="450" color="blue" label_side="right" label_angle="356" />
+        </aux>
+        <aux name="InitialAdoptionRate" flow_concept="true">
+            <eqn>InitalNewAdoptersOrderRate/UnitsPerHousehold</eqn>
+            <display x="525" y="362" color="blue" label_side="right" label_angle="356" />
+        </aux>
+        <aux name="InitialCumulativeAdopters2" flow_concept="true">
+            <eqn>((InitialAdoptionRate/(ReferencePopulation-EstimatedAdopters))-InnovatorAdoptionFraction)*(Population/WOMStrength)</eqn>
+            <display x="525" y="318" color="blue" label_side="right" label_angle="356" />
+        </aux>
+        <aux name="EstimatedAdopters">
+            <eqn>TotalInitialInstalledBase/UnitsPerHousehold</eqn>
+            <display x="631" y="346" color="blue" label_side="right" label_angle="4" />
+        </aux>
+        <aux name="PatentShare">
+            <dimensions>
+                <dim name="Company" />
+            </dimensions>
+            <eqn>0.5</eqn>
+            <display x="256" y="2995" color="blue" label_side="top" label_angle="73" />
+        </aux>
+        <aux name="InitialInvestimentoNaoRealizadoPeD">
+            <eqn>2000</eqn>
+            <display x="354" y="2989" color="blue" />
+        </aux>
+        <aux name="InitialPatentesRequisitadas">
+            <eqn>200</eqn>
+            <display x="486" y="2971" color="blue" />
+        </aux>
+        <aux name="InitialPatentesEmpresa">
+            <eqn>200</eqn>
+            <display x="608" y="2975" color="blue" />
+        </aux>
+        <aux name="InitialPatentesEmDominioPublicoUteis">
+            <eqn>20</eqn>
+            <display x="745" y="2978" color="blue" />
+        </aux>
+        <aux name="InitialInvestimentoPeDDepreciar">
+            <eqn>2000000</eqn>
+            <display x="467" y="3321" color="blue" />
+        </aux>
+        <aux name="checkPerformance">
+            <eqn>MEAN(Performance)</eqn>
+            <display x="631" y="3025" color="blue" label_side="right" label_angle="356" />
+        </aux>
+        <aux name="checkNPVProfitChange1" flow_concept="true">
+            <eqn>NPVProfitChange[1]</eqn>
+            <display x="88" y="2669" color="blue" />
+        </aux>
+        <aux name="ModoInitialCumulativeAdopters">
+            <eqn>2&#x0A;{&#x0A;1 - Tradicional: Industry Demand X Initial Diffusion Fraction (Sterman)&#x0A;2 - ReorderShare -&gt; Intalled Base -&gt; Adopters (Novo)&#x0A;3 - ReorderShare -&gt; InitialAdoptionRate -&gt; Initial Cumulative Adopters (Implementado Inicialmente)&#x0A;}</eqn>
+            <display x="582" y="188" color="blue" label_side="top" label_angle="62" />
+        </aux>
+        <aux name="Noname_1">
+            <eqn>IF Noname_2 = 2 THEN 2 &#x0A;ELSE IF 2 = 2 THEN 2 ELSE 0</eqn>
+            <display x="663" y="33" color="blue" />
+        </aux>
+        <aux name="Noname_2">
+            <eqn>2</eqn>
+            <display x="582" y="70" color="blue" />
+        </aux>
+        <aux name="TotalInitialInstalledBase">
+            <eqn>(InitialReorderShare *InitialIndustryShipments) / FractionalDiscardRate</eqn>
+            <display x="755" y="328" color="blue" label_side="top" label_angle="55" />
+        </aux>
+        <group name="Net_Income_Sector">
+            <entity name="NPVProfit" />
+            <entity name="ValueOfBacklog" />
+            <entity name="NPVProfitChange" />
+            <entity name="Revenue" />
+            <entity name="ValueOfNewOrders" />
+            <entity name="aCheckProfitChange" />
+            <entity name="checkNPVProfitChange1" />
+            <entity name="Cost" />
+            <entity name="DiscountFactor" />
+            <entity name="DiscountRate" />
+            <entity name="NetIncome" />
+            <entity name="NPLAYERS" />
+            <entity name="NPVIndustryProfits" />
+            <entity name="FixedCost" />
+            <entity name="VariableCost" />
+            <entity name="AveragePriceOfOrderBook" />
+            <entity name="checkValueOfNewOrders1" />
+            <entity name="checkRevenue1" />
+            <display locked="true" x="30" y="2605" width="610" height="315" color="red">
+                <item uid="0" />
+                <item uid="1" />
+                <item uid="2" />
+                <item uid="3" />
+                <item uid="4" />
+                <item uid="5" />
+                <item uid="6" />
+                <item uid="7" />
+                <item uid="8" />
+                <item uid="9" />
+                <item uid="10" />
+                <item uid="11" />
+                <item uid="12" />
+                <item uid="13" />
+                <item uid="14" />
+                <item uid="15" />
+                <item uid="16" />
+                <item uid="17" />
+                <item uid="18" />
+                <item uid="19" />
+                <item uid="20" />
+                <item uid="21" />
+                <item uid="22" />
+                <item uid="23" />
+                <item uid="24" />
+                <item uid="25" />
+                <item uid="26" />
+                <item uid="27" />
+                <item uid="28" />
+                <item uid="29" />
+                <item uid="30" />
+                <item uid="31" />
+                <item uid="32" />
+                <item uid="33" />
+                <item uid="34" />
+                <item uid="35" />
+            </display>
+        </group>
+        <group name="Learning_Curve_Sector">
+            <entity name="CumulativeProduction" />
+            <entity name="Production" />
+            <entity name="checkUnitFixedCost" />
+            <entity name="InitialUnitFixedCost" />
+            <entity name="LCExponent" />
+            <entity name="LCStrength" />
+            <entity name="PeDUnitCost" />
+            <entity name="UnitFixedCost" />
+            <entity name="InitialPrice" />
+            <entity name="NormalProfitMargin" />
+            <entity name="checkUnitVariableCost" />
+            <entity name="InitialProductionExperience" />
+            <entity name="InitialUnitVariableCost" />
+            <entity name="Learning" />
+            <entity name="RatioOfFixedToVarCost" />
+            <entity name="UnitVariableCost" />
+            <entity name="NormalCapacityUtilization" />
+            <display locked="true" x="28" y="1989" width="496" height="289" color="red">
+                <item uid="36" />
+                <item uid="37" />
+                <item uid="38" />
+                <item uid="39" />
+                <item uid="40" />
+                <item uid="41" />
+                <item uid="42" />
+                <item uid="43" />
+                <item uid="44" />
+                <item uid="45" />
+                <item uid="46" />
+                <item uid="47" />
+                <item uid="48" />
+                <item uid="49" />
+                <item uid="50" />
+                <item uid="51" />
+                <item uid="52" />
+                <item uid="53" />
+                <item uid="54" />
+                <item uid="55" />
+                <item uid="56" />
+                <item uid="57" />
+                <item uid="58" />
+                <item uid="59" />
+                <item uid="60" />
+                <item uid="61" />
+                <item uid="62" />
+            </display>
+        </group>
+        <group name="Capacity_Sector">
+            <entity name="SmoothCapacity1" />
+            <entity name="SmoothCapacity2" />
+            <entity name="changeSmoothCapacity1" />
+            <entity name="changeSmoothCapacity2" />
+            <entity name="SmoothCapacity3" />
+            <entity name="changeSmoothCapacity3" />
+            <entity name="Capacitys" />
+            <entity name="CapacityUtilization" />
+            <entity name="IndustryNormalProduction" />
+            <entity name="NormalProduction" />
+            <entity name="SwitchForPerfectCapacity" />
+            <entity name="TargetNormalProduction" />
+            <display locked="true" x="30" y="542" width="341" height="416" color="red">
+                <item uid="63" />
+                <item uid="64" />
+                <item uid="65" />
+                <item uid="66" />
+                <item uid="67" />
+                <item uid="68" />
+                <item uid="69" />
+                <item uid="70" />
+                <item uid="71" />
+                <item uid="72" />
+                <item uid="73" />
+                <item uid="74" />
+                <item uid="75" />
+                <item uid="76" />
+                <item uid="77" />
+                <item uid="78" />
+                <item uid="79" />
+                <item uid="80" />
+                <item uid="81" />
+                <item uid="82" />
+                <item uid="83" />
+                <item uid="84" />
+                <item uid="85" />
+                <item uid="86" />
+                <item uid="87" />
+                <item uid="88" />
+                <item uid="89" />
+            </display>
+        </group>
+        <group name="Target_Capacity_Sector">
+            <entity name="PerceivedCompTargetCapacity" />
+            <entity name="changePerceivedCompTargetCapacity" />
+            <entity name="checkCompetitorTargetCapacity" />
+            <entity name="CompetitorTargetCapacity" />
+            <entity name="DesiredMarketShare" />
+            <entity name="IndustryTotalTargetCapacity" />
+            <entity name="MinimumEfficientScale" />
+            <entity name="SwitchForCapacityStrategy" />
+            <entity name="SwitchForCapacityStrategy1" />
+            <entity name="SwitchForCapacityStrategy2" />
+            <entity name="TargetCapacity" />
+            <entity name="TargetMarketShare" />
+            <entity name="CompetitorCapacity" />
+            <entity name="ExpectedCompCapacity" />
+            <entity name="IndustryCapacity" />
+            <entity name="SwitchForCapacityStrategy3" />
+            <entity name="SwitchForCapacityStrategy4" />
+            <entity name="TimeToPerceiveCompTargetCapacity" />
+            <entity name="UncontestedDemand" />
+            <entity name="UncontestedMarketShare" />
+            <entity name="WeightOnSupplyLine" />
+            <display locked="true" x="8" y="1596" width="532" height="349" color="red">
+                <item uid="90" />
+                <item uid="91" />
+                <item uid="92" />
+                <item uid="93" />
+                <item uid="94" />
+                <item uid="95" />
+                <item uid="96" />
+                <item uid="97" />
+                <item uid="98" />
+                <item uid="99" />
+                <item uid="100" />
+                <item uid="101" />
+                <item uid="102" />
+                <item uid="103" />
+                <item uid="104" />
+                <item uid="105" />
+                <item uid="106" />
+                <item uid="107" />
+                <item uid="108" />
+                <item uid="109" />
+                <item uid="110" />
+                <item uid="111" />
+                <item uid="112" />
+                <item uid="113" />
+                <item uid="114" />
+                <item uid="115" />
+                <item uid="116" />
+                <item uid="117" />
+                <item uid="118" />
+                <item uid="119" />
+                <item uid="120" />
+                <item uid="121" />
+                <item uid="122" />
+                <item uid="123" />
+                <item uid="124" />
+            </display>
+        </group>
+        <group name="Expected_Industry_Demand_Sector">
+            <entity name="ReportedIndustryVolume" />
+            <entity name="change" />
+            <entity name="CapacityAcquisitionDelay" />
+            <entity name="checkLaggedVolumeForecast" />
+            <entity name="ForecastError" />
+            <entity name="IndustryVolume" />
+            <entity name="InitialDemandForecast" />
+            <entity name="LaggedVolumeForecast" />
+            <entity name="SwitchForShipmentsInForecast" />
+            <entity name="VolumeReportingDelay" />
+            <entity name="ExpectedIndustryDemand" />
+            <entity name="ExpGrowthInVolume" />
+            <entity name="ForecastHorizon" />
+            <entity name="LaggedIndustryVolume" />
+            <entity name="TimeForHistoricalVolume" />
+            <display locked="true" x="28" y="1254" width="400" height="312" color="red">
+                <item uid="125" />
+                <item uid="126" />
+                <item uid="127" />
+                <item uid="128" />
+                <item uid="129" />
+                <item uid="130" />
+                <item uid="131" />
+                <item uid="132" />
+                <item uid="133" />
+                <item uid="134" />
+                <item uid="135" />
+                <item uid="136" />
+                <item uid="137" />
+                <item uid="138" />
+                <item uid="139" />
+                <item uid="140" />
+                <item uid="141" />
+                <item uid="142" />
+                <item uid="143" />
+                <item uid="144" />
+                <item uid="145" />
+                <item uid="146" />
+                <item uid="147" />
+                <item uid="148" />
+                <item uid="149" />
+            </display>
+        </group>
+        <group name="Diffusion_Sector">
+            <entity name="NonAdopters" />
+            <entity name="CumulativeAdopters" />
+            <entity name="newNonAdopters" />
+            <entity name="AdoptionRate" />
+            <entity name="checkAdoptionRate" />
+            <entity name="checkIndustryDemand" />
+            <entity name="checkNonAdopters" />
+            <entity name="DemandCurveSlope" />
+            <entity name="IndustryDemand" />
+            <entity name="InitialDiffusionFraction" />
+            <entity name="InnovatorAdoptionFraction" />
+            <entity name="LowestPrice" />
+            <entity name="NonAdoptersTheoretical" />
+            <entity name="Population" />
+            <entity name="ReferenceIndustryDemandElasticity" />
+            <entity name="ReferencePopulation" />
+            <entity name="ReferencePrice" />
+            <entity name="WOMStrength" />
+            <display locked="true" x="43" y="22" width="411" height="272" color="red">
+                <item uid="150" />
+                <item uid="151" />
+                <item uid="152" />
+                <item uid="153" />
+                <item uid="154" />
+                <item uid="155" />
+                <item uid="156" />
+                <item uid="157" />
+                <item uid="158" />
+                <item uid="159" />
+                <item uid="160" />
+                <item uid="161" />
+                <item uid="162" />
+                <item uid="163" />
+                <item uid="164" />
+                <item uid="165" />
+                <item uid="166" />
+                <item uid="167" />
+                <item uid="168" />
+                <item uid="169" />
+                <item uid="170" />
+                <item uid="171" />
+                <item uid="172" />
+                <item uid="173" />
+                <item uid="174" />
+                <item uid="175" />
+                <item uid="176" />
+                <item uid="177" />
+            </display>
+        </group>
+        <group name="Orders_Sector">
+            <entity name="Backlog" />
+            <entity name="InstalledBase" />
+            <entity name="DiscardRate" />
+            <entity name="Orders" />
+            <entity name="Shipments" />
+            <entity name="checkIndustryShipments" />
+            <entity name="DeliveryDelay" />
+            <entity name="IndustryShipments" />
+            <entity name="IndustryShipmentsReference" />
+            <entity name="MarketShare" />
+            <entity name="FractionalDiscardRate" />
+            <entity name="checkOrders" />
+            <entity name="DesiredShipments" />
+            <entity name="InitialInstalledBase" />
+            <entity name="InitialSharePlayers" />
+            <entity name="NormalDeliveryDelay" />
+            <entity name="SwitchForCapacity" />
+            <display locked="true" x="389" y="541" width="444" height="276" color="red">
+                <item uid="178" />
+                <item uid="179" />
+                <item uid="180" />
+                <item uid="181" />
+                <item uid="182" />
+                <item uid="183" />
+                <item uid="184" />
+                <item uid="185" />
+                <item uid="186" />
+                <item uid="187" />
+                <item uid="188" />
+                <item uid="189" />
+                <item uid="190" />
+                <item uid="191" />
+                <item uid="192" />
+                <item uid="193" />
+                <item uid="194" />
+                <item uid="195" />
+                <item uid="196" />
+                <item uid="197" />
+            </display>
+        </group>
+        <group name="Price_Sector">
+            <entity name="Price" />
+            <entity name="ChangeInPrice" />
+            <entity name="BasePrice" />
+            <entity name="checkTargetPrice" />
+            <entity name="PriceAdjustmentTime" />
+            <entity name="DemandSupplyBalance" />
+            <entity name="SensOfPriceToCosts" />
+            <entity name="SensOfPriceToDSBalance" />
+            <entity name="SensOfPriceToShare" />
+            <entity name="TargetPrice" />
+            <display locked="true" x="29" y="2313" width="485" height="251" color="red">
+                <item uid="198" />
+                <item uid="199" />
+                <item uid="200" />
+                <item uid="201" />
+                <item uid="202" />
+                <item uid="203" />
+                <item uid="204" />
+                <item uid="205" />
+                <item uid="206" />
+                <item uid="207" />
+                <item uid="208" />
+                <item uid="209" />
+                <item uid="210" />
+                <item uid="211" />
+                <item uid="212" />
+                <item uid="213" />
+                <item uid="214" />
+                <item uid="215" />
+                <item uid="216" />
+                <item uid="217" />
+                <item uid="218" />
+                <item uid="219" />
+                <item uid="220" />
+                <item uid="221" />
+                <item uid="222" />
+                <item uid="223" />
+                <item uid="224" />
+                <item uid="225" />
+            </display>
+        </group>
+        <group name="Industry_Demand_Sector">
+            <entity name="IndustryOrderRate" />
+            <entity name="ReorderRate" />
+            <entity name="checkIndustryOrderRate" />
+            <entity name="InitialOrderRate" />
+            <entity name="UnitsPerHousehold" />
+            <display locked="true" x="32" y="341" width="306" height="165" color="red">
+                <item uid="226" />
+                <item uid="227" />
+                <item uid="228" />
+                <item uid="229" />
+                <item uid="230" />
+                <item uid="231" />
+                <item uid="232" />
+            </display>
+        </group>
+        <group name="Market_Sector">
+            <entity name="Attractiveness" />
+            <entity name="AttractivenessFromAvailability" />
+            <entity name="AttractivenessFromPerformance" />
+            <entity name="AttractivenessFromPrice" />
+            <entity name="OrderShare" />
+            <entity name="ReferenceDeliveryDelay" />
+            <entity name="SensOfAttractToAvailability" />
+            <entity name="SensOfAttractToPrice" />
+            <entity name="TotalAttractiveness" />
+            <entity name="ReferencePerformance" />
+            <entity name="SensOfAttractToPerformance" />
+            <display locked="true" x="28" y="988" width="531" height="237" color="red">
+                <item uid="233" />
+                <item uid="234" />
+                <item uid="235" />
+                <item uid="236" />
+                <item uid="237" />
+                <item uid="238" />
+                <item uid="239" />
+                <item uid="240" />
+                <item uid="241" />
+                <item uid="242" />
+                <item uid="243" />
+                <item uid="244" />
+                <item uid="245" />
+                <item uid="246" />
+                <item uid="247" />
+                <item uid="248" />
+                <item uid="249" />
+                <item uid="250" />
+                <item uid="251" />
+                <item uid="252" />
+                <item uid="253" />
+                <item uid="254" />
+            </display>
+        </group>
+        <group name="Patentes_e_Pesquisa_e_Desenvolvimento">
+            <entity name="InvestimentoNaoRealizadoPeD" />
+            <entity name="PatentesRequisitadas" />
+            <entity name="InvestimentoPeD" />
+            <entity name="InvestimentoPeDRealizado" />
+            <entity name="PatentesConcedidas" />
+            <entity name="PatentesSolicitadas" />
+            <entity name="CustoMedioPatente" />
+            <entity name="InitialInvestimentoNaoRealizadoPeD" />
+            <entity name="OrcamentoPeD" />
+            <entity name="PatentShare" />
+            <entity name="PeDLigado" />
+            <entity name="PatentesEmDominioPublicoUteis" />
+            <entity name="PatentesEmpresa" />
+            <entity name="PatentesUtilidadeExpirada" />
+            <entity name="PatentesVencidas" />
+            <entity name="checkPerformance" />
+            <entity name="InitialPatentesEmDominioPublicoUteis" />
+            <entity name="InitialPatentesEmpresa" />
+            <entity name="InitialPatentesRequisitadas" />
+            <entity name="PatentesEmpresaTemAcesso" />
+            <entity name="PerfMax" />
+            <entity name="PerfMin" />
+            <entity name="Performance" />
+            <entity name="PerformanceCalculada" />
+            <entity name="TempoMedioRealizacaoPeD" />
+            <entity name="PerfSlope" />
+            <entity name="InvestimentoPeDDepreciar" />
+            <entity name="DepreciacaoInvPeD" />
+            <entity name="investimentoaDepreciar" />
+            <entity name="PatentesRejeitadas" />
+            <entity name="TaxaRejeicao" />
+            <entity name="InitialInvestimentoPeDDepreciar" />
+            <entity name="TempodeInutilizacaodaPatente" />
+            <entity name="TempoDepreciacao" />
+            <entity name="TempoMedioAvaliacao" />
+            <entity name="TempoVencimentoPatentes" />
+            <display locked="true" x="27" y="2953" width="813" height="412" color="red">
+                <item uid="255" />
+                <item uid="256" />
+                <item uid="257" />
+                <item uid="258" />
+                <item uid="259" />
+                <item uid="260" />
+                <item uid="261" />
+                <item uid="262" />
+                <item uid="263" />
+                <item uid="264" />
+                <item uid="265" />
+                <item uid="266" />
+                <item uid="267" />
+                <item uid="268" />
+                <item uid="269" />
+                <item uid="270" />
+                <item uid="271" />
+                <item uid="272" />
+                <item uid="273" />
+                <item uid="274" />
+                <item uid="275" />
+                <item uid="276" />
+                <item uid="277" />
+                <item uid="278" />
+                <item uid="279" />
+                <item uid="280" />
+                <item uid="281" />
+                <item uid="282" />
+                <item uid="283" />
+                <item uid="284" />
+                <item uid="285" />
+                <item uid="286" />
+                <item uid="287" />
+            </display>
+        </group>
+        <display page_width="595" page_height="842" page_cols="4" page_rows="4" isee:show_values_on_hover="true" isee:converter_size="medium" isee:animate_flows="true" isee:animate_stocks="true" isee:animate_converters="true" report_every_dt="true">
+            <alias x="504" y="134" uid="288">
+                <of>UnitsPerHousehold</of>
+                <label_side>top</label_side>
+                <label_angle>86</label_angle>
+            </alias>
+            <alias x="81" y="2800" uid="0">
+                <of>Price</of>
+            </alias>
+            <alias x="72" y="1324" uid="125">
+                <of>IndustryShipments</of>
+            </alias>
+            <alias x="471" y="1632" uid="106">
+                <of>ExpectedIndustryDemand</of>
+            </alias>
+            <alias x="114" y="1025" uid="233">
+                <of>DeliveryDelay</of>
+            </alias>
+            <alias x="164" y="2426" uid="198">
+                <of>MarketShare</of>
+            </alias>
+            <alias x="686" y="901" uid="289">
+                <of>ReferencePrice</of>
+            </alias>
+            <alias x="252" y="1029" uid="234">
+                <of>Price</of>
+            </alias>
+            <alias x="777" y="863" uid="290">
+                <of>ReferenceIndustryDemandElasticity</of>
+            </alias>
+            <alias x="141" y="929" uid="75">
+                <of>Shipments</of>
+            </alias>
+            <alias x="399" y="61" uid="176">
+                <of>Price</of>
+            </alias>
+            <alias x="471" y="858" uid="291">
+                <of>InitialPrice</of>
+            </alias>
+            <alias x="325" y="790" uid="76">
+                <of>IndustryOrderRate</of>
+            </alias>
+            <alias x="480" y="2384" uid="214">
+                <of>UnitFixedCost</of>
+            </alias>
+            <alias x="70" y="1364" uid="126">
+                <of>IndustryOrderRate</of>
+            </alias>
+            <alias x="286" y="2007" uid="36">
+                <of>PeDLigado</of>
+            </alias>
+            <alias x="355" y="2755" uid="1">
+                <of>Shipments</of>
+            </alias>
+            <alias x="101" y="1859" uid="115">
+                <of>Capacitys</of>
+            </alias>
+            <alias x="551" y="858" uid="292">
+                <of>Population</of>
+            </alias>
+            <alias x="96" y="806" uid="77">
+                <of>NormalCapacityUtilization</of>
+            </alias>
+            <alias x="346" y="2346" uid="199">
+                <of>NormalProfitMargin</of>
+                <label_side>top</label_side>
+                <label_angle>81</label_angle>
+            </alias>
+            <alias x="450" y="2765" uid="21">
+                <of>UnitVariableCost</of>
+            </alias>
+            <alias x="121" y="1999" uid="37">
+                <of>DepreciacaoInvPeD</of>
+            </alias>
+            <alias x="457" y="2474" uid="222">
+                <of>Capacitys</of>
+            </alias>
+            <alias x="65" y="1280" uid="127">
+                <of>ReorderRate</of>
+            </alias>
+            <alias x="134" y="686" uid="63">
+                <of>CapacityAcquisitionDelay</of>
+            </alias>
+            <alias x="287" y="1194" uid="238">
+                <of>Performance</of>
+            </alias>
+            <alias x="577" y="2703" uid="22">
+                <of>UnitFixedCost</of>
+            </alias>
+            <alias x="647" y="860" uid="293">
+                <of>ReferencePopulation</of>
+            </alias>
+            <alias x="353" y="1190" uid="239">
+                <of>PeDLigado</of>
+            </alias>
+            <alias x="769" y="732" uid="196">
+                <of>InitialCumulativeAdopters</of>
+            </alias>
+            <alias x="503" y="2655" uid="23">
+                <of>Capacitys</of>
+            </alias>
+            <alias x="544" y="2788" uid="24">
+                <of>PeDLigado</of>
+            </alias>
+            <alias x="190" y="785" uid="78">
+                <of>DesiredShipments</of>
+            </alias>
+            <alias x="578" y="905" uid="294">
+                <of>InitialProductionExperience</of>
+                <label_angle>245</label_angle>
+            </alias>
+            <alias x="260" y="2893" uid="33">
+                <of>Backlog</of>
+            </alias>
+            <alias x="535" y="2742" uid="25">
+                <of>PeDUnitCost</of>
+            </alias>
+            <alias x="476" y="2346" uid="215">
+                <of>UnitVariableCost</of>
+            </alias>
+            <alias x="484" y="496" uid="295">
+                <of>InitialSharePlayers</of>
+                <label_side>right</label_side>
+                <label_angle>356</label_angle>
+            </alias>
+            <alias x="145" y="2994" uid="255">
+                <of>Revenue</of>
+                <label_side>top</label_side>
+                <label_angle>86</label_angle>
+            </alias>
+            <alias x="457" y="2431" uid="216">
+                <of>NormalCapacityUtilization</of>
+            </alias>
+            <alias x="238" y="1693" uid="90">
+                <of>NormalCapacityUtilization</of>
+            </alias>
+            <alias x="75" y="2166" uid="55">
+                <of>Shipments</of>
+            </alias>
+            <alias x="465" y="904" uid="296">
+                <of>LCStrength</of>
+            </alias>
+            <alias x="77" y="578" uid="64">
+                <of>TargetCapacity</of>
+            </alias>
+            <alias x="752" y="788" uid="197">
+                <of>UnitsPerHousehold</of>
+            </alias>
+            <alias x="56" y="2008" uid="38">
+                <of>Shipments</of>
+            </alias>
+            <alias x="455" y="2519" uid="223">
+                <of>DesiredShipments</of>
+            </alias>
+            <alias x="89" y="2456" uid="200">
+                <of>TargetMarketShare</of>
+                <label_side>top</label_side>
+                <label_angle>107</label_angle>
+            </alias>
+            <alias x="357" y="1065" uid="240">
+                <of>ReferencePrice</of>
+            </alias>
+            <alias x="107" y="2884" uid="34">
+                <of>Orders</of>
+            </alias>
+            <alias x="567" y="2661" uid="26">
+                <of>InvestimentoPeD</of>
+            </alias>
+            <connector x="208" y="1398" uid="128" color="#FF007F">
+                <from>ReportedIndustryVolume</from>
+                <to>change</to>
+            </connector>
+            <connector x="804" y="459" uid="297" color="#FF007F">
+                <from>InitialReorderShare</from>
+                <to>InitalNewAdoptersOrderRate</to>
+            </connector>
+            <connector x="338" y="3156" uid="256" color="#FF007F">
+                <from>PatentesRequisitadas</from>
+                <to>PatentesEmpresaTemAcesso</to>
+            </connector>
+            <connector x="497" y="3146" uid="265" color="#FF007F">
+                <from>PatentesEmpresa</from>
+                <to>PatentesEmpresaTemAcesso</to>
+            </connector>
+            <connector x="303" y="2514" uid="218" color="#FF007F">
+                <from>SensOfPriceToShare</from>
+                <to>TargetPrice</to>
+            </connector>
+            <connector x="596" y="3079" uid="266" color="#FF007F">
+                <from>PerformanceCalculada</from>
+                <to>Performance</to>
+            </connector>
+            <connector x="299" y="396" uid="227" color="#FF007F">
+                <from>UnitsPerHousehold</from>
+                <to>EstimatedAdopters</to>
+            </connector>
+            <connector x="561" y="2656" uid="2" color="#FF007F">
+                <from>
+                    <alias uid="26" />
+                </from>
+                <to>NetIncome</to>
+            </connector>
+            <connector x="449" y="2434" uid="217" color="#FF007F">
+                <from>
+                    <alias uid="216" />
+                </from>
+                <to>DemandSupplyBalance</to>
+            </connector>
+            <connector x="284" y="1186" uid="241" color="#FF007F">
+                <from>
+                    <alias uid="238" />
+                </from>
+                <to>AttractivenessFromPerformance</to>
+            </connector>
+            <connector x="614" y="3150" uid="267" color="#FF007F">
+                <from>PatentesEmDominioPublicoUteis</from>
+                <to>PatentesEmpresaTemAcesso</to>
+            </connector>
+            <connector x="281" y="395" uid="232" color="#FF007F">
+                <from>UnitsPerHousehold</from>
+                <to>InitialOrderRate</to>
+            </connector>
+            <connector x="111" y="1811" uid="91" color="#FF007F">
+                <from>TimeToPerceiveCompTargetCapacity</from>
+                <to>changePerceivedCompTargetCapacity</to>
+            </connector>
+            <connector x="558" y="391" uid="298" color="#FF007F">
+                <from>InitalNewAdoptersOrderRate</from>
+                <to>InitialAdoptionRate</to>
+            </connector>
+            <connector x="537" y="2786" uid="27" color="#FF007F">
+                <from>
+                    <alias uid="24" />
+                </from>
+                <to>FixedCost</to>
+            </connector>
+            <connector x="527" y="2738" uid="28" color="#FF007F">
+                <from>
+                    <alias uid="25" />
+                </from>
+                <to>FixedCost</to>
+            </connector>
+            <connector x="156" y="140" uid="164" color="#FF007F">
+                <from>Population</from>
+                <to>InitialCumulativeAdopters2</to>
+            </connector>
+            <connector x="461" y="1185" uid="242" color="#FF007F">
+                <from>ReferencePerformance</from>
+                <to>AttractivenessFromPerformance</to>
+            </connector>
+            <connector x="444" y="1703" uid="92" color="#FF007F">
+                <from>TargetMarketShare</from>
+                <to>TargetCapacity</to>
+            </connector>
+            <connector x="104" y="809" uid="79" color="#FF007F">
+                <from>
+                    <alias uid="77" />
+                </from>
+                <to>Capacitys</to>
+            </connector>
+            <connector x="807" y="451" uid="299" color="#FF007F">
+                <from>InitialReorderShare</from>
+                <to>TotalInitialInstalledBase</to>
+            </connector>
+            <connector x="103" y="1128" uid="243" color="#FF007F">
+                <from>SensOfAttractToAvailability</from>
+                <to>AttractivenessFromAvailability</to>
+            </connector>
+            <connector x="181" y="2656" uid="3" color="#FF007F">
+                <from>NPVProfitChange</from>
+                <to>checkNPVProfitChange1</to>
+            </connector>
+            <connector x="164" y="1332" uid="129" color="#FF007F">
+                <from>IndustryVolume</from>
+                <to>ForecastError</to>
+            </connector>
+            <connector x="366" y="1730" uid="107" color="#FF007F">
+                <from>SwitchForCapacityStrategy2</from>
+                <to>TargetMarketShare</to>
+            </connector>
+            <connector x="579" y="3044" uid="268" color="#FF007F">
+                <from>Performance</from>
+                <to>checkPerformance</to>
+            </connector>
+            <connector x="234" y="832" uid="80" color="#FF007F">
+                <from>Capacitys</from>
+                <to>CapacityUtilization</to>
+            </connector>
+            <connector x="705" y="3063" uid="269" color="#FF007F">
+                <from>PerfSlope</from>
+                <to>PerformanceCalculada</to>
+            </connector>
+            <connector x="106" y="2045" uid="39" color="#FF007F">
+                <from>LCStrength</from>
+                <to>LCExponent</to>
+            </connector>
+            <connector x="365" y="2484" uid="219" color="#FF007F">
+                <from>DemandSupplyBalance</from>
+                <to>TargetPrice</to>
+            </connector>
+            <connector x="470" y="3276" uid="276" color="#FF007F">
+                <from>TempoDepreciacao</from>
+                <to>DepreciacaoInvPeD</to>
+            </connector>
+            <connector x="205" y="262" uid="158" color="#FF007F">
+                <from>InnovatorAdoptionFraction</from>
+                <to>AdoptionRate</to>
+            </connector>
+            <connector x="316" y="56" uid="160" color="#FF007F">
+                <from>LowestPrice</from>
+                <to>IndustryDemand</to>
+            </connector>
+            <connector x="84" y="574" uid="65" color="#FF007F">
+                <from>
+                    <alias uid="64" />
+                </from>
+                <to>changeSmoothCapacity1</to>
+            </connector>
+            <connector x="399" y="1653" uid="108" color="#FF007F">
+                <from>DesiredMarketShare</from>
+                <to>TargetMarketShare</to>
+            </connector>
+            <connector x="231" y="1432" uid="141" color="#FF007F">
+                <from>ReportedIndustryVolume</from>
+                <to>ExpectedIndustryDemand</to>
+            </connector>
+            <connector x="343" y="1189" uid="244" color="#FF007F">
+                <from>
+                    <alias uid="239" />
+                </from>
+                <to>AttractivenessFromPerformance</to>
+            </connector>
+            <connector x="124" y="1191" uid="245" color="#FF007F">
+                <from>TotalAttractiveness</from>
+                <to>OrderShare</to>
+            </connector>
+            <connector x="205" y="2384" uid="201" color="#FF007F">
+                <from>Price</from>
+                <to>TargetPrice</to>
+            </connector>
+            <connector x="153" y="1292" uid="130" color="#FF007F">
+                <from>InitialDemandForecast</from>
+                <to>IndustryVolume</to>
+            </connector>
+            <connector x="226" y="828" uid="81" color="#FF007F">
+                <from>Capacitys</from>
+                <to>NormalProduction</to>
+            </connector>
+            <connector x="103" y="2812" uid="4" color="#FF007F">
+                <from>
+                    <alias uid="0" />
+                </from>
+                <to>ValueOfNewOrders</to>
+            </connector>
+            <connector x="370" y="3230" uid="281" color="#FF007F">
+                <from>TaxaRejeicao</from>
+                <to>PatentesConcedidas</to>
+            </connector>
+            <connector x="100" y="1071" uid="246" color="#FF007F">
+                <from>ReferenceDeliveryDelay</from>
+                <to>AttractivenessFromAvailability</to>
+            </connector>
+            <connector x="507" y="143" uid="300" color="#FF007F">
+                <from>
+                    <alias uid="288" />
+                </from>
+                <to>InitialCumulativeAdopters</to>
+            </connector>
+            <connector x="461" y="2103" uid="50" color="#FF007F">
+                <from>InitialPrice</from>
+                <to>InitialUnitVariableCost</to>
+            </connector>
+            <connector x="250" y="132" uid="156" color="#FF007F">
+                <from>IndustryDemand</from>
+                <to>checkIndustryDemand</to>
+            </connector>
+            <connector x="360" y="3233" uid="277" color="#FF007F">
+                <from>TaxaRejeicao</from>
+                <to>PatentesRejeitadas</to>
+            </connector>
+            <connector x="348" y="2761" uid="5" color="#FF007F">
+                <from>
+                    <alias uid="1" />
+                </from>
+                <to>Revenue</to>
+            </connector>
+            <connector x="304" y="3178" uid="278" color="#FF007F">
+                <from>PatentesRequisitadas</from>
+                <to>PatentesRejeitadas</to>
+            </connector>
+            <connector x="568" y="2702" uid="29" color="#FF007F">
+                <from>
+                    <alias uid="22" />
+                </from>
+                <to>FixedCost</to>
+            </connector>
+            <connector x="368" y="1395" uid="131" color="#FF007F">
+                <from>CapacityAcquisitionDelay</from>
+                <to>LaggedVolumeForecast</to>
+            </connector>
+            <connector x="500" y="3149" uid="270" color="#FF007F">
+                <from>PatentesEmpresa</from>
+                <to>PatentesVencidas</to>
+            </connector>
+            <connector x="416" y="267" uid="177" color="#FF007F">
+                <from>WOMStrength</from>
+                <to>InitialCumulativeAdopters2</to>
+            </connector>
+            <connector x="236" y="2647" uid="6" color="#FF007F">
+                <from>NPVProfit</from>
+                <to>NPLAYERS</to>
+            </connector>
+            <connector x="256" y="3298" uid="279" color="#FF007F">
+                <from>InvestimentoPeDDepreciar</from>
+                <to>DepreciacaoInvPeD</to>
+            </connector>
+            <connector x="307" y="2111" uid="40" color="#FF007F">
+                <from>RatioOfFixedToVarCost</from>
+                <to>InitialUnitFixedCost</to>
+            </connector>
+            <connector x="247" y="915" uid="82" color="#FF007F">
+                <from>SwitchForPerfectCapacity</from>
+                <to>Capacitys</to>
+            </connector>
+            <connector x="290" y="2188" uid="56" color="#FF007F">
+                <from>UnitVariableCost</from>
+                <to>checkUnitVariableCost</to>
+            </connector>
+            <connector x="160" y="138" uid="165" color="#FF007F">
+                <from>Population</from>
+                <to>AdoptionRate</to>
+            </connector>
+            <connector x="170" y="2432" uid="202" color="#FF007F">
+                <from>
+                    <alias uid="198" />
+                </from>
+                <to>TargetPrice</to>
+            </connector>
+            <connector x="81" y="585" uid="66" color="#FF007F">
+                <from>
+                    <alias uid="64" />
+                </from>
+                <to>TargetNormalProduction</to>
+            </connector>
+            <connector x="278" y="2056" uid="41" color="#FF007F">
+                <from>UnitFixedCost</from>
+                <to>checkUnitFixedCost</to>
+            </connector>
+            <connector x="601" y="666" uid="178" color="#FF007F">
+                <from>Shipments</from>
+                <to>IndustryShipments</to>
+            </connector>
+            <connector x="591" y="662" uid="179" color="#FF007F">
+                <from>Shipments</from>
+                <to>MarketShare</to>
+            </connector>
+            <connector x="105" y="100" uid="168" color="#FF007F">
+                <from>ReferencePopulation</from>
+                <to>IndustryDemand</to>
+            </connector>
+            <connector x="241" y="827" uid="67" color="#FF007F">
+                <from>Capacitys</from>
+                <to>Shipments</to>
+            </connector>
+            <connector x="475" y="1640" uid="109" color="#FF007F">
+                <from>
+                    <alias uid="106" />
+                </from>
+                <to>UncontestedMarketShare</to>
+            </connector>
+            <connector x="359" y="2171" uid="57" color="#FF007F">
+                <from>InitialUnitVariableCost</from>
+                <to>UnitVariableCost</to>
+            </connector>
+            <connector x="348" y="1067" uid="247" color="#FF007F">
+                <from>
+                    <alias uid="240" />
+                </from>
+                <to>AttractivenessFromPrice</to>
+            </connector>
+            <connector x="163" y="1342" uid="132" color="#FF007F">
+                <from>IndustryVolume</from>
+                <to>change</to>
+            </connector>
+            <connector x="657" y="655" uid="180" color="#FF007F">
+                <from>InstalledBase</from>
+                <to>DiscardRate</to>
+            </connector>
+            <connector x="281" y="2661" uid="7" color="#FF007F">
+                <from>NPVProfit</from>
+                <to>NPVIndustryProfits</to>
+            </connector>
+            <connector x="263" y="1157" uid="248" color="#FF007F">
+                <from>AttractivenessFromPerformance</from>
+                <to>Attractiveness</to>
+            </connector>
+            <connector x="299" y="391" uid="226" color="#FF007F">
+                <from>UnitsPerHousehold</from>
+                <to>InitialAdoptionRate</to>
+            </connector>
+            <connector x="237" y="1433" uid="142" color="#FF007F">
+                <from>ReportedIndustryVolume</from>
+                <to>ExpGrowthInVolume</to>
+            </connector>
+            <connector x="211" y="426" uid="228" color="#FF007F">
+                <from>InitialOrderRate</from>
+                <to>IndustryOrderRate</to>
+            </connector>
+            <connector x="143" y="685" uid="68" color="#FF007F">
+                <from>
+                    <alias uid="63" />
+                </from>
+                <to>changeSmoothCapacity2</to>
+            </connector>
+            <connector x="151" y="1476" uid="143" color="#FF007F">
+                <from>LaggedIndustryVolume</from>
+                <to>ExpGrowthInVolume</to>
+            </connector>
+            <connector x="555" y="3105" uid="271" color="#FF007F">
+                <from>PatentesEmpresaTemAcesso</from>
+                <to>PerformanceCalculada</to>
+            </connector>
+            <connector x="288" y="1752" uid="93" color="#FF007F">
+                <from>SwitchForCapacityStrategy</from>
+                <to>SwitchForCapacityStrategy2</to>
+            </connector>
+            <connector x="448" y="1776" uid="110" color="#FF007F">
+                <from>UncontestedMarketShare</from>
+                <to>TargetMarketShare</to>
+            </connector>
+            <connector x="430" y="3120" uid="272" color="#FF007F">
+                <from>TempoMedioRealizacaoPeD</from>
+                <to>TempoDepreciacao</to>
+            </connector>
+            <connector x="305" y="2116" uid="58" color="#FF007F">
+                <from>RatioOfFixedToVarCost</from>
+                <to>InitialUnitVariableCost</to>
+            </connector>
+            <connector x="504" y="744" uid="181" color="#FF007F">
+                <from>NormalDeliveryDelay</from>
+                <to>DesiredShipments</to>
+            </connector>
+            <connector x="493" y="2654" uid="30" color="#FF007F">
+                <from>
+                    <alias uid="23" />
+                </from>
+                <to>FixedCost</to>
+            </connector>
+            <connector x="145" y="921" uid="83" color="#FF007F">
+                <from>
+                    <alias uid="75" />
+                </from>
+                <to>CapacityUtilization</to>
+            </connector>
+            <connector x="232" y="2112" uid="42" color="#FF007F">
+                <from>Learning</from>
+                <to>UnitFixedCost</to>
+            </connector>
+            <connector x="319" y="1355" uid="133" color="#FF007F">
+                <from>LaggedVolumeForecast</from>
+                <to>checkLaggedVolumeForecast</to>
+            </connector>
+            <connector x="336" y="2397" uid="203" color="#FF007F">
+                <from>BasePrice</from>
+                <to>TargetPrice</to>
+            </connector>
+            <connector x="171" y="2119" uid="43" color="#FF007F">
+                <from>CumulativeProduction</from>
+                <to>Learning</to>
+            </connector>
+            <connector x="161" y="132" uid="166" color="#FF007F">
+                <from>Population</from>
+                <to>IndustryDemand</to>
+            </connector>
+            <connector x="514" y="3026" uid="273" color="#FF007F">
+                <from>PerfMin</from>
+                <to>Performance</to>
+            </connector>
+            <connector x="141" y="680" uid="69" color="#FF007F">
+                <from>
+                    <alias uid="63" />
+                </from>
+                <to>changeSmoothCapacity1</to>
+            </connector>
+            <connector x="206" y="237" uid="150" color="#FF007F">
+                <from>NonAdopters</from>
+                <to>newNonAdopters</to>
+            </connector>
+            <connector x="74" y="1277" uid="134" color="#FF007F">
+                <from>
+                    <alias uid="127" />
+                </from>
+                <to>InitialDemandForecast</to>
+            </connector>
+            <connector x="516" y="3049" uid="274" color="#FF007F">
+                <from>PerfMax</from>
+                <to>Performance</to>
+            </connector>
+            <connector x="347" y="2355" uid="204" color="#FF007F">
+                <from>
+                    <alias uid="199" />
+                </from>
+                <to>BasePrice</to>
+            </connector>
+            <connector x="434" y="1909" uid="116" color="#FF007F">
+                <from>WeightOnSupplyLine</from>
+                <to>ExpectedCompCapacity</to>
+            </connector>
+            <connector x="204" y="91" uid="155" color="#FF007F">
+                <from>DemandCurveSlope</from>
+                <to>IndustryDemand</to>
+            </connector>
+            <connector x="166" y="2732" uid="8" color="#FF007F">
+                <from>DiscountRate</from>
+                <to>DiscountFactor</to>
+            </connector>
+            <connector x="185" y="1776" uid="117" color="#FF007F">
+                <from>PerceivedCompTargetCapacity</from>
+                <to>ExpectedCompCapacity</to>
+            </connector>
+            <connector x="518" y="652" uid="182" color="#FF007F">
+                <from>Backlog</from>
+                <to>DeliveryDelay</to>
+            </connector>
+            <connector x="79" y="1364" uid="135" color="#FF007F">
+                <from>
+                    <alias uid="126" />
+                </from>
+                <to>IndustryVolume</to>
+            </connector>
+            <connector x="127" y="1905" uid="118" color="#FF007F">
+                <from>IndustryCapacity</from>
+                <to>CompetitorCapacity</to>
+            </connector>
+            <connector x="231" y="2021" uid="44" color="#FF007F">
+                <from>PeDUnitCost</from>
+                <to>UnitFixedCost</to>
+            </connector>
+            <connector x="278" y="2798" uid="9" color="#FF007F">
+                <from>ValueOfBacklog</from>
+                <to>AveragePriceOfOrderBook</to>
+            </connector>
+            <connector x="323" y="2709" uid="10" color="#FF007F">
+                <from>Cost</from>
+                <to>NetIncome</to>
+            </connector>
+            <connector x="760" y="734" uid="193" color="#FF007F">
+                <from>
+                    <alias uid="196" />
+                </from>
+                <to>InitialInstalledBase</to>
+            </connector>
+            <connector x="288" y="738" uid="84" color="#FF007F">
+                <from>SmoothCapacity3</from>
+                <to>changeSmoothCapacity3</to>
+            </connector>
+            <connector x="728" y="666" uid="183" color="#FF007F">
+                <from>DiscardRate</from>
+                <to>ReorderRate</to>
+            </connector>
+            <connector x="448" y="2475" uid="224" color="#FF007F">
+                <from>
+                    <alias uid="222" />
+                </from>
+                <to>DemandSupplyBalance</to>
+            </connector>
+            <connector x="164" y="1676" uid="94" color="#FF007F">
+                <from>CompetitorTargetCapacity</from>
+                <to>changePerceivedCompTargetCapacity</to>
+            </connector>
+            <connector x="338" y="3172" uid="257" color="#FF007F">
+                <from>PatentesRequisitadas</from>
+                <to>PatentesConcedidas</to>
+            </connector>
+            <connector x="212" y="2524" uid="220" color="#FF007F">
+                <from>SensOfPriceToDSBalance</from>
+                <to>TargetPrice</to>
+            </connector>
+            <connector x="257" y="2460" uid="205" color="#FF007F">
+                <from>TargetPrice</from>
+                <to>checkTargetPrice</to>
+            </connector>
+            <connector x="119" y="1032" uid="235" color="#FF007F">
+                <from>
+                    <alias uid="233" />
+                </from>
+                <to>AttractivenessFromAvailability</to>
+            </connector>
+            <connector x="471" y="2385" uid="206" color="#FF007F">
+                <from>
+                    <alias uid="214" />
+                </from>
+                <to>BasePrice</to>
+            </connector>
+            <connector x="286" y="1761" uid="119" color="#FF007F">
+                <from>SwitchForCapacityStrategy</from>
+                <to>SwitchForCapacityStrategy4</to>
+            </connector>
+            <connector x="308" y="1343" uid="136" color="#FF007F">
+                <from>LaggedVolumeForecast</from>
+                <to>ForecastError</to>
+            </connector>
+            <connector x="81" y="2159" uid="59" color="#FF007F">
+                <from>
+                    <alias uid="55" />
+                </from>
+                <to>Production</to>
+            </connector>
+            <connector x="460" y="2101" uid="51" color="#FF007F">
+                <from>InitialPrice</from>
+                <to>InitialUnitFixedCost</to>
+            </connector>
+            <connector x="153" y="2999" uid="258" color="#FF007F">
+                <from>
+                    <alias uid="255" />
+                </from>
+                <to>InvestimentoPeD</to>
+            </connector>
+            <connector x="466" y="3221" uid="280" color="#FF007F">
+                <from>TempoMedioAvaliacao</from>
+                <to>PatentesRejeitadas</to>
+            </connector>
+            <connector x="348" y="207" uid="151" color="#FF007F">
+                <from>CumulativeAdopters</from>
+                <to>AdoptionRate</to>
+            </connector>
+            <connector x="98" y="2455" uid="207" color="#FF007F">
+                <from>
+                    <alias uid="200" />
+                </from>
+                <to>TargetPrice</to>
+            </connector>
+            <connector x="446" y="2757" uid="31" color="#FF007F">
+                <from>
+                    <alias uid="21" />
+                </from>
+                <to>VariableCost</to>
+            </connector>
+            <connector x="182" y="1860" uid="120" color="#FF007F">
+                <from>CompetitorCapacity</from>
+                <to>ExpectedCompCapacity</to>
+            </connector>
+            <connector x="199" y="3134" uid="259" color="#FF007F">
+                <from>CustoMedioPatente</from>
+                <to>PatentesSolicitadas</to>
+            </connector>
+            <connector x="428" y="3118" uid="275" color="#FF007F">
+                <from>TempoMedioRealizacaoPeD</from>
+                <to>InvestimentoPeDRealizado</to>
+            </connector>
+            <connector x="369" y="1693" uid="111" color="#FF007F">
+                <from>SwitchForCapacityStrategy1</from>
+                <to>TargetMarketShare</to>
+            </connector>
+            <connector x="341" y="2796" uid="11" color="#FF007F">
+                <from>Revenue</from>
+                <to>checkRevenue1</to>
+            </connector>
+            <connector x="457" y="2165" uid="62" color="#FF007F">
+                <from>NormalCapacityUtilization</from>
+                <to>InitialUnitVariableCost</to>
+            </connector>
+            <connector x="413" y="2044" uid="52" color="#FF007F">
+                <from>NormalProfitMargin</from>
+                <to>InitialUnitFixedCost</to>
+            </connector>
+            <connector x="472" y="678" uid="184" color="#FF007F">
+                <from>Orders</from>
+                <to>checkOrders</to>
+            </connector>
+            <connector x="289" y="584" uid="70" color="#FF007F">
+                <from>SmoothCapacity1</from>
+                <to>changeSmoothCapacity1</to>
+            </connector>
+            <connector x="170" y="2382" uid="208" color="#FF007F">
+                <from>Price</from>
+                <to>ChangeInPrice</to>
+            </connector>
+            <connector x="289" y="616" uid="71" color="#FF007F">
+                <from>SmoothCapacity1</from>
+                <to>changeSmoothCapacity2</to>
+            </connector>
+            <connector x="298" y="763" uid="85" color="#FF007F">
+                <from>SmoothCapacity3</from>
+                <to>Capacitys</to>
+            </connector>
+            <connector x="173" y="3080" uid="260" color="#FF007F">
+                <from>InvestimentoPeD</from>
+                <to>investimentoaDepreciar</to>
+            </connector>
+            <connector x="224" y="1184" uid="236" color="#FF007F">
+                <from>OrderShare</from>
+                <to>Orders</to>
+            </connector>
+            <connector x="233" y="1360" uid="137" color="#FF007F">
+                <from>VolumeReportingDelay</from>
+                <to>change</to>
+            </connector>
+            <connector x="116" y="189" uid="161" color="#FF007F">
+                <from>NonAdoptersTheoretical</from>
+                <to>newNonAdopters</to>
+            </connector>
+            <connector x="274" y="1024" uid="237" color="#FF007F">
+                <from>
+                    <alias uid="234" />
+                </from>
+                <to>AttractivenessFromPrice</to>
+            </connector>
+            <connector x="165" y="1089" uid="249" color="#FF007F">
+                <from>AttractivenessFromAvailability</from>
+                <to>Attractiveness</to>
+            </connector>
+            <connector x="579" y="714" uid="185" color="#FF007F">
+                <from>DesiredShipments</from>
+                <to>Shipments</to>
+            </connector>
+            <connector x="260" y="1642" uid="95" color="#FF007F">
+                <from>TargetCapacity</from>
+                <to>CompetitorTargetCapacity</to>
+            </connector>
+            <connector x="106" y="853" uid="86" color="#FF007F">
+                <from>NormalProduction</from>
+                <to>IndustryNormalProduction</to>
+            </connector>
+            <connector x="383" y="2684" uid="12" color="#FF007F">
+                <from>FixedCost</from>
+                <to>Cost</to>
+            </connector>
+            <connector x="726" y="3205" uid="287" color="#FF007F">
+                <from>TempodeInutilizacaodaPatente</from>
+                <to>PatentesUtilidadeExpirada</to>
+            </connector>
+            <connector x="367" y="1766" uid="112" color="#FF007F">
+                <from>SwitchForCapacityStrategy3</from>
+                <to>TargetMarketShare</to>
+            </connector>
+            <connector x="297" y="1499" uid="144" color="#FF007F">
+                <from>ForecastHorizon</from>
+                <to>ExpectedIndustryDemand</to>
+            </connector>
+            <connector x="596" y="662" uid="186" color="#FF007F">
+                <from>Shipments</from>
+                <to>DeliveryDelay</to>
+            </connector>
+            <connector x="124" y="454" uid="229" color="#FF007F">
+                <from>IndustryOrderRate</from>
+                <to>checkIndustryOrderRate</to>
+            </connector>
+            <connector x="179" y="2663" uid="13" color="#FF007F">
+                <from>NPVProfitChange</from>
+                <to>aCheckProfitChange</to>
+            </connector>
+            <connector x="264" y="1634" uid="96" color="#FF007F">
+                <from>TargetCapacity</from>
+                <to>IndustryTotalTargetCapacity</to>
+            </connector>
+            <connector x="449" y="2427" uid="209" color="#FF007F">
+                <from>
+                    <alias uid="216" />
+                </from>
+                <to>BasePrice</to>
+            </connector>
+            <connector x="447" y="2516" uid="225" color="#FF007F">
+                <from>
+                    <alias uid="223" />
+                </from>
+                <to>DemandSupplyBalance</to>
+            </connector>
+            <connector x="108" y="401" uid="230" color="#FF007F">
+                <from>ReorderRate</from>
+                <to>IndustryOrderRate</to>
+            </connector>
+            <connector x="367" y="1810" uid="113" color="#FF007F">
+                <from>SwitchForCapacityStrategy4</from>
+                <to>TargetMarketShare</to>
+            </connector>
+            <connector x="257" y="1100" uid="250" color="#FF007F">
+                <from>AttractivenessFromPrice</from>
+                <to>Attractiveness</to>
+            </connector>
+            <connector x="117" y="186" uid="162" color="#FF007F">
+                <from>NonAdoptersTheoretical</from>
+                <to>AdoptionRate</to>
+            </connector>
+            <connector x="151" y="1522" uid="145" color="#FF007F">
+                <from>TimeForHistoricalVolume</from>
+                <to>ExpGrowthInVolume</to>
+            </connector>
+            <connector x="298" y="1448" uid="138" color="#FF007F">
+                <from>ExpectedIndustryDemand</from>
+                <to>LaggedVolumeForecast</to>
+            </connector>
+            <connector x="239" y="1702" uid="97" color="#FF007F">
+                <from>
+                    <alias uid="90" />
+                </from>
+                <to>ExpectedCompCapacity</to>
+            </connector>
+            <connector x="199" y="787" uid="87" color="#FF007F">
+                <from>
+                    <alias uid="78" />
+                </from>
+                <to>Capacitys</to>
+            </connector>
+            <connector x="88" y="2998" uid="261" color="#FF007F">
+                <from>OrcamentoPeD</from>
+                <to>InvestimentoPeD</to>
+            </connector>
+            <connector x="202" y="272" uid="159" color="#FF007F">
+                <from>InnovatorAdoptionFraction</from>
+                <to>InitialCumulativeAdopters2</to>
+            </connector>
+            <connector x="468" y="3217" uid="282" color="#FF007F">
+                <from>TempoMedioAvaliacao</from>
+                <to>PatentesConcedidas</to>
+            </connector>
+            <connector x="356" y="3080" uid="262" color="#FF007F">
+                <from>InvestimentoPeDRealizado</from>
+                <to>PatentesSolicitadas</to>
+            </connector>
+            <connector x="545" y="686" uid="187" color="#FF007F">
+                <from>Backlog</from>
+                <to>DesiredShipments</to>
+            </connector>
+            <connector x="468" y="2350" uid="210" color="#FF007F">
+                <from>
+                    <alias uid="215" />
+                </from>
+                <to>BasePrice</to>
+            </connector>
+            <connector x="168" y="2049" uid="45" color="#FF007F">
+                <from>LCExponent</from>
+                <to>Learning</to>
+            </connector>
+            <connector x="93" y="814" uid="88" color="#FF007F">
+                <from>
+                    <alias uid="77" />
+                </from>
+                <to>NormalProduction</to>
+            </connector>
+            <connector x="338" y="208" uid="152" color="#FF007F">
+                <from>CumulativeAdopters</from>
+                <to>NonAdoptersTheoretical</to>
+            </connector>
+            <connector x="744" y="784" uid="194" color="#FF007F">
+                <from>
+                    <alias uid="197" />
+                </from>
+                <to>InitialInstalledBase</to>
+            </connector>
+            <connector x="286" y="658" uid="72" color="#FF007F">
+                <from>SmoothCapacity2</from>
+                <to>changeSmoothCapacity2</to>
+            </connector>
+            <connector x="130" y="1998" uid="46" color="#FF007F">
+                <from>
+                    <alias uid="37" />
+                </from>
+                <to>PeDUnitCost</to>
+            </connector>
+            <connector x="475" y="3231" uid="283" color="#FF007F">
+                <from>TempoMedioAvaliacao</from>
+                <to>TempoDepreciacao</to>
+            </connector>
+            <connector x="421" y="1850" uid="124" color="#FF007F">
+                <from>UncontestedDemand</from>
+                <to>UncontestedMarketShare</to>
+            </connector>
+            <connector x="469" y="2352" uid="211" color="#FF007F">
+                <from>
+                    <alias uid="215" />
+                </from>
+                <to>TargetPrice</to>
+            </connector>
+            <connector x="363" y="2759" uid="32" color="#FF007F">
+                <from>
+                    <alias uid="1" />
+                </from>
+                <to>VariableCost</to>
+            </connector>
+            <connector x="659" y="430" uid="301" color="#FF007F">
+                <from>InitialIndustryShipments</from>
+                <to>InitalNewAdoptersOrderRate</to>
+            </connector>
+            <connector x="235" y="131" uid="157" color="#FF007F">
+                <from>IndustryDemand</from>
+                <to>NonAdoptersTheoretical</to>
+            </connector>
+            <connector x="288" y="1757" uid="98" color="#FF007F">
+                <from>SwitchForCapacityStrategy</from>
+                <to>SwitchForCapacityStrategy3</to>
+            </connector>
+            <connector x="367" y="1409" uid="146" color="#FF007F">
+                <from>CapacityAcquisitionDelay</from>
+                <to>ExpectedIndustryDemand</to>
+            </connector>
+            <connector x="283" y="228" uid="153" color="#FF007F">
+                <from>AdoptionRate</from>
+                <to>InitialOrderRate</to>
+            </connector>
+            <connector x="83" y="2395" uid="212" color="#FF007F">
+                <from>PriceAdjustmentTime</from>
+                <to>ChangeInPrice</to>
+            </connector>
+            <connector x="475" y="1640" uid="114" color="#FF007F">
+                <from>
+                    <alias uid="106" />
+                </from>
+                <to>UncontestedDemand</to>
+            </connector>
+            <connector x="287" y="688" uid="73" color="#FF007F">
+                <from>SmoothCapacity2</from>
+                <to>changeSmoothCapacity3</to>
+            </connector>
+            <connector x="285" y="1748" uid="99" color="#FF007F">
+                <from>SwitchForCapacityStrategy</from>
+                <to>SwitchForCapacityStrategy1</to>
+            </connector>
+            <connector x="240" y="1500" uid="147" color="#FF007F">
+                <from>ExpGrowthInVolume</from>
+                <to>ExpectedIndustryDemand</to>
+            </connector>
+            <connector x="357" y="1115" uid="251" color="#FF007F">
+                <from>SensOfAttractToPrice</from>
+                <to>AttractivenessFromPrice</to>
+            </connector>
+            <connector x="386" y="2727" uid="14" color="#FF007F">
+                <from>VariableCost</from>
+                <to>Cost</to>
+            </connector>
+            <connector x="286" y="229" uid="154" color="#FF007F">
+                <from>AdoptionRate</from>
+                <to>checkAdoptionRate</to>
+            </connector>
+            <connector x="286" y="3064" uid="263" color="#FF007F">
+                <from>InvestimentoNaoRealizadoPeD</from>
+                <to>InvestimentoPeDRealizado</to>
+            </connector>
+            <connector x="142" y="1517" uid="148" color="#FF007F">
+                <from>TimeForHistoricalVolume</from>
+                <to>LaggedIndustryVolume</to>
+            </connector>
+            <connector x="198" y="2801" uid="15" color="#FF007F">
+                <from>ValueOfNewOrders</from>
+                <to>checkValueOfNewOrders1</to>
+            </connector>
+            <connector x="166" y="1664" uid="100" color="#FF007F">
+                <from>CompetitorTargetCapacity</from>
+                <to>checkCompetitorTargetCapacity</to>
+            </connector>
+            <connector x="123" y="458" uid="231" color="#FF007F">
+                <from>IndustryOrderRate</from>
+                <to>Orders</to>
+            </connector>
+            <connector x="110" y="1861" uid="121" color="#FF007F">
+                <from>
+                    <alias uid="115" />
+                </from>
+                <to>IndustryCapacity</to>
+            </connector>
+            <connector x="199" y="1149" uid="252" color="#FF007F">
+                <from>Attractiveness</from>
+                <to>TotalAttractiveness</to>
+            </connector>
+            <connector x="263" y="60" uid="170" color="#FF007F">
+                <from>ReferencePrice</from>
+                <to>DemandCurveSlope</to>
+            </connector>
+            <connector x="523" y="353" uid="302" color="#FF007F">
+                <from>InitialAdoptionRate</from>
+                <to>InitialCumulativeAdopters2</to>
+            </connector>
+            <connector x="141" y="691" uid="74" color="#FF007F">
+                <from>
+                    <alias uid="63" />
+                </from>
+                <to>changeSmoothCapacity3</to>
+            </connector>
+            <connector x="263" y="2708" uid="16" color="#FF007F">
+                <from>NetIncome</from>
+                <to>NPVProfitChange</to>
+            </connector>
+            <connector x="682" y="615" uid="188" color="#FF007F">
+                <from>IndustryShipments</from>
+                <to>MarketShare</to>
+            </connector>
+            <connector x="590" y="3240" uid="284" color="#FF007F">
+                <from>TempoVencimentoPatentes</from>
+                <to>TempoDepreciacao</to>
+            </connector>
+            <connector x="104" y="801" uid="89" color="#FF007F">
+                <from>
+                    <alias uid="77" />
+                </from>
+                <to>TargetNormalProduction</to>
+            </connector>
+            <connector x="324" y="2826" uid="17" color="#FF007F">
+                <from>AveragePriceOfOrderBook</from>
+                <to>Revenue</to>
+            </connector>
+            <connector x="624" y="351" uid="303" color="#FF007F">
+                <from>EstimatedAdopters</from>
+                <to>InitialCumulativeAdopters2</to>
+            </connector>
+            <connector x="469" y="1150" uid="253" color="#FF007F">
+                <from>SensOfAttractToPerformance</from>
+                <to>AttractivenessFromPerformance</to>
+            </connector>
+            <connector x="110" y="1859" uid="122" color="#FF007F">
+                <from>
+                    <alias uid="115" />
+                </from>
+                <to>CompetitorCapacity</to>
+            </connector>
+            <connector x="399" y="259" uid="173" color="#FF007F">
+                <from>WOMStrength</from>
+                <to>AdoptionRate</to>
+            </connector>
+            <connector x="113" y="2877" uid="18" color="#FF007F">
+                <from>
+                    <alias uid="34" />
+                </from>
+                <to>ValueOfNewOrders</to>
+            </connector>
+            <connector x="411" y="2044" uid="53" color="#FF007F">
+                <from>NormalProfitMargin</from>
+                <to>InitialUnitVariableCost</to>
+            </connector>
+            <connector x="197" y="2152" uid="60" color="#FF007F">
+                <from>InitialProductionExperience</from>
+                <to>Learning</to>
+            </connector>
+            <connector x="129" y="79" uid="167" color="#FF007F">
+                <from>ReferenceIndustryDemandElasticity</from>
+                <to>DemandCurveSlope</to>
+            </connector>
+            <connector x="167" y="1743" uid="101" color="#FF007F">
+                <from>PerceivedCompTargetCapacity</from>
+                <to>changePerceivedCompTargetCapacity</to>
+            </connector>
+            <connector x="229" y="2119" uid="61" color="#FF007F">
+                <from>Learning</from>
+                <to>UnitVariableCost</to>
+            </connector>
+            <connector x="190" y="2699" uid="19" color="#FF007F">
+                <from>DiscountFactor</from>
+                <to>NPVProfitChange</to>
+            </connector>
+            <connector x="772" y="639" uid="191" color="#FF007F">
+                <from>FractionalDiscardRate</from>
+                <to>DiscardRate</to>
+            </connector>
+            <connector x="699" y="619" uid="189" color="#FF007F">
+                <from>IndustryShipments</from>
+                <to>checkIndustryShipments</to>
+            </connector>
+            <connector x="377" y="51" uid="172" color="#FF007F">
+                <from>
+                    <alias uid="176" />
+                </from>
+                <to>LowestPrice</to>
+            </connector>
+            <connector x="605" y="789" uid="195" color="#FF007F">
+                <from>InitialSharePlayers</from>
+                <to>InitialInstalledBase</to>
+            </connector>
+            <connector x="249" y="2463" uid="213" color="#FF007F">
+                <from>TargetPrice</from>
+                <to>ChangeInPrice</to>
+            </connector>
+            <connector x="462" y="1632" uid="102" color="#FF007F">
+                <from>
+                    <alias uid="106" />
+                </from>
+                <to>TargetCapacity</to>
+            </connector>
+            <connector x="594" y="3229" uid="285" color="#FF007F">
+                <from>TempoVencimentoPatentes</from>
+                <to>PatentesVencidas</to>
+            </connector>
+            <connector x="268" y="66" uid="171" color="#FF007F">
+                <from>ReferencePrice</from>
+                <to>IndustryDemand</to>
+            </connector>
+            <connector x="349" y="2071" uid="47" color="#FF007F">
+                <from>InitialUnitFixedCost</from>
+                <to>UnitFixedCost</to>
+            </connector>
+            <connector x="656" y="3184" uid="286" color="#FF007F">
+                <from>PatentesEmDominioPublicoUteis</from>
+                <to>PatentesUtilidadeExpirada</to>
+            </connector>
+            <connector x="281" y="2014" uid="48" color="#FF007F">
+                <from>
+                    <alias uid="36" />
+                </from>
+                <to>UnitFixedCost</to>
+            </connector>
+            <connector x="247" y="1897" uid="123" color="#FF007F">
+                <from>ExpectedCompCapacity</from>
+                <to>UncontestedDemand</to>
+            </connector>
+            <connector x="618" y="731" uid="190" color="#FF007F">
+                <from>SwitchForCapacity</from>
+                <to>Shipments</to>
+            </connector>
+            <connector x="81" y="1325" uid="139" color="#FF007F">
+                <from>
+                    <alias uid="125" />
+                </from>
+                <to>IndustryVolume</to>
+            </connector>
+            <connector x="103" y="102" uid="169" color="#FF007F">
+                <from>ReferencePopulation</from>
+                <to>DemandCurveSlope</to>
+            </connector>
+            <connector x="208" y="1424" uid="149" color="#FF007F">
+                <from>ReportedIndustryVolume</from>
+                <to>LaggedIndustryVolume</to>
+            </connector>
+            <connector x="209" y="1151" uid="254" color="#FF007F">
+                <from>Attractiveness</from>
+                <to>OrderShare</to>
+            </connector>
+            <connector x="363" y="1613" uid="103" color="#FF007F">
+                <from>MinimumEfficientScale</from>
+                <to>TargetCapacity</to>
+            </connector>
+            <connector x="163" y="1647" uid="104" color="#FF007F">
+                <from>IndustryTotalTargetCapacity</from>
+                <to>CompetitorTargetCapacity</to>
+            </connector>
+            <connector x="65" y="2009" uid="49" color="#FF007F">
+                <from>
+                    <alias uid="38" />
+                </from>
+                <to>PeDUnitCost</to>
+            </connector>
+            <connector x="463" y="2159" uid="54" color="#FF007F">
+                <from>NormalCapacityUtilization</from>
+                <to>InitialUnitFixedCost</to>
+            </connector>
+            <connector x="130" y="2506" uid="221" color="#FF007F">
+                <from>SensOfPriceToCosts</from>
+                <to>TargetPrice</to>
+            </connector>
+            <connector x="221" y="1294" uid="140" color="#FF007F">
+                <from>SwitchForShipmentsInForecast</from>
+                <to>IndustryVolume</to>
+            </connector>
+            <connector x="329" y="2783" uid="20" color="#FF007F">
+                <from>Revenue</from>
+                <to>NetIncome</to>
+            </connector>
+            <connector x="282" y="2891" uid="35" color="#FF007F">
+                <from>
+                    <alias uid="33" />
+                </from>
+                <to>AveragePriceOfOrderBook</to>
+            </connector>
+            <connector x="244" y="1686" uid="105" color="#FF007F">
+                <from>
+                    <alias uid="90" />
+                </from>
+                <to>TargetCapacity</to>
+            </connector>
+            <connector x="203" y="3006" uid="264" color="#FF007F">
+                <from>PeDLigado</from>
+                <to>InvestimentoPeD</to>
+            </connector>
+            <connector x="106" y="193" uid="163" color="#FF007F">
+                <from>NonAdoptersTheoretical</from>
+                <to>checkNonAdopters</to>
+            </connector>
+            <connector x="675" y="423" uid="304" color="#FF007F">
+                <from>InitialIndustryShipments</from>
+                <to>TotalInitialInstalledBase</to>
+            </connector>
+            <connector x="782" y="635" uid="192" color="#FF007F">
+                <from>FractionalDiscardRate</from>
+                <to>TotalInitialInstalledBase</to>
+            </connector>
+            <connector x="575" y="183" uid="305" color="#FF007F">
+                <from>ModoInitialCumulativeAdopters</from>
+                <to>InitialCumulativeAdopters</to>
+            </connector>
+            <connector x="750" y="321" uid="306" color="#FF007F">
+                <from>TotalInitialInstalledBase</from>
+                <to>InitialCumulativeAdopters</to>
+            </connector>
+            <connector x="524" y="309" uid="307" color="#FF007F">
+                <from>InitialCumulativeAdopters2</from>
+                <to>InitialCumulativeAdopters</to>
+            </connector>
+            <connector x="385" y="141" uid="175" color="#FF007F">
+                <from>InitialDiffusionFraction</from>
+                <to>InitialCumulativeAdopters</to>
+            </connector>
+            <connector x="252" y="132" uid="174" color="#FF007F">
+                <from>IndustryDemand</from>
+                <to>InitialCumulativeAdopters</to>
+            </connector>
+            <connector x="590" y="66" uid="308" color="#FF007F">
+                <from>Noname_2</from>
+                <to>Noname_1</to>
+            </connector>
+            <alias x="584" y="289" uid="309">
+                <of>ReferencePopulation</of>
+                <label_side>top</label_side>
+                <label_angle>133</label_angle>
+            </alias>
+            <connector x="575" y="292" uid="310" color="#FF007F">
+                <from>
+                    <alias uid="309" />
+                </from>
+                <to>InitialCumulativeAdopters2</to>
+            </connector>
+            <connector x="747" y="323" uid="311" color="#FF007F">
+                <from>TotalInitialInstalledBase</from>
+                <to>EstimatedAdopters</to>
+            </connector>
+            <stacked_container x="807" y="1093" height="282" width="492" visible_index="0" uid="312">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-696968293" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="AttractivenessFromPerformance" index="1" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="AttractivenessFromPerformance" index="2" />
+                    </plot>
+                    <plot index="2" pen_width="1" color="fuchsia" precision="0" show_y_axis="true">
+                        <entity name="Attractiveness" index="1" />
+                    </plot>
+                    <plot index="3" pen_width="1" color="#008F44" precision="0" show_y_axis="true">
+                        <entity name="Attractiveness" index="2" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="829" y="1109" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 3" type="graph" icon_of="312" />
+            <stacked_container x="650" y="1870" height="282" width="492" visible_index="0" uid="313">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-696968293" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="PeDUnitCost" index="1" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="PeDUnitCost" index="2" />
+                    </plot>
+                    <plot index="2" pen_width="1" color="fuchsia" precision="0" show_y_axis="true">
+                        <entity name="Shipments" index="1" />
+                    </plot>
+                    <plot index="3" pen_width="1" color="#008F44" precision="0" show_y_axis="true">
+                        <entity name="DepreciacaoInvPeD" index="1" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="672" y="1886" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 4" type="graph" icon_of="313" />
+            <stacked_container x="1041" y="12" height="282" width="492" visible_index="0" uid="314">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-696968293" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="InitialCumulativeAdopters2" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="IndustryOrderRate" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="1063" y="28" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 5" type="graph" icon_of="314" />
+            <stacked_container x="1091" y="645" height="282" width="492" visible_index="0" uid="315">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-696968293" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="CumulativeAdopters" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="EstimatedAdopters" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="1113" y="661" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 6" type="graph" icon_of="315" />
+            <stacked_container x="806" y="12" height="270" width="475" visible_index="0" uid="316">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="102" orientation="horizontal" report_every_dt="true" isee:date_time="-696968293">
+                    <item type="time" color="black" text-align="left" precision="3" width="122" />
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
+                        <entity name="Price" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="1">
+                        <entity name="NonAdopters" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="2">
+                        <entity name="CumulativeAdopters" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="3">
+                        <entity name="Capacitys" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="4">
+                        <entity name="Backlog" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="5">
+                        <entity name="InstalledBase" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="6">
+                        <entity name="ReportedIndustryVolume" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="7">
+                        <entity name="PerceivedCompTargetCapacity" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="8">
+                        <entity name="CumulativeProduction" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="9">
+                        <entity name="ValueOfBacklog" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="10">
+                        <entity name="NPVProfit" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="11">
+                        <entity name="IndustryDemand" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="12">
+                        <entity name="LowestPrice" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="13">
+                        <entity name="NonAdoptersTheoretical" />
+                    </item>
+                </table>
+            </stacked_container>
+            <pad_icon x="492" y="17" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="316" />
+            <stacked_container x="600" y="2298" height="270" width="475" visible_index="0" uid="317">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="100" orientation="horizontal" report_every_dt="true" isee:date_time="-696968293">
+                    <item type="time" color="black" text-align="left" precision="3" width="100" />
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
+                        <entity name="BasePrice" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="1">
+                        <entity name="ChangeInPrice" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="2">
+                        <entity name="TargetPrice" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="3">
+                        <entity name="DemandSupplyBalance" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="4">
+                        <entity name="Price" index="1" />
+                    </item>
+                </table>
+            </stacked_container>
+            <pad_icon x="622" y="2314" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="317" />
+            <stacked_container x="880" y="308" height="270" width="475" visible_index="0" uid="318">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="100" orientation="horizontal" report_every_dt="true" isee:date_time="-696968293">
+                    <item type="time" color="black" text-align="left" precision="3" width="145" />
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
+                        <entity name="CumulativeAdopters" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="1">
+                        <entity name="AdoptionRate" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="2">
+                        <entity name="Population" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="3">
+                        <entity name="WOMStrength" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="4">
+                        <entity name="InnovatorAdoptionFraction" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="5">
+                        <entity name="LowestPrice" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="6">
+                        <entity name="ReferencePrice" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="7">
+                        <entity name="ReferenceIndustryDemandElasticity" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="8">
+                        <entity name="ReferencePopulation" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="9">
+                        <entity name="DemandCurveSlope" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="10">
+                        <entity name="IndustryDemand" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="11">
+                        <entity name="InitialDiffusionFraction" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="12">
+                        <entity name="InitialCumulativeAdopters" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="13">
+                        <entity name="NonAdoptersTheoretical" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="14">
+                        <entity name="checkAdoptionRate" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="15">
+                        <entity name="checkIndustryDemand" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="16">
+                        <entity name="NonAdopters" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="17">
+                        <entity name="newNonAdopters" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="18">
+                        <entity name="Price" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="19">
+                        <entity name="InitialCumulativeAdopters2" />
+                    </item>
+                </table>
+            </stacked_container>
+            <pad_icon x="487" y="324" width="26" height="22" color="#008F44" label_side="bottom" label="Table 3" type="table" icon_of="318" />
+            <stacked_container x="967" y="2935" height="270" width="475" visible_index="0" uid="319">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="59" orientation="vertical" report_every_dt="true" isee:date_time="-696968293">
+                    <item type="time" color="black" text-align="left" precision="3" width="100" />
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
+                        <entity name="InvestimentoPeD" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="1">
+                        <entity name="InvestimentoPeD" index="2" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="2">
+                        <entity name="PatentesEmpresaTemAcesso" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="3">
+                        <entity name="PatentesEmpresaTemAcesso" index="2" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="4">
+                        <entity name="PerformanceCalculada" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="5">
+                        <entity name="PerformanceCalculada" index="2" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="6">
+                        <entity name="Performance" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="7">
+                        <entity name="Performance" index="2" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="8">
+                        <entity name="checkPerformance" />
+                    </item>
+                </table>
+            </stacked_container>
+            <pad_icon x="989" y="2951" width="26" height="22" color="#008F44" label_side="bottom" label="Table 4" type="table" icon_of="319" />
+        </display>
+        <interface page_cols="3" page_rows="4" page_width="788" page_height="528">
+            <simulation_delay>0.001</simulation_delay>
+            <pages />
+            <stacked_container x="38" y="65" height="282" width="492" visible_index="0" uid="320">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-696968293" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="Orders" index="1" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="Orders" index="2" />
+                    </plot>
+                    <plot index="2" pen_width="1" color="fuchsia" precision="0" show_y_axis="true">
+                        <entity name="IndustryOrderRate" />
+                    </plot>
+                    <plot index="3" pen_width="1" color="#008F44" precision="0" show_y_axis="true">
+                        <entity name="SmoothCapacity3" index="1" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="211" y="939" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 1" type="graph" icon_of="320" />
+            <stacked_container x="561" y="60" height="282" width="492" visible_index="0" uid="321">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-696968293" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="NPVProfit" index="1" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="NPVProfit" index="2" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="908" y="104" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 3" type="graph" icon_of="321" />
+            <stacked_container x="808" y="790" height="282" width="492" visible_index="1" uid="322">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-696968293" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="NetIncome" index="1" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="NetIncome" index="2" />
+                    </plot>
+                </graph>
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-696968293" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="NonAdopters" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="CumulativeAdopters" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="831" y="806" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 5" type="graph" icon_of="322" />
+            <stacked_container x="118" y="459" height="282" width="492" visible_index="0" uid="323">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-696968293" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="IndustryShipments" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="IndustryShipmentsReference" />
+                    </plot>
+                    <plot index="2" pen_width="1" color="fuchsia" precision="0" show_y_axis="true">
+                        <entity name="IndustryOrderRate" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="140" y="475" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 6" type="graph" icon_of="323" />
+            <stacked_container x="715" y="439" height="282" width="492" visible_index="0" uid="324">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-696968293" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="Price" index="1" />
+                    </plot>
+                    <plot index="1" pen_width="1" color="red" precision="0" show_y_axis="true">
+                        <entity name="Revenue" index="1" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="737" y="455" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 7" type="graph" icon_of="324" />
+            <stacked_container x="244" y="899" height="282" width="492" visible_index="0" uid="325">
+                <graph type="time_series" title="Untitled" background="#FFFFC9" show_grid="false" numbers_on_plots="true" isee:use_five_segments="false" isee:date_time="-696968293" comparative="true" time_precision="2" from="0" to="10">
+                    <plot index="0" pen_width="1" color="blue" precision="0" show_y_axis="true">
+                        <entity name="IndustryOrderRate" />
+                        <data name="Run 1 data" />
+                    </plot>
+                </graph>
+            </stacked_container>
+            <pad_icon x="285" y="916" width="26" height="22" color="#008F44" label_side="bottom" label="Graph 8" type="graph" icon_of="325" />
+            <stacked_container x="1482" y="74" height="468" width="705" visible_index="0" uid="326">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="107" orientation="vertical" report_every_dt="true" isee:date_time="-696968293">
+                    <item type="time" color="black" text-align="left" precision="3" width="100" />
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="0">
+                        <entity name="NPVProfit" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="1">
+                        <entity name="ValueOfBacklog" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="2">
+                        <entity name="Backlog" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="3">
+                        <entity name="InstalledBase" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="4">
+                        <entity name="Price" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="5">
+                        <entity name="CumulativeAdopters" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="6">
+                        <entity name="ReportedIndustryVolume" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="7">
+                        <entity name="CumulativeProduction" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="8">
+                        <entity name="PerceivedCompTargetCapacity" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="9">
+                        <entity name="SmoothCapacity1" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="10">
+                        <entity name="SmoothCapacity2" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="11">
+                        <entity name="SmoothCapacity3" index="1" />
+                    </item>
+                </table>
+            </stacked_container>
+            <pad_icon x="1440" y="49" width="26" height="22" color="#008F44" label_side="bottom" label="Table 1" type="table" icon_of="326" />
+            <stacked_container x="1484" y="626" height="283" width="712" visible_index="0" uid="327">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="96" orientation="vertical" report_every_dt="true" isee:date_time="-696968293">
+                    <item type="time" color="black" text-align="left" precision="3" width="100" />
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" flow_concept="true" index="0">
+                        <entity name="checkAdoptionRate" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="1">
+                        <entity name="checkCompetitorTargetCapacity" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" flow_concept="true" index="2">
+                        <entity name="checkIndustryOrderRate" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="3">
+                        <entity name="checkIndustryShipments" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="4">
+                        <entity name="checkLaggedVolumeForecast" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" flow_concept="true" index="5">
+                        <entity name="checkOrders" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="6">
+                        <entity name="checkTargetPrice" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="7">
+                        <entity name="checkUnitFixedCost" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="8">
+                        <entity name="checkUnitVariableCost" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" flow_concept="true" index="9">
+                        <entity name="checkIndustryDemand" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" flow_concept="true" index="10">
+                        <entity name="checkRevenue1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" flow_concept="true" index="11">
+                        <entity name="checkValueOfNewOrders1" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" flow_concept="true" index="12">
+                        <entity name="checkNonAdopters" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" index="13">
+                        <entity name="checkPerformance" />
+                    </item>
+                    <item color="black" text-align="left" precision="3" thousands_separator="true" flow_concept="true" index="14">
+                        <entity name="checkNPVProfitChange1" />
+                    </item>
+                </table>
+            </stacked_container>
+            <pad_icon x="1457" y="629" width="26" height="22" color="#008F44" label_side="bottom" label="Table 2" type="table" icon_of="327" />
+            <stacked_container x="774" y="1138" height="329" width="521" visible_index="0" uid="328">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="111" orientation="horizontal" report_every_dt="true" isee:date_time="-696968293">
+                    <item type="time" color="black" text-align="left" precision="3" width="100" />
+                    <item color="black" text-align="left" precision="1" thousands_separator="true" index="0">
+                        <entity name="AdoptionRate" />
+                    </item>
+                    <item color="black" text-align="left" precision="1" thousands_separator="true" index="1">
+                        <entity name="CumulativeAdopters" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="2">
+                        <entity name="IndustryDemand" />
+                    </item>
+                </table>
+            </stacked_container>
+            <pad_icon x="838" y="1208" width="26" height="22" color="#008F44" label_side="bottom" label="Table 3" type="table" icon_of="328" />
+            <stacked_container x="144" y="1557" height="270" width="1033" visible_index="0" uid="329">
+                <table title="Untitled Table" font-size="9" background="#E0E0E0" columns_width="88" orientation="vertical" report_every_dt="true" isee:date_time="-696968293">
+                    <item type="time" color="black" text-align="left" precision="3" width="100" />
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="0">
+                        <entity name="ReorderRate" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="1">
+                        <entity name="InitialOrderRate" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="2">
+                        <entity name="Capacitys" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="3">
+                        <entity name="TargetNormalProduction" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="4">
+                        <entity name="TargetCapacity" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="5">
+                        <entity name="TargetCapacity" index="2" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="6">
+                        <entity name="ExpectedIndustryDemand" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" flow_concept="true" index="7">
+                        <entity name="ExpectedIndustryDemand" index="2" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="8">
+                        <entity name="TargetMarketShare" index="1" />
+                    </item>
+                    <item color="black" text-align="left" precision="2" thousands_separator="true" index="9">
+                        <entity name="TargetMarketShare" index="2" />
+                    </item>
+                </table>
+            </stacked_container>
+            <pad_icon x="156" y="1563" width="26" height="22" color="#008F44" label_side="bottom" label="Table 4" type="table" icon_of="329" />
+            <slider x="128" y="812" color="black" width="197" height="43" min="1500" max="3000">
+                <entity name="InitialIndustryShipments" />
+            </slider>
+            <slider x="359" y="816" color="black" width="197" height="43" min="30000" max="60000">
+                <entity name="Population" />
+            </slider>
+            <slider x="589" y="815" color="black" width="197" height="43" min="0.4" max="2.4">
+                <entity name="WOMStrength" />
+            </slider>
+        </interface>
+    </model>
+</xmile>
