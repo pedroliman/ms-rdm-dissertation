@@ -337,6 +337,8 @@ grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aPerformance1
 
 grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare4")
 
+grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare3")
+
 grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare2")
 
 grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare1")

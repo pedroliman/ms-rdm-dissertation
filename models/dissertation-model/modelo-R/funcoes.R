@@ -471,10 +471,16 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     aAttractivenessFromPrice = exp(aSensOfAttractToPrice*(sPrice/aReferencePrice))
     
     aAttractiveness = aAttractivenessFromAvailability * aAttractivenessFromPrice * aAttractivenessFromPerformance
-    
+
     aTotalAttractiveness = sum(aAttractiveness)
     
     aOrderShare = aAttractiveness / aTotalAttractiveness
+    
+    if(time == FINISH){
+      browser()  
+    }
+    
+    
     
     ##### ORDERS SECTOR - PT 3 #####
     
@@ -627,6 +633,11 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     checkTargetPrice = mean(aTargetPrice)
     
     fChangeInPrice = (aTargetPrice - sPrice) / aPriceAdjustmentTime
+    
+    if(time == FINISH){
+      browser()  
+    }
+    
     
     ##### NET INCOME SECTOR #####
     
