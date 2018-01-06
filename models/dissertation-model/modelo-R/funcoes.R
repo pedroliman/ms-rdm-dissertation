@@ -174,7 +174,7 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
     ,sPatentesEmpresa = rep(100, times = N_PLAYERS)
     ,sPatentesEmDominioPublicoUteis = 200
     ,sInvestimentoPeDDepreciar = rep(1000, times = N_PLAYERS)
-    ,sInitialPatentLefts = 0
+    ,sPatentLefts = 0
     
   ) 
   
@@ -211,34 +211,12 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
       ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
       ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
       ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
-      ,sPatentLefts = unname(estoques_calculados$InitialPatentLefts)
+      ,sPatentLefts = unname(estoques_calculados$IntialPatentLefts)
     ) 
     
   }
   
   stocks = stocks_iniciais
-  
-  # Substituindo estoques no t0
-  # stocks  <- c(
-  #   sNPVProfit = unname(stocks_iniciais[grep("sNPVProfit", x = names(stocks_iniciais))]) 
-  #   ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
-  #   ,sBacklog = unname(estoques_calculados$BacklogIni)
-  #   ,sInstalledBase = unname(estoques_calculados$InstalledBaseIni)
-  #   ,sPrice = unname(stocks_iniciais[grep("sPrice", x = names(stocks_iniciais))])
-  #   ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
-  #   ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
-  #   ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
-  #   ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
-  #   ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
-  #   ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
-  #   ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
-  #   ,sInvestimentoNaoRealizadoPeD = unname(estoques_calculados$InitialInvestimentoNaoRealizadoPeD)
-  #   ,sPatentesRequisitadas = unname(estoques_calculados$InitialPatentesRequisitadas)
-  #   ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
-  #   ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
-  #   ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
-  # ) 
-  
   
   # Criando List Novamente, para manter a list limpa.
   list.variaveis.globais <<- list(
@@ -478,7 +456,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     # Patentes e Performance
     
-    aPatentesEmpresaTemAcesso = sPatentesRequisitadas + sPatentesEmpresa + sPatentesEmDominioPublicoUteis
+    aPatentesEmpresaTemAcesso = sPatentesRequisitadas + sPatentesEmpresa + sPatentesEmDominioPublicoUteis + sPatentLefts
     
     aPerformanceCalculada = aPerfSlope * aPatentesEmpresaTemAcesso
     
@@ -682,7 +660,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     # Eventualmente é possível modelar este comportamento passando por outros estoques.
     fPatentesVencidas = sPatentesEmpresa / aTempoVencimentoPatentes 
     
-    fPatentesAbertas = ((aPercPeDAberto * fInvestimentoPeDRealizado) / aCustoMedioPatente) * (1-aTaxaRejeicao)
+    #fPatentesAbertas = ((aPercPeDAberto * fInvestimentoPeDRealizado) / aCustoMedioPatente) * (1-aTaxaRejeicao)
     
     fPatentesUtilidadeExpirada = sPatentesEmDominioPublicoUteis / aTempodeInutilizacaoPatente
     
@@ -747,15 +725,16 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     d_InvestimentoNaoRealizadoPeD_dt = fInvestimentoPeD - fInvestimentoPeDRealizado
     
-    d_PatentesRequisitadas_dt = fPatentesSolicitadas - fPatentesConcedidas - fPatentesRejeitadas
+    d_PatentesRequisitadas_dt = fPatentesSolicitadas - fPatentesConcedidas - fPatentesRejeitadas - fPatentLeftsGeradas
     
     d_PatentesEmpresa_dt = fPatentesConcedidas - fPatentesVencidas
     
-    d_PatentesEmDominioPublicoUteis_dt = sum(fPatentesVencidas) + sum(fPatentLeftsVencidas) - fPatentesUtilidadeExpirada
+    d_PatentesEmDominioPublicoUteis_dt = sum(fPatentesVencidas) + fPatentLeftsVencidas - fPatentesUtilidadeExpirada
     
     d_InvestimentoPeDDepreciar_dt = fInvestimentoPeD - fDepreciacaoInvPeD
     
     d_PatentLefts_dt = sum(fPatentLeftsGeradas) - fPatentLeftsVencidas
+    
     
     # Variaveis de Estoques Iniciais
     
@@ -1006,6 +985,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       ,d_PatentesEmpresa_dt
       ,d_PatentesEmDominioPublicoUteis_dt
       ,d_InvestimentoPeDDepreciar_dt
+      ,d_PatentLefts_dt
     )
     ,fIndustryOrderRate = unname(fIndustryOrderRate) 
     ,aOrderShare = unname(aOrderShare)

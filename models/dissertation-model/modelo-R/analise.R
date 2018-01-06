@@ -62,7 +62,7 @@ n_ensemble_calibracao = round(n_ensemble_total / percentil_utilizado_como_criter
 opcoes$FullFactorialDesign = FALSE
 opcoes$Paralelo = FALSE
 START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
-VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; BROWSE_ON_DIFF = TRUE
+VERIFICAR_STOCKS = TRUE; VERIFICAR_CHECKS = TRUE; CHECK_PRECISION = 0.1; BROWSE_ON_DIFF = TRUE
 VERIFICAR_GLOBAL = TRUE;
 ## Carregando Modelo
 source('funcoes.R', encoding = 'UTF-8')
@@ -93,27 +93,6 @@ names(parametros_cenariobase) = as.matrix(parametros_completos[,1])
 
 
 resultados_caso_base = solve_modelo_dissertacao(parametros = parametros_cenariobase, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
-
-
-
-
-# Rodando a Simulação com os Parâmetros do Sterman, rodando uma vez apenas.
-arquivo_parametros = "./calibracao/params_calibracao.xlsx"
-
-parametros_completos = readxl::read_xlsx(arquivo_parametros, sheet = "params")
-
-parametros_cenariobase = t(parametros_completos[,"CenarioBase"])[1,]
-
-names(parametros_cenariobase) = as.matrix(parametros_completos[,1])
-
-# Mudando o tempo de simulação para Simular o Sterman
-resultados_cenariobase = solve_modelo_dissertacao(parametros = parametros_cenariobase, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
-
-
-
-
-
-
 
 
 #### 4.1 Teste com Dados Históricos de Demanda ####
