@@ -43,4 +43,8 @@ plt.show()
 
 # box.show_details()
 
+aFractionalDiscardRate
+aInitialReoderShare
+aReferencePopulation
+
 
