@@ -135,10 +135,16 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
                   ,aInitialPatentesEmpresa = rep(unname(parametros["aInitialPatentesEmpresa"]), times = N_PLAYERS)
                   ,aInitialsPatentesEmDominioPublicoUteis = unname(parametros["aInitialsPatentesEmDominioPublicoUteis"])
                   ,aInitialsInvestimentoPeDDepreciar = rep(unname(parametros["aInitialsInvestimentoPeDDepreciar"]), times = N_PLAYERS)
+                  ,aInitialPatentLefts = unname(parametros["aInitialPatentLefts"])
+                  # Novas Variáveis de Condições Iniciais:
                   
                   ,aInitialReorderShare =unname(parametros["aInitialReorderShare"])
                   ,aTotalInitialInstalledBase = unname(parametros["aTotalInitialInstalledBase"])
                   ,aInitialIndustryShipments = unname(parametros["aInitialIndustryShipments"])
+                  ,aModoInitialCumulativeAdopters = unname(parametros["aModoInitialCumulativeAdopters"])
+                  
+                  
+                  # Variáveis Adicionais
                   ,Scenario = unname(parametros["Scenario"])
                   ,Lever = unname(parametros["Lever"])
   )
@@ -168,6 +174,7 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
     ,sPatentesEmpresa = rep(100, times = N_PLAYERS)
     ,sPatentesEmDominioPublicoUteis = 200
     ,sInvestimentoPeDDepreciar = rep(1000, times = N_PLAYERS)
+    ,sPatentLefts = 0
     
   ) 
   
@@ -204,33 +211,12 @@ solve_modelo_dissertacao <- function(parametros, modelo, simtime){
       ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
       ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
       ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
+      ,sPatentLefts = unname(estoques_calculados$IntialPatentLefts)
     ) 
     
   }
   
   stocks = stocks_iniciais
-  
-  # Substituindo estoques no t0
-  # stocks  <- c(
-  #   sNPVProfit = unname(stocks_iniciais[grep("sNPVProfit", x = names(stocks_iniciais))]) 
-  #   ,sValueOfBacklog = unname(estoques_calculados$ValueOfBacklogIni)
-  #   ,sBacklog = unname(estoques_calculados$BacklogIni)
-  #   ,sInstalledBase = unname(estoques_calculados$InstalledBaseIni)
-  #   ,sPrice = unname(stocks_iniciais[grep("sPrice", x = names(stocks_iniciais))])
-  #   ,sCumulativeAdopters = unname(estoques_calculados$CumulativeAdoptersIni)
-  #   ,sReportedIndustryVolume = rep(unname(estoques_calculados$ReportedIndustryVolumeIni), times = N_PLAYERS)
-  #   ,sCumulativeProduction = unname(estoques_calculados$CumulativeProductionIni)
-  #   ,sPerceivedCompTargetCapacity = unname(estoques_calculados$PerceivedCompTargetCapacityIni)
-  #   ,sSmoothCapacity1 = unname(estoques_calculados$CapacityIni)
-  #   ,sSmoothCapacity2 = unname(estoques_calculados$CapacityIni)
-  #   ,sSmoothCapacity3 = unname(estoques_calculados$CapacityIni)
-  #   ,sInvestimentoNaoRealizadoPeD = unname(estoques_calculados$InitialInvestimentoNaoRealizadoPeD)
-  #   ,sPatentesRequisitadas = unname(estoques_calculados$InitialPatentesRequisitadas)
-  #   ,sPatentesEmpresa = unname(estoques_calculados$InitialPatentesEmpresa)
-  #   ,sPatentesEmDominioPublicoUteis = unname(estoques_calculados$InitialsPatentesEmDominioPublicoUteis)
-  #   ,sInvestimentoPeDDepreciar = unname(estoques_calculados$InitialsInvestimentoPeDDepreciar)
-  # ) 
-  
   
   # Criando List Novamente, para manter a list limpa.
   list.variaveis.globais <<- list(
@@ -334,6 +320,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     sPatentesEmpresa = stocks[grep("sPatentesEmpresa", x = names(stocks))]
     sPatentesEmDominioPublicoUteis = stocks[grep("sPatentesEmDominioPublicoUteis", x = names(stocks))]
     sInvestimentoPeDDepreciar = stocks[grep("sInvestimentoPeDDepreciar", x = names(stocks))]
+    sPatentLefts = stocks[grep("sPatentLefts", x = names(stocks))]
+    
     
     #Obtendo o número da linha no qual estou
     linha = ((time - START)* (n_tempo - 1)) / (FINISH - START) + 1
@@ -341,61 +329,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     # Gravando a Variável sReportedIndustryVolume no vetor global
     list.variaveis.globais$sReportedIndustryVolume[linha,] <<- sReportedIndustryVolume
     
-    # # O Total Initial Installed Base deve ser coerente com o Fractional Discard Rate e o Tempo de Vida útil Médio.
-    # # Este valor é um valor estimado, considera-se que a base de usuários é proporcional à vida útil do equipamento e à demanda inicial
-    # aTotalInitialInstalledBase = aInitialIndustryShipments / aFractionalDiscardRate
-    # 
-    # # O initialReorderShare deve depender do tempo de vida médio considerado pelo modelo:
-    # aInitialReorderShare = (aFractionalDiscardRate * aTotalInitialInstalledBase) / aInitialIndustryShipments # Reorders / IndustryShipments => (aFractionalDiscardRate * InstalledBase / InitialIndustryShipments)
-    # 
     
-    # O Total Initial Installed Base deve ser coerente com o Fractional Discard Rate e o Tempo de Vida útil Médio.
-    # Este valor é um valor estimado, considera-se que a base de usuários é proporcional à vida útil do equipamento e à demanda inicial
-    
-    # Solução possível para o problema: Considerar que a variável TotalInitialInstalledBase nunca poderá ser maior do que a DemandaReferencia (é um pressuposto razoável, e pode ser verificado.)
-    
-    aTotalInitialInstalledBase = min(aReferencePopulation,
-                                     (aInitialReorderShare * aInitialIndustryShipments) / aFractionalDiscardRate) 
-    
-    # O initialReorderShare deve depender do tempo de vida médio considerado pelo modelo:
-    # aInitialReorderShare = (aFractionalDiscardRate * aTotalInitialInstalledBase) / aInitialIndustryShipments # Reorders / IndustryShipments => (aFractionalDiscardRate * InstalledBase / InitialIndustryShipments)
-    
-    
-    
-    
-    
-    ### Calculando Variáveis para o Estoque Inicial de Cumulative Adopters
-    
-    aEstimatedAdopters = aTotalInitialInstalledBase / aUnitsPerHousehold
-    
-    aInitialNewAdoptersOrderRate = aInitialIndustryShipments*(1-aInitialReorderShare)
-    
-    aInitialAdoptionRate = aInitialNewAdoptersOrderRate / aUnitsPerHousehold
-    # Formula Original (Está gerando números negativos por causa do Innovator Adoption Fraction).
-    # aInitialCumulativeAdopters2 = ((aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))-aInnovatorAdoptionFraction)*(aPopulation/aWOMStrength)
-    #aInitialCumulativeAdopters2 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
-    
-    #aInitialCumulativeAdopters = aInitialCumulativeAdopters2
-    
-    
-    # Estou usando População Total para Calibrar o Valor inicial de initialcumulative adopters, enquanto deveria estar usando ReferencePopulation!
-    # Antes de Modificar:
-    #aInitialCumulativeAdopters2 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
-    # A original era a 2.0 (com a formulação do novo Initial Cumulative Adopters)
-    aInitialCumulativeAdopters2.0 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
-    # A opção 2.1 parece a forma mais razoável
-    aInitialCumulativeAdopters2.1 = (aInitialAdoptionRate/(aPopulation-aEstimatedAdopters))*(aReferencePopulation/aWOMStrength)
-    # 2.2 não pode ser:
-    aInitialCumulativeAdopters2.2 = (aInitialAdoptionRate/(aReferencePopulation-aEstimatedAdopters))*(aPopulation/aWOMStrength)
-    
-    # 2.3: Não pode ser, Gera número negativo:
-    aInitialCumulativeAdopters2.3 = (aInitialAdoptionRate/(aReferencePopulation-aEstimatedAdopters))*(aReferencePopulation/aWOMStrength)
-    aInitialCumulativeAdopters = aInitialCumulativeAdopters2.0
-    
-    
-    
-    
-    ##### DIFFUSION SECTOR #####
+    ##### DIFFUSION SECTOR  - PT 1 #####
     aDemandCurveSlope = - aReferenceIndustryDemandElasticity * (aReferencePopulation / aReferencePrice )
     
     aLowestPrice = min(sPrice)
@@ -410,8 +345,43 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     checkIndustryDemand = aIndustryDemand
     
-    # A fórmula abaixo não é mais utilizada.
-    # aInitialCumulativeAdopters = aInitialDiffusionFraction * aIndustryDemand
+    
+    ##### CONDIÇÕES INICIAIS - CUMULATIVE ADOPTERS #####
+    
+    # Calculando Variáveis Necessárias para Definir os Cumulative Adopters
+    
+    aTotalInitialInstalledBase = min(aIndustryDemand,
+                                     (aInitialReorderShare * aInitialIndustryShipments) / aFractionalDiscardRate) 
+    
+    aEstimatedAdopters = aTotalInitialInstalledBase / aUnitsPerHousehold
+    
+    aInitialNewAdoptersOrderRate = aInitialIndustryShipments*(1-aInitialReorderShare)
+    
+    aInitialAdoptionRate = aInitialNewAdoptersOrderRate / aUnitsPerHousehold
+    
+    
+    
+    # Initial Cumulative Adopters 1 - Opção Original
+    aInitialCumulativeAdopters1 = aInitialDiffusionFraction * aIndustryDemand
+    
+    
+    # Initial Cumulative Adopters 2 - Opção Calculada pelo Reorder Share
+    aInitialCumulativeAdopters2 = aTotalInitialInstalledBase / aUnitsPerHousehold
+    
+    
+    # Initial Cumulative Adopters 3 - Opção calculada pelo Initial Adoption Rate:
+    aInitialCumulativeAdopters3 = (aInitialAdoptionRate/(aIndustryDemand-aEstimatedAdopters))*(aPopulation/aWOMStrength)
+    
+    
+    aInitialCumulativeAdopters = if(aModoInitialCumulativeAdopters == 1) {
+      aInitialCumulativeAdopters1
+    } else if (aModoInitialCumulativeAdopters == 2) {
+      aInitialCumulativeAdopters2
+    } else {
+      aInitialCumulativeAdopters3
+    }
+    
+    ##### DIFFUSION SECTOR  - PT 2 #####
     
     aNonAdopters = aIndustryDemand - sCumulativeAdopters
     
@@ -486,7 +456,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     # Patentes e Performance
     
-    aPatentesEmpresaTemAcesso = sPatentesRequisitadas + sPatentesEmpresa + sPatentesEmDominioPublicoUteis
+    aPatentesEmpresaTemAcesso = sPatentesRequisitadas + sPatentesEmpresa + sPatentesEmDominioPublicoUteis + sPatentLefts
     
     aPerformanceCalculada = aPerfSlope * aPatentesEmpresaTemAcesso
     
@@ -676,17 +646,21 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     fInvestimentoPeDRealizado = sInvestimentoNaoRealizadoPeD / aTempoMedioRealizacaoPeD
     
-    fPatentesSolicitadas = ((1-aPercPeDAberto) * fInvestimentoPeDRealizado) / aCustoMedioPatente
+    fPatentesSolicitadas = (fInvestimentoPeDRealizado) / aCustoMedioPatente
     
     fPatentesRejeitadas = (sPatentesRequisitadas/aTempoMedioAvaliacao) * aTaxaRejeicao
     
-    fPatentesConcedidas = (sPatentesRequisitadas/aTempoMedioAvaliacao) * (1-aTaxaRejeicao)
+    fPatentesConcedidas = (sPatentesRequisitadas/aTempoMedioAvaliacao) * (1-aTaxaRejeicao) * (1-aPercPeDAberto)
+    
+    fPatentLeftsGeradas = (sPatentesRequisitadas/aTempoMedioAvaliacao) * (1-aTaxaRejeicao) * (aPercPeDAberto)
+    
+    fPatentLeftsVencidas = sPatentLefts / aTempoVencimentoPatentes
     
     # Estou somando as Patentes com investimenti (direto em domínio publico na equação abaixo, sem passar por outros estoques).
     # Eventualmente é possível modelar este comportamento passando por outros estoques.
     fPatentesVencidas = sPatentesEmpresa / aTempoVencimentoPatentes 
     
-    fPatentesAbertas = ((aPercPeDAberto * fInvestimentoPeDRealizado) / aCustoMedioPatente) * (1-aTaxaRejeicao)
+    #fPatentesAbertas = ((aPercPeDAberto * fInvestimentoPeDRealizado) / aCustoMedioPatente) * (1-aTaxaRejeicao)
     
     fPatentesUtilidadeExpirada = sPatentesEmDominioPublicoUteis / aTempodeInutilizacaoPatente
     
@@ -751,21 +725,28 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     d_InvestimentoNaoRealizadoPeD_dt = fInvestimentoPeD - fInvestimentoPeDRealizado
     
-    d_PatentesRequisitadas_dt = fPatentesSolicitadas - fPatentesConcedidas - fPatentesRejeitadas
+    d_PatentesRequisitadas_dt = fPatentesSolicitadas - fPatentesConcedidas - fPatentesRejeitadas - fPatentLeftsGeradas
     
     d_PatentesEmpresa_dt = fPatentesConcedidas - fPatentesVencidas
     
-    d_PatentesEmDominioPublicoUteis_dt = sum(fPatentesVencidas) - fPatentesUtilidadeExpirada
+    d_PatentesEmDominioPublicoUteis_dt = sum(fPatentesVencidas) + fPatentLeftsVencidas - fPatentesUtilidadeExpirada
     
     d_InvestimentoPeDDepreciar_dt = fInvestimentoPeD - fDepreciacaoInvPeD
     
+    d_PatentLefts_dt = sum(fPatentLeftsGeradas) - fPatentLeftsVencidas
     
     
     # Variaveis de Estoques Iniciais
     
+    aInitialOrderRateCalibracao = if(aModoInitialCumulativeAdopters == 1){
+      fIndustryOrderRate
+    } else {
+      aInitialIndustryShipments
+    }
+    
     # Alteração para Calibração de dados Iniciais: Calibrar o Backlog inicial com a Demanda Inicial Informada.
     # BacklogIni = aInitialSharePlayers * fIndustryOrderRate * aNormalDeliveryDelay
-    BacklogIni = aInitialSharePlayers * aInitialIndustryShipments * aNormalDeliveryDelay
+    BacklogIni = aInitialSharePlayers * aInitialOrderRateCalibracao * aNormalDeliveryDelay
     
     # Alteração Importante para a Calibração dos Dados Iniciais do Modelo!
     # A variável de Base de Usuários inicial deve partir da mesma estimativa
@@ -776,12 +757,12 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     #Depois:
     # O Reorder Share deve depender do tempo de vida médio:
     # 
-    InstalledBaseIni = aTotalInitialInstalledBase * aInitialSharePlayers
+    InstalledBaseIni = aInitialCumulativeAdopters * aInitialSharePlayers
     
     CumulativeAdoptersIni = aInitialCumulativeAdopters
     
     # Alterando o Valor do Backlog para considerar a demanda inicial:
-    ValueOfBacklogIni = aInitialSharePlayers * aInitialIndustryShipments * aNormalDeliveryDelay * aInitialPrice
+    ValueOfBacklogIni = aInitialSharePlayers * aInitialOrderRateCalibracao * aNormalDeliveryDelay * aInitialPrice
     
     ReportedIndustryVolumeIni = aIndustryVolume
     
@@ -790,7 +771,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     PerceivedCompTargetCapacityIni = aCompetitorCapacity
     
     # Alterando a Capacidade para Considerar a Demanda Inicial
-    CapacityIni = aInitialSharePlayers * aInitialIndustryShipments / aNormalCapacityUtilization
+    CapacityIni = aInitialSharePlayers * aInitialOrderRateCalibracao / aNormalCapacityUtilization
     
     InitialInvestimentoNaoRealizadoPeD = aInitialInvestimentoNaoRealizadoPeD * aPatentShare
     
@@ -801,6 +782,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     InitialsPatentesEmDominioPublicoUteis =  aInitialsPatentesEmDominioPublicoUteis
     
     InitialsInvestimentoPeDDepreciar = aInitialsInvestimentoPeDDepreciar * aPatentShare
+    
+    IntialPatentLefts = aInitialPatentLefts
     
     
     ##### ESTOQUES - INICIAIS #####
@@ -821,12 +804,12 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
         InitialPatentesRequisitadas = VARIAVEIS_FINAIS_CASO_BASE[grep("sPatentesRequisitadas", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
         InitialPatentesEmpresa = VARIAVEIS_FINAIS_CASO_BASE[grep("sPatentesEmpresa", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
         InitialsPatentesEmDominioPublicoUteis = VARIAVEIS_FINAIS_CASO_BASE[grep("sPatentesEmDominioPublicoUteis", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
-        InitialsInvestimentoPeDDepreciar = VARIAVEIS_FINAIS_CASO_BASE[grep("sInvestimentoPeDDepreciar", x = names(VARIAVEIS_FINAIS_CASO_BASE))]
+        InitialsInvestimentoPeDDepreciar = VARIAVEIS_FINAIS_CASO_BASE[grep("sInvestimentoPeDDepreciar", x = names(VARIAVEIS_FINAIS_CASO_BASE))],
+        IntialPatentLefts = VARIAVEIS_FINAIS_CASO_BASE[grep("sIntialPatentLefts", x = names(VARIAVEIS_FINAIS_CASO_BASE))]
         )
       
       # Estes valores vieram como colunas e devem se transformar em vetores:
       stocks_ini = lapply(stocks_ini, transf_colunas_em_vetor)
-      
       
       
     } else {
@@ -844,7 +827,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
         InitialPatentesRequisitadas = InitialPatentesRequisitadas,
         InitialPatentesEmpresa = InitialPatentesEmpresa,
         InitialsPatentesEmDominioPublicoUteis = InitialsPatentesEmDominioPublicoUteis,
-        InitialsInvestimentoPeDDepreciar = InitialsInvestimentoPeDDepreciar
+        InitialsInvestimentoPeDDepreciar = InitialsInvestimentoPeDDepreciar,
+        IntialPatentLefts = IntialPatentLefts
       )  
     }
     
@@ -1001,6 +985,7 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
       ,d_PatentesEmpresa_dt
       ,d_PatentesEmDominioPublicoUteis_dt
       ,d_InvestimentoPeDDepreciar_dt
+      ,d_PatentLefts_dt
     )
     ,fIndustryOrderRate = unname(fIndustryOrderRate) 
     ,aOrderShare = unname(aOrderShare)
@@ -1342,7 +1327,8 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, opcoes = op
         # Exportando objetos que preciso ter nos clusters:
         clusterExport(cl, varlist = list("ensemble", 
                                          "modelo", 
-                                         "simtime", 
+                                         "simtime",
+                                         "START",
                                          "FINISH", 
                                          "VERIFICAR_STOCKS", 
                                          "solve_modelo", 
