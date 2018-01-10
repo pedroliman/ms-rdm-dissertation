@@ -23,7 +23,7 @@ opcoes_iniciais = list(
   VarCriterio = "RegretPercentil75",
   SentidoCriterio = "min",
   Paralelo = TRUE,
-  ModoParalelo = "PSOCK",
+  ModoParalelo = "FORK",
   SimularApenasCasoBase = TRUE,
   FullFactorialDesign = TRUE,
   FiltrarCasosPlausiveis = TRUE
@@ -45,7 +45,9 @@ planilha_opcao2.1_futuro = planilha_simulacao_calibracao_historico
 percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
+
 n_casos_total = 54*20 # 400
+
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_calibracao_historico, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
@@ -286,7 +288,7 @@ VARIAVEIS_FINAIS_CASO_BASE
 
 #### 4.2 Simulação dos Casos Contra Estratégias ####
 # Esta opção é inspirada na abordagem utilizada por Lempert.
-opcoes$FiltrarCasosPlausiveis = TRUE
+opcoes$FiltrarCasosPlausiveis = FALSE
 opcoes$SimularApenasCasoBase = FALSE
 opcoes$N = n_ensemble_total
 INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
@@ -304,7 +306,7 @@ results1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                             opcoes = opcoes)
 
 # Salvar resultados:
-#save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
+save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
 
 #save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.2.rda")
 #load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
@@ -330,6 +332,23 @@ plots_results = salvar_plots_result(results = results,
 
 plots_results$plots_linha_geral$plot_estrategia_candidata_demanda_global
 
+plots_results$plots_whisker$plot_whisker_lever_regret
+
+grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aPerformance1")
+
+
+grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare4")
+
+grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare3")
+
+grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare2")
+
+grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare1")
+
+grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aPatentesEmpresaTemAcesso1")
+
+
+grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sPrice1")
 
 
 # Observando Resultados
@@ -492,7 +511,7 @@ plots_ranking_media = list(
                                                                        nome_amigavel_var2 = as.character(ranking_variaveis_por_media$Variavel[3]))
 )
   
-
+plots_ranking_media$plot_violino_3
 mapply(ggsave, file=paste0("./images/", names(plots_ranking_media), ".png"), plot=plots_ranking_media, width = plots_width, height = plots_heigh)
 
 
