@@ -45,7 +45,7 @@ planilha_opcao2.1_futuro = planilha_simulacao_calibracao_historico
 percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
-n_casos_total = 54*200 # 400
+n_casos_total = 54*20 # 400
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_calibracao_historico, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
