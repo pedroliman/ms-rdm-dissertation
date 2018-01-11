@@ -2181,7 +2181,7 @@ plot_linha_duas_variaveis = function(dados, variavel1, nome_amigavel_variavel1, 
   
   # now adding the secondary axis, following the example in the help file ?scale_y_continuous
   # and, very important, reverting the above transformation
-  p <- p + scale_y_continuous(sec.axis = sec_axis(~./razaovariavel, name = nome_amigavel_variavel2), labels = format_for_humans)
+  p <- p + scale_y_continuous(sec.axis = sec_axis(~./razaovariavel, name = nome_amigavel_variavel2, labels = format_for_humans), labels = format_for_humans)
   
   # modifying colours and theme options
   p <- p + scale_colour_manual(values = c("blue", "red"))

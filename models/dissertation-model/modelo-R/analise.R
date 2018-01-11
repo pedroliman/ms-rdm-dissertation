@@ -771,7 +771,7 @@ fundamentos_ddd = obter_fundamentos_financeiros_quandl("DDD")
 
 fundamentos_mtls = obter_fundamentos_financeiros_quandl("PRLB")
 
-plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "Invesitmento em P & D")
+plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "OPEX P & D")
 
 plot_cash_net_income_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "NetIncome", nome_amigavel_variavel1 = "Lucro Líquido", variavel2 = "GrossProfit", nome_amigavel_variavel2 = "Lucro Bruto")
 
@@ -779,8 +779,11 @@ fundamentos_3DSYSTEMS = obter_fundamentos_financeiros_quandl(company_code = "DDD
 
 fundamentos_GE = obter_fundamentos_financeiros_quandl(company_code = "GE")
 
+fundamentos_GE$Dados$OrcamentoPeD = fundamentos_GE$Dados$ResearchAndDevelopmentExpenses / fundamentos_GE$Dados$Revenue
+
 fundamentos_3DSYSTEMS$Dados$OrcamentoPeD = fundamentos_3DSYSTEMS$Dados$ResearchAndDevelopmentExpenses / fundamentos_3DSYSTEMS$Dados$Revenue
 
+plot_receita_investimento_GE = plot_linha_duas_variaveis(fundamentos_GE$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "OPEX P & D")
 
 plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_3DSYSTEMS$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "Despesas com P & D")
 
