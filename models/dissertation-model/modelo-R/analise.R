@@ -46,7 +46,7 @@ percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
 
-n_casos_total = 3 * 25 # 400
+n_casos_total = 54 * 100 # 400
 
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_opcao1_futuro, opcoes = opcoes)$Levers)
 
