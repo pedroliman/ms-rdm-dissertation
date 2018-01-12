@@ -23,7 +23,7 @@ opcoes_iniciais = list(
   VarCriterio = "RegretPercentil75",
   SentidoCriterio = "min",
   Paralelo = TRUE,
-  ModoParalelo = "FORK",
+  ModoParalelo = "PSOCK",
   SimularApenasCasoBase = TRUE,
   FullFactorialDesign = TRUE,
   FiltrarCasosPlausiveis = TRUE
@@ -46,9 +46,9 @@ percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
 
-n_casos_total = 54*20 # 400
+n_casos_total = 3 * 25 # 400
 
-n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_calibracao_historico, opcoes = opcoes)$Levers)
+n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_opcao1_futuro, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
 n_ensemble_total = round(n_casos_total / n_estrategias, 0) 
@@ -304,6 +304,71 @@ source('funcoes.R', encoding = 'UTF-8')
 results1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                             sdmodel = sdmodel, 
                                             opcoes = opcoes)
+
+
+
+
+results = results1
+rm(results1)
+
+
+
+plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+                              variavel1 = "fInvestimentoPeD1", 
+                              nome_amigavel_var1 = "fInvestimentoPeD1", 
+                              variavel2 = "aPatentesEmpresaTemAcesso1", 
+                              nome_amigavel_var2 = "aPatentesEmpresaTemAcesso1")
+
+
+
+plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+                              variavel1 = "aPatentesEmpresaTemAcesso1", 
+                              nome_amigavel_var1 = "aPatentesEmpresaTemAcesso1", 
+                              variavel2 = "aPerformance1", 
+                              nome_amigavel_var2 = "aPerformance1")
+
+
+plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+                              variavel1 = "aPerformance1", 
+                              nome_amigavel_var1 = "aPerformance1", 
+                              variavel2 = "aAttractivenessFromPerformance1", 
+                              nome_amigavel_var2 = "aAttractivenessFromPerformance1")
+
+
+plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+                              variavel1 = "fInvestimentoPeD1", 
+                              nome_amigavel_var1 = "fInvestimentoPeD1", 
+                              variavel2 = "aAttractivenessFromPerformance1", 
+                              nome_amigavel_var2 = "aAttractivenessFromPerformance1")
+
+plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+                              variavel1 = "fInvestimentoPeD1", 
+                              nome_amigavel_var1 = "fInvestimentoPeD1", 
+                              variavel2 = "aAttractivenessFromPrice1", 
+                              nome_amigavel_var2 = "aAttractivenessFromPrice1")
+
+
+
+
+plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+                              variavel1 = "fInvestimentoPeD1", 
+                              nome_amigavel_var1 = "fInvestimentoPeD1", 
+                              variavel2 = "aOrderShare1", 
+                              nome_amigavel_var2 = "aOrderShare1")
+
+
+
+
+plot_dispersao_duas_variaveis(df_dados = results$AnaliseRegret$Dados,
+                              variavel1 = "sNPVProfit1Regret", 
+                              nome_amigavel_var1 = "sNPVProfit1Regret", 
+                              variavel2 = "sNPVProfit1", 
+                              nome_amigavel_var2 = "sNPVProfit1")
+
+
+
+
+
 
 # Salvar resultados:
 save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")

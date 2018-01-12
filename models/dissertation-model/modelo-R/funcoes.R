@@ -456,6 +456,8 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     # Patentes e Performance
     
+
+    
     aPatentesEmpresaTemAcesso = sPatentesRequisitadas + sPatentesEmpresa + sPatentesEmDominioPublicoUteis + sPatentLefts
     
     aPerformanceCalculada = aPerfSlope * aPatentesEmpresaTemAcesso
@@ -476,10 +478,10 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     aOrderShare = aAttractiveness / aTotalAttractiveness
     
-    if(time == FINISH){
-      browser()  
-    }
-    
+    # if(time == FINISH){
+    #   browser()  
+    # }
+    # 
     
     
     ##### ORDERS SECTOR - PT 3 #####
@@ -634,10 +636,10 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     
     fChangeInPrice = (aTargetPrice - sPrice) / aPriceAdjustmentTime
     
-    if(time == FINISH){
-      browser()  
-    }
-    
+    # if(time == FINISH){
+    #   browser()  
+    # }
+    # 
     
     ##### NET INCOME SECTOR #####
     
@@ -1009,7 +1011,12 @@ modelo <- function(time, stocks, auxs, modo = "completo"){
     ,fNPVProfitChange = unname(fNPVProfitChange) 
     ,fNetIncome = unname(fNetIncome) 
     ,aNPVIndustryProfits = unname(aNPVIndustryProfits)
-    ,VariacaoDemanda = unname(VariacaoDemanda))
+    ,VariacaoDemanda = unname(VariacaoDemanda)
+    ,fInvestimentoPeD = unname(fInvestimentoPeD)
+    ,aAttractivenessFromPerformance = unname(aAttractivenessFromPerformance)
+    ,aAttractivenessFromAvailability = unname(aAttractivenessFromAvailability)
+    ,aAttractivenessFromPrice = unname(aAttractivenessFromPrice)
+    )
     
     
     return (if(modo == "inicial"){
@@ -1865,6 +1872,51 @@ plot_dispersao_casos_interesse_por_variavel  = function(df_vulnerabilidade, vari
   p
   
 }
+
+
+#' plot_dispersao_duas_variaveis
+#' Gera um gráfico de dispersão de duas variáveis agrupando por lever.
+#' @param df_dados data.frame retornado pela função obter_df_vulnerabilidade
+#' @param variavel1 nome da variável incerta 1 a considerar
+#' @param nome_amigavel_var1 nome amigável desta variável
+#' @param variavel2 nome da variável incerta 2 a considera
+#' @param nome_amigavel_var2 nome amigável desta variável
+#' @param method pode ser lm, glm ou loess (consultar geom_smooth)
+#' @param se default é TRUE, mostra intervalo de confiança.
+#'
+#' @return plot de dispersão sinalizando os casos de interesse
+#' @export
+#'
+#' @examples
+plot_dispersao_duas_variaveis  = function(df_dados, variavel1, nome_amigavel_var1,  variavel2, nome_amigavel_var2, linha_regr = TRUE, method = lm, se = TRUE, facet = TRUE) {
+  call_grafico = substitute(
+    expr =  ggplot(as.data.frame(df_dados), aes(x=Variavel1, y=Variavel2, color = factor(Lever)))
+    ,env = list(Variavel1 = as.name(variavel1), Variavel2 = as.name(variavel2))
+  )
+  
+  p =  eval(call_grafico)
+  
+  p = p + geom_point() + theme(legend.position = "bottom") # + scale_color_manual(values = c("blue", "red"), name = "Caso de Interesse") 
+  
+  # Adicionando Linha de Regressão
+  if(linha_regr == TRUE){
+    p = p + geom_smooth(method=method, aes(fill=factor(Lever)), show.legend = F, se = se)  
+  }
+  
+  p = p + xlab(nome_amigavel_var1) + ylab(nome_amigavel_var2) + scale_y_continuous(labels = format_for_humans) + scale_x_continuous(labels = format_for_humans)
+  
+  p$labels$colour <- "Estratégia"
+  
+  
+  if(facet == TRUE){
+    p = p + facet_wrap(~factor(Lever))
+  }
+  
+  p
+  
+}
+
+
 
 ##### FUNÇÕES AUXILIARES #####
 
