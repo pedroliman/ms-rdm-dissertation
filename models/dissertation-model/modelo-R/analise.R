@@ -1,5 +1,6 @@
 ####Configurando Simulações ####
 # Carregando Funções Úteis
+list_tabelas_output = list()
 START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
@@ -118,9 +119,14 @@ resultados_casos_plausiveis = simularRDM_e_escolher_estrategia(inputs = planilha
                                                                sdmodel = sdmodel,
                                                                opcoes = opcoes)
 
+
+
+
+list_tabelas_output[["ParametrosCalibracao"]] <- resultados_casos_plausiveis$Inputs$Parametros
+
 # Salvar resultados com casos plausíveis:
 #save(resultados_casos_plausiveis, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
-
+load("resultados_casos_plausiveis.rda")
 
 save(resultados_casos_plausiveis, file = "resultados_casos_plausiveis.rda")
 
@@ -168,8 +174,13 @@ variaveis_exibir_ensemble = c("Scenario", variaveis_analise_fit)
 cenarios_a_exibir_tabela = sample(1:opcoes$N,size = 5)
 
 # Demonstração do erro calculado
-
 tabela_de_erro_calculado = t(ensemble_com_erro[1:5,variaveis_exibir_ensemble])
+
+tabela_de_erro_calculado = as.data.frame(tabela_de_erro_calculado)
+
+tabela_de_erro_calculado[,"VariavelCalculada"] = rownames(tabela_de_erro_calculado)
+
+list_tabelas_output[["CalibracaoErroCalculado"]] <- tabela_de_erro_calculado
 
 tabela_de_erro_calculado
 
@@ -203,6 +214,12 @@ params_cenario_menor_erro = ensemble_com_erro[which(ensemble_com_erro[,opcoes$Va
 parametros_cenario_menor_erro = t(ensemble_com_erro[which(ensemble_com_erro[,opcoes$VarCenarios]==cenario_menor_erro),])
 
 parametros_cenario_menor_erro
+
+parametros_cenario_menor_erro = as.data.frame(parametros_cenario_menor_erro)
+
+parametros_cenario_menor_erro[,"Parâmetro"] = rownames(parametros_cenario_menor_erro)
+
+list_tabelas_output[["ParametrosCenarioMenorErro"]] <- parametros_cenario_menor_erro
 
 
 # Condições Iniciais do cenário com Menor Erro:
@@ -376,6 +393,8 @@ ranking_estrategias_formatado$sNPVProfit1RegretPercentil75 = format_for_humans(r
 
 View(ranking_estrategias)
 
+list_tabelas_output[["RankingEstrategias"]] <- ranking_estrategias
+
 resultados_analise = list(
   plots_results = plots_results,
   ranking_estrategias = ranking_estrategias
@@ -445,11 +464,17 @@ View(df_vulnerabilidade)
 y = factor(df_vulnerabilidade$CasoInteresse)
 x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
 
+list_tabelas_output[["DataFraneVulnerabilidade"]] <- df_vulnerabilidade
+
 
 #### 4.3.1 - Ranking de Variáveis considerando apenas médias.####
 ranking_variaveis_por_media = obter_df_diff_media_casos_interesse(df_vulnerabilidade = df_vulnerabilidade)
 
 ranking_variaveis_por_media_t = obter_df_teste_t_casos_interesse(df_vulnerabilidade = df_vulnerabilidade)
+
+list_tabelas_output[["RankingVariaveisMedia"]] <- ranking_variaveis_por_media
+
+list_tabelas_output[["RankingVariaveisMediaTesteT"]] <- ranking_variaveis_por_media_t
 
 
 View(ranking_variaveis_por_media)
@@ -557,6 +582,8 @@ rownames(tabela_random_forest) = NULL
 resultados_random_forest = list(
   tabela_random_forest = tabela_random_forest
 )
+
+list_tabelas_output[["RankingVariaveisRandomForest"]] <- tabela_random_forest
 
 plots_random_forest = list(
   plot_dispersao_random_forest_1 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
@@ -687,16 +714,8 @@ resultados_boruta = list(
   tabela_resultados_boruta = tabela_resultados_boruta
 )
 
+list_tabelas_output[["RankingVariaveisBoruta"]] <- tabela_resultados_boruta
 
-
-# Antes de Rodar o PRIM, posso selecionar as primeiras três variáveis de todos os Rankings:
-n_variaveis_rankings = 5
-primeiras_variaveis_media = as.character(ranking_variaveis_por_media$Variavel[1:n_variaveis_rankings])
-primeiras_variaveis_random_forest = as.character(resultados_random_forest$tabela_random_forest$Variavel[1:n_variaveis_rankings])
-primeiras_variaveis_boruta = as.character(resultados_boruta$tabela_resultados_boruta$attr[1:n_variaveis_rankings])
-
-
-variaveis_shortlist = unique(c(primeiras_variaveis_media, primeiras_variaveis_boruta, primeiras_variaveis_random_forest))
 
 
 ranking_unificado = data.frame(
@@ -707,18 +726,42 @@ ranking_unificado = data.frame(
   ImportanciaMediaBoruta = resultados_boruta$tabela_resultados_boruta$meanImp,
   DecisaoBoruta = resultados_boruta$tabela_resultados_boruta$decision,
   VariaveisRankingMedia = ranking_variaveis_por_media$Variavel,
-  DiferencaMediaRelativa = ranking_variaveis_por_media$DifMediaRelativa
+  DiferencaMediaRelativa = ranking_variaveis_por_media$DifMediaRelativa,
+  VariaveisRankingMediaT = ranking_variaveis_por_media_t$Variável,
+  ValorP = ranking_variaveis_por_media_t$Valor_P
 )
 
 View(ranking_unificado)
 
+list_tabelas_output[["RankingGeral"]] <- ranking_unificado
+
 #### 4.3.2 - PRIM ####
+
+
+# Antes de Rodar o PRIM, posso selecionar as primeiras três variáveis de todos os Rankings:
+n_variaveis_rankings = 5
+primeiras_variaveis_media = as.character(ranking_variaveis_por_media$Variavel[1:n_variaveis_rankings])
+primeiras_variaveis_teste_t = as.character(ranking_variaveis_por_media_t$Variável[1:n_variaveis_rankings])
+primeiras_variaveis_random_forest = as.character(resultados_random_forest$tabela_random_forest$Variavel[1:n_variaveis_rankings])
+primeiras_variaveis_boruta = as.character(resultados_boruta$tabela_resultados_boruta$attr[1:n_variaveis_rankings])
+
+
+variaveis_shortlist = unique(c(primeiras_variaveis_media, primeiras_variaveis_boruta, primeiras_variaveis_random_forest, primeiras_variaveis_teste_t))
+
 
 # Rodando a Análise do PRIM no python (chamando por aqui.)
 # Edite o script do python para que isto funcione corretamente.
 
 y = df_vulnerabilidade$sNPVProfit1Regret
 x = df_vulnerabilidade[,variaveis_shortlist]
+
+# Preparando Variáveis Categóricas para o PRIM:
+
+x$aSwitchForCapacityStrategy2 = round(x$aSwitchForCapacityStrategy2,0)
+x$aSwitchForCapacityStrategy3 = round(x$aSwitchForCapacityStrategy3,0)
+x$aSwitchForCapacityStrategy4 = round(x$aSwitchForCapacityStrategy4,0)
+
+
 # A Aopção abaixo pega todas as variáveis de incerteza:
 #x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
 
@@ -730,6 +773,8 @@ View(y)
 View(x)
 
 threshold_analise_vulnerabilidade
+
+# Realizar a Análise no Python.
 
 
 #### 4.3.4 Comparando Estratégias do Ranking ####
@@ -906,6 +951,14 @@ points(x)
 library(subgroup.discovery)
 
 
+#### Gerando Tabelas no Excel ####
+
+
+
+
+library(openxlsx)
+openxlsx::write.xlsx(x = list_tabelas_output, 
+                     file = "tabelas_analise.xlsx")
 
 
 
@@ -1744,5 +1797,6 @@ mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=ster
 
 
 
-#### Gerar Relatório ####
+
 rmarkdown::render(input = "Resultados.Rmd")
+
