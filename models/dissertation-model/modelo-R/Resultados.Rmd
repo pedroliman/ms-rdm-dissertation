@@ -1,0 +1,63 @@
+---
+title: "Avaliação de Decisões Estratégica sob Incerteza na Indústria da Manufatura Aditiva"
+author: "Pedro Nascimento de Lima"
+date: "January 13, 2018"
+output:
+  word_document:
+    toc: yes
+  html_document:
+    df_print: paged
+    toc: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+mainfont: Arial
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(kableExtra)
+library(knitr)
+options(knitr.table.format = "latex") 
+```
+# Introdução
+# Referencial Teórico
+# Método de Pesquisa
+# Desenvolvimento da Análise RDM
+## Estruturação do Problema (X,L,R,M)
+
+- Estratégias a serem Simuladas (L):
+
+```{r levers}
+
+results$Inputs$Levers %>%
+kable("latex", booktabs = T, caption = "Estratégias a Serem Simuladas") %>% 
+  kable_styling(latex_options = c("scale_down")) %>% kable_as_image("my_latex_table")
+
+
+```
+
+
+
+
+
+## Modelo de Dinâmica de Sistemas
+## Algoritmos Desenvolvidos para a Análise RDM
+# Análise da Robustez de Decisões Estratégicas em Condições de Incerteza Profunda
+
+
+## Identificação da Estratégia Robusta (Geração de Casos)
+## Identificação de Incertezas Críticas e Análise de Vulnerabilidade
+## Identificação e Análise de Estratégias Adaptativas (Análise de Trade-offs entre estratégias)
+# Discussão dos Resultados
+## Contribuições Gerenciais
+## Contribuições Teóricas
+
+Este documento apresenta os Resultados da Análise RDM realizada na dissertação.
+
+
+```{r cars}
+summary(cars)
+```
+
+

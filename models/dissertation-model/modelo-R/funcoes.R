@@ -2310,8 +2310,8 @@ plot_fronteira_tradeoff_estrategia = function(results, opcoes = opcoes) {
   # Resultados em 03/01:
   
   cenarios_escolhidos = subset(ensemble,
-                                 aInitialReorderShare > 0.290 &
-                                 aReferencePopulation > 4.6 * 10 ^ 4)
+                                 aSensOfPriceToDSBalance > 0.042 &
+                                 aReferencePopulation > 5.1 * 10 ^ 4)
   
   
   

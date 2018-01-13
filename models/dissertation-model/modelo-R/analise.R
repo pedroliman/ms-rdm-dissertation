@@ -33,7 +33,7 @@ opcoes = opcoes_iniciais
 # Gerar casos para simulação com base em estimativa inicial de parâmetros.
 
 # Planilhas de Configuração das Simulação:
-planilha_simulacao_calibracao_historico = "./calibracao/params_calibracao_com_estrategia_v2.xlsx"
+planilha_simulacao_calibracao_historico = "./calibracao/params_calibracao_historico.xlsx"
 
 planilha_simulacao_opcao1_futuro = "./calibracao/params_calibracao_opcao1.xlsx"
 
@@ -45,7 +45,7 @@ percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
 
-n_casos_total = 54 * 100 # 400
+n_casos_total = 54 * 5 # 400
 
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_opcao1_futuro, opcoes = opcoes)$Levers)
 
@@ -99,7 +99,7 @@ resultados_caso_base = solve_modelo_dissertacao(parametros = parametros_cenariob
 # Simulação 0: Simulando Histórico e Observando Fit do Modelo:
 ###
 opcoes$SimularApenasCasoBase = TRUE
-opcoes$N = n_ensemble_calibracao
+opcoes$N = 200
 # Esta opção faz com que os estoques sejam inicializados com o valor inicial dos estoques no cenário base.
 INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
 SIMULAR_HISTORICO_DIFERENTE = FALSE
@@ -110,7 +110,7 @@ ANO_INICIO_AVALIACAO = 2018
 planilha_inputs = planilha_simulacao_calibracao_historico
 opcoes$FiltrarCasosPlausiveis = FALSE
 # Rodar Simulação:
-START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+START<-2004; FINISH <-2014; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
@@ -258,7 +258,7 @@ dados_calibracao$Scenario = 1000
 # cenarios_considerados_plausiveis = ensemble_com_erro[which(ensemble_com_erro$MeanAbsolutePercentError < erro_percentual_medio_maximo),opcoes$VarCenarios]
 
 plot_cenarios_plausiveis = plot_linha_uma_variavel_ensemble(dados = resultados_casos_plausiveis$DadosSimulados[which(resultados_casos_plausiveis$DadosSimulados$Scenario %in% cenarios_considerados_plausiveis),]
-                                 ,variavel = variavel_calibracao, nome_amigavel_variavel = nome_amigavel_variavel_calibracao) + geom_point(data=dados_calibracao, size = 1.5, aes(time, fIndustryOrderRate))
+                                 ,variavel = variavel_calibracao, nome_amigavel_variavel = nome_amigavel_variavel_calibracao) + geom_point(data=dados_calibracao, size = 1.5, aes(time, aIndustryShipments))
 
 plot_cenarios_plausiveis
 
@@ -277,10 +277,16 @@ plots_calibracao = list(
 mapply(ggsave, file=paste0("./images/", names(plots_calibracao), ".png"), plot=plots_calibracao, width = plots_width, height = plots_heigh)
 
 
+tabelas_calibracao = list(
+  calibracao_parametros_cenario_menor_erro = parametros_cenario_menor_erro,
+  calibracao_tabela_de_erro_calculado = tabela_de_erro_calculado
+)
+
 # Salvando Tabelas da Calibração:
-parametros_cenario_menor_erro
-tabela_de_erro_calculado
-VARIAVEIS_FINAIS_CASO_BASE
+mapply(write.csv2, 
+       x = tabelas_calibracao, 
+       file = paste0("./tabelas/",names(tabelas_calibracao),".csv")
+       )
 
 
 
@@ -299,88 +305,12 @@ BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
 
 # Simular
-results1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                             sdmodel = sdmodel, 
                                             opcoes = opcoes)
 
-
-
-results = results1
-rm(results1)
-
-
-
-plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
-                              variavel1 = "fInvestimentoPeD1", 
-                              nome_amigavel_var1 = "Investimento em P & D", 
-                              variavel2 = "aPatentesEmpresaTemAcesso1", 
-                              nome_amigavel_var2 = "Patentes Acessadas pelo Player 1")
-
-
-plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
-                              variavel1 = "aPatentesEmpresaTemAcesso1", 
-                              nome_amigavel_var1 = "Patentes Acessadas pelo Player 1", 
-                              variavel2 = "aPerformance1", 
-                              nome_amigavel_var2 = "Performance Player 1")
-
-
-plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
-                              variavel1 = "aPerformance1", 
-                              nome_amigavel_var1 = "Performance Player 1", 
-                              variavel2 = "aAttractivenessFromPerformance1", 
-                              nome_amigavel_var2 = "Atrativ. ")
-
-
-plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
-                              variavel1 = "fInvestimentoPeD1", 
-                              nome_amigavel_var1 = "fInvestimentoPeD1", 
-                              variavel2 = "aAttractivenessFromPerformance1", 
-                              nome_amigavel_var2 = "aAttractivenessFromPerformance1")
-
-plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
-                              variavel1 = "fInvestimentoPeD1", 
-                              nome_amigavel_var1 = "fInvestimentoPeD1", 
-                              variavel2 = "aAttractivenessFromPrice1", 
-                              nome_amigavel_var2 = "aAttractivenessFromPrice1")
-
-
-
-
-plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
-                              variavel1 = "fInvestimentoPeD1", 
-                              nome_amigavel_var1 = "fInvestimentoPeD1", 
-                              variavel2 = "aOrderShare1", 
-                              nome_amigavel_var2 = "aOrderShare1")
-
-
-
-
-plot_dispersao_duas_variaveis(df_dados = results$AnaliseRegret$Dados,
-                              variavel1 = "sNPVProfit1Regret", 
-                              nome_amigavel_var1 = "sNPVProfit1Regret", 
-                              variavel2 = "sNPVProfit1", 
-                              nome_amigavel_var2 = "sNPVProfit1")
-
-
-
-
-# Salvar resultados:
-save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
-
-
 # Salvar Resultados com apenas 10 anos simulados.
-save(results, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
-
-
-#save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.2.rda")
-#load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
-
-results = results1
-rm(results1)
-# Aqui ainda seria necessário filtar os resultados com o critério definido.
-
-
-
+save(results, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results_final.rda")
 
 #### 4.3 Análise dos Resultados ####
 
@@ -867,6 +797,62 @@ plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
                               nome_amigavel_var1 = "Patentes em dom. publ. úteis", 
                               variavel2 = "sNPVProfit1", 
                               nome_amigavel_var2 = "VPL Player 1")
+
+
+
+
+
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = "fInvestimentoPeD1", 
+                              nome_amigavel_var1 = "Investimento em P & D", 
+                              variavel2 = "aPatentesEmpresaTemAcesso1", 
+                              nome_amigavel_var2 = "Patentes Acessadas pelo Player 1")
+
+
+plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+                              variavel1 = "aPatentesEmpresaTemAcesso1", 
+                              nome_amigavel_var1 = "Patentes Acessadas pelo Player 1", 
+                              variavel2 = "aPerformance1", 
+                              nome_amigavel_var2 = "Performance Player 1")
+
+
+plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+                              variavel1 = "aPerformance1", 
+                              nome_amigavel_var1 = "Performance Player 1", 
+                              variavel2 = "aAttractivenessFromPerformance1", 
+                              nome_amigavel_var2 = "Atrativ. ")
+
+
+plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+                              variavel1 = "fInvestimentoPeD1", 
+                              nome_amigavel_var1 = "fInvestimentoPeD1", 
+                              variavel2 = "aAttractivenessFromPerformance1", 
+                              nome_amigavel_var2 = "aAttractivenessFromPerformance1")
+
+plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+                              variavel1 = "fInvestimentoPeD1", 
+                              nome_amigavel_var1 = "fInvestimentoPeD1", 
+                              variavel2 = "aAttractivenessFromPrice1", 
+                              nome_amigavel_var2 = "aAttractivenessFromPrice1")
+
+
+
+
+plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+                              variavel1 = "fInvestimentoPeD1", 
+                              nome_amigavel_var1 = "fInvestimentoPeD1", 
+                              variavel2 = "aOrderShare1", 
+                              nome_amigavel_var2 = "aOrderShare1")
+
+
+
+
+plot_dispersao_duas_variaveis(df_dados = results$AnaliseRegret$Dados,
+                              variavel1 = "sNPVProfit1Regret", 
+                              nome_amigavel_var1 = "sNPVProfit1Regret", 
+                              variavel2 = "sNPVProfit1", 
+                              nome_amigavel_var2 = "sNPVProfit1")
 
 
 
@@ -1737,3 +1723,7 @@ save(sdmodel, parametros_sterman, resultados_sterman, sterman_plots, file = "./a
 # Salvando todos os Gráficos do Sterman:
 mapply(ggsave, file=paste0("./images/", names(sterman_plots), ".png"), plot=sterman_plots, width = plots_width, height = plots_heigh)
 
+
+
+#### Gerar Relatório ####
+rmarkdown::render(input = "Resultados.Rmd")
