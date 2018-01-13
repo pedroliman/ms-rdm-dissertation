@@ -2409,8 +2409,15 @@ plot_landscape_futuros_plausiveis = function(results, estrategia, variavelresp, 
     ylab(n_variavel2) + 
     labs(fill = nomeamigavel_variavelresp) + 
     ggtitle(label = paste("Estratégia", estrategia)) + 
-    theme(plot.title = element_text(hjust = 0.5))
-  p  
+    theme(plot.title = element_text(hjust = 0.5)) +
+    theme(legend.position = "bottom") + 
+    viridis::scale_fill_viridis()
+    
+    #scale_color_gradient()
+    
+    #scale_fill_gradient(low="green", high="red")
+  
+  p + scale_x_continuous(labels = format_for_humans) + scale_y_continuous(labels = format_for_humans)
 }
 
 plot_grid_estrategias_casos_vpl = function(results) {
@@ -2595,7 +2602,7 @@ gerar_grafico_curva_experiencia = function() {
 #' @export
 #'
 #' @examples
-obter_dados_fundamentos_us_fundamentals = function(api_us_fundamentals = "AzfxuwuOWMDrCA28nAEUcw", empresas = c("Stratasys Inc", "3D Systems Corp", "Exone CO", "HP Inc", "Proto Labs"), codigos = c(915735, 910638, 1561627, 47217, 1443669), indicadores = c("SalesRevenueNet ", "GrossProfit", "NetCashProvidedByUsedInOperatingActivities")) {
+obter_dados_fundamentos_us_fundamentals = function(api_us_fundamentals = "AzfxuwuOWMDrCA28nAEUcw", empresas = c("Stratasys Inc", "3D Systems Corp", "Exone CO", "Proto Labs"), codigos = c(915735, 910638, 1561627, 1443669), indicadores = c("Revenues", "OperatingIncomeLoss", "SalesRevenueNet ", "GrossProfit", "NetCashProvidedByUsedInOperatingActivities", "ResearchAndDevelopmentExpense")) {
   codigos_api = paste(codigos, collapse = ",")
   
   indicadores_api = paste(indicadores, collapse = ",")

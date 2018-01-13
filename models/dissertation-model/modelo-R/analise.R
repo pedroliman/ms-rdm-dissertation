@@ -12,7 +12,6 @@ USAR_DADOS_SALVOS = FALSE
 SIMULAR_HISTORICO_DIFERENTE = FALSE
 
 
-
 # Opções, mudando a Variável de Critério:
 opcoes_iniciais = list(
   VarResposta = "sNPVProfit1",
@@ -23,7 +22,7 @@ opcoes_iniciais = list(
   VarCriterio = "RegretPercentil75",
   SentidoCriterio = "min",
   Paralelo = TRUE,
-  ModoParalelo = "PSOCK",
+  ModoParalelo = "FORK",
   SimularApenasCasoBase = TRUE,
   FullFactorialDesign = TRUE,
   FiltrarCasosPlausiveis = TRUE
@@ -55,7 +54,6 @@ n_ensemble_total = round(n_casos_total / n_estrategias, 0)
 
 # Tamanho do ensemble para calibração.
 n_ensemble_calibracao = round(n_ensemble_total / percentil_utilizado_como_criterio,0)
-
 
 
 ####Verificação - Comparação de Simulações com o Ithink ####
@@ -307,32 +305,30 @@ results1 = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
 
 
 
-
 results = results1
 rm(results1)
 
 
 
-plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
                               variavel1 = "fInvestimentoPeD1", 
-                              nome_amigavel_var1 = "fInvestimentoPeD1", 
+                              nome_amigavel_var1 = "Investimento em P & D", 
                               variavel2 = "aPatentesEmpresaTemAcesso1", 
-                              nome_amigavel_var2 = "aPatentesEmpresaTemAcesso1")
-
+                              nome_amigavel_var2 = "Patentes Acessadas pelo Player 1")
 
 
 plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
                               variavel1 = "aPatentesEmpresaTemAcesso1", 
-                              nome_amigavel_var1 = "aPatentesEmpresaTemAcesso1", 
+                              nome_amigavel_var1 = "Patentes Acessadas pelo Player 1", 
                               variavel2 = "aPerformance1", 
-                              nome_amigavel_var2 = "aPerformance1")
+                              nome_amigavel_var2 = "Performance Player 1")
 
 
 plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
                               variavel1 = "aPerformance1", 
-                              nome_amigavel_var1 = "aPerformance1", 
+                              nome_amigavel_var1 = "Performance Player 1", 
                               variavel2 = "aAttractivenessFromPerformance1", 
-                              nome_amigavel_var2 = "aAttractivenessFromPerformance1")
+                              nome_amigavel_var2 = "Atrativ. ")
 
 
 plot_dispersao_duas_variaveis(df_dados = results$DadosUltimoPeriodo,
@@ -368,10 +364,13 @@ plot_dispersao_duas_variaveis(df_dados = results$AnaliseRegret$Dados,
 
 
 
-
-
 # Salvar resultados:
 save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
+
+
+# Salvar Resultados com apenas 10 anos simulados.
+save(results, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
+
 
 #save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.2.rda")
 #load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results1.rda")
@@ -379,6 +378,8 @@ save(results1, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/
 results = results1
 rm(results1)
 # Aqui ainda seria necessário filtar os resultados com o critério definido.
+
+
 
 
 #### 4.3 Análise dos Resultados ####
@@ -398,6 +399,10 @@ plots_results = salvar_plots_result(results = results,
 plots_results$plots_linha_geral$plot_estrategia_candidata_demanda_global
 
 plots_results$plots_whisker$plot_whisker_lever_regret
+
+plots_results$plots_whisker$plot_whisker_lever_profit
+
+plots_results$plots_whisker$plot_whisker_lever_share
 
 grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aPerformance1")
 
@@ -425,7 +430,7 @@ plots_results$plots_whisker$plot_whisker_lever_profit
 plots_results$plots_whisker$plot_whisker_lever_share
 
 
-# Gerando Ranking de Estratégias
+#### Gerando Ranking de Estratégias ####
 
 ranking_estrategias = results$AnaliseRegret$ResumoEstrategias[,c("Lever", "sNPVProfit1RegretPercPercentil75", "sNPVProfit1RegretPercentil75")]
 
@@ -509,9 +514,6 @@ y = factor(df_vulnerabilidade$CasoInteresse)
 x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
 
 
-
-
-
 #### 4.3.1 - Ranking de Variáveis considerando apenas médias.####
 ranking_variaveis_por_media = obter_df_diff_media_casos_interesse(df_vulnerabilidade = df_vulnerabilidade)
 
@@ -523,7 +525,6 @@ View(ranking_variaveis_por_media)
 ranking_variaveis_por_media = droplevels(as.data.frame(ranking_variaveis_por_media))
 
 ranking_variaveis_por_media$Variavel = droplevels(ranking_variaveis_por_media$Variavel)
-
 
 
 # Plotando Primeiras Variáveis da Diferença entre Médias
@@ -576,7 +577,7 @@ plots_ranking_media = list(
                                                                        nome_amigavel_var2 = as.character(ranking_variaveis_por_media$Variavel[3]))
 )
   
-plots_ranking_media$plot_violino_3
+plots_ranking_media$plot_violino_1
 mapply(ggsave, file=paste0("./images/", names(plots_ranking_media), ".png"), plot=plots_ranking_media, width = plots_width, height = plots_heigh)
 
 
@@ -686,7 +687,7 @@ variavel_resposta = "sNPVProfit1Regret"
 landscape_estrategia_comparacao = plot_landscape_futuros_plausiveis(
   results, estrategia = results$EstrategiaCandidata$Lever, 
   variavelresp = variavel_resposta,
-  nomeamigavel_variavelresp = "LOF Percentual",
+  nomeamigavel_variavelresp = "Custo de Oportunidade",
   variavel1  = as.character(tabela_random_forest$Variavel[1]),
   n_variavel1 = as.character(tabela_random_forest$Variavel[1]),
   variavel2 = as.character(tabela_random_forest$Variavel[2]),
@@ -782,8 +783,101 @@ View(x)
 threshold_analise_vulnerabilidade
 
 
+#### 4.3.4 Comparando Estratégias do Ranking ####
+
+
+## Gerar Objeto com Ensemble e Resultados:
+
+# Obter Ensemble com Dados Simulados (com todas as análises).
+ensemble_e_resultados = dplyr::inner_join(as.data.frame(results$Ensemble), results$AnaliseRegret$Dados, by = "Scenario")
+
+# Retirar NAs do Ensemble
+ensemble_e_resultados = na.omit(ensemble_e_resultados)
+
+# Utilizar apenas as primeiros 8 estratégias do ranking:
+
+top_10_estrategias = ranking_estrategias$Lever[1:6]
+
+# Filtrar o Ensemble e Resultados para mostrar estratégias nos top 10
+ensemble_e_resultados = subset(ensemble_e_resultados, Lever %in% top_10_estrategias)
+
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = as.character(ranking_variaveis_por_media$Variavel[1]), 
+                              nome_amigavel_var1 = as.character(ranking_variaveis_por_media$Variavel[1]), 
+                              variavel2 = "sNPVProfit1Regret", 
+                              nome_amigavel_var2 = "Custo de Oportunidade")
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = as.character(ranking_variaveis_por_media$Variavel[2]), 
+                              nome_amigavel_var1 = as.character(ranking_variaveis_por_media$Variavel[2]), 
+                              variavel2 = "sNPVProfit1Regret", 
+                              nome_amigavel_var2 = "Custo de Oportunidade")
+
+
+
+
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = ranking_variaveis_por_media$Variavel[2], 
+                              nome_amigavel_var1 = ranking_variaveis_por_media$Variavel[2], 
+                              variavel2 = "sNPVProfit1Regret", 
+                              nome_amigavel_var2 = "Custo de Oportunidade")
+
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = ranking_variaveis_por_media$Variavel[3], 
+                              nome_amigavel_var1 = ranking_variaveis_por_media$Variavel[3], 
+                              variavel2 = "sNPVProfit1Regret", 
+                              nome_amigavel_var2 = "Custo de Oportunidade")
+
+
+
+
+
+
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = "aReferencePopulation", 
+                              nome_amigavel_var1 = "Mercado Estimado", 
+                              variavel2 = "sNPVProfit1Regret", 
+                              nome_amigavel_var2 = "Custo de Oportunidade")
+
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = "sNPVProfit1", 
+                              nome_amigavel_var1 = "VPL Player 1", 
+                              variavel2 = "sNPVProfit1Regret", 
+                              nome_amigavel_var2 = "Custo de Oportunidade Player 1")
+
+
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = "aInitialsPatentesEmDominioPublicoUteis", 
+                              nome_amigavel_var1 = "Patentes em dom. publ. úteis", 
+                              variavel2 = "sNPVProfit1", 
+                              nome_amigavel_var2 = "VPL Player 1")
+
+
+
+
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = "aInitialsPatentesEmDominioPublicoUteis", 
+                              nome_amigavel_var1 = "Patentes em dom. publ. úteis", 
+                              variavel2 = "sNPVProfit1", 
+                              nome_amigavel_var2 = "VPL Player 1")
+
+
+
+
+
+
+
 
 #### 4.4 Análise de Tradeoffs ####
+
+
 
 plot_fronteira_tradeoff_estrategia(results = results, opcoes = opcoes)
 
@@ -806,17 +900,6 @@ points(x)
 
 library(subgroup.discovery)
 
-subgroup.discovery::prim.
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -824,11 +907,22 @@ subgroup.discovery::prim.
 #### Dados de Fundamentos ####
 dados_fundamentos = obter_dados_fundamentos_us_fundamentals()
 
+
+
 plot_lucro_bruto_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=GrossProfit, group=empresa)) +
   geom_line(aes(color=empresa))+
   geom_point(aes(color=empresa)) +
   ylab(label = "Lucro Bruto") +
   scale_y_continuous(labels = format_for_humans)
+
+plot_ped_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=ResearchAndDevelopmentExpense, group=empresa)) +
+  geom_line(aes(color=empresa))+
+  geom_point(aes(color=empresa)) +
+  ylab(label = "OPEX P&D") +
+  scale_y_continuous(labels = format_for_humans)
+
+
+
 
 plot_lucro_bruto_us_fundamentals
 
@@ -858,6 +952,97 @@ plot_orcamentoPeD__3dsystems = plot_linha_uma_variavel(fundamentos_3DSYSTEMS$Dad
 # Despesas em Pesquisa e Desenvolvimento da 3D Systems em relação a PeD
 plot_orcamento_PeD_3DSystems = ggplot(DDD.orcamentoPeD)
 
+
+#### Dados de Patentes ####
+
+# Esta busca de patentes por nome do proprietário da patente não foi produtiva. Existem casos onde a ferramenta não encontra patentes (ex.:  3D Systems).
+
+library(patentsview)
+
+patentsview::get_endpoints()
+
+patentsview::get_fields(endpoint = "assignees")
+
+qry_3 = qry_funs$text_phrase(patent_title = c("simulated leather", "leather-like", "artificial leather", "synthetic leather"))
+
+query_assignee = qry_funs$text_phrase(assignee_organization = "3D")
+teste_patentes = search_pv(query = query_assignee, fields = c("patent_id", "patent_number", "patent_title", "patent_year", "patent_type"), all_pages = TRUE)
+
+
+query_assignee = qry_funs$contains(assignee_first_name = "3D")
+
+
+qry_4 = qry_funs$text_phrase(patent_title = c("simulated leather", "leather-like", "artificial leather", "synthetic leather"))
+
+# Get all patent and assignee-level fields for the patents endpoint:
+fields <- get_fields(endpoint = "patents",
+                     groups = c("assignees", "patents"))
+
+
+View(patentsview::fieldsdf)
+
+
+# Resultado 3D Systems
+# Este é iD do assignee:
+
+assignees_3d = search_pv(query = qry_funs$contains(assignee_organization = "Corp Z"),
+          endpoint = "assignees")
+
+assignees_3d$data$assignees
+
+
+resultados_stratasys = search_pv(query = qry_funs$contains(assignee_organization = c("Stratasys", "Objet Geometries Ltd","MakerBot Industries, LLC"),
+                       fields = c("patent_id", "patent_number", "patent_title", "patent_year", "patent_type"), all_pages = TRUE)
+
+View(resultados_stratasys$data$patents)
+
+
+
+resultados_3Dsystems = search_pv(query = qry_funs$contains(assignee_organization = c("3d Systems")),
+                                 fields = c("patent_id", "patent_number", "patent_title", "patent_year", "patent_type"), all_pages = TRUE)
+
+
+
+
+resultados = search_pv(query = qry_funs$eq(assignee_id = "30f6122b2c1fa7d504fa8306f8be21e1"),
+                       fields = c("patent_id", "patent_number", "patent_title", "patent_year", "patent_type"), all_pages = TRUE)
+
+
+
+
+View(resultados$data$patents)
+
+
+
+resultados = search_pv(query = qry_funs$contains(assignee_organization = "3D SYSTEMS"),
+          endpoint = "assignees")
+
+
+
+
+search_pv(query = qry_funs$contains(inventor_last_name = "smith"),
+         endpoint = "assignees")
+
+#...Then pass to search_pv:
+search_pv(query =
+            '
+{"_gte":{"patent_date":"2007-01-04"}}
+'
+          ,
+          fields = fields, endpoint = "patents")
+
+
+
+
+
+teste_patentes = search_pv(query = qry_3, fields = c("patent_id", "patent_number", "patent_title", "patent_year", "patent_type"), all_pages = TRUE)
+
+
+patentes = as.data.frame(teste_patentes$data$patents)
+
+
+
+patentsview::qry_funs
 
 
 #### Código Não utilizado ####
