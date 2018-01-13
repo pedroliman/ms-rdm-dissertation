@@ -341,7 +341,7 @@ results$EstrategiaCandidata = escolher_estrategia_candidata(dados = results$Anal
 
 # Gerando Resultados da Opção 1 - Estratégia Candidata 1, e Cenário 1
 plots_results = salvar_plots_result(results = results, 
-                                    cenario_plot_players = results$DadosUltimoPeriodo$Scenario[1],
+                                    cenario_plot_players = results$DadosUltimoPeriodo$Scenario[100],
                                     estrategia_candidata = results$EstrategiaCandidata$Lever[1],
                                     opcoes = opcoes)
 
