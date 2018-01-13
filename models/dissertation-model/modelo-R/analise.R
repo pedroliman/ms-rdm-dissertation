@@ -757,11 +757,6 @@ x = df_vulnerabilidade[,variaveis_shortlist]
 
 # Preparando Variáveis Categóricas para o PRIM:
 
-x$aSwitchForCapacityStrategy2 = round(x$aSwitchForCapacityStrategy2,0)
-x$aSwitchForCapacityStrategy3 = round(x$aSwitchForCapacityStrategy3,0)
-x$aSwitchForCapacityStrategy4 = round(x$aSwitchForCapacityStrategy4,0)
-
-
 # A Aopção abaixo pega todas as variáveis de incerteza:
 #x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
 
@@ -930,6 +925,9 @@ plot_dispersao_duas_variaveis(df_dados = results$AnaliseRegret$Dados,
 
 
 plot_fronteira_tradeoff_estrategia(results = results, opcoes = opcoes)
+
+
+plot_tradeoff_regret_vpl(results = results, opcoes = opcoes)
 
 
 # results.prim = prim.box(x = x, y = y, threshold.type = 1, peel.alpha = 0.25, paste.alpha = 0.15, threshold = 0.3)

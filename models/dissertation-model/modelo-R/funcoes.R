@@ -2353,8 +2353,15 @@ plot_fronteira_tradeoff_estrategia = function(results, opcoes = opcoes) {
   # Resultados em 03/01:
   
   cenarios_escolhidos = subset(ensemble,
-                                 aSensOfPriceToDSBalance > 0.042 &
-                                 aReferencePopulation > 5.1 * 10 ^ 4)
+                                 aReferencePopulation > 5.8 * 10 ^ 4 &
+                                 aNormalCapacityUtilization > 0.626 &
+                                 aNormalCapacityUtilization < 0.864 &
+                                 aDesiredMarketShare2 > 0.325 &
+                                 aDesiredMarketShare2 < 0.528 &
+                                 aSwitchForCapacityStrategy4 < 2.14 &
+                                 aSwitchForCapacityStrategy4 > 0.611 &
+                                 aSensOfAttractToPrice > -11.3
+                                 )
   
   
   
@@ -2395,11 +2402,88 @@ plot_fronteira_tradeoff_estrategia = function(results, opcoes = opcoes) {
     geom_label(label=as.character(dados_join$Lever), color="white", size=3) +
     scale_y_continuous(labels = format_for_humans) + 
     scale_x_continuous(labels = format_for_humans) +
-    ylab("Perda de Oportunidade (Perc. 75%) - Cenário Definido") +
-    xlab("Perda de Oportunidade (Perc. 75%) - Todos os Cenários")
+    ylab("Custo de Oportunidade (Perc. 75%) - Cenário Definido") +
+    xlab("Custo de Oportunidade (Perc. 75%) - Todos os Cenários")
   
   
 }
+
+
+#' plot_fronteira_tradeoff_estrategia
+#' 
+#' Esta funcao ainda nao é completamente generalizada. estao dentro desta funcao a definicao do cenário a ser analisado.
+#'
+#' @param results list com os dados resultantes da funcao de simulacao e analise
+#' @param opcoes list de opcoes do modelo (as opcoes sao padronizadas.)
+#'
+#' @return grafico plotly com a fronteira de tradeoffs conforme um determinado cenário.
+#' @export
+#'
+plot_tradeoff_regret_vpl = function(results, opcoes = opcoes) {
+  
+  ensemble = as.data.frame(results$Ensemble)
+  
+  # Na linha abaixo as variáveis devem ser definidas.
+  # Resultados da Análise em 2/01
+  # cenarios_escolhidos = subset(ensemble,
+  #                              aReferenceIndustryDemandElasticity > 0.127 &
+  #                                aReferenceIndustryDemandElasticity < 0.940 &
+  #                                aFractionalDiscardRate > 0.143 &
+  #                                aReferencePopulation > 5.3 * 10 ^ 4)
+  
+  # Resultados em 03/01:
+  
+  cenarios_escolhidos = subset(ensemble,
+                               aReferencePopulation > 5.8 * 10 ^ 4 &
+                                 aNormalCapacityUtilization > 0.626 &
+                                 aNormalCapacityUtilization < 0.864 &
+                                 aDesiredMarketShare2 > 0.325 &
+                                 aDesiredMarketShare2 < 0.528 &
+                                 aSwitchForCapacityStrategy4 < 2.14 &
+                                 aSwitchForCapacityStrategy4 > 0.611 &
+                                 aSensOfAttractToPrice > -11.3
+  )
+  
+  
+  
+  numero_cenarios_escolhidos = cenarios_escolhidos$Scenario
+  
+  dados_cenario = subset(results$DadosUltimoPeriodo, Scenario %in% numero_cenarios_escolhidos)
+  
+  #dados_cenario = results$DadosUltimoPeriodo %>% dplyr::filter(AdvertisingCost  < 5.727e+04 & AverageTicket  >  1.789e+00 & AdoptionFraction  <  2.895e-02)
+  
+  analise_regret_cenario = calcular_e_resumir_regret(dados = dados_cenario, var_resposta = opcoes$VarResposta, var_cenarios = opcoes$VarCenarios, var_estrategias = opcoes$VarEstrategias)
+  
+  variavel_comparacao = paste(opcoes$VarResposta,opcoes$VarCriterio, sep = "")
+  
+  variaveis_grafico_regret = c(opcoes$VarEstrategias, variavel_comparacao, "sNPVProfit1Percentil75")
+  
+  regret_todos_os_futuros = results$AnaliseRegret$ResumoEstrategias[variaveis_grafico_regret]
+  
+  regret_todos_os_futuros = as.data.frame(regret_todos_os_futuros)
+  
+  names(regret_todos_os_futuros) = c(opcoes$VarEstrategias, "PerdaOportunidade75", "VPL75")
+  
+  dados_join = dplyr::inner_join(regret_todos_os_futuros, results$Inputs$Levers)
+  
+  # Esta descrição é customizada para os cenários definidos aqui.
+  dados_join$Descricao = paste("CS",dados_join$aSwitchForCapacityStrategy1,"MS",dados_join$aDesiredMarketShare1,"OR",dados_join$aOrcamentoPeD1,"AB",dados_join$aPercPeDAberto1, sep = ".")
+  
+  ggplot2::ggplot(dados_join, aes(x=PerdaOportunidade75, y=VPL75, fill=aPercPeDAberto1)) +
+    geom_label(label=as.character(dados_join$Lever), color="white", size=3) +
+    scale_y_continuous(labels = format_for_humans) + 
+    scale_x_continuous(labels = format_for_humans) +
+    ylab("VPL (Perc. 75%)") +
+    xlab("Custo de Oportunidade (Perc. 75%)")
+  
+  
+}
+
+
+
+
+
+
 
 
 #' plot_estrategias_versus_incertezas
