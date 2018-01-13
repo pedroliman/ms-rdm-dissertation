@@ -1792,7 +1792,7 @@ obter_df_vulnerabilidade = function(results, estrategia_candidata, variavel_resp
 obter_df_diff_media_casos_interesse = function(df_vulnerabilidade) {
   medias_interesse = df_vulnerabilidade %>% dplyr::filter(CasoInteresse == 1) %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1Regret) %>% summarise_all(mean)
   
-  medias_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1Regret)  %>% dplyr::summarise_all(mean)
+  medias_global = df_vulnerabilidade %>% dplyr::filter(CasoInteresse == 0) %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1Regret)  %>% dplyr::summarise_all(mean)
   
   max_global = df_vulnerabilidade %>% dplyr::select(-CasoInteresse, -Scenario, -Lever, -sNPVProfit1Regret) %>% dplyr::summarise_all(max)
   
@@ -1823,6 +1823,49 @@ obter_df_diff_media_casos_interesse = function(df_vulnerabilidade) {
     Range = v_range_global[ordem]
   )  
 }
+
+
+#' obter_df_teste_t_casos_interesse
+#' Realiza um Teste T para cada variável de incerteza. 
+#' @param df_vulnerabilidade data.frame com a análise de vulnerabilidade retornado pela função obter_df_vulnerabilidade.
+#'
+#' @return data.frame que é um ranking de variáveis.
+#' @export
+#'
+obter_df_teste_t_casos_interesse = function(df_vulnerabilidade) {
+  
+  casos_para_teste = df_vulnerabilidade %>% dplyr::select(-Scenario, -Lever, -sNPVProfit1Regret)
+  
+  # Teste T para Diferença de Médias
+  casos_para_teste$CasoInteresse = as.factor(casos_para_teste$CasoInteresse)
+  resultados_teste_t = t(sapply(casos_para_teste[-1], function(x) 
+    unlist(t.test(x~casos_para_teste$CasoInteresse)[c("estimate","p.value","statistic")])))
+  
+  resultados_teste_t = as.data.frame(resultados_teste_t)
+  
+  resultados_teste_t$RejeitaH0_95Conf = resultados_teste_t$p.value < 0.05
+  
+  resultados_teste_t$RejeitaH0_99Conf = resultados_teste_t$p.value < 0.01
+  
+  resultados_teste_t$Variavel = rownames(resultados_teste_t)
+  
+  rownames(resultados_teste_t) = NULL
+  
+  est = unique(df_vulnerabilidade$Lever)
+  
+  names(resultados_teste_t) = c(paste("Média Est.",est,"não Falha"), paste("Média Est.",est,"Falha"), "Valor_P", "Est. T", "Rej. H0 95%", "Rej. H0 99%", "Variável")
+  
+  resultados_teste_t = dplyr::arrange(.data = resultados_teste_t, Valor_P)
+  
+  resultados_teste_t$Rank = 1:nrow(resultados_teste_t)
+  
+  resultados_teste_t = resultados_teste_t[,c(8,7,3,4,5,6,1,2)]
+  
+  resultados_teste_t
+}
+
+
+
 
 #' plot_violino_casos_interesse_por_variavel
 #'

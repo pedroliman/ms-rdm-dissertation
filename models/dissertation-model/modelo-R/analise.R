@@ -45,7 +45,7 @@ percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
 
-n_casos_total = 54 * 5 # 400
+n_casos_total = 54 * 200
 
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_opcao1_futuro, opcoes = opcoes)$Levers)
 
@@ -312,6 +312,8 @@ results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
 # Salvar Resultados com apenas 10 anos simulados.
 save(results, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results_final.rda")
 
+# Aplicando o Filtro de plausibilidade (Nenhum resultado caiu no filtro)
+
 #### 4.3 Análise dos Resultados ####
 
 # Escolher Estratégia Candidata de acordo com a definição de Critério:
@@ -447,9 +449,12 @@ x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
 #### 4.3.1 - Ranking de Variáveis considerando apenas médias.####
 ranking_variaveis_por_media = obter_df_diff_media_casos_interesse(df_vulnerabilidade = df_vulnerabilidade)
 
-ranking_variaveis_por_media
+ranking_variaveis_por_media_t = obter_df_teste_t_casos_interesse(df_vulnerabilidade = df_vulnerabilidade)
+
 
 View(ranking_variaveis_por_media)
+
+View(ranking_variaveis_por_media_t)
 
 
 ranking_variaveis_por_media = droplevels(as.data.frame(ranking_variaveis_por_media))
@@ -693,6 +698,20 @@ primeiras_variaveis_boruta = as.character(resultados_boruta$tabela_resultados_bo
 
 variaveis_shortlist = unique(c(primeiras_variaveis_media, primeiras_variaveis_boruta, primeiras_variaveis_random_forest))
 
+
+ranking_unificado = data.frame(
+  Posicao = 1:nrow(ranking_variaveis_por_media),
+  VariaveisRankingRandomForest = resultados_random_forest$tabela_random_forest$Variavel,
+  ImportanciaRandomForest = resultados_random_forest$tabela_random_forest$MeanDecreaseGini,
+  VariaveisRankingBoruta = resultados_boruta$tabela_resultados_boruta$attr,
+  ImportanciaMediaBoruta = resultados_boruta$tabela_resultados_boruta$meanImp,
+  DecisaoBoruta = resultados_boruta$tabela_resultados_boruta$decision,
+  VariaveisRankingMedia = ranking_variaveis_por_media$Variavel,
+  DiferencaMediaRelativa = ranking_variaveis_por_media$DifMediaRelativa
+)
+
+View(ranking_unificado)
+
 #### 4.3.2 - PRIM ####
 
 # Rodando a Análise do PRIM no python (chamando por aqui.)
@@ -726,7 +745,7 @@ ensemble_e_resultados = na.omit(ensemble_e_resultados)
 
 # Utilizar apenas as primeiros 8 estratégias do ranking:
 
-top_10_estrategias = ranking_estrategias$Lever[1:6]
+top_10_estrategias = ranking_estrategias$Lever[1:20]
 
 # Filtrar o Ensemble e Resultados para mostrar estratégias nos top 10
 ensemble_e_resultados = subset(ensemble_e_resultados, Lever %in% top_10_estrategias)
