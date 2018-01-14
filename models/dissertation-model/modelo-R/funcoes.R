@@ -2398,13 +2398,67 @@ plot_fronteira_tradeoff_estrategia = function(results, opcoes = opcoes) {
   # Esta descrição é customizada para os cenários definidos aqui.
   dados_join$Descricao = paste("CS",dados_join$aSwitchForCapacityStrategy1,"MS",dados_join$aDesiredMarketShare1,"OR",dados_join$aOrcamentoPeD1,"AB",dados_join$aPercPeDAberto1, sep = ".")
   
-  ggplot2::ggplot(dados_join, aes(x=PerdaOportunidadeTodosOsCenarios, y=PerdaOportunidadeNoCenario, fill=aPercPeDAberto1)) +
+  # Gerando Plot com Tradeoff de Estratégias.
+  plot_tradeoff_estrategias = ggplot2::ggplot(dados_join, aes(x=PerdaOportunidadeTodosOsCenarios, y=PerdaOportunidadeNoCenario, fill=aPercPeDAberto1)) +
     geom_label(label=as.character(dados_join$Lever), color="white", size=3) +
     scale_y_continuous(labels = format_for_humans) + 
     scale_x_continuous(labels = format_for_humans) +
     ylab("Custo de Oportunidade (Perc. 75%) - Cenário Definido") +
     xlab("Custo de Oportunidade (Perc. 75%) - Todos os Cenários")
   
+  `%notin%` = function(x,y) !(x %in% y)
+  
+  # definindo estratégias a usar neste gráfico: as 8 mais robustas em geral
+  dados_join = dados_join %>% dplyr::arrange(PerdaOportunidadeTodosOsCenarios)
+  
+  # Estratégias a entrar no gráfico: As 6 mais robustas em geral:
+  estrategias_grafico = dados_join$Lever[1:6]
+  
+  regret_medio_cenario_falha = results$AnaliseRegret$Dados %>% dplyr::filter(Scenario %in% numero_cenarios_escolhidos, Lever %in% estrategias_grafico) %>% group_by(Lever) %>% summarise(MediaRegretCenarioFalha = mean(sNPVProfit1Regret))
+  
+  regret_medio_cenario_sucesso = results$AnaliseRegret$Dados %>% dplyr::filter(Scenario %notin% numero_cenarios_escolhidos, Lever %in% estrategias_grafico) %>% group_by(Lever) %>% summarise(MediaRegretCenarioSucesso = mean(sNPVProfit1Regret))
+  
+  ProbCenario = seq(from = 1/101, to = 100/101, length.out = 100)
+  
+  OddsCenario = ProbCenario / (1-ProbCenario)
+  
+  #ProbCenario = c(1/1001, 1/101, 1/11, 1/2, 10/11, 100/101, 1000/1001)
+  #OddsCenario = c(0.001, 0.01, 0.1, 1, 10, 100, 1000)
+  
+  OddsTextoBreaks = c("1:100", "1:10", "1:1", "10:1", "100:1")
+  OddsCenarioBreaks = c(0.01, 0.1, 1, 10, 100)
+  
+  probs_df = data.frame(ProbCenario, OddsCenario)
+  
+  odds_e_levers = data.frame(expand.grid(Lever = results$Inputs$Levers$Lever, OddsCenario = OddsCenario))
+  
+  odds_e_levers = dplyr::inner_join(odds_e_levers, probs_df)
+  
+  tabela_analise_tradeoff = dplyr::inner_join(regret_medio_cenario_falha, 
+                                              regret_medio_cenario_sucesso)
+  
+  tabela_analise_tradeoff = dplyr::inner_join(tabela_analise_tradeoff, 
+                                              odds_e_levers)
+  
+  tabela_analise_tradeoff$RegretEsperado = tabela_analise_tradeoff$ProbCenario * tabela_analise_tradeoff$MediaRegretCenarioFalha + (1-tabela_analise_tradeoff$ProbCenario) * tabela_analise_tradeoff$MediaRegretCenarioSucesso
+  
+  # Tabela Gerada, Gerar Plot
+  
+  plot_curva_tradeoff = ggplot2::ggplot(tabela_analise_tradeoff,
+                                        aes(x=OddsCenario, y=RegretEsperado, color=factor(Lever), group=factor(Lever))) + 
+                          geom_line(size=1) + 
+                          ylab("Custo de Oportunidade Esperado ($)") + 
+                          xlab("Chances do Cenário de Alta Demanda Ocorrer") +
+                          labs(color = "Estratégia") +
+                          scale_x_continuous(breaks = OddsCenarioBreaks, labels = OddsTextoBreaks, trans = "log10") + 
+                          scale_y_continuous(labels = format_for_humans)
+  
+  list(
+    DadosTradeoffPontos = dados_join,
+    PlotTradeoffDispersao = plot_tradeoff_estrategias,
+    DadosTradeoffChances = tabela_analise_tradeoff,
+    PlotTradeoffOdds = plot_curva_tradeoff
+  )
   
 }
 

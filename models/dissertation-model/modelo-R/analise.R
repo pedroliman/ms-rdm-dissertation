@@ -924,7 +924,17 @@ plot_dispersao_duas_variaveis(df_dados = results$AnaliseRegret$Dados,
 
 
 
-plot_fronteira_tradeoff_estrategia(results = results, opcoes = opcoes)
+resultados_analise_tradeoff = plot_fronteira_tradeoff_estrategia(results = results, opcoes = opcoes)
+
+resultados_analise_tradeoff$PlotTradeoffOdds
+
+resultados_analise_tradeoff$PlotTradeoffDispersao
+
+ggsave(filename = "plot_tradeoff_dispersao.png", plot = resultados_analise_tradeoff$PlotTradeoffDispersao, width = plots_width, height = plots_heigh, path = "./images/")
+
+ggsave(filename = "plot_tradeoff_curva_odds.png", plot = resultados_analise_tradeoff$PlotTradeoffOdds, width = plots_width, height = plots_heigh, path = "./images/")
+
+mapply(ggsave, file=paste0("./images/", names(resultados_analise_tradeoff), ".png"), plot=resultados_analise_tradeoff, width = plots_width, height = plots_heigh)
 
 
 plot_tradeoff_regret_vpl(results = results, opcoes = opcoes)
