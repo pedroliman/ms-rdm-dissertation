@@ -984,6 +984,16 @@ dados_fundamentos = obter_dados_fundamentos_us_fundamentals()
 
 
 
+
+   + xlab(label = "Tempo") + ylab(label = "Valor da Ação - Fechamento")
+
+
+scale_x_date(format = "%b-%Y")
+
+
+
+
+
 plot_lucro_bruto_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=GrossProfit, group=empresa)) +
   geom_line(aes(color=empresa))+
   geom_point(aes(color=empresa)) +
@@ -1007,6 +1017,10 @@ fundamentos_mtls = obter_fundamentos_financeiros_quandl("PRLB")
 
 plot_receita_investimento_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Receita", variavel2 = "ResearchAndDevelopmentExpenses", nome_amigavel_variavel2 = "OPEX P & D")
 
+
+plot_receita_ebitda = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "Revenue", nome_amigavel_variavel1 = "Revenue", variavel2 = "NetCashFlowFromOperations", nome_amigavel_variavel2 = "Net CF from Operations")
+
+
 plot_cash_net_income_3dsystems = plot_linha_duas_variaveis(fundamentos_ddd$Dados, variavel1 = "NetIncome", nome_amigavel_variavel1 = "Lucro Líquido", variavel2 = "GrossProfit", nome_amigavel_variavel2 = "Lucro Bruto")
 
 fundamentos_3DSYSTEMS = obter_fundamentos_financeiros_quandl(company_code = "DDD")
@@ -1026,5 +1040,36 @@ plot_orcamentoPeD__3dsystems = plot_linha_uma_variavel(fundamentos_3DSYSTEMS$Dad
 
 # Despesas em Pesquisa e Desenvolvimento da 3D Systems em relação a PeD
 plot_orcamento_PeD_3DSystems = ggplot(DDD.orcamentoPeD)
+
+
+
+
+
+# Obter dados de Estoque.
+
+Quandl.api_key("RsCuvs4_WjRPP_zzSzfv")
+
+teste_preco_stock_3D_systems = Quandl("WIKI/DDD", collapse="monthly", start_date="1900-01-01", type="ts")
+
+
+df_stocks_DDD = data.frame(time = as.vector(time(teste_preco_stock_3D_systems)),
+                           as.data.frame(teste_preco_stock_3D_systems))
+
+
+teste_preco_stock_Stratasys = Quandl("WIKI/SSYS", collapse="monthly", start_date="1900-01-01", type="ts")
+
+
+join_acoes = dplyr::inner_join(df_stocks_DDD, df_stocks_SSYS, by = "time")
+
+df_stocks_SSYS = data.frame(time = as.vector(time(teste_preco_stock_Stratasys)),
+                            as.data.frame(teste_preco_stock_Stratasys))
+
+
+
+plot_acao_3D_Systems = ggplot(df_stocks_DDD, aes(time, Close)) + geom_line() + xlab("Tempo") + ylab("Valor da Ação - DDD")
+
+
+plot_acao_Stratasys = ggplot(df_stocks_SSYS, aes(time, Close)) + geom_line() + xlab("Tempo") + ylab("Valor da Ação - SSYS")
+
 
 
