@@ -1007,8 +1007,6 @@ plot_ped_us_fundamentals = ggplot(dados_fundamentos, aes(x=Ano, y=ResearchAndDev
   scale_y_continuous(labels = format_for_humans)
 
 
-
-
 plot_lucro_bruto_us_fundamentals
 
 fundamentos_ddd = obter_fundamentos_financeiros_quandl("DDD")
