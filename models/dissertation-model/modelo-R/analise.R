@@ -338,6 +338,7 @@ results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
 # Salvar Resultados com apenas 10 anos simulados.
 save(results, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results_final.rda")
 
+load("/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results_final.rda")
 # Aplicando o Filtro de plausibilidade (Nenhum resultado caiu no filtro)
 
 #### 4.3 Análise dos Resultados ####
@@ -471,6 +472,7 @@ View(df_vulnerabilidade)
 
 # Gerando Y e X para as Análises de Vulnerabilidade:
 y = factor(df_vulnerabilidade$CasoInteresse)
+y_continuo = df_vulnerabilidade$sNPVProfit1Regret
 x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
 
 list_tabelas_output[["DataFraneVulnerabilidade"]] <- df_vulnerabilidade
@@ -497,6 +499,8 @@ ranking_variaveis_por_media$Variavel = droplevels(ranking_variaveis_por_media$Va
 
 
 # Plotando Primeiras Variáveis da Diferença entre Médias
+
+plot_violino_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, variavel = "aPerfSlope", nome_amigavel_var = "aPerfSlope")
 
 resultados_ranking_media = list(
   ranking_variaveis_por_media = ranking_variaveis_por_media
@@ -570,6 +574,9 @@ set.seed(2)
 
 # Usando uma Random forest "padrão"
 library(randomForest)
+
+forest_continuo = randomForest::randomForest(y_continuo~., data = x)
+
 forest = randomForest::randomForest(factor(y)~., data = x)
 plot_importancia_forest = randomForest::varImpPlot(forest)
 
@@ -641,6 +648,11 @@ pdp1.3 = pdp::partial(forest, as.character(tabela_random_forest$Variavel[3]))
 plot_random_forest_1d.3 = pdp::plotPartial(pdp1.3)
 
 plot_random_forest_1d.3
+
+
+pdp_aPerfSlope = pdp::partial(forest, "aPerfSlope")
+plot_random_forest_pdp_aPerfSlope = pdp::plotPartial(pdp_aPerfSlope)
+
 
 
 
@@ -744,6 +756,12 @@ View(ranking_unificado)
 
 list_tabelas_output[["RankingGeral"]] <- ranking_unificado
 
+
+# Gerar Gráfico com variáveis no Shortlist:
+plot_grafico_shortlist = plot_estrategias_versus_incertezas(df_vulnerabilidade = df_vulnerabilidade,incertezas = variaveis_shortlist, binario = TRUE)
+
+plot_grafico_shortlist
+
 #### 4.3.2 - PRIM ####
 
 
@@ -783,7 +801,6 @@ threshold_analise_vulnerabilidade
 
 #### 4.3.4 Comparando Estratégias do Ranking ####
 
-
 ## Gerar Objeto com Ensemble e Resultados:
 
 # Obter Ensemble com Dados Simulados (com todas as análises).
@@ -794,7 +811,7 @@ ensemble_e_resultados = na.omit(ensemble_e_resultados)
 
 # Utilizar apenas as primeiros 8 estratégias do ranking:
 
-top_10_estrategias = ranking_estrategias$Lever[1:20]
+top_10_estrategias = ranking_estrategias$Lever[1:6]
 
 # Filtrar o Ensemble e Resultados para mostrar estratégias nos top 10
 ensemble_e_resultados = subset(ensemble_e_resultados, Lever %in% top_10_estrategias)
@@ -805,6 +822,37 @@ plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
                               nome_amigavel_var1 = as.character(ranking_variaveis_por_media$Variavel[1]), 
                               variavel2 = "sNPVProfit1Regret", 
                               nome_amigavel_var2 = "Custo de Oportunidade")
+
+
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = "aPerfSlope", 
+                              nome_amigavel_var1 = "aPerfSlope", 
+                              variavel2 = "sNPVProfit1Regret", 
+                              nome_amigavel_var2 = "Custo de Oportunidade")
+
+
+
+plot_dispersao_duas_variaveis_cor(df_dados = ensemble_e_resultados,
+                                  variavel_cor = "CasoInteresse",
+                              variavel1 = "aPerfSlope", 
+                              nome_amigavel_var1 = "aPerfSlope", 
+                              variavel2 = "aReferencePopulation", 
+                              nome_amigavel_var2 = "aReferencePopulation")
+
+
+
+
+
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = "aPerfSlope", 
+                              nome_amigavel_var1 = "aPerfSlope", 
+                              variavel2 = "sNPVProfit1", 
+                              nome_amigavel_var2 = "VPL Pl 1")
+
+
+
 
 plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
                               variavel1 = as.character(ranking_variaveis_por_media$Variavel[2]), 
