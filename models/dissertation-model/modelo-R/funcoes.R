@@ -1940,6 +1940,7 @@ plot_dispersao_duas_variaveis  = function(df_dados, variavel1, nome_amigavel_var
   }
   
   p = p + xlab(nome_amigavel_var1) + ylab(nome_amigavel_var2) + scale_y_continuous(labels = format_for_humans) + scale_x_continuous(labels = format_for_humans)
+
   
   p$labels$colour <- "Estratégia"
   
@@ -1951,6 +1952,35 @@ plot_dispersao_duas_variaveis  = function(df_dados, variavel1, nome_amigavel_var
   p
   
 }
+
+
+plot_dispersao_duas_variaveis_cor  = function(df_dados, variavel1, nome_amigavel_var1,  variavel2, nome_amigavel_var2, variavel_cor, method = lm, se = TRUE, facet = TRUE) {
+  call_grafico = substitute(
+    expr =  ggplot(as.data.frame(df_dados), aes(x=Variavel1, y=Variavel2, color = VariavelCor))
+    ,env = list(Variavel1 = as.name(variavel1), Variavel2 = as.name(variavel2), VariavelCor = as.name(variavel_cor))
+  )
+  
+  p =  eval(call_grafico)
+  
+  p = p + geom_point() + theme(legend.position = "bottom") # + scale_color_manual(values = c("blue", "red"), name = "Caso de Interesse") 
+  
+  p = p + xlab(nome_amigavel_var1) + ylab(nome_amigavel_var2) + scale_y_continuous(labels = format_for_humans) + scale_x_continuous(labels = format_for_humans)
+  
+  p$labels$colour <- variavel_cor
+  
+  p = p + scale_colour_gradient(low="red", high="green")
+  
+  if(facet == TRUE){
+    p = p + facet_wrap(~factor(Lever))
+  }
+  
+  p
+  
+}
+
+
+
+
 
 ##### FUNÇÕES AUXILIARES #####
 
@@ -2529,15 +2559,14 @@ plot_tradeoff_regret_vpl = function(results, opcoes = opcoes) {
 #'
 #' @return grafico que mostra a que condições a estratégia candidata é mais sucetível a falhar.
 #' @export
-plot_estrategias_versus_incertezas = function(ensemble_analisado, incertezas, binario = TRUE) {
-  ensemble_analisado$EstrategiaCandidata = as.factor(ensemble_analisado$EstrategiaCandidata)
+plot_estrategias_versus_incertezas = function(df_vulnerabilidade, incertezas, binario = TRUE) {
   
-  ensemble_analisado$Lever = as.factor(ensemble_analisado$Lever)
+  df_vulnerabilidade$CasoInteresse = as.factor(df_vulnerabilidade$CasoInteresse)
   
   p = if(binario) {
-    GGally::ggpairs(ensemble_analisado, columns = incertezas, aes(colour = EstrategiaCandidata, alpha = 0.7))
+    GGally::ggpairs(df_vulnerabilidade, columns = incertezas, aes(colour = CasoInteresse, alpha = 0.7))
   } else {
-    GGally::ggpairs(ensemble_analisado, columns = incertezas, aes(colour = Lever, alpha = 0.7))
+    GGally::ggpairs(df_vulnerabilidade, columns = incertezas, aes(colour = sNPVProfit1Regret, alpha = 0.7))
   }
   
   p
