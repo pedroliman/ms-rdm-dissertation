@@ -932,6 +932,7 @@ ensemble_e_resultados = dplyr::inner_join(as.data.frame(results$Ensemble), resul
 # Retirar NAs do Ensemble
 ensemble_e_resultados = na.omit(ensemble_e_resultados)
 
+
 # Utilizar apenas as primeiros 8 estratégias do ranking:
 
 top_10_estrategias = ranking_estrategias$Lever[1:6]
@@ -941,11 +942,53 @@ top_10_estrategias = ranking_estrategias$Lever[1:6]
 ensemble_e_resultados = subset(ensemble_e_resultados, Lever %in% top_10_estrategias)
 
 
-plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
-                              variavel1 = as.character(ranking_variaveis_por_media$Variavel[1]), 
-                              nome_amigavel_var1 = as.character(ranking_variaveis_por_media$Variavel[1]), 
-                              variavel2 = "sNPVProfit1Regret", 
-                              nome_amigavel_var2 = "Custo de Oportunidade")
+variaveis_incerteza = names(df_vulnerabilidade[,5:length(names(df_vulnerabilidade))])
+
+names(results$DadosUltimoPeriodo)
+
+variaveis_desejadas = c(variaveis_incerteza,
+                          c("sPrice1", "sCumulativeAdopters", "sCumulativeProduction1", "sPatentLefts", "fIndustryOrderRate", "aPerformance1", "aIndustryShipments", "sInstalledBase1", "sBacklog1", "sInstalledBase2", "sInstalledBase4", "sPrice2", "sPrice4", "aOrderShare1", "aOrderShare2","aOrderShare3", "aOrderShare4"))
+
+
+list_plots_estrategias_incerteza_profit_regret = list()
+
+for (v in variaveis_desejadas) {
+  message(paste("Gerando Plot:", v))
+  
+  list_plots_estrategias_incerteza_profit_regret[[paste0("estrategia_vs_profit_regret_",v)]] = plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                                                                                                           variavel1 = v, 
+                                                                                                           nome_amigavel_var1 = v, 
+                                                                                                           variavel2 = "sNPVProfit1Regret", 
+                                                                                                           nome_amigavel_var2 = "Custo de Oportunidade")
+}
+
+list_plots_estrategias_incerteza_profit_regret$estrategia_vs_profit_regret_aFractionalDiscardRate
+
+mapply(ggsave, file=paste0("./images/", names(list_plots_estrategias_incerteza_profit_regret), ".png"), plot=list_plots_estrategias_incerteza_profit_regret, width = plots_width, height = plots_width)
+
+
+list_plots_estrategias_incerteza_profit = list()
+
+for (v in variaveis_desejadas) {
+  message(paste("Gerando Plot:", v))
+  
+  list_plots_estrategias_incerteza_profit[[paste0("estrategia_vs_profit_",v)]] = plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                                                                                                                             variavel1 = v, 
+                                                                                                                             nome_amigavel_var1 = v, 
+                                                                                                                             variavel2 = "sNPVProfit1", 
+                                                                                                                             nome_amigavel_var2 = "VPL")
+}
+
+
+list_plots_estrategias_incerteza_profit$estrategia_vs_profit_aReferencePopulation
+
+mapply(ggsave, file=paste0("./images/", names(list_plots_estrategias_incerteza_profit), ".png"), plot=list_plots_estrategias_incerteza_profit, width = plots_width, height = plots_width)
+
+
+
+
+
+
 
 
 plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
