@@ -6,6 +6,10 @@
 # RDM realizadas durante a dissertação.
 ####
 
+library(randomForest)
+library(randomForestExplainer)
+library(pdp)
+library(gridExtra)
 
 ####Configurando Simulações ####
 # Carregando Funções Úteis
@@ -573,7 +577,7 @@ set.seed(2)
 
 
 # Usando uma Random forest "padrão"
-library(randomForest)
+
 
 forest_continuo = randomForest::randomForest(y_continuo~., data = x)
 
@@ -767,7 +771,7 @@ for (v in variaveis_partial_plots) {
 plot_partial_plot(dados = df_completo_partial_plots, variavel = v, nome_amigavel_variavel = v)
 
 
-library(gridExtra)
+
 
 plot_geral = do.call("grid.arrange", c(list_plots, ncol=3))
 
