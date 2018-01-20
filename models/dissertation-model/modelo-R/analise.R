@@ -614,11 +614,122 @@ plots_random_forest = list(
                                                                                 variavel2 = as.character(tabela_random_forest$Variavel[3]), 
                                                                                 nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[3]))
   
-  ,plot_dispersao_random_forest_3 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+  ,plot_dispersao_random_forest_3= plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                 variavel1 = as.character(tabela_random_forest$Variavel[1]), 
+                                                                                 nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[1]),  
+                                                                                 variavel2 = as.character(tabela_random_forest$Variavel[4]), 
+                                                                                 nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[4]))
+  
+  ,plot_dispersao_random_forest_4= plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                               variavel1 = as.character(tabela_random_forest$Variavel[1]), 
+                                                                               nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[1]),  
+                                                                               variavel2 = as.character(tabela_random_forest$Variavel[5]), 
+                                                                               nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[5]))
+  
+  ,plot_dispersao_random_forest_5= plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                               variavel1 = as.character(tabela_random_forest$Variavel[1]), 
+                                                                               nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[1]),  
+                                                                               variavel2 = as.character(tabela_random_forest$Variavel[6]), 
+                                                                               nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[6]))
+  
+  ,plot_dispersao_random_forest_6 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                               variavel1 = as.character(tabela_random_forest$Variavel[1]), 
+                                                                               nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[1]),  
+                                                                               variavel2 = as.character(tabela_random_forest$Variavel[7]), 
+                                                                               nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[7]))
+  
+  ,plot_dispersao_random_forest_7 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
                                                                                 variavel1 = as.character(tabela_random_forest$Variavel[2]), 
                                                                                 nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[2]),  
                                                                                 variavel2 = as.character(tabela_random_forest$Variavel[3]), 
                                                                                 nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[3]))
+  
+  
+  ,plot_dispersao_random_forest_8 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                 variavel1 = as.character(tabela_random_forest$Variavel[2]), 
+                                                                                 nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[2]),  
+                                                                                 variavel2 = as.character(tabela_random_forest$Variavel[4]), 
+                                                                                 nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[4]))
+  
+  ,plot_dispersao_random_forest_9 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                variavel1 = as.character(tabela_random_forest$Variavel[2]), 
+                                                                                nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[2]),  
+                                                                                variavel2 = as.character(tabela_random_forest$Variavel[5]), 
+                                                                                nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[5]))
+  
+  ,plot_dispersao_random_forest_10 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                variavel1 = as.character(tabela_random_forest$Variavel[2]), 
+                                                                                nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[2]),  
+                                                                                variavel2 = as.character(tabela_random_forest$Variavel[6]), 
+                                                                                nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[6]))
+  
+  ,plot_dispersao_random_forest_11 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                variavel1 = as.character(tabela_random_forest$Variavel[2]), 
+                                                                                nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[2]),  
+                                                                                variavel2 = as.character(tabela_random_forest$Variavel[7]), 
+                                                                                nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[7]))
+  
+  ,plot_dispersao_random_forest_12 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                variavel1 = as.character(tabela_random_forest$Variavel[3]), 
+                                                                                nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[3]),  
+                                                                                variavel2 = as.character(tabela_random_forest$Variavel[4]), 
+                                                                                nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[4]))
+  
+  ,plot_dispersao_random_forest_13 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                variavel1 = as.character(tabela_random_forest$Variavel[3]), 
+                                                                                nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[3]),  
+                                                                                variavel2 = as.character(tabela_random_forest$Variavel[5]), 
+                                                                                nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[5]))
+  
+  ,plot_dispersao_random_forest_14 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                variavel1 = as.character(tabela_random_forest$Variavel[3]), 
+                                                                                nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[3]),  
+                                                                                variavel2 = as.character(tabela_random_forest$Variavel[6]), 
+                                                                                nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[6]))
+  
+  ,plot_dispersao_random_forest_15 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                variavel1 = as.character(tabela_random_forest$Variavel[3]), 
+                                                                                nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[3]),  
+                                                                                variavel2 = as.character(tabela_random_forest$Variavel[7]), 
+                                                                                nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[7]))
+  
+  
+  ,plot_dispersao_random_forest_16 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                variavel1 = as.character(tabela_random_forest$Variavel[4]), 
+                                                                                nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[4]),  
+                                                                                variavel2 = as.character(tabela_random_forest$Variavel[5]), 
+                                                                                nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[5]))
+  
+  ,plot_dispersao_random_forest_17 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                 variavel1 = as.character(tabela_random_forest$Variavel[4]), 
+                                                                                 nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[4]),  
+                                                                                 variavel2 = as.character(tabela_random_forest$Variavel[6]), 
+                                                                                 nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[6]))
+  
+  ,plot_dispersao_random_forest_18 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                 variavel1 = as.character(tabela_random_forest$Variavel[4]), 
+                                                                                 nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[4]),  
+                                                                                 variavel2 = as.character(tabela_random_forest$Variavel[7]), 
+                                                                                 nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[7]))
+  
+  ,plot_dispersao_random_forest_19 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                 variavel1 = as.character(tabela_random_forest$Variavel[5]), 
+                                                                                 nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[5]),  
+                                                                                 variavel2 = as.character(tabela_random_forest$Variavel[6]), 
+                                                                                 nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[6]))
+  
+  ,plot_dispersao_random_forest_20 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                 variavel1 = as.character(tabela_random_forest$Variavel[5]), 
+                                                                                 nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[5]),  
+                                                                                 variavel2 = as.character(tabela_random_forest$Variavel[7]), 
+                                                                                 nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[7]))
+  
+  ,plot_dispersao_random_forest_21 = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                                 variavel1 = as.character(tabela_random_forest$Variavel[6]), 
+                                                                                 nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[6]),  
+                                                                                 variavel2 = as.character(tabela_random_forest$Variavel[7]), 
+                                                                                 nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[7]))
+  
 )
 
 
@@ -632,8 +743,49 @@ library(randomForestExplainer)
 library(pdp)
 
 
+variaveis_partial_plots = tabela_random_forest$Variavel[1:12]
+
+for (v in variaveis_partial_plots) {
+  message(paste("Gerando Partial Plot:", v))
+  partial_df =  pdp::partial(forest, v)
+  partial_df = as.data.frame(partial_df)
+  class(partial_df)
+  names(partial_df) = c(v, paste0("yhat.",v))
+  
+  if(v == variaveis_partial_plots[1]) {
+    list_plots = list()
+    df_completo_partial_plots = partial_df
+  } else {
+      df_completo_partial_plots = cbind(df_completo_partial_plots, partial_df)
+  }
+  
+  list_plots[[v]] = plot_partial_plot(dados = df_completo_partial_plots, variavel = v, nome_amigavel_variavel = v)
+  
+}
+
+
+plot_partial_plot(dados = df_completo_partial_plots, variavel = v, nome_amigavel_variavel = v)
+
+
+library(gridExtra)
+
+plot_geral = do.call("grid.arrange", c(list_plots, ncol=3))
+
+
+
+# Two Variables
+partial_plot_2 <- partial(forest, pred.var = c("aReferencePopulation", "aPerfSlope"), chull = TRUE)
+
+
+plot_parttial_2_d <- autoplot(partial_plot_2, contour = TRUE, 
+                                 legend.title = "Partial\ndependence")
+
+
 pdp1.1 = pdp::partial(forest, as.character(tabela_random_forest$Variavel[1]))
 plot_random_forest_1d.1 = pdp::plotPartial(pdp1.1)
+
+
+
 
 plot_random_forest_1d.1
 
@@ -654,8 +806,6 @@ pdp_aPerfSlope = pdp::partial(forest, "aPerfSlope")
 plot_random_forest_pdp_aPerfSlope = pdp::plotPartial(pdp_aPerfSlope)
 
 
-
-
 pdp2 = pdp::partial(forest,  as.character(tabela_random_forest$Variavel[1:2]))
 
 plot_parcial2d = pdp::plotPartial(pdp2)
@@ -665,6 +815,11 @@ plot_parcial2d
 estrategia_candidata = results$EstrategiaCandidata
 
 variavel_resposta = "sNPVProfit1Regret"
+
+
+
+plot_partial_dependence = plotmo::plotmo(forest, pmethod="partdep")
+
 
 
 landscape_estrategia_comparacao = plot_landscape_futuros_plausiveis(

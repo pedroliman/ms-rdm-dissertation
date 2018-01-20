@@ -2272,6 +2272,33 @@ plot_linha_uma_variavel = function(dados, variavel, nome_amigavel_variavel) {
 }
 
 
+plot_partial_plot = function(dados, variavel, nome_amigavel_variavel) {
+  
+  call_grafico = substitute(
+    expr = ggplot2::ggplot(dados, aes(x= Variavel, y= VariavelYHAT)),
+    env = list(Variavel = as.name(variavel), VariavelYHAT = as.name(paste0("yhat.",variavel)))
+  )
+  
+  p <- eval(call_grafico)
+  
+  p + 
+    geom_line() + 
+    ylab("yhat") + 
+    xlab(variavel) + 
+    theme(legend.position="bottom") +
+    scale_y_continuous(labels = format_for_humans) +
+    scale_x_continuous(labels = format_for_humans) + 
+    theme(axis.text=element_text(size=8),
+          axis.title=element_text(size=8))
+    #theme(axis.text.x = element_text(size=20)) # + ggtitle(paste0("Part. Dep.: ",v))
+}
+
+
+
+
+
+
+
 plot_linha_duas_variaveis = function(dados, variavel1, nome_amigavel_variavel1, variavel2, nome_amigavel_variavel2) {
   
   p <- ggplot2::ggplot(dados, aes(x = time))
