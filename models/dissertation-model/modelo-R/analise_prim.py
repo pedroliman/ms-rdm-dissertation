@@ -32,8 +32,20 @@ resposta = resposta["x"]
 
 incertezas = pd.read_csv("incertezas.csv", index_col=0, parse_dates=True)
 
+incertezas_completas = pd.read_csv("incertezas_completas.csv", index_col=0, parse_dates=True)
 
+
+# Rodando a Análise com Incertezas no Shortlist:
 p = prim.Prim(incertezas, resposta, threshold=211920013, threshold_type=">")
+
+box = p.find_box()
+
+box.show_tradeoff()
+
+plt.show()
+
+# Rodando a Análise com Todas as Incertezas no Shortlist:
+p = prim.Prim(incertezas_completas, resposta, threshold=211920013, threshold_type=">")
 
 box = p.find_box()
 

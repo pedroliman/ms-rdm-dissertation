@@ -578,7 +578,6 @@ set.seed(2)
 
 # Usando uma Random forest "padrão"
 
-
 forest_continuo = randomForest::randomForest(y_continuo~., data = x)
 
 forest = randomForest::randomForest(factor(y)~., data = x)
@@ -739,14 +738,6 @@ plots_random_forest = list(
 
 mapply(ggsave, file=paste0("./images/", names(plots_random_forest), ".png"), plot=plots_random_forest, width = plots_width, height = plots_heigh)
 
-
-
-
-
-library(randomForestExplainer)
-library(pdp)
-
-
 variaveis_partial_plots = tabela_random_forest$Variavel[1:12]
 
 for (v in variaveis_partial_plots) {
@@ -757,84 +748,48 @@ for (v in variaveis_partial_plots) {
   names(partial_df) = c(v, paste0("yhat.",v))
   
   if(v == variaveis_partial_plots[1]) {
-    list_plots = list()
+    list_partial_dependence_plots = list()
     df_completo_partial_plots = partial_df
   } else {
       df_completo_partial_plots = cbind(df_completo_partial_plots, partial_df)
   }
   
-  list_plots[[v]] = plot_partial_plot(dados = df_completo_partial_plots, variavel = v, nome_amigavel_variavel = v)
+  list_partial_dependence_plots[[paste0("random_forest_pd_plot_",v)]] = plot_partial_plot(dados = df_completo_partial_plots, variavel = v, nome_amigavel_variavel = v)
   
 }
 
-
-plot_partial_plot(dados = df_completo_partial_plots, variavel = v, nome_amigavel_variavel = v)
-
+mapply(ggsave, file=paste0("./images/", names(list_partial_dependence_plots), ".png"), plot=list_partial_dependence_plots, width = plots_width, height = plots_heigh)
 
 
+plot_partial_dependence_geral = do.call("grid.arrange", c(list_partial_dependence_plots, ncol=3))
 
-plot_geral = do.call("grid.arrange", c(list_plots, ncol=3))
-
+ggsave(filename = "./images/partial_dependence_plots_grid.png", plot = plot_partial_dependence_geral, width = plots_width, height = plots_width * 3/2)
 
 
 # Two Variables
-partial_plot_2 <- partial(forest, pred.var = c("aReferencePopulation", "aPerfSlope"), chull = TRUE)
+partial_plot_2_principais <- partial(forest, pred.var = c("aReferencePopulation", "aSwitchForCapacityStrategy2"), chull = TRUE)
 
 
-plot_parttial_2_d <- autoplot(partial_plot_2, contour = TRUE, 
+plot_partial_2_d <- autoplot(partial_plot_2_principais, contour = TRUE, 
                                  legend.title = "Partial\ndependence")
 
 
-pdp1.1 = pdp::partial(forest, as.character(tabela_random_forest$Variavel[1]))
-plot_random_forest_1d.1 = pdp::plotPartial(pdp1.1)
 
+plot_dispersao_comparacao_random_forest = plot_dispersao_casos_interesse_por_variavel(df_vulnerabilidade = df_vulnerabilidade, 
+                                                                             variavel1 = as.character(tabela_random_forest$Variavel[2]), 
+                                                                             nome_amigavel_var1 = as.character(tabela_random_forest$Variavel[2]),  
+                                                                             variavel2 = as.character(tabela_random_forest$Variavel[1]), 
+                                                                             nome_amigavel_var2 = as.character(tabela_random_forest$Variavel[1]))
 
-
-
-plot_random_forest_1d.1
-
-
-pdp1.2 = pdp::partial(forest, as.character(tabela_random_forest$Variavel[2]))
-plot_random_forest_1d.2 = pdp::plotPartial(pdp1.2)
-
-plot_random_forest_1d.2
-
-
-pdp1.3 = pdp::partial(forest, as.character(tabela_random_forest$Variavel[3]))
-plot_random_forest_1d.3 = pdp::plotPartial(pdp1.3)
-
-plot_random_forest_1d.3
-
-
-pdp_aPerfSlope = pdp::partial(forest, "aPerfSlope")
-plot_random_forest_pdp_aPerfSlope = pdp::plotPartial(pdp_aPerfSlope)
-
-
-pdp2 = pdp::partial(forest,  as.character(tabela_random_forest$Variavel[1:2]))
-
-plot_parcial2d = pdp::plotPartial(pdp2)
-
-plot_parcial2d
-
-estrategia_candidata = results$EstrategiaCandidata
-
-variavel_resposta = "sNPVProfit1Regret"
-
-
-
-plot_partial_dependence = plotmo::plotmo(forest, pmethod="partdep")
-
-
-
-landscape_estrategia_comparacao = plot_landscape_futuros_plausiveis(
-  results, estrategia = results$EstrategiaCandidata$Lever, 
-  variavelresp = variavel_resposta,
-  nomeamigavel_variavelresp = "Custo de Oportunidade",
-  variavel1  = as.character(tabela_random_forest$Variavel[1]),
-  n_variavel1 = as.character(tabela_random_forest$Variavel[1]),
-  variavel2 = as.character(tabela_random_forest$Variavel[2]),
-  n_variavel2 = as.character(tabela_random_forest$Variavel[2])
+list_plots_comparacao = list(
+  PlotRandomForest = plot_partial_2_d + ggtitle("Random Forest - PDP") + theme(legend.position = "bottom"),
+  PlotDispersao = plot_dispersao_comparacao_random_forest + ggtitle("Dados Simulados")
 )
+
+
+plot_comparacao_partial_dependence = do.call("grid.arrange", c(list_plots_comparacao, ncol=2))
+
+ggsave(filename = "./images/partial_dependence_comparacao_dados.png", plot = plot_comparacao_partial_dependence, width = plots_width, height = plots_heigh)
 
 
 
@@ -916,10 +871,9 @@ View(ranking_unificado)
 list_tabelas_output[["RankingGeral"]] <- ranking_unificado
 
 
-# Gerar Gráfico com variáveis no Shortlist:
-plot_grafico_shortlist = plot_estrategias_versus_incertezas(df_vulnerabilidade = df_vulnerabilidade,incertezas = variaveis_shortlist, binario = TRUE)
 
-plot_grafico_shortlist
+
+
 
 #### 4.3.2 - PRIM ####
 
@@ -935,12 +889,20 @@ primeiras_variaveis_boruta = as.character(resultados_boruta$tabela_resultados_bo
 variaveis_shortlist = unique(c(primeiras_variaveis_media, primeiras_variaveis_boruta, primeiras_variaveis_random_forest, primeiras_variaveis_teste_t))
 
 
+#### Plot Estratégias Versus Incertezas ####
+
+plot_grafico_shortlist_5 = plot_estrategias_versus_incertezas(df_vulnerabilidade = df_vulnerabilidade,incertezas = variaveis_shortlist[1:5], binario = TRUE)
+
+plot_grafico_shortlist_5
+
+
+
 # Rodando a Análise do PRIM no python (chamando por aqui.)
 # Edite o script do python para que isto funcione corretamente.
 
 y = df_vulnerabilidade$sNPVProfit1Regret
 x = df_vulnerabilidade[,variaveis_shortlist]
-
+x_completo = df_vulnerabilidade[,5:length(names(df_vulnerabilidade))]
 # Preparando Variáveis Categóricas para o PRIM:
 
 # A Aopção abaixo pega todas as variáveis de incerteza:
@@ -949,6 +911,8 @@ x = df_vulnerabilidade[,variaveis_shortlist]
 write.csv(y, file = "resposta.csv")
 
 write.csv(x, file = "incertezas.csv")
+
+write.csv(x_completo, file = "incertezas_completas.csv")
 
 View(y)
 View(x)
@@ -972,6 +936,7 @@ ensemble_e_resultados = na.omit(ensemble_e_resultados)
 
 top_10_estrategias = ranking_estrategias$Lever[1:6]
 
+
 # Filtrar o Ensemble e Resultados para mostrar estratégias nos top 10
 ensemble_e_resultados = subset(ensemble_e_resultados, Lever %in% top_10_estrategias)
 
@@ -979,6 +944,13 @@ ensemble_e_resultados = subset(ensemble_e_resultados, Lever %in% top_10_estrateg
 plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
                               variavel1 = as.character(ranking_variaveis_por_media$Variavel[1]), 
                               nome_amigavel_var1 = as.character(ranking_variaveis_por_media$Variavel[1]), 
+                              variavel2 = "sNPVProfit1Regret", 
+                              nome_amigavel_var2 = "Custo de Oportunidade")
+
+
+plot_dispersao_duas_variaveis(df_dados = ensemble_e_resultados,
+                              variavel1 = as.character(ranking_variaveis_por_media$Variavel[2]), 
+                              nome_amigavel_var1 = as.character(ranking_variaveis_por_media$Variavel[2]), 
                               variavel2 = "sNPVProfit1Regret", 
                               nome_amigavel_var2 = "Custo de Oportunidade")
 
