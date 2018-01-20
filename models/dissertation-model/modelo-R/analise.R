@@ -475,6 +475,7 @@ View(df_vulnerabilidade)
 
 # Gerando Y e X para as Análises de Vulnerabilidade:
 y = factor(df_vulnerabilidade$CasoInteresse)
+
 y_continuo = df_vulnerabilidade$sNPVProfit1Regret
 x = df_vulnerabilidade[,5:ncol(df_vulnerabilidade)]
 
@@ -742,7 +743,7 @@ variaveis_partial_plots = tabela_random_forest$Variavel[1:12]
 # Primeira Forma de Gerar os Partial Plots - Gráficos Individuais:
 for (v in variaveis_partial_plots) {
   message(paste("Gerando Partial Plot:", v))
-  partial_df =  pdp::partial(forest, v)
+  partial_df =  pdp::partial(forest, v, which.class = 2)
   partial_df = as.data.frame(partial_df)
   class(partial_df)
   names(partial_df) = c(v, paste0("yhat.",v))
@@ -769,12 +770,19 @@ ggsave(filename = "./images/partial_dependence_plots_grid.png", plot = plot_part
 
 
 
+# Two Variables
+partial_plot_2_principais <- pdp::partial(forest, pred.var = c("aReferencePopulation", "aSwitchForCapacityStrategy2"), chull = TRUE, which.class = 2)
+
+
+plot_partial_2_d <- autoplot(partial_plot_2_principais, contour = TRUE, 
+                             legend.title = "Partial\ndependence")
+
 
 
 # Segunda Forma, mais apropriada para gerar o gráfico Geral para que o eixo vertical fique igual
 gerar_df_partial_plots = function(n_variavel, forest = forest) {
   v = variaveis_partial_plots[n_variavel]
-  df_variavel = pdp::partial(forest, v)
+  df_variavel = pdp::partial(forest, v, which.class = 2)
   df_variavel$Variavel = v
   names(df_variavel) = c("Incerteza", "PartialDependence", "Variavel")
   df_variavel
@@ -796,12 +804,6 @@ plot_partial_dependence_completo2 = plot_partial_plot_n_variaveis(dados = df_com
 ggsave(filename = "./images/partial_dependence_plots_grid2.png", plot = plot_partial_dependence_completo2, width = plots_width, height = plots_width * 3/2)
 
 
-# Two Variables
-partial_plot_2_principais <- partial(forest, pred.var = c("aReferencePopulation", "aSwitchForCapacityStrategy2"), chull = TRUE)
-
-
-plot_partial_2_d <- autoplot(partial_plot_2_principais, contour = TRUE, 
-                                 legend.title = "Partial\ndependence")
 
 
 
