@@ -2294,7 +2294,24 @@ plot_partial_plot = function(dados, variavel, nome_amigavel_variavel) {
 }
 
 
-
+plot_partial_plot_n_variaveis = function(dados) {
+  
+  p <- ggplot2::ggplot(dados, aes(x= Incerteza, y= PartialDependence))
+  
+  p = p + 
+    geom_line() + 
+    ylab("Partial Dependence") + 
+    xlab("Incerteza") + 
+    theme(legend.position="bottom") +
+    scale_y_continuous(labels = format_for_humans) +
+    scale_x_continuous(labels = format_for_humans) + 
+    theme(axis.text=element_text(size=8),
+          axis.title=element_text(size=8)) 
+  
+  p = p + facet_wrap(~Variavel, scales = "free_x", ncol = 3, strip.position = "bottom")
+  p 
+  #theme(axis.text.x = element_text(size=20)) # + ggtitle(paste0("Part. Dep.: ",v))
+}
 
 
 

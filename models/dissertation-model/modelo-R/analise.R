@@ -7,7 +7,6 @@
 ####
 
 library(randomForest)
-library(randomForestExplainer)
 library(pdp)
 library(gridExtra)
 
@@ -740,6 +739,7 @@ mapply(ggsave, file=paste0("./images/", names(plots_random_forest), ".png"), plo
 
 variaveis_partial_plots = tabela_random_forest$Variavel[1:12]
 
+# Primeira Forma de Gerar os Partial Plots - Gráficos Individuais:
 for (v in variaveis_partial_plots) {
   message(paste("Gerando Partial Plot:", v))
   partial_df =  pdp::partial(forest, v)
@@ -758,12 +758,42 @@ for (v in variaveis_partial_plots) {
   
 }
 
+
 mapply(ggsave, file=paste0("./images/", names(list_partial_dependence_plots), ".png"), plot=list_partial_dependence_plots, width = plots_width, height = plots_heigh)
 
 
 plot_partial_dependence_geral = do.call("grid.arrange", c(list_partial_dependence_plots, ncol=3))
 
+
 ggsave(filename = "./images/partial_dependence_plots_grid.png", plot = plot_partial_dependence_geral, width = plots_width, height = plots_width * 3/2)
+
+
+
+
+
+# Segunda Forma, mais apropriada para gerar o gráfico Geral para que o eixo vertical fique igual
+gerar_df_partial_plots = function(n_variavel, forest = forest) {
+  v = variaveis_partial_plots[n_variavel]
+  df_variavel = pdp::partial(forest, v)
+  df_variavel$Variavel = v
+  names(df_variavel) = c("Incerteza", "PartialDependence", "Variavel")
+  df_variavel
+}
+
+list_partial_dependence_df = lapply(X = 1:length(variaveis_partial_plots), FUN = gerar_df_partial_plots, forest = forest)
+
+df_completo_partial_plots2 = do.call(rbind, list_partial_dependence_df)
+
+
+names(df_completo_partial_plots2)
+
+
+df_completo_partial_plots2$Variavel = factor(df_completo_partial_plots2$Variavel, levels = variaveis_partial_plots)
+
+plot_partial_dependence_completo2 = plot_partial_plot_n_variaveis(dados = df_completo_partial_plots2)
+
+
+ggsave(filename = "./images/partial_dependence_plots_grid2.png", plot = plot_partial_dependence_completo2, width = plots_width, height = plots_width * 3/2)
 
 
 # Two Variables
