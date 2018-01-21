@@ -289,13 +289,14 @@ O próximo conjunto de módulos do modelo é vetorizado por produtores de impres
 Este aspecto é relevante para a representação da indústria da manufatura aditiva, visto que a adição de capacidade por outros players, e decisões relacionadas à sua precificação tendem à influenciar a decisão da empresa.
 
 
-
-
 Em seguida, a produção de cada um dos players simulados no moeolo é estimada, utilizando as informações de demanda, capacidade dos players e market share estimado. A produção, de modo imediato, gera caixa para os players, atualizando seu valor presente líquido em caixa.
 
 Três macro-enlaces de feedback podem ser visualizados nesta estrutura. O primeiro enlace, R1, tende à estimular o crescimento da demanda por meio da expansão do mercado. Uma vez que parcelas cada vez maiores da
 
 No modelo proposto por Sterman (XX) dois players, inicialmente com a mesma capacidade produtiva, iniciam vendendo produtos a um mercado em expansão.
+
+
+As seções seguintes definem a formulação matemática do modelo computacional empregado por este trabalho. Como mencionando anteriormente, o modelo foi baseado na formulação original de Sterman (2007), sendo realizadas alterações para viabilizar a representação dos elementos destacados na seção de estruturação do problema. Segue-se que a formulação do modelo geral é atribuída à Sterman et al (2007), sendo as expansões geradas no contexto deste trabalho específicamente destacadas durante o texto.
 
 ## Demanda Global
 
@@ -308,44 +309,41 @@ $$D^I = \mu \frac{dA}{dt}$$
 
 ## Difusão do Produto
 
-O crescimento do número de clientes $A$ que aderiram às impressoras 3D em um dado instante de tempo $t$ é um estoque modelado por meio do modelo padrão de difusão de Bass (XXXX). Neste modelo o crescimento da população de clientes que aderem à uma ideia é dependente do tamanho total da população $POP$, do número de clientes que não adotaram $N$, da fração de inovadores que adotam ao produto ano a ano independentemente de outros usuários $\alpha$ e do parâmetro $\beta$ que mede a força da difusão do produto por boca-a-boca. A não-negatividade da equação é garantida obtendo-se o máximo entre a equação e zero. Além disto, o valor inicial do número de clientes $A_{t_0}$ é calibrado a partir do númer......
+O crescimento do número de clientes $A$ que aderiram às impressoras 3D em um dado instante de tempo $t$ é um estoque modelado por meio do modelo padrão de difusão de Bass (XXXX). Neste modelo o crescimento da população de clientes que aderem à uma ideia é dependente do tamanho total da população $POP$, do número de clientes que não adotaram $N$, da fração de inovadores que adotam ao produto ano a ano independentemente de outros usuários $\alpha$ e do parâmetro $\beta$ que mede a força da difusão do produto por boca-a-boca. A não-negatividade da equação é garantida obtendo-se o máximo entre a equação e zero.
 
 $$ A_t = A_{t_0} + \int_{t_0}^{t}  MAX\left(0,N \left(\alpha + \beta \frac{A}{POP}\right)\right); A_{t_0} = \theta A^*$$
 
-O número de consumidores potenciais $N$ é modelado como o máximo entre zero e a diferença entre o número de clientes que irá adotar o produto em algum momento $A^*$ e o número de clientes que adotou o produto $A$.
+O número de consumidores potenciais que ainda não aderiram à impressão 3D $N$ é modelado como o máximo entre zero e a diferença entre o número de clientes que irá adotar o produto em algum momento $A^*$ e o número de clientes que adotou o produto $A$.
 
 $$N = MAX(0, A^* - A)$$
 
-O número de clientes que irá adotar o produto $A^*$ é calculado segundo uma curva de demanda linear, variando em função do menor preço encontrado no mercado $P^{min}$, e da inclinação da curva de demanda $\sigma$, que corresponde à $(A^*-POP^r)/(P^{min} - P^r)$. Para a calibração da curva de preço e demanda, um preço de referência $P^r$ e uma demanda de referência $POP^r$. Além disto, a demanda nunca será maior do que a população total $POP$, nem menor do que $0$. 
+O número de clientes que irá adotar o produto $A^*$ é calculado segundo uma curva de demanda linear, variando em função do menor preço encontrado no mercado $P^{min}$, e da inclinação da curva de demanda $\sigma$, que corresponde à $(A^*-POP^r)/(P^{min} - P^r)$. Para a calibração da curva de preço e demanda, um preço de referência $P^r$ e uma demanda de referência $POP^r$ são definidos e utilizados. Além disto, a demanda nunca será maior do que a população total $POP$, nem menor do que $0$. 
 
 $$A^* = MIN \left(POP, POP^r * MAX \left(0, 1+ \frac{\sigma(P^{min} - P^r)}{POP^r}\right)\right)$$
 
 A inclinação da curva de demanda $\sigma$, por sua vez, é calculada em função da população de referência $POP^r$, do preço de referência $P^r$ e da elasticidade da curva de demanda $\varepsilon_d$. 
+
 $$\sigma = - \varepsilon_d \left(\frac{POP^r}{p^r}\right)$$
 
-A demanda oriúnda da necessidade de substituição dos produtos depende do número de impressoras 3D já vendidos pela empresa $I_i$, e de uma taxa percentual de descarte de impressoras $\delta$. Esta taxa percentual de descarte de impressoras corresponde ao inverso da vida útil média das impressoras vendidas.
-O modelo pressupõe que o número de  impressoras descartadas pelo fim da sua vida útil corresponde ao número de impressoras a serem compradas.
+A demanda oriúnda da necessidade de substituição dos produtos depende do número de impressoras 3D já vendidos pela empresa $I_i$, e de uma taxa percentual de descarte de impressoras $\delta$. Esta taxa percentual de descarte de impressoras corresponde ao inverso da vida útil média das impressoras vendidas. O modelo pressupõe que o número de  impressoras descartadas pelo fim da sua vida útil corresponde ao número de impressoras a serem compradas.
 
 $$D^r = \sum_{i}{D_i} \ ; \ D_i = \delta * I_i$$
 
-
-**Modificação:** Este pressuposto atua como um pressuposto "otimista" para os produtores de impressoras 3D, implicando que, no longo prazo o mercado alcançado pelas impressoras 3D nunca retornarão à outras tecnologias. Podemos modificar esta equação incluindo uma taxa $\alpha$ de impressoras que são descartadas, porém nunca substituídas. Pensar numa forma de modelar esta taxa.
-
-$$D^r = \sum_{i}{D_i} \ ; \ D_i = \delta * I_i * \alpha $$
 O número de impressoras 3D atualmente instaladas em consumidores $I_{i,t}$ de cada player corresponde à acumulação de entregas de impressoras $I_{i,t}$ e é reduzida pelo número de produtos descartados $D_{i,t}$, considerando uma quantidade inicial $I_{i,t_0}$ de impressoras instaladas no período inicial de simulação.
 
 $$I_{i,t} = I_{i,t_0} + \int_{t_0}^{t} S_{i,t} - D_{i,t}$$
 
 ## Market Share
 
-A atratividade de cada player é calculada com base em um modelo logit de decisão (citar). Neste modelo, a atratividade de cada um dos players é calculada de acordo com um conjunto de critérios competitivos. No modelo de Sterman (XX), são utilizados como critérios o preço do produto e o tempo de entrega.
+Assim como no modelo de Sterman et. al (2007), a atratividade de cada player é calculada com base em um modelo logit de decisão. Neste modelo, a atratividade de cada um dos players é calculada de acordo com um conjunto de critérios competitivos. Originalmente, a atratividade de cada player modelada por Sterman et. al (2007) considerava apenas preço e tempo de entrega como critérios competitivos. Ainda que apropriada para os propósitos de Sterman et. al (2007), esta formulação não permite que sejam simuladas estratégias focalizadas no aumento da performance do produto, o que é um fator relevante para uma indústria intensiva em tecnologia, como a  indústria de impressoras 3D profissionais. Além disto, esta formulação não permite simular o impacto do vencimento de patentes sobre o aumento de performance de players que sustentam-se apenas em patentes vencidas.
+Para tornar o modelo mais próximo à realidade da impressão 3D, o critério performance foi adicionado. A definição da variável performance será definida no módulo "Pesquisa e Desenvolvimento.", e é representada por um índice que varia entre 0 e 10, sendo 0 nenhuma performance e 10 performance máxima. Esta expansão do modelo permite que o market share dos players seja disputado não apenas por menores preços e tempo de entrega, mas também por melhor performance.
 
-**Modificação:** Criar um módulo para estimar um índice de performance das impressoras 3D influenciados por investimentos em Pesquisa e Desenvolvimento. Desta maneira, o Share de cada produto player pode ser dividido de acordo com a performance dos diferentes players.
-Este módulo de performance do produto também pode ser influenciado pela curva de aprendizagem dos players.
+Considerando estas modificações, a atratividade dos players é modelada considerando os seus respectivos preços $P_i$ e o preço de referência $P^r$, o seu tempo de entrega $\tau_i$ (o qual corresponde à razão do backlog do player $B_i$ e a taxa de entrega do player $S_i$ pela lei de Little) e o tempo de entrega de referência $tau^r$, e a sua performance $X_i$ e uma performance de referência $X^r$. Os parâmetros de sensibilidade da atratividade ao preço $\varepsilon_p$, tempo de entrega $\varepsilon_a$ e performance $\varepsilon_x$ modulam a preferência do mercado em relação a cada um destes critérios competitivos.
 
-$$A_i = exp \left({\varepsilon_p \frac{P_i}{P^r}}\right) * exp \left({\varepsilon_a \left(\frac{B_i}{S_i}\right)/\tau^r}\right)$$
 
-Com base na atratividade de cada player, o market share é definido normalizando-se a atratividade dos players em conjunto. Esta formulação garante que a soma do market share de cada um dos players será igual a 1.
+$$A_i = exp \left({\varepsilon_p \frac{P_i}{P^r}}\right) *         exp \left({\varepsilon_a \left(\frac{B_i}{S_i}\right)/\tau^r}\right) * exp \left({\varepsilon_x \frac{X^r}{X_i}}\right) $$
+
+Com base na atratividade de cada player, o market share é definido normalizando-se a atratividade dos players em conjunto. Esta formulação garante que a soma do market share de todos dos players seja igual a 1.
 
 $$S_i = A_i/\sum_{i}A_i$$
 
@@ -366,63 +364,53 @@ O valor da carteira de vendas $V_i$  aumenta conforme a quantidade de pedidos fa
 
 $$V_{i,t} = V_{i,t_0} + \int_{t_0}^{t} P_{i,t}*O_{i,t} - R_{i,t}$$
 
-Os custos fixos da empresa variam de modo proporcional à sua capacidade produtiva $K_i$, segundo um custo fixo unitário $u^f_i$. Os custos variáveis, por sua vez, são proporcionais ao número de produtos entregues pela empresa $S_i$, e um custo variável unitário $u^v_i$.
+Os custos fixos da empresa variam de modo proporcional à sua capacidade produtiva $K_i$, segundo um custo fixo unitário $u^f_i$. Dado que o modelo simula a dinâmica competitiva da empresa a longo prazo, adota-se o pressuposto de que os custos fixos são variáveis, e alteram-se conforme a capacidade. Os custos variáveis, por sua vez, são proporcionais ao número de produtos entregues pela empresa $S_i$, e um custo variável unitário $u^v_i$.
 
 $$C^f_i = u^f_i*K_i\ ; \  C^v_i = u^v_i * S_i$$
 
-Com o objetivo de demonstrar um mecanismo de retornos crescentes, Sterman (XX) insere em seu modelo um mecanismo de redução de custos oriúndo da curva de experiência. Esta formulação pressupõe que os players são capazes de reduzir seus custos à medida que produzem uma quantidade maior de produtos, obtendo experiência em produção $E$, equivalente dimensionalmente ao número de impressoras 3D produzidas. Os custos fixos $u^f_i$ e variáveis $u^v_i$ unitários caem à medida que a experiência $E$ aumenta em relação à experiência inicial $E_0$.
+Com o objetivo de demonstrar um mecanismo de retornos crescentes, Sterman et al. (2007) inserem em seu modelo um mecanismo de redução de custos oriúndo da curva de experiência. Esta formulação pressupõe que os players são capazes de reduzir seus custos à medida que produzem uma quantidade maior de produtos, obtendo experiência em produção $E_i$, equivalente dimensionalmente ao número de impressoras 3D produzidas. Os custos fixos $u^f_i$ e variáveis $u^v_i$ unitários caem à medida que a experiência $E$ aumenta em relação à experiência inicial $E_0$.
 
-$$u^f_i = u^f_0(E/E_0)^\gamma ;\ u^v_i = u^v_0(E/E_0)^\gamma; \gamma = log(\Gamma)/log(2)$$
+$$u^f_i = u^f_0(E_i/E_0)^\gamma ;\ u^v_i = u^v_0(E/E_0)^\gamma; \gamma = log(\Gamma)/log(2)$$
 
-A amplitude desta redução é calibrada apartir de custos fixos e variáveis iniciais $u^f_0$ e $u^v_0$, e de um parâmetro $\Gamma$ que representa a força da curva de experiência. Esta formulação permite que os players em um primeiro momento ampliem suas margens, e também permite que os mesmos reduzam seus preços com o objetivo de alcançar uma fatia maior de mercado. A Figura (XX) demonstra sensibilidade da relação não linear entre produção acumulada $E$ e custos $u^f_i$ e $u^v_i$, conforme varia a força da curva de experiência $\Gamma$.
+A amplitude desta redução é calibrada apartir de custos fixos e variáveis iniciais $u^f_0$ e $u^v_0$, e de um parâmetro $\Gamma$ que representa a força da curva de experiência. Esta formulação permite que os players em um primeiro momento ampliem suas margens, e também permite que os mesmos reduzam seus preços com o objetivo de alcançar uma fatia maior de mercado. A Figura (XX) demonstra a relação não linear entre produção acumulada $E$ e custos $u^f_i$ e $u^v_i$, conforme varia a força da curva de experiência $\Gamma$.
 
 ```{r figlearningcurve, fig.cap="Relação entre Produção Acumulada e Custos"}
 gerar_grafico_curva_experiencia()
 ```
 
-
-Tal comportamento está em consonância com os dados observados na indústria da manufatura aditiva. Os preços das impressoras 3D tem caído expressivamente. Esta formulação, portanto, constitui-se como uma explicação estrutural para a queda dos preços nesta indústria. Esta formlua pressupõe que não há troca de experiência entre os players, e que não há "perda de experiência" de um determinado player.
-
-A experiência $E_{i,t}$, por sua vez, é obtida a partir da acumulação da produção de cada player $E_{i,t}$.
-
-**Ponto para possível modificação**. É possível imaginar um cenário onde, a longo prazo, a experiência obtida por um player é difundida para os demais players por meio de "cópias" e engenharia reversa. Seria possível imaginar uma forma de imaginar a uniformização do conhecimento, levando vantagens de curto prazo tenderem a se normalizar no longo prazo. Talvez seja mais inteligente levar essa ideia direto para o possível módulo de P & D.
-
-Esta curva, sozinha, pode não explicar porque alguns players com menor volume de produção conseguem obter custos competitivos no mercado. Uma empresa talvez tenha apenas uma vantagem temporária em relação aos demais players. Este é um ponto a pensar, pois esta curva de experiência influencia os preços, que influenciam todos os demais comportamentos do modelo.
-
-Este fator não "desmerece" o artigo do Sterman, visto que este pressuposto atua contra a hipótese dele, e o argumento que ele quiz usar não foi esse.
+Esta formlua pressupõe que não há troca de experiência entre os players, e que não há "perda de experiência" de um determinado player. A experiência $E_{i,t}$, por sua vez, é obtida a partir da acumulação da produção de cada player $E_{i,t}$.
 
 $$E_{i,t} = E_{i,t0} + \int_{t_0}^{t} S_i$$
 
 ### Produção
 
-O presente modelo diferencia a produção real da empresa, a produção desejada, e sua capacidade. Pressupõe-se que a empresa busca maximizar sua produção, logo sua produção corresponderá ao mínimo entre a sua capacidade produtiva e sua produção desejada. O modelo proposto por Sterman (XX) foi idealizado para representar decisões estratégicas de longo prazo, e não se dedicou a detalhar mecanismos de uma cadeia de suprimentos à jusante ou à montante de cada um dos players. Por este motivo, a produção realizada pela empresa corresponde às entregas, desprezando a representação de estoques na cadeia de suprimentos da empresa. Considera-se a manutenção deste pressuposto adequada para os objetivos deste trabalho.
+O presente modelo diferencia a produção real da empresa $Q_i$, a produção desejada $Q_i^*$, e sua capacidade $K_i$. Pressupõe-se que a empresa busca maximizar sua produção, logo sua produção corresponderá ao mínimo entre a sua capacidade produtiva e sua produção desejada. O modelo proposto por Sterman (XX) foi idealizado para representar decisões estratégicas de longo prazo, e não se dedicou a detalhar mecanismos de uma cadeia de suprimentos à jusante ou à montante de cada um dos players. Por este motivo, a produção realizada pela empresa corresponde às entregas, desprezando a representação de estoques na cadeia de suprimentos da empresa. Considera-se a manutenção deste pressuposto adequada para os objetivos deste trabalho.
 
 $$Q_i = MIN(Q_i^*,K_i); S_i = Q_i$$
-Seguindo-se a lei de Little, o tempo médio de entrega corresponde à razão entre o backlog à taxa de entrega.
+Seguindo-se a lei de Little, o tempo médio de entrega $tau_i$ corresponde à razão entre o backlog $B_i$ e às entregas realizadas pela empresa $S_i$.
 
-$$\tau_i  = B_i / Q_i$$
-O modelo pressupõe que cada uma das empresas possui um tempo de entrega alvo, ajustando sua taxa de produção à este tempo de entrega e ao backlog formado. Sendo assim, a taxa de produção alvo depende do backlog formado e desta taxa de entrega alvo.
+$$\tau_i  = B_i / S_i$$
+O modelo pressupõe que cada uma das empresas possui um tempo de entrega alvo $tau_i^*$, definindo sua produção desejada $Q_i^*$ de modo a atender a este tempo de entrega, considerando o backlog formado$B_i$.
 
 $$Q_i^* = B_i /\tau_i^*$$
 
-Por fim, o backlog de produção da empresa cresce com a chegada de pedidos e diminui com o envio de de produtos.
+Por fim, o backlog de produção da empresa $B_i$ cresce com a chegada de pedidos $O_i$ e diminui com o envio de de produtos $Q_i$.
 
 $$B_{i,t} = B_{i,t0} + \int_{t_0}^{t} O_i - Q_i$$
 
 ### Capacidade
 
-Neste modelo, a capacidade da empresa não pode se ajustar imediatamente à demanda. Sterman (XX) propõe a utilização do operador $\varphi$ Erlang Lag, utilizado frequentemente para representar o delay embutido em processos de ajuste de capacidade (Sterman XX):
+Neste modelo, a capacidade da empresa não pode se ajustar imediatamente à demanda. Sterman (XX) propõe a utilização do operador $\varphi$ Erlang Lag, utilizado para representar o delay embutido em processos de ajuste de capacidade segundo um tempo de aquisição ou diminuição da capacidade $\lambda^K$.
 
+$$K_i = \varphi(K_i^*,\lambda^K)$$
 
-$$K_i = \varphi(K^*,\lambda)$$
+A capacidade Alvo da Empresa $K_i^*$, por sua vez, é obtida a partir do market share alvo da empresa $S^*$, da demanda prevista para a indústria $D^e$ e da taxa de utilização de capacidade $u^*$. A capacidade ainda é restrita a uma mínima escala de produção eficiente $K^{min}$.
 
-A capacidade Alvo da Empresa $K^*$, por sua vez, é obtida a partir do market share alvo da empresa $S^*$, da demanda prevista para a indústria $D^e$ e da taxa de utilização de capacidade $u^*$. A capacidade ainda é restrita a uma mínima escala de produção eficiente $K^{min}$.
+$$K_i^* = MAX(K^{min}, S_i^* * D^e/u^*)$$
 
-$$K^* = MAX(K^{min}, S^* * D^e/u^*)$$
+O modelo pressupõe que os players do mercado realizam estimativas de previsão de demanda $\lambda^d$ anos à frente da demanda prevista com o objetivo de ajustar sua capacidade produtiva à demanda. Desta maneira, a demanda prevista $D^e$ é estimada a partir da demanda reportada na indústria $D^r$ e da taxa esperada de crescimento da demanda $g^e$. O modelo adota como pressuposto que as empresas extrapolam a demanda passada da indústria para prever a sua demanda futura.
 
-O modelo pressupõe que os players do mercado realizam estimativas de previsão de demanda $\lambda$ anos à frente da demanda prevista com o objetivo de ajustar sua capacidade produtiva à demanda. Desta maneira, a demanda prevista $D^e$ é estimada a partir da demanda reportada na indústria $D^r$ e da taxa esperada de crescimento da demanda $g^e$. O modelo adota como pressuposto que as empresas extrapolam a demanda passada da indústria para prever a sua demanda futura.
-
-$$D^e = D^r * exp({\lambda * g^e})$$
+$$D^e = D^r * exp({\lambda^d * g^e})$$
 
 A taxa de crescimento da demanda, por sua vez, é estimada a partir de um horizonte histórico usado para a previsão $h$, comparando a reportada no período atual $D^r_t/$ e a demanda reportada no período $t-h$, $D^r_{t-h}$.
 
@@ -442,39 +430,65 @@ O market share não disputado $S^u_i$ é calculado em função da demanda não d
 
 $$S^u_i = MAX(0, D^u_i/D^e)$$
 
-A demanda não contestada é obtida a partir da soma das capacidades de outros players esperada, da taxa de utilização da indústria e da demanda prevista.
+A demanda não contestada $D^u_i$ é obtida a partir da soma das capacidades de outros players esperada $K^e_j$, da taxa de utilização da indústria $u^*$ e da demanda prevista $D^e$.
 
 $$D^u_i = D^e - u^* \sum_{j \neq i}K^e_j$$
 
-A capacidade dos competidores esperada é obtida considerando que os players não possuem acesso à informação perfeita sobre o planejamento da capacidade dos outros players. Em um extermo, os demais players não tem nenhuma informação sobre a capacidade em construção dos outros players, e em outro extremo, os mesmos possuem informação perfeita sobre a capacidade em construção. O modelo utiliza um fator para expressar a parcela da capacidade em construção conhecida pelos demais players, permitindo que seja simulado o impacto desta variável sobre os resultados do modelo.
+A capacidade dos competidores esperada $K^e_j$ é obtida considerando que os players não possuem acesso à informação perfeita sobre o planejamento da capacidade dos outros players. Em um extermo ($w = 0$), os demais players não tem nenhuma informação sobre a capacidade em construção dos outros players, e em outro extremo ($w = 1$), os mesmos possuem informação perfeita sobre a capacidade em construção. O modelo utiliza um fator $w$ para expressar a parcela da capacidade em construção conhecida pelos demais players, permitindo que seja simulado o impacto desta variável sobre os resultados do modelo.
 
 $$K^e_j = w K^{e^*}_j + (1-w)K_j $$
 
-A capacidade alvo dos demais competidores é calculada considerando um delay de tempo, pressupondo que a empresa leva tempo para estimar e realizar os processos necessários para estimar a capacidade dos demais players.
+A capacidade alvo $K^{e^*}_j$ dos demais competidores é calculada considerando um delay de tempo, pressupondo que existe um delay de tempo $\tau^c$ durante o qual a empresa realiza os processos de inteligência competitiva para estimar a capacidade dos demais players.
 
 $$dK^{e^*}_j/dt = (K^{*}_j - K^{e^*}_j)/\tau^c$$
 
 ### Preços
 
-O modelo pressupõe que as empresas ajustam seus preços considerando seus custos unitários, a relação entre oferta e demanda e o seu market share atual e o market-share desejado. Na primeira parcela da equação, um preço base é calculado de acordo com os custos fixos e variáveis unitários, e de acordo com um markup desejado.
+O modelo pressupõe que as empresas ajustam seus preços considerando seus custos unitários, a relação entre oferta e demanda e o seu market share atual e o market-share desejado. Na primeira parcela da equação, um preço base $P^c_i$ é calculado de acordo com os custos fixos e variáveis unitários, e de acordo com uma margem de lucro desejada $m^*$.
 
-$$P^C = (1+m^*) (u^f_i + u^f_i)$$
+$$P^C = (1+m^*) (u^f_i + u^c_i)$$
 
-A partir deste preço base, a primeira parcelado preço alvo é calculada considerando a razão entre o preço base e o preço atual. Deste modo, se o preço base for maior do que o preço atual, a empresa tende a aumentar seus preços no futuro. A segunda parcela da equação relaciona a produção desejada da empresa com a sua capacidade efetiva, calculada a partir da sua taxa de utilização e sua capacidade. Novamente, se a produção desejada pela empresa é maior do que a sua capacidade, a empresa tende a aumentar seus preços, buscando otimizar a utilização de sua capacidade. Finalmente, a terceira parcela da equação utiliza a diferença entre o market share desejado pela empresa e seu market share atual. Deste modo, se o market share da empresa for menor do que o market share desejado, a empresa tende a reduzir seu preço, para alcançar o market share desejado.
+A partir deste preço base $P^c_i$, a primeira parcelado preço alvo é calculada considerando a razão entre o preço base e o preço atual $P_i$. Deste modo, se o preço base for maior do que o preço atual, a empresa tende a aumentar seus preços no futuro. A segunda parcela da equação relaciona a produção desejada da empresa $Q^*_i$ com a sua capacidade efetiva, calculada a partir da sua taxa de utilização $u^*_i$ e sua capacidade $K_i$. Novamente, se a produção desejada pela empresa é maior do que a sua capacidade, a empresa tende a aumentar seus preços, buscando otimizar a utilização de sua capacidade.
 
 $$P^*_i = MAX \left[u^v_i, P_i \left( 1 + \alpha^c \left( \frac{P^c_i}{P_i}-1 \right) \right) \left( 1 + \alpha^d \left( \frac{Q^*_i}{u^*_iK_i}-1 \right)  \right) \left( 1 + \alpha^s \bigg( S^*_i - S_i \bigg) \right) \right]$$
+Finalmente, a terceira parcela da equação utiliza a diferença entre o market share alvo $S^*_i$ da empresa e seu market share atual $S_i$. Deste modo, se o market share da empresa for menor do que o market share desejado, a empresa tende a reduzir seu preço, para alcançar o market share desejado.
 
 Em uma situação onde o preço atual é igual ao preço base, a produção desejada é igual à capacidade efetiva, e o market share atual é igual ao market share desejado, não realizará mudanças em seu preço. Caso qualquer uma destas igualdades não seja satisfeita, a empresa mudará seu preço alvo para um novo valor. Além disto, o modelo pressupõe que as empresas do modelo não precificarão seus produtos abaixo do custo variável. 
 
-A partir do preço alvo calculado, pressupõe-se que processos burocráticos não permitem que as empresas ajustem seu preço instantâneamente. Desta maneira, obtém-se o preço praticado pelos players por meio de uma suavização exponencial de primeira ordem, considerando um tempo de ajuste.
+A partir do preço alvo calculado, o modelo considera que a empresa não é capaz de ajustar seus preços instantâneamente. Desta maneira, obtém-se o preço praticado pelos players por meio de uma suavização exponencial de primeira ordem, considerando um tempo de ajuste.
 
 $$dP_i/dt = (P^*_i-P_i)/\tau^p$$
 
-### Pesquisa e Desenvolvimento e Patentes
+### Pesquisa e Desenvolvimento
 
-O investimento em Pesquisa e Desenvolvimento é representado por uma decisão da empresa relacionada à fração de sua receita a ser investida. Este investimento é acumulado em um estoque, representando o volume de investimentos que ainda não gerou patentes.
+No modelo computacional, os fabricantes de impressoras 3D investem uma fração $\eta_i$ de sua receita $\R_i$ em pesquisa e desenvolvimento, na expectativa de melhorar a performance de seus produtos ao longo do tempo. Este investimento, no entanto não gera retorno instantâneamente, de modo que a empresa deve esperar um certo tempo $\upsilon^r$ até que o investimento gere algum retorno. Desta maneira, o investimento não realizado pela empresa é modelado como um estoque:
 
-$$D_{i}/dt = (Receita * Orc) - D_i/TempoMédio$$
+$$dV_i/dt =  R_i * \eta_i - V_i / \upsilon^r $$
+
+O resultado do investimento em pesquisa em desenvolvimento é representado de diversas maneiras na literatura. (Exemplificar). Neste trabalho, o resultado do investimento em pesquisa e desenvolvimento será materializado no desenvolvimento de patentes. Desta maneira, o estoque de patentes requisitadas pela empresa $T_i^r$ cresce à medida que novas solicitações são realizadas (as quais dependem da realização do investimento em P&D $V_i / \upsilon^r$ e do custo médio de obtenção das patentes $c_p$), e decresce à medida que as patentes são rejeitadas ou aprovadas obedecendo a um tempo médio de avaliação das patentes $\upsilon^a$.
+
+
+$$dT_i^r/dt = \frac{V_i}{\upsilon^r * c_p} -  T_i^r / \upsilon^a $$
+
+Uma vez avaliadas e aprovadas, a empresa dedica uma fração $1-\kappa_i$ de suas patentes aprovadas $(1-\psi) * T_i^r / \upsilon^a$ para seu conjunto de patentes privadas $T_i^p$, e disponibiliza uma fração $\kappa_i$ como patentes open source $T^o$. Em todo caso, a patente irá expirar após o período de vigência da patente $\upsilon^e$, reduzindo assim o número de patentes em posse da empresa.
+
+$$dT_i^p/dt = [(1-\kappa_i) * (1-\psi) * T_i^r / \upsilon^a] - T_i^p/ \upsilon^e $$
+
+De modo semelhante, o estoque de patentes open source $T^o$ cresce à medida que novas patentes são disponibilizadas por todos os players e decresce à medida que estas patentes expiram.
+
+$$dT^o/dt = \sum_{i}{[\kappa_i * (1-\psi) * T_i^r / \upsilon^a]}   - T^o/ \upsilon^e $$
+
+Por fim, as patentes em domínio público $T^e$ não mantém sua utilidade indefinidamente. Novas tecnologias surgem e inutilizam as patentes disponíveis em domínio público. Deste modo, o estoque de patentes em domínio público úteis decresce à medida que há perda de utilidade das patentes expiradas, considerando um tempo médio de inutilização destas patentes $\upsilon^i$.
+
+$$dT^e/dt = (\sum_{i}{T_i^p} +  T^o) / \upsilon^e - T^e / \upsilon^i $$
+
+O modelo pressupõe que a empresa monitora o ambiente, observando patentes expiradas $T^e$ ou open source $T^o$, capitalizando-se sobre todas as patentes disponíveis. Desta maneira, o número de patentes acessadas pela empresa $T^T_i$ corresponde à soma das patentes disponíveis. O modelo não representa o licenciamento de patentes entre players. O modelo considera que patentes requisitadas $T_i^r$ pela empresa também são uma fonte de conhecimento utilizada pela empresa para melhorar a performance dos seus produtos. Ao definir a formulação desta maneira, considera-se que a empresa que publica patentes open source possui acesso antecipado ao conhecimento presente nestas patentes em comparação às demais empresas que a copiarem.
+
+$$T^T_i = T_i^r + T_i^p + T^o + T^e $$
+
+As patentes as quais a empresa tem acesso $T^T_i$ representam a fonte de conhecimento que a empresa tem à disposição para melhorar a performance $X_i$ de seus produtos. Por isso, o modelo pressupõe que a performance dos produtos da empresa responde às patentes que a empresa tem acesso linearmente, considerando uma inclinação da curva de patentes e performance $\phi$ (unidades de performance por patente acessada pela empresa). A performance dos players é representada por um índice agregado $X_i$, variando de 0 ($X^{min}$) a 10 ($X^{max}$), assim como o índice de performance computado pela empresa 3D HUBS. A formulação a seguir operacionaliza o cálculo deste índice com base no número de patentes definidas. O sistema de patentes sempre possui patentes expiradas, logo o número de patentes acessadas pela empresa será sempre positivo, não sendo necessário incluir um intercepto nesta formulação.
+
+$$X_i = MAX(X^{min}, MIN(X^{max}, \phi * T^T_i )) $$
 
 
 ## Síntese das Modificações Realizadas

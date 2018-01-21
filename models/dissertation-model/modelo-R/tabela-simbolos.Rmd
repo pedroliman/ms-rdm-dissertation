@@ -5,32 +5,253 @@ output:
   html_notebook: default
 ---
 
+
 # Preços
 
-| Símbolo | Significado |
-|:-----:|---------------------------------------------------|
-|$P^*_i$|Preço Alvo do player $i$.|
-|$u^v_i$|Custo Variável do player $i$.|
-|$P_i$|Preço do Player $i$.|
-|$\alpha^c$|Sensibilidade do Preço Alvo à diferença entre o Preço Atual e Preço Alvo.|
-|$P^c_i$|Preço-Base do Player $i$ (custos fixos e variáveis acrescentados à uma margem definida).|
-|$\alpha^d$|Sensibilidade do Preço à diferença entre oferta e Demanda.|
-|$Q^*_i$|Produção desejada pelo Player $i$.|
-|$u^*_i$|Taxa de Utilização da capacidade do Player $i$.|
-|$K_i$|Capacidadedo player $i$.|
-|$\alpha^s$|Sensibilidade do Preço à relação entre market share e market share desejado.|
-|$S^*_i$| Market Share desejado do PLayer $i$.|
-|$S_i$| Market SHare do Player $i$.|
+
+# Demanda Global
+
+|Símbolo |Significado |Unidade |Nome Modelo Comp.|
+|:-----:|---------------------------------------|-----|-----------|
+|$D^T$|Demanda anual por Impressoras 3D.| Imp. 3D / ano |fIndustryOrderRate |
+|$D^I$|Demanda inicial, gerada por um novo adepto à impressão 3D.| Imp. 3D / ano |aInitialOrderRate |
+|$D^R$|Demanda via substituição de uma impressora ao fim de sua vida útil.| Imp. 3D / ano |fReorderRate |
+|$\mu$|Unidades vendidas em média por cliente.| Imp. 3D / cliente |aUnitsPerHousehold |
+|$dA/dt$| Número de clientes que adotou o o produto em um intervalo de tempo.| Clientes / ano |fAdoptionRate |
+
+# Difusão do Produto
+|Símbolo |Significado |Unidade |Nome Modelo Comp.|
+|:-----:|:---------------------------------------|:-----:|:-----------|
+|$A_t$|Número de Adeptos à impressão 3D em um dado instante de tempo| Clientes |sCumulativeAdopters |
+|$POP$|População Total de Clientes.| Clientes |aPopulation |
+|$N$|Não Adeptos à impressão 3D, que irão adotá-la em algum momento.| Clientes |aNonAdopters |
+|$\alpha$|Fração de Clientes que adotará a impressão 3D independentemente do número de adeptos à impressão 3D.| % |aInnovatorAdoptionFraction |
+|$\beta$| Parâmetro de Força da Difusão do produto do Modelo de Bass (1969).| adimens. |aWOMStrength |
+|$A^*$|Número de clientes que irá adotar o produto em algum momento de tempo, considerando o produto de menor preço disponível no mercado.|Clientes|aIndustryDemand|
+|$A^*$|Número de clientes que irá .|Clientes|aReferencePopulation|
+|$\sigma$|Inclinação da Curva de Demanda e Preço.|adimens.|aDemandCurveSlope|
+|$P^{min}$|Menor preço encontrado no mercado.|USD / Imp. 3D|aLowestPrice|
+|$P^r$|Preço de Referência.|USD / Imp. 3D|aReferencePrice|
+|$POP^r$|População de Referência (número de clientes que comprará o produto ao preço de referência.|Clientes|aReferencePopulation|
+|$\varepsilon_d$|Elasticidade da curva de demanda.|adimens.|aReferenceIndustryDemandElasticity|
+|$I_i$|Impressoras vendidas pela empresa $i$.|Imp. 3D|sInstalledBase|
+|$\delta$|Taxa anual de descarte das impressoras (corresponde ao inverso da vida útil média das impressoras.| % |aFractionalDiscardRate|
 
 
 # Market Share
 
-| Símbolo | Significado |
-|:-----:|---------------------------------------------------|
-|$A_i$|Atratividade do Player $i$.|
-|$\varepsilon_p$| Sensibilidade do market share dos players ao preço.|
-|$P_i$|Preço do Player $i$.|
-|$P^r$|Preço de Referência.|
-|$\varepsilon_a$| Sensibilidade do market share dos players ao tempo de entrega.|
-|$\tau_i$|Tempo de Entrega do player $i$.|
-|$\tau^r$|Tempo de Entrega de Referência.|
+| Símbolo | Significado | Unidade | Nome Modelo Comp. |
+|:-----:|---------------------------------------|-----|-----------|
+|$A_i$|Atratividade do Player $i$.| adimens. |aTotalAttractiveness|
+|$\varepsilon_p$|Sensibilidade do market share dos players ao preço.|adimens.|aSensOfAttractToPrice|
+|$P_i$|Preço do Player $i$.| USD / Imp. 3D |sPrice|
+|$P^r$|Preço de Referência.| USD / Imp. 3D |aReferencePrice|
+|$\varepsilon_a$| Sensibilidade do market share dos players ao tempo de entrega.| adimens.|aSensOfAttractToAvailability|
+|$\tau_i$|Tempo de Entrega do player $i$.| anos |aDeliveryDelay|
+|$\tau^r$|Tempo de Entrega de Referência.| anos |aReferenceDeliveryDelay|
+|$\tau^r$|Tempo de Entrega de Referência.| anos |aReferenceDeliveryDelay|
+|$X_i$|Performance do player $i$. | Índice (0,10) |aPerformance|
+|$X^r$|Performance de Referência.| Índice (0,10) |aReferencePerformance|
+|$\varepsilon_x$|Sensibilidade do market share dos players à performance. |adimens.|aSensOfAttractToPerformance|
+|$S_i$| Market Share do Player $i$.| % |aOrderShare|
+|$O_i$| Pedidos ganhos pelo Player $i$.| % |fOrders|
+
+
+# A Firma
+
+| Símbolo | Significado | Unidade | Nome Modelo Comp. |
+|:-----:|---------------------------------------|-----|-----------|
+|$\pi_{t}$|Lucro Líquido a Valor Presente do Player $i$.| USD |sNPVProfit|
+|$R_i$|Receitas do Player $i$.| USD / ano |fRevenue|
+|$C^f_i$|Custos Fixos do Player $i$.| USD / ano |aFixedCost|
+|$C^v_i$|Custos Variáveis do Player $i$.| USD / ano |aVariableCost|
+|$\rho$|Taxa de Desconto.| % |aDiscountRate|
+|$bar{P_i}$|Preço Médio dos Produtos Vendidos do Player $i$.| USD / Imp. 3D |aAveragePriceOfOrderBook|
+|$V_i$|Valor da carteira de venda do Player $i$.| USD |sValueOfBacklog|
+|$u^f_i$|Custo Fixo Unitário do Player $i$.| USD / Imp. 3D |aUnitFixedCost|
+|$u^v_i$|Custo Variável Unitário do Player $i$.| USD / Imp. 3D |aUnitVariableCost|
+|$E_i$|Produção Acumulada do Player $i$.| Imp. 3D |sCumulativeProduction|
+|$E_0$|Produção Acumulada inicial.| Imp. 3D |aInitialProductionExperience|
+|$\Gamma$|Força da curva de aprendizagem (ex.: um expoente de 80 % indica que a cada vez que a produção acumulada dobra, o custo da empresa diminui 20%).| % |aLCStrength|
+|$\gamma$|Expoente da curva de aprendizagem.|adimens.|aLCExponent|
+
+
+# Produção
+| Símbolo | Significado | Unidade | Nome Modelo Comp. |
+|:-----:|---------------------------------------|-----|-----------|
+|$Q_i$|Produção do Player $i$.| Imp. 3D / ano |fProduction|
+|$Q_i^*$|Produção desejada do Player $i$.| Imp. 3D / ano |aDesiredShipments|
+|$tau_i^*$|Tempo de entrega alvo do Player $i$.| anos |aNormalDeliveryDelay|
+|$B_i$|Backlog de entregas do Player $i$ | Imp. 3D |sBacklog|
+
+
+# Capacidade
+| Símbolo | Significado | Unidade | Nome Modelo Comp. |
+|:-----:|---------------------------------------|-----|-----------|
+|$K_i$|Capacidade Produtiva do Player $i$.| Imp. 3D / ano |aCapacity|
+|$K_i^*$|Capacidade Alvo do Player $i$.| Imp. 3D / ano |aTargetCapacity|
+|$D^e$|Demanda Prevista para a indústria.| Imp. 3D / ano |aExpectedIndustryDemand|
+|$\varphi$| Operador Erlan Lag. Executa um ajuste da Capacidade da Empresa de terceira ordem, indicando que a capacidade não se ajusta imediatamente à demanda. | função matemática | Função Matemática. No Ithink, corresponde à função SMOOTH3.|
+|$u^*$|Taxa de Utilização da Capacidade.| % |aNormalCapacityUtilization|
+|$K^{min}$|Escala mínima de produção.| Imp. 3D / ano |aMinimumEfficientScale|
+|$S_i^*$|Market Share Alvo do Player $i$, definido conforme sua estratégia.| % |aTargetMarketShare|
+|$\lambda^K$|Delay do ajuste de capacidade.| anos |aCapacityAcquisitionDelay|
+|$D^r$|Demanda reportada pela indústria.| Imp. 3D / ano |sReportedIndustryVolume|
+|$g^e$|Taxa de crescimento esperada pela indústria.| % |aExpGrowthInVolume|
+|$h$|Horizonte histórico usado pelos players para previsão de demanda.| anos |aTimeForHistoricalVolume|
+|$\tau^r$|Delay para o report da demanda global aos players.| anos |aVolumeReportingDelay|
+|$S^*_i$|Market Share alvo do Player $i$.| % |aTargetMarketShare|
+|$S^{min}_i$, $S^{max}_i$|Market Share desejado do Player $i$, conforme sua estratégia de capacidade.| % |aDesiredMarketShare|
+|$S^*_i$|Market Share desejado do Player $i$.| % |aDesiredMarketShare|
+|$S^u_i$|Market Share que o Player $i$ acredita que os outros players não ocuparão no mercado.| % |aUncontestedMarketShare|
+|$D^u_i$|Demanda prevista não disputada por nenhum player.|Imp. 3D / ano|aUncontestedDemand|
+|$K^e_j$|Capacidade dos outros players esperada.|  Imp. 3D / ano |aExpectedCompCapacity|
+|$w$|Percentual da capacidade alvo dos concorrentes observada pelo player.| % |aWeightOnSupplyLine|
+|$K_j$|Capacidade dos Players Concorrentes.|Imp. 3D / ano|aCompetitorCapacity|
+|$K^{e^*}_j$|Capacidade Alvo percebida dos competidores.|Imp. 3D / ano|sPerceivedCompTargetCapacity|
+|$\tau^c$|Tempo para estimar a capacidade alvo dos competidores.|anos|aTimeToPerceiveCompTargetCapacity|
+
+# Preços
+| Símbolo | Significado | Unidade | Nome Modelo Comp. |
+|:-----:|---------------------------------------|-----|-----------|
+|$P^*_i$|Preço Alvo do player $i$.| USD / Imp. 3D |aTargetPrice |
+|$u^v_i$|Custo Variável do player $i$.| USD / Imp. 3D |aUnitVariableCost | 
+|$P_i$|Preço do Player $i$.| USD / Imp. 3D |sPrice |
+|$\alpha^c$|Sensibilidade do Preço Alvo à diferença entre o Preço Atual e Preço Alvo.| adimens. |aSensOfPriceToCosts|
+|$P^c_i$|Preço-Base do Player $i$ (custos fixos e variáveis acrescentados à uma margem definida).|USD |aBasePrice|
+|$\alpha^d$|Sensibilidade do Preço à diferença entre oferta e Demanda.| adimens. |aSensOfPriceToDSBalance |
+|$Q^*_i$|Produção desejada pelo Player $i$.| Imp. 3D / ano |aDesiredShipments|
+|$u^*_i$|Taxa de Utilização da capacidade do Player $i$.| % |aNormalCapacityUtilization |
+|$\alpha^s$|Sensibilidade do Preço à relação entre market share e market share desejado.|adimens.|aSensOfPriceToShare|
+|$m^*$|Margem de Lucro desejada desejada.|%|aNormalProfitMargin|
+|$\tau^p$|Delay para o ajuste do preço ao preço alvo.|anos|aPriceAdjustmentTime|
+
+# Pesquisa e Desenvolvimento
+| Símbolo | Significado | Unidade | Nome Modelo Comp. |
+|:-----:|---------------------------------------|-----|-----------|
+|$\eta_i$|Percentual da Receita do Player $i$ aplicado à pesquisa e desenvolvimento.|%|aOrcamentoPeD|
+|$V_i$|Estoque de investimento ainda não realizado pelo Player $i$.| USD |sInvestimentoNaoRealizadoPeD|
+|$\upsilon^r$|Tempo necessário para a realização do investimento em P&D dos players.|anos|aTempoMedioRealizacaoPeD|
+|$T_i^r$|Patentes requisitadas pelo Player $i$.|Patentes|sPatentesRequisitadas|
+|$c_p$|Custo médio total para a requisição de uma patente.|USD / Patente |aCustoMedioPatente|
+|$\upsilon^a$|Tempo médio de avaliação da patente.|anos|aTempoMedioAvaliacao|
+|$T_i^p$|Patentes de propriedade do Player $i$.|Patentes|sPatentesEmpresa|
+|$\kappa_i$|Percentual de novas patentes do Player $i$ disponibilizadas como open source|%|aPercPeDAberto|
+|$\psi$|Taxa de rejeição de patentes.|%|aTaxaRejeicao|
+|$\upsilon^e$|Tempo médio de expiração de patentes.|anos|aTempoVencimentoPatentes|
+|$T^o$|Patentes Open Source.|Patentes|sPatentLefts|
+|$T^e$|Patentes expiradas.|Patentes|sPatentesEmDominioPublicoUteis|
+|$\upsilon^i$|Tempo médio de inutilização de uma patente.|anos|aTempodeInutilizacaoPatente|
+|$T^T_i$|Patentes acessadas pelo Player $i$.|Patentes|aPatentesEmpresaTemAcesso|
+|$X_i$|Performance do player $i$. | Índice (0,10) |aPerformance|
+|$X^{min}$|Índice de Performance mínimo.| Índice (0,10) |aPerfMin|
+|$X^{max}$|Índice de Performance máximo| Índice (0,10) |aPerfMax|
+|$\phi$|Inclinação da curva de performance x patentes. Representa o número de unidades de performance acrescidas pelo acesso a uma patente.| Índice Perf. / Patentes  |aPerfSlope|
+
+
+
+
+## Tabela Completa: Gerar Sempre Duas vezes:
+
+|Símbolo |Significado |Unidade |Nome Modelo Comp.|
+|:-----:|---------------------------------------|-----|-----------|
+|$D^T$|Demanda anual por Impressoras 3D.| Imp. 3D / ano |fIndustryOrderRate |
+|$D^I$|Demanda inicial, gerada por um novo adepto à impressão 3D.| Imp. 3D / ano |aInitialOrderRate |
+|$D^R$|Demanda via substituição de uma impressora ao fim de sua vida útil.| Imp. 3D / ano |fReorderRate |
+|$\mu$|Unidades vendidas em média por cliente.| Imp. 3D / cliente |aUnitsPerHousehold |
+|$dA/dt$| Número de clientes que adotou o o produto em um intervalo de tempo.| Clientes / $dt$ |fAdoptionRate |
+|$A_t$|Número de Adeptos à impressão 3D em um dado instante de tempo| Clientes |sCumulativeAdopters |
+|$POP$|População Total de Clientes.| Clientes |aPopulation |
+|$N$|Não Adeptos à impressão 3D, que irão adotá-la em algum momento.| Clientes |aNonAdopters |
+|$\alpha$|Fração de Clientes que adotará a impressão 3D independentemente do número de adeptos à impressão 3D.| % |aInnovatorAdoptionFraction |
+|$\beta$| Parâmetro de Força da Difusão do produto do Modelo de Bass (1969).| adimens. |aWOMStrength |
+|$A^*$|Número de clientes que irá adotar o produto em algum momento de tempo, considerando o produto de menor preço disponível no mercado.|Clientes|aIndustryDemand|
+|$A^*$|Número de clientes que irá .|Clientes|aReferencePopulation|
+|$\sigma$|Inclinação da Curva de Demanda e Preço.|adimens.|aDemandCurveSlope|
+|$P^{min}$|Menor preço encontrado no mercado.|USD / Imp. 3D|aLowestPrice|
+|$P^r$|Preço de Referência.|USD / Imp. 3D|aReferencePrice|
+|$POP^r$|População de Referência (número de clientes que comprará o produto ao preço de referência.|Clientes|aReferencePopulation|
+|$\varepsilon_d$|Elasticidade da curva de demanda.|adimens.|aReferenceIndustryDemandElasticity|
+|$I_i$|Impressoras vendidas pela empresa $i$.|Imp. 3D|sInstalledBase|
+|$\delta$|Taxa anual de descarte das impressoras (corresponde ao inverso da vida útil média das impressoras.| % |aFractionalDiscardRate|
+|$A_i$|Atratividade do Player $i$.| adimens. |aTotalAttractiveness|
+|$\varepsilon_p$|Sensibilidade do market share dos players ao preço.|adimens.|aSensOfAttractToPrice|
+|$P_i$|Preço do Player $i$.| USD / Imp. 3D |sPrice|
+|$P^r$|Preço de Referência.| USD / Imp. 3D |aReferencePrice|
+|$\varepsilon_a$| Sensibilidade do market share dos players ao tempo de entrega.| adimens.|aSensOfAttractToAvailability|
+|$\tau_i$|Tempo de Entrega do player $i$.| anos |aDeliveryDelay|
+|$\tau^r$|Tempo de Entrega de Referência.| anos |aReferenceDeliveryDelay|
+|$\tau^r$|Tempo de Entrega de Referência.| anos |aReferenceDeliveryDelay|
+|$X_i$|Performance do player $i$. | Índice (0,10) |aPerformance|
+|$X^r$|Performance de Referência.| Índice (0,10) |aReferencePerformance|
+|$\varepsilon_x$|Sensibilidade do market share dos players à performance. |adimens.|aSensOfAttractToPerformance|
+|$S_i$| Market Share do Player $i$.| % |aOrderShare|
+|$O_i$| Pedidos ganhos pelo Player $i$.| % |fOrders|
+|$\pi_{t}$|Lucro Líquido a Valor Presente do Player $i$.| USD |sNPVProfit|
+|$R_i$|Receitas do Player $i$.| USD / ano |fRevenue|
+|$C^f_i$|Custos Fixos do Player $i$.| USD / ano |aFixedCost|
+|$C^v_i$|Custos Variáveis do Player $i$.| USD / ano |aVariableCost|
+|$\rho$|Taxa de Desconto.| % |aDiscountRate|
+|$bar{P_i}$|Preço Médio dos Produtos Vendidos do Player $i$.| USD / Imp. 3D |aAveragePriceOfOrderBook|
+|$V_i$|Valor da carteira de venda do Player $i$.| USD |sValueOfBacklog|
+|$u^f_i$|Custo Fixo Unitário do Player $i$.| USD / Imp. 3D |aUnitFixedCost|
+|$u^v_i$|Custo Variável Unitário do Player $i$.| USD / Imp. 3D |aUnitVariableCost|
+|$E_i$|Produção Acumulada do Player $i$.| Imp. 3D |sCumulativeProduction|
+|$E_0$|Produção Acumulada inicial.| Imp. 3D |aInitialProductionExperience|
+|$\Gamma$|Força da curva de aprendizagem (ex.: um expoente de 80 % indica que a cada vez que a produção acumulada dobra, o custo da empresa diminui 20%).| % |aLCStrength|
+|$\gamma$|Expoente da curva de aprendizagem.|adimens.|aLCExponent|
+|$Q_i$|Produção do Player $i$.| Imp. 3D / ano |fProduction|
+|$Q_i^*$|Produção desejada do Player $i$.| Imp. 3D / ano |aDesiredShipments|
+|$tau_i^*$|Tempo de entrega alvo do Player $i$.| anos |aNormalDeliveryDelay|
+|$B_i$|Backlog de entregas do Player $i$ | Imp. 3D |sBacklog|
+|$K_i$|Capacidade Produtiva do Player $i$.| Imp. 3D / ano |aCapacity|
+|$K_i^*$|Capacidade Alvo do Player $i$.| Imp. 3D / ano |aTargetCapacity|
+|$D^e$|Demanda Prevista para a indústria.| Imp. 3D / ano |aExpectedIndustryDemand|
+|$\varphi$| Operador Erlan Lag. Executa um ajuste da Capacidade da Empresa de terceira ordem, indicando que a capacidade não se ajusta imediatamente à demanda. | função matemática | Função Matemática. No Ithink, corresponde à função SMOOTH3.|
+|$u^*$|Taxa de Utilização da Capacidade.| % |aNormalCapacityUtilization|
+|$K^{min}$|Escala mínima de produção.| Imp. 3D / ano |aMinimumEfficientScale|
+|$S_i^*$|Market Share Alvo do Player $i$, definido conforme sua estratégia.| % |aTargetMarketShare|
+|$\lambda^K$|Delay do ajuste de capacidade.| anos |aCapacityAcquisitionDelay|
+|$D^r$|Demanda reportada pela indústria.| Imp. 3D / ano |sReportedIndustryVolume|
+|$g^e$|Taxa de crescimento esperada pela indústria.| % |aExpGrowthInVolume|
+|$h$|Horizonte histórico usado pelos players para previsão de demanda.| anos |aTimeForHistoricalVolume|
+|$\tau^r$|Delay para o report da demanda global aos players.| anos |aVolumeReportingDelay|
+|$S^*_i$|Market Share alvo do Player $i$.| % |aTargetMarketShare|
+|$S^{min}_i$, $S^{max}_i$|Market Share desejado do Player $i$, conforme sua estratégia de capacidade.| % |aDesiredMarketShare|
+|$S^*_i$|Market Share desejado do Player $i$.| % |aDesiredMarketShare|
+|$S^u_i$|Market Share que o Player $i$ acredita que os outros players não ocuparão no mercado.| % |aUncontestedMarketShare|
+|$D^u_i$|Demanda prevista não disputada por nenhum player.|Imp. 3D / ano|aUncontestedDemand|
+|$K^e_j$|Capacidade dos outros players esperada.|  Imp. 3D / ano |aExpectedCompCapacity|
+|$w$|Percentual do Player $i$.| % |aWeightOnSupplyLine|
+|$K_j$|Capacidade dos Players Concorrentes.|Imp. 3D / ano|aCompetitorCapacity|
+|$K^{e^*}_j$|Capacidade Alvo percebida dos competidores.|Imp. 3D / ano|sPerceivedCompTargetCapacity|
+|$\tau^c$|Tempo para estimar a capacidade alvo dos competidores.|anos|aTimeToPerceiveCompTargetCapacity|
+|$P^*_i$|Preço Alvo do player $i$.| USD / Imp. 3D |aTargetPrice |
+|$u^v_i$|Custo Variável do player $i$.| USD / Imp. 3D |aUnitVariableCost | 
+|$P_i$|Preço do Player $i$.| USD / Imp. 3D |sPrice |
+|$\alpha^c$|Sensibilidade do Preço Alvo à diferença entre o Preço Atual e Preço Alvo.| adimens. |aSensOfPriceToCosts|
+|$P^c_i$|Preço-Base do Player $i$ (custos fixos e variáveis acrescentados à uma margem definida).|USD |aBasePrice|
+|$\alpha^d$|Sensibilidade do Preço à diferença entre oferta e Demanda.| adimens. |aSensOfPriceToDSBalance |
+|$Q^*_i$|Produção desejada pelo Player $i$.| Imp. 3D / ano |aDesiredShipments|
+|$u^*_i$|Taxa de Utilização da capacidade do Player $i$.| % |aNormalCapacityUtilization |
+|$\alpha^s$|Sensibilidade do Preço à relação entre market share e market share desejado.|adimens.|aSensOfPriceToShare|
+|$m^*$|Margem de Lucro desejada desejada.|%|aNormalProfitMargin|
+|$\tau^p$|Delay para o ajuste do preço ao preço alvo.|anos|aPriceAdjustmentTime|
+|$\eta_i$|Percentual da Receita do Player $i$ aplicado à pesquisa e desenvolvimento.|%|aOrcamentoPeD|
+|$V_i$|Estoque de investimento ainda não realizado pelo Player $i$.| USD |sInvestimentoNaoRealizadoPeD|
+|$\upsilon^r$|Tempo necessário para a realização do investimento em P&D dos players.|anos|aTempoMedioRealizacaoPeD|
+|$T_i^r$|Patentes requisitadas pelo Player $i$.|Patentes|sPatentesRequisitadas|
+|$c_p$|Custo médio total para a requisição de uma patente.|USD / Patente |aCustoMedioPatente|
+|$\upsilon^a$|Tempo médio de avaliação da patente.|anos|aTempoMedioAvaliacao|
+|$T_i^p$|Patentes de propriedade do Player $i$.|Patentes|sPatentesEmpresa|
+|$\kappa_i$|Percentual de novas patentes do Player $i$ disponibilizadas como open source|%|aPercPeDAberto|
+|$\psi$|Taxa de rejeição de patentes.|%|aTaxaRejeicao|
+|$\upsilon^e$|Tempo médio de expiração de patentes.|anos|aTempoVencimentoPatentes|
+|$T^o$|Patentes Open Source.|Patentes|sPatentLefts|
+|$T^e$|Patentes expiradas.|Patentes|sPatentesEmDominioPublicoUteis|
+|$\upsilon^i$|Tempo médio de inutilização de uma patente.|anos|aTempodeInutilizacaoPatente|
+|$T^T_i$|Patentes acessadas pelo Player $i$.|Patentes|aPatentesEmpresaTemAcesso|
+|$X_i$|Performance do player $i$. | Índice (0,10) |aPerformance|
+|$X^{min}$|Índice de Performance mínimo.| Índice (0,10) |aPerfMin|
+|$X^{max}$|Índice de Performance máximo| Índice (0,10) |aPerfMax|
+|$\phi$|Inclinação da curva de performance x patentes. Representa o número de unidades de performance acrescidas pelo acesso a uma patente.| Índice Perf. / Patentes  |aPerfSlope|
