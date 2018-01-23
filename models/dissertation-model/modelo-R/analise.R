@@ -967,7 +967,7 @@ ensemble_e_resultados = na.omit(ensemble_e_resultados)
 
 # Utilizar apenas as primeiros 8 estratégias do ranking:
 
-top_10_estrategias = ranking_estrategias$Lever[1:6]
+top_10_estrategias = ranking_estrategias$Lever[1:12]
 
 
 # Filtrar o Ensemble e Resultados para mostrar estratégias nos top 10
@@ -1018,6 +1018,21 @@ mapply(ggsave, file=paste0("./images/", names(list_plots_estrategias_incerteza_p
 
 
 
+
+plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% c(31, 19, 25)),
+                              variavel1 = "sNPVProfit1", 
+                              nome_amigavel_var1 = "VPL", 
+                              variavel2 = "sPrice1", 
+                              nome_amigavel_var2 = "Preço Player 1")
+
+
+
+
+plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% c(31, 19, 25)),
+                              variavel1 = "sNPVProfit1Regret", 
+                              nome_amigavel_var1 = "Custo de Oportunidade", 
+                              variavel2 = "sNPVProfit1", 
+                              nome_amigavel_var2 = "VPL", linha_regr = FALSE)
 
 
 
