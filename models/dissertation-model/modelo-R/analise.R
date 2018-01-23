@@ -1028,11 +1028,101 @@ plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in
 
 
 
-plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% c(31, 19, 25)),
-                              variavel1 = "sNPVProfit1Regret", 
-                              nome_amigavel_var1 = "Custo de Oportunidade", 
-                              variavel2 = "sNPVProfit1", 
-                              nome_amigavel_var2 = "VPL", linha_regr = FALSE)
+plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% c(1, 2)),
+                              variavel1 = "sPrice1", 
+                              nome_amigavel_var1 = "Preço Player 1", 
+                              variavel2 = "aPerformance1", 
+                              nome_amigavel_var2 = "Perf. Player 1", linha_regr = FALSE, facet = FALSE)
+
+
+
+plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% c(31, 44)),
+                              variavel1 = "sPrice1", 
+                              nome_amigavel_var1 = "Preço Player 1", 
+                              variavel2 = "sInstalledBase1", 
+                              nome_amigavel_var2 = "Imp. 3D Installadas Player 1", linha_regr = FALSE, facet = FALSE)
+
+
+duas_estrategias_a_comparar = c(31,25)
+
+list_plots_duas_estrategias = list(
+  plot_duas_estrategias_preco_base_instalada = plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% duas_estrategias_a_comparar),
+                                                                             variavel1 = "sPrice1", 
+                                                                             nome_amigavel_var1 = "Preço Player 1", 
+                                                                             variavel2 = "sInstalledBase1", 
+                                                                             nome_amigavel_var2 = "Imp. 3D Instaladas Player 1", linha_regr = FALSE, facet = FALSE)
+  
+  ,plot_duas_estrategias_preco_market_share = plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% duas_estrategias_a_comparar),
+                                                                           variavel1 = "sPrice1", 
+                                                                           nome_amigavel_var1 = "Preço Player 1", 
+                                                                           variavel2 = "aOrderShare1", 
+                                                                           nome_amigavel_var2 = "Market Share Player 1", linha_regr = FALSE, facet = FALSE)
+  
+  ,plot_duas_estrategias_preco_vpl = plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% duas_estrategias_a_comparar),
+                                                                  variavel1 = "sPrice1", 
+                                                                  nome_amigavel_var1 = "Preço Player 1", 
+                                                                  variavel2 = "sNPVProfit1", 
+                                                                  nome_amigavel_var2 = "VPL Player 1", linha_regr = FALSE, facet = FALSE)
+  
+  
+)
+
+
+
+plot_comparacao_duas_estrategias = do.call("grid.arrange", c(list_plots_duas_estrategias, ncol=3))
+
+
+
+
+
+duas_estrategias_a_comparar = c(31,25)
+
+variavel_a_comparar_x = paste0("sPrice",1:N_PLAYERS)
+variavel_a_comparar_y = paste0("sNPVProfit",1:N_PLAYERS)
+
+list_plots_duas_estrategias_players = list(
+  plot_duas_estrategias_players_1 = plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% duas_estrategias_a_comparar),
+                                                                             variavel1 = variavel_a_comparar_x[1], 
+                                                                             nome_amigavel_var1 = variavel_a_comparar_x[1], 
+                                                                             variavel2 = variavel_a_comparar_y[1], 
+                                                                             nome_amigavel_var2 = variavel_a_comparar_y[1], linha_regr = FALSE, facet = FALSE)
+  
+  
+  ,plot_duas_estrategias_players_2 = plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% duas_estrategias_a_comparar),
+                                                                  variavel1 = variavel_a_comparar_x[2], 
+                                                                  nome_amigavel_var1 = variavel_a_comparar_x[2], 
+                                                                  variavel2 = variavel_a_comparar_y[2], 
+                                                                  nome_amigavel_var2 = variavel_a_comparar_y[2], linha_regr = FALSE, facet = FALSE)
+  
+  
+  ,plot_duas_estrategias_players_3 = plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% duas_estrategias_a_comparar),
+                                                                   variavel1 = variavel_a_comparar_x[3], 
+                                                                   nome_amigavel_var1 = variavel_a_comparar_x[3], 
+                                                                   variavel2 = variavel_a_comparar_y[3], 
+                                                                   nome_amigavel_var2 = variavel_a_comparar_y[3], linha_regr = FALSE, facet = FALSE)
+  
+  
+  ,plot_duas_estrategias_players_4 = plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% duas_estrategias_a_comparar),
+                                                                   variavel1 = variavel_a_comparar_x[4], 
+                                                                   nome_amigavel_var1 = variavel_a_comparar_x[4], 
+                                                                   variavel2 = variavel_a_comparar_y[4], 
+                                                                   nome_amigavel_var2 = variavel_a_comparar_y[4], linha_regr = FALSE, facet = FALSE)
+  
+  
+  
+  
+)
+
+
+
+plot_comparacao_duas_estrategias_player_mesmas_variaveis = do.call("grid.arrange", c(list_plots_duas_estrategias_players, ncol=2))
+
+
+
+
+
+
+
 
 
 
