@@ -2077,11 +2077,36 @@ adicionar_erro_ao_ensemble = function(results, variavel_calibracao, planilha_cal
     modcost = FME::modCost(model = dados_modelo[which(dados_modelo$Scenario == cenario),],
                            obs = dados_calibracao[,variaveis_a_utilizar_dados])
     
+    data_model = modcost$residuals$mod
+    
+    data_obs = modcost$residuals$obs
+    
+    n = modcost$var$N
+    
+    mean_model = mean(data_model, na.rm = TRUE)
+    
+    mean_data = mean(data_obs, na.rm = TRUE)
+    
+    sd_model = sqrt(sum((data_model - mean_model)^2)/n) 
+    
+    sd_data = sqrt(sum((data_obs - mean_data)^2)/n)
+    
+    correlation_coef = sum(((data_model - mean_model) / sd_model) * ((data_obs - mean_data) / sd_data)) / n
+    
+    # Como o objetivo não é predição não irei inserir R Squared.
+    RSquared = correlation_coef ^ 2
+    
+    # Calcular os dados segundo sterman (para o R2 fechar, os índices também).
+    correlacao = cor(x = modcost$residuals$obs, y = modcost$residuals$mod)
+    
     # Soma dos Erros Quadrados
     SumOfSquareResiduals = modcost$model
     
     # Mean Square error
     MeanSquareError = SumOfSquareResiduals / modcost$var$N
+    
+    # Root Mean Square Error
+    RootMeanSquareError = sqrt(MeanSquareError)
     
     # Mean Absolute Error
     MeanAbsoluteError = sum(abs(modcost$residuals$res)) / modcost$var$N
@@ -2090,13 +2115,19 @@ adicionar_erro_ao_ensemble = function(results, variavel_calibracao, planilha_cal
     MeanAbsolutePercentError = (sum(abs(modcost$residuals$res) / abs(modcost$residuals$obs))) / modcost$var$N
     
     # Thiel Statistics: Morecroft (2007), pg. 399. 
-    UM_ThielBiasDiffMeans =  ((mean(modcost$residuals$mod, na.rm = TRUE) - mean(modcost$residuals$obs, na.rm = TRUE))^2) / MeanSquareError
+    UM_ThielBiasDiffMeans =  ((mean_model - mean_data)^2) / MeanSquareError
+    #V Sterman: UM_ThielBiasDiffMeans =  (mean_model^2 - mean_data^2) / MeanSquareError
     
-    US_ThielUnequalVariation = ((sd(modcost$residuals$mod, na.rm = TRUE) - sd(modcost$residuals$obs, na.rm = TRUE))^2) / MeanSquareError
+    US_ThielUnequalVariation = ((sd_model - sd_data)^2) / MeanSquareError
+    #V Sterman: US_ThielUnequalVariation = (sd_model^2 - sd_data^2) / MeanSquareError
     
-    UC_ThielUnequalCovariation = (1 / MeanSquareError) * (sd(modcost$residuals$mod, na.rm = TRUE) * sd(modcost$residuals$obs, na.rm = TRUE)) * (2 * (1 - cor(x = modcost$residuals$obs, y = modcost$residuals$mod)))
+    UC_ThielUnequalCovariation = (1 / MeanSquareError) * (sd_model * sd_data) * (2 * (1 - correlation_coef))
     
-    stats_fit = c(SumOfSquareResiduals = SumOfSquareResiduals,
+    
+    stats_fit = c(RSquared = RSquared,
+                  r = correlation_coef,
+                  RootMeanSquareError = RootMeanSquareError,
+                  SumOfSquareResiduals = SumOfSquareResiduals,
                   MeanSquareError = MeanSquareError,
                   MeanAbsoluteError = MeanAbsoluteError,
                   MeanAbsolutePercentError = MeanAbsolutePercentError,

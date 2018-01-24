@@ -35,7 +35,7 @@ opcoes_iniciais = list(
   VarCriterio = "RegretPercentil75",
   SentidoCriterio = "min",
   Paralelo = TRUE,
-  ModoParalelo = "FORK",
+  ModoParalelo = "PSOCK",
   SimularApenasCasoBase = TRUE,
   FullFactorialDesign = TRUE,
   FiltrarCasosPlausiveis = TRUE
@@ -181,7 +181,7 @@ ensemble_com_erro = as.data.frame(ensemble_com_erro)
 
 # Exibir Comparação com Dados Históricos.
 
-variaveis_analise_fit = c("SumOfSquareResiduals", "MeanSquareError", "MeanAbsoluteError", "MeanAbsolutePercentError", "UM_ThielBiasDiffMeans", "US_ThielUnequalVariation", "UC_ThielUnequalCovariation")
+variaveis_analise_fit = c("RSquared", "r", "RootMeanSquareError", "SumOfSquareResiduals", "MeanSquareError", "MeanAbsoluteError", "MeanAbsolutePercentError", "UM_ThielBiasDiffMeans", "US_ThielUnequalVariation", "UC_ThielUnequalCovariation")
 variaveis_exibir_ensemble = c("Scenario", variaveis_analise_fit)
 cenarios_a_exibir_tabela = sample(1:opcoes$N,size = 5)
 
@@ -207,6 +207,7 @@ histograma_erro_percentual = ggplot(ensemble_com_erro, aes(x=MeanAbsolutePercent
 
 histograma_erro_percentual
 
+
 histograma_erro_medio_quadrado = ggplot(ensemble_com_erro, aes(x=MeanSquareError)) + 
   geom_histogram(aes(y=..density..), colour="black", fill="white")+
   geom_density(alpha=.2, fill="#FF6666") +
@@ -227,12 +228,16 @@ parametros_cenario_menor_erro = t(ensemble_com_erro[which(ensemble_com_erro[,opc
 
 parametros_cenario_menor_erro
 
+write.csv2(parametros_cenario_menor_erro, "output_calibracao.csv")
+
 parametros_cenario_menor_erro = as.data.frame(parametros_cenario_menor_erro)
 
 parametros_cenario_menor_erro[,"Parâmetro"] = rownames(parametros_cenario_menor_erro)
 
 list_tabelas_output[["ParametrosCenarioMenorErro"]] <- parametros_cenario_menor_erro
 
+
+nrow(results$DadosSimulados)
 
 # Condições Iniciais do cenário com Menor Erro:
 
