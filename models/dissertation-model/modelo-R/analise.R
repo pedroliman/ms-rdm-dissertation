@@ -1327,6 +1327,13 @@ points(x)
 library(subgroup.discovery)
 
 
+
+
+#### Gráfico de superfície:
+
+gerar_grafico_superficie(dados_ultimo_ano = df_vulnerabilidade, variaveis = c("aSwitchForCapacityStrategy2", "aReferencePopulation", "sNPVProfit1Regret"), estrategia = 31)
+
+
 #### Gerando Tabelas no Excel ####
 
 
