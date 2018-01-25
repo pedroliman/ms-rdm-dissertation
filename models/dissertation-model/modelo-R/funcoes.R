@@ -2123,6 +2123,9 @@ adicionar_erro_ao_ensemble = function(results, variavel_calibracao, planilha_cal
     
     UC_ThielUnequalCovariation = (1 / MeanSquareError) * (sd_model * sd_data) * (2 * (1 - correlation_coef))
     
+    # if(cenario == 140){
+    #   browser()
+    # }
     
     stats_fit = c(RSquared = RSquared,
                   r = correlation_coef,
