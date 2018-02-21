@@ -830,6 +830,18 @@ ggsave(filename = "./images/partial_dependence_comparacao_dados.png", plot = plo
 
 
 
+
+## Partial Dependence Plots com a biblioteca DALEX
+
+devtools::install_github("pbiecek/DALEX")
+library(DALEX)
+
+explainer_rf = DALEX::explain(model = forest, data = x)
+
+expl_rf = single_variable(explainer = explainer_rf, variable = "aReferencePopulation", type = "pdp")
+
+plot(expl_rf)
+
 # Usando as Variáveis com Shortlist, o resultado funcionou.
 # library(relaimpo)
 # lmMod <- lm(y ~ . , data = x)
