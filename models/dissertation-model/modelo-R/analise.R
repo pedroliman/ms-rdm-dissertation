@@ -11,6 +11,7 @@ library(pdp)
 library(gridExtra)
 
 ####Configurando Simulações ####
+
 # Carregando Funções Úteis
 list_tabelas_output = list()
 START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
@@ -35,7 +36,7 @@ opcoes_iniciais = list(
   VarCriterio = "RegretPercentil75",
   SentidoCriterio = "min",
   Paralelo = TRUE,
-  ModoParalelo = "PSOCK",
+  ModoParalelo = "PSOCK", # PSOCK - Windows e Linux. FORK - Apenas UNIX
   SimularApenasCasoBase = TRUE,
   FullFactorialDesign = TRUE,
   FiltrarCasosPlausiveis = TRUE
@@ -58,7 +59,9 @@ percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Número de casos TOTAL a rodar (considerando todas as estratégias e todos os cenários).
 
-n_casos_total = 54 * 200
+# Original:
+# n_casos_total = 54 * 200
+n_casos_total = 54 * 20
 
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_opcao1_futuro, opcoes = opcoes)$Levers)
 
@@ -69,43 +72,43 @@ n_ensemble_total = round(n_casos_total / n_estrategias, 0)
 n_ensemble_calibracao = round(n_ensemble_total / percentil_utilizado_como_criterio,0)
 
 
-####Verificação - Comparação de Simulações com o Ithink ####
-# Rodando um Cenário Base
-## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
-opcoes$FullFactorialDesign = FALSE
-opcoes$Paralelo = FALSE
-START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
-VERIFICAR_STOCKS = TRUE; VERIFICAR_CHECKS = TRUE; CHECK_PRECISION = 0.1; BROWSE_ON_DIFF = TRUE
-VERIFICAR_GLOBAL = TRUE;
-## Carregando Modelo
-source('funcoes.R', encoding = 'UTF-8')
-
-# Carregando Variáveis de Output do Ithink para Comparação
-arquivo_excel_stocks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_stocks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"), opcoes = opcoes)
-arquivo_excel_checks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_checks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"), opcoes = opcoes)
-arquivo_excel_global = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_tudo.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"), opcoes = opcoes)
-
-
-dados_ithink_stocks  = arquivo_excel_stocks$ResultadosIthink %>% dplyr::select(-Months)
-dados_ithink_checks  = arquivo_excel_checks$ResultadosIthink %>% dplyr::select(-Months)
-
-dados_ithink_global = arquivo_excel_global$ResultadosIthink %>% dplyr::select(-Months)
-
-
-variaveis_ithink_stocks = names(dados_ithink_stocks)
-variaveis_ithink_checks = names(dados_ithink_checks)
-
-variaveis_globais_a_verificar = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/variaveis_globais_a_verificar.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"), opcoes = opcoes)
-variaveis_globais_a_verificar = as.vector(variaveis_globais_a_verificar$ResultadosIthink$variaveis)
-
-parametros_completos = readxl::read_xlsx(planilha_simulacao_calibracao_historico, sheet = "params_testeithink")
-
-parametros_cenariobase = t(parametros_completos[,"CenarioBase"])[1,]
-
-names(parametros_cenariobase) = as.matrix(parametros_completos[,1])
-
-
-resultados_caso_base = solve_modelo_dissertacao(parametros = parametros_cenariobase, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
+####Verificação - Comparação de Simulações com o Ithink  - Não rodar ####
+# # Rodando um Cenário Base
+# ## Inicializar variaveis da simulação aqui (antes de carregar o modelo.)
+# opcoes$FullFactorialDesign = FALSE
+# opcoes$Paralelo = FALSE
+# START<-0; FINISH<-10; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
+# VERIFICAR_STOCKS = TRUE; VERIFICAR_CHECKS = TRUE; CHECK_PRECISION = 0.1; BROWSE_ON_DIFF = TRUE
+# VERIFICAR_GLOBAL = TRUE;
+# ## Carregando Modelo
+# source('funcoes.R', encoding = 'UTF-8')
+# 
+# # Carregando Variáveis de Output do Ithink para Comparação
+# arquivo_excel_stocks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_stocks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"), opcoes = opcoes)
+# arquivo_excel_checks = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_excel_checks.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"), opcoes = opcoes)
+# arquivo_excel_global = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/dados_ithink_tudo.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"), opcoes = opcoes)
+# 
+# 
+# dados_ithink_stocks  = arquivo_excel_stocks$ResultadosIthink %>% dplyr::select(-Months)
+# dados_ithink_checks  = arquivo_excel_checks$ResultadosIthink %>% dplyr::select(-Months)
+# 
+# dados_ithink_global = arquivo_excel_global$ResultadosIthink %>% dplyr::select(-Months)
+# 
+# 
+# variaveis_ithink_stocks = names(dados_ithink_stocks)
+# variaveis_ithink_checks = names(dados_ithink_checks)
+# 
+# variaveis_globais_a_verificar = carregar_inputs(arquivo_de_inputs = "../modelo-ithink/variaveis_globais_a_verificar.xlsx", abas_a_ler = c("Plan1"), nomes_inputs = c("ResultadosIthink"), opcoes = opcoes)
+# variaveis_globais_a_verificar = as.vector(variaveis_globais_a_verificar$ResultadosIthink$variaveis)
+# 
+# parametros_completos = readxl::read_xlsx(planilha_simulacao_calibracao_historico, sheet = "params")
+# 
+# parametros_cenariobase = t(parametros_completos[,"CenarioBase"])[1,]
+# 
+# names(parametros_cenariobase) = as.matrix(parametros_completos[,1])
+# 
+# 
+# resultados_caso_base = solve_modelo_dissertacao(parametros = parametros_cenariobase, modelo = sdmodel$Modelo, simtime = sdmodel$SimTime)
 
 
 #### 4.1 Teste com Dados Históricos de Demanda ####
@@ -138,9 +141,11 @@ list_tabelas_output[["ParametrosCalibracao"]] <- resultados_casos_plausiveis$Inp
 
 # Salvar resultados com casos plausíveis:
 #save(resultados_casos_plausiveis, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
+save(resultados_casos_plausiveis, file = "resultados_casos_plausiveis.rda")
+
 load("resultados_casos_plausiveis.rda")
 
-save(resultados_casos_plausiveis, file = "resultados_casos_plausiveis.rda")
+
 
 
 # load(file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/resultados_casos_plausiveis.rda")
@@ -236,9 +241,6 @@ parametros_cenario_menor_erro[,"Parâmetro"] = rownames(parametros_cenario_menor
 
 list_tabelas_output[["ParametrosCenarioMenorErro"]] <- parametros_cenario_menor_erro
 
-
-nrow(results$DadosSimulados)
-
 # Condições Iniciais do cenário com Menor Erro:
 
 resultados_casos_plausiveis$DadosUltimoPeriodo[which(resultados_casos_plausiveis$DadosUltimoPeriodo$Scenario==cenario_menor_erro),]
@@ -246,9 +248,6 @@ resultados_casos_plausiveis$DadosUltimoPeriodo[which(resultados_casos_plausiveis
 # Condições Finais do Cenário com Menor erro (pode ser usado como base):
 
 VARIAVEIS_FINAIS_CASO_BASE = resultados_casos_plausiveis$DadosUltimoPeriodo[which(resultados_casos_plausiveis$DadosUltimoPeriodo$Scenario==cenario_menor_erro),]
-
-
-
 
 # Plotar Gráfico do Cenário com Menor Erro:
 # Selecionando Pontos de Dados para Exibir no Gráfico
@@ -263,15 +262,16 @@ dados_calibracao <- as.data.frame(read_xlsx(path = "./calibracao/dados_calibraca
 plot_cenario_base_e_historico <-ggplot()+
   geom_point(data=dados_calibracao,size=1.5,aes(time,aIndustryShipments,colour="Data"))+
   geom_line(data=resultados_exibir,size=1,aes(x=time,y=aIndustryShipments,colour="Model"))+
-  ylab("Demanda Total")+
-  xlab("Anos")+
+  ylab("Professional 3D Printers Demand")+
+  xlab("Years")+
   scale_y_continuous(labels = format_for_humans)+
   theme(legend.position="bottom")+
   scale_colour_manual(name="",
                       values=c(Data="red", 
                                Model="blue"),
-                      labels=c("Dados",
-                               "Modelo"))
+                      labels=c("Data",
+                               "Calibrated Model")) + 
+  ggtitle("Model fit to Historical Data")
 plot_cenario_base_e_historico 
 
 
@@ -344,9 +344,13 @@ results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                             opcoes = opcoes)
 
 # Salvar Resultados com apenas 10 anos simulados.
-save(results, file = "/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results_final.rda")
 
-load("/home/pedro/Documents/dev/ms-rdm-dissertation-dados-temp/results_final.rda")
+results_path = "C:/Temporario/rdm-results-backup/"
+
+save(results, file = paste0(results_path,"results_final.rda"))
+
+load(paste0(results_path,"results_final.rda"))
+
 # Aplicando o Filtro de plausibilidade (Nenhum resultado caiu no filtro)
 
 #### 4.3 Análise dos Resultados ####

@@ -1,0 +1,5 @@
+PS C:\Users\Pedro Lima> Get-FileHash C:\dev\ms-rdm-dissertation\registered_file.rar
+
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          914F35D8C8232D155A3873397F4CE917182DAEAF9B0F514611EA4636EC4CC050       C:\dev\ms-rdm-dissertation\
