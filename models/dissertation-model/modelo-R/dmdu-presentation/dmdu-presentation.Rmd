@@ -1,0 +1,91 @@
+---
+title: "Strategic Decision Making in the 3D Printing Industry - A Robust Decision Making (RDM) analysis"
+author: "Pedro Nascimento de Lima"
+date: "25 de setembro de 2018"
+output: 
+  beamer_presentation:
+    theme: Berlin 
+    slide_level: 3
+    toc: true
+# "Darmstadt"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Why 3D Printing
+
+### Key Features of 3D printing
+
+ - 3D printing may
+
+### Why 3D Printing?
+
+3D Printing is an emergint technology, but decision makers face uncertainty.
+
+#### Positive Evidence
+ - 3D printing Industry has seen two digits growth consistently in the last few years;
+ - 3D printing is already reshaping supply chains across industries (e.g.: prothesis, aerospace, etc.);
+
+#### Negative Evidence
+ - Major players have been observing declining profitability (e.g.: Stratasys, 3D Systems);
+ - Estimates of 3D printing growth diverge;
+
+### 3D Printing Prospected Effects - Why do we Care?
+
+
+### Shaping events in the 3D Printing Industry
+
+A confluence of events are
+
+#### Patent Dynamics and Expiration
+The FDM patent expiration in 2007
+
+
+#### Strategies Played by Key Players
+Leading 3D printing players (e.g. 3D Systems and Stratasys) historically have been adopting a closed-source strategy.
+
+However, the key event leading to 3D printing growth was patent expiration.
+
+##### Dynamyc Hipothesis 1: Holding Patents m
+
+
+#### A fourth level
+
+Some Text Here
+
+##### A fith level
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+# XLRM
+
+## Model
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+# Case Generation
+
+# Scenario Discovery
+
+# Tradeoffs
+
+# Second Iteration
+
+# Final Thoughts
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
