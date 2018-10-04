@@ -19,8 +19,8 @@ VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001;
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
 # Parâmetros para a Geração dos Gráficos
-plots_width = 7
-plots_heigh = 4
+plots_width = 9
+plots_heigh = 3.5
 
 USAR_DADOS_SALVOS = FALSE
 SIMULAR_HISTORICO_DIFERENTE = FALSE
@@ -61,7 +61,7 @@ percentil_utilizado_como_criterio = c(PercentilCriterio = 0.5)
 
 # Original:
 # n_casos_total = 54 * 200
-n_casos_total = 54 * 20
+n_casos_total = 54 * 200
 
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_opcao1_futuro, opcoes = opcoes)$Levers)
 
@@ -375,21 +375,7 @@ plots_results$plots_whisker$plot_whisker_lever_profit
 
 plots_results$plots_whisker$plot_whisker_lever_share
 
-grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aPerformance1")
-
-
-grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare4")
-
-grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare3")
-
-grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare2")
-
-grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare1")
-
-grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aPatentesEmpresaTemAcesso1")
-
-
-grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sPrice1")
+grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aPerformance1", "Player 1 Product Performance")
 
 
 # Observando Resultados
@@ -590,6 +576,34 @@ set.seed(2)
 forest_continuo = randomForest::randomForest(y_continuo~., data = x)
 
 forest = randomForest::randomForest(factor(y)~., data = x)
+
+# Logistic Regression
+glm.fit <- glm(factor(y)~., data = x, family = binomial)
+
+
+
+#### 4.3.2 Usando o model down e DALEX para observar os modelos
+
+library(DALEX)
+
+library(modelDown)
+
+explainer_glm <- DALEX::explain(glm.fit, data=x, y= y)
+explainer_randomforest <- DALEX::explain(forest, data=x, y= y)
+
+
+DALEX::model_performance(explainer_glm, explainer_randomforest)
+
+# Gerando a Página com o ModelDown
+modelDown::modelDown(explainer_glm, explainer_randomforest)
+
+devtools::install_github("MI2DataLab/modelDown")
+
+
+
+
+#### 4.3.1 Visualizações Próprias
+
 plot_importancia_forest = randomForest::varImpPlot(forest)
 
 randomForest::varUsed(forest)
@@ -1457,4 +1471,8 @@ plot_acao_3D_Systems = ggplot(df_stocks_DDD, aes(time, Close)) + geom_line() + x
 plot_acao_Stratasys = ggplot(df_stocks_SSYS, aes(time, Close)) + geom_line() + xlab("Tempo") + ylab("Valor da Ação - SSYS")
 
 
+
+#### Gerando a Apresentação ####
+
+rmarkdown::render("dmdu-presentation/dmdu-presentation.Rmd", encoding = "UTF-8")
 

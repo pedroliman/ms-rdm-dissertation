@@ -2200,9 +2200,9 @@ plot_clientes_uma_estrategia = function(dados, estrategia) {
   ggplot2::ggplot(gr2_dados,
                   aes(x=Tempo, y=Adopters, color=factor(Lever), group=Scenario)) + 
     geom_line() + 
-    ylab("Clientes") + 
-    xlab("Tempo") +
-    labs(color = "Estratégia")
+    ylab("Adopters") + 
+    xlab("Time") +
+    labs(color = "Strategy")
 }
 
 plot_cash_uma_estrategia = function(dados, estrategia) {
@@ -2210,9 +2210,9 @@ plot_cash_uma_estrategia = function(dados, estrategia) {
   ggplot2::ggplot(gr2_dados,
                   aes(x=Tempo, y=Cash, color=factor(Lever), group=Scenario)) + 
     geom_line() + 
-    ylab("Valor Presente") + 
-    xlab("Tempo") +
-    labs(color = "Estratégia")
+    ylab("Net Present Value") + 
+    xlab("Time") +
+    labs(color = "Strategy")
 }
 
 plot_linha_uma_variavel_ensemble_uma_estrategia = function(dados, variavel, nome_amigavel_variavel, estrategia) {
@@ -2230,9 +2230,9 @@ plot_linha_uma_variavel_ensemble_uma_estrategia = function(dados, variavel, nome
   p + 
     geom_line() + 
     ylab(nome_amigavel_variavel) + 
-    xlab("Tempo (anos)") + 
+    xlab("Time") + 
     theme(legend.position="bottom")  +
-    labs(color = "Estratégia") +
+    labs(color = "Strategy") +
     scale_y_continuous(labels = format_for_humans)
 }
 
@@ -2252,7 +2252,7 @@ plot_linha_uma_variavel_players_um_cenario = function(dados = results$DadosSimul
   p = ggplot2::ggplot(dados_longo, aes(x= time, y= variavel, color=player, group = player))
   p + geom_line() +
     ylab(nome_amigavel_variavel) + 
-    xlab("Tempo (anos)") + 
+    xlab("Time") + 
     theme(legend.position="bottom")  +
     labs(color = "Player") +
     scale_y_continuous(labels = format_for_humans)
@@ -2280,9 +2280,9 @@ plot_linha_uma_variavel_ensemble = function(dados, variavel, nome_amigavel_varia
   p + 
     geom_line() + 
     ylab(nome_amigavel_variavel) + 
-    xlab("Tempo (anos)") + 
+    xlab("Time") + 
     theme(legend.position="bottom")  +
-    labs(color = "Caso") +
+    labs(color = "Case") +
     scale_y_continuous(labels = format_for_humans)
 }
 
@@ -2300,7 +2300,7 @@ plot_linha_uma_variavel = function(dados, variavel, nome_amigavel_variavel) {
   p + 
     geom_line() + 
     ylab(nome_amigavel_variavel) + 
-    xlab("Tempo (anos)") + 
+    xlab("Time") + 
     theme(legend.position="bottom") +
     scale_y_continuous(labels = format_for_humans)
 }
@@ -2335,7 +2335,7 @@ plot_partial_plot_n_variaveis = function(dados) {
   p = p + 
     geom_line() + 
     ylab("Partial Dependence") + 
-    xlab("Incerteza") + 
+    xlab("Uncertain Variable") + 
     theme(legend.position="bottom") +
     scale_y_continuous(labels = format_for_humans) +
     scale_x_continuous(labels = format_for_humans) + 
@@ -2377,8 +2377,8 @@ plot_linha_duas_variaveis = function(dados, variavel1, nome_amigavel_variavel1, 
   # modifying colours and theme options
   p <- p + scale_colour_manual(values = c("blue", "red"))
   p <- p + labs(y = nome_amigavel_variavel1,
-                x = "Tempo (anos)",
-                colour = "Variáveis")
+                x = "Time",
+                colour = "Variable")
   
   p <- p + theme(legend.position="bottom")
 
@@ -2393,9 +2393,9 @@ plot_taxa_adocao_uma_estrategia = function(dados, estrategia) {
   ggplot2::ggplot(gr2_dados,
                   aes(x=Tempo, y=Adoption_Rate, color=factor(Lever), group=Scenario)) + 
     geom_line() + 
-    ylab("Taxa de Adoção") + 
-    xlab("Tempo (anos)") +
-    labs(color = "Estratégia")
+    ylab("Adoption Rate") + 
+    xlab("Time") +
+    labs(color = "Strategy")
 }
 
 
@@ -2405,11 +2405,12 @@ plot_taxa_adocao_uma_estrategia = function(dados, estrategia) {
 #' 
 #' @param dados_regret dados resultantes da análise de regret.
 #' @param variavel nome da variável simulada a realizar o gráfico.
+#' @param nome_amigavel_variavel nome amigável para a variável de resposta (plotada no eixo y)
 #'
 #' @return grafico whisker do ggplot2
 #' @export
 #'
-grafico_whisker_por_lever = function(dados_regret, variavel) {
+grafico_whisker_por_lever = function(dados_regret, variavel, nome_amigavel_variavel) {
   dados_por_estrategia = dplyr::group_by(dados_regret, Lever)
   
   dados_por_estrategia$Lever = as.factor(dados_por_estrategia$Lever)
@@ -2421,7 +2422,10 @@ grafico_whisker_por_lever = function(dados_regret, variavel) {
   )
   
   p <- eval(call_grafico)
-  p + geom_boxplot()  + scale_y_continuous(labels = format_for_humans) + theme(axis.text.x = element_text(size=7))
+  p + geom_boxplot() + 
+    scale_y_continuous(labels = format_for_humans) + 
+    ylab(nome_amigavel_variavel) + 
+    theme(axis.text.x = element_text(size=7))
 }
 
 #' plot_fronteira_tradeoff_estrategia
@@ -2499,8 +2503,8 @@ plot_fronteira_tradeoff_estrategia = function(results, opcoes = opcoes) {
     geom_label(label=as.character(dados_join$Lever), color="white", size=3) +
     scale_y_continuous(labels = format_for_humans) + 
     scale_x_continuous(labels = format_for_humans) +
-    ylab("Custo de Oportunidade (Perc. 75%) - Cenário Definido") +
-    xlab("Custo de Oportunidade (Perc. 75%) - Todos os Cenários")
+    ylab("Regret (75% Percentile) - Vunerable Scenario") +
+    xlab("Regret (75% Percentile) - All other Scenarios")
   
   `%notin%` = function(x,y) !(x %in% y)
   
@@ -2543,9 +2547,9 @@ plot_fronteira_tradeoff_estrategia = function(results, opcoes = opcoes) {
   plot_curva_tradeoff = ggplot2::ggplot(tabela_analise_tradeoff,
                                         aes(x=OddsCenario, y=RegretEsperado, color=factor(Lever), group=factor(Lever))) + 
                           geom_line(size=1) + 
-                          ylab("Custo de Oportunidade Esperado ($)") + 
-                          xlab("Chances do Cenário de Alta Demanda Ocorrer") +
-                          labs(color = "Estratégia") +
+                          ylab("Expected Regret ($)") + 
+                          xlab("Odds of Vulnerable Scenario") +
+                          labs(color = "Strategy") +
                           scale_x_continuous(breaks = OddsCenarioBreaks, labels = OddsTextoBreaks, trans = "log10") + 
                           scale_y_continuous(labels = format_for_humans)
   
@@ -2623,8 +2627,8 @@ plot_tradeoff_regret_vpl = function(results, opcoes = opcoes) {
     geom_label(label=as.character(dados_join$Lever), color="white", size=3) +
     scale_y_continuous(labels = format_for_humans) + 
     scale_x_continuous(labels = format_for_humans) +
-    ylab("VPL (Perc. 75%)") +
-    xlab("Custo de Oportunidade (Perc. 75%)")
+    ylab("Net Present Value (75% Percentile)") +
+    xlab("Regret (75% Percentile)")
   
   
 }
@@ -2694,8 +2698,8 @@ plot_grid_estrategias_casos_vpl = function(results) {
     geom_tile(colour="gray20", size=1.5, stat="identity") + 
     scale_fill_viridis(option="D") +
     scale_y_continuous(breaks=1:6)+
-    xlab("Caso Simulado") + 
-    ylab("Estratégias") +
+    xlab("Case") + 
+    ylab("Strategy") +
     theme(
       #plot.title = element_text(color="white",hjust=0,vjust=1, size=rel(2)),
       plot.background = element_blank(),
@@ -2713,7 +2717,7 @@ plot_grid_estrategias_casos_vpl = function(results) {
       #legend.title=element_blank()
     )
   
-  plot$labels$fill = "VPL"
+  plot$labels$fill = "NPV"
   plot
 }
 
@@ -2744,20 +2748,20 @@ salvar_plots_result = function(results, cenario_plot_players, estrategia_candida
   estrategia_plot_players = estrategia_candidata
   
   plots_linha_geral = list(
-    plot_estrategia_candidata_vpl = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "VPL", estrategia = estrategia_candidata),
-    plot_estrategia_candidata_preco = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Preço", estrategia = estrategia_candidata),
-    plot_estrategia_candidata_share = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "aOrderShare1", nome_amigavel_variavel = "Market Share", estrategia = estrategia_candidata),
-    plot_estrategia_candidata_demanda_global = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "aIndustryShipments", nome_amigavel_variavel = "Demanda Global", estrategia = estrategia_candidata)
+    plot_estrategia_candidata_vpl = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sNPVProfit1", nome_amigavel_variavel = "Net Present Value", estrategia = estrategia_candidata),
+    plot_estrategia_candidata_preco = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "sPrice1", nome_amigavel_variavel = "Player 1 Avg. Price", estrategia = estrategia_candidata),
+    plot_estrategia_candidata_share = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "aOrderShare1", nome_amigavel_variavel = "Player 1 Market Share", estrategia = estrategia_candidata),
+    plot_estrategia_candidata_demanda_global = plot_linha_uma_variavel_ensemble(dados = results$DadosSimulados, variavel = "aIndustryShipments", nome_amigavel_variavel = "Prof. 3D Printer Sales", estrategia = estrategia_candidata)
   )
   
   plots_whisker = list(
-    plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1RegretPerc"),
-    plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1Regret"),
-    plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1"),
-    plot_whisker_lever_share = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare1"),
-    plot_whisker_lever_industry_order_rate = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "fIndustryOrderRate"),
-    plot_whisker_lever_price = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sPrice1"),
-    plot_whisker_lever_installed_base = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sInstalledBase1")
+    plot_whisker_lever_perc_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1RegretPerc", nome_amigavel_variavel = "Percent Regret"),
+    plot_whisker_lever_regret = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1Regret", nome_amigavel_variavel = "Regret"),
+    plot_whisker_lever_profit = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sNPVProfit1", nome_amigavel_variavel = "Net Present Value"),
+    plot_whisker_lever_share = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aOrderShare1",  nome_amigavel_variavel = "Player 1 Market Share"),
+    plot_whisker_lever_industry_order_rate = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "aIndustryShipments", nome_amigavel_variavel = "Prof. 3D Printer Sales"),
+    plot_whisker_lever_price = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sPrice1", nome_amigavel_variavel = "Player 1 Avg. Price"),
+    plot_whisker_lever_installed_base = grafico_whisker_por_lever(results$AnaliseRegret$Dados, variavel = "sInstalledBase1", nome_amigavel_variavel = "Player 1 Installed Base")
   )
   
   plots_players = list(
@@ -2765,7 +2769,7 @@ salvar_plots_result = function(results, cenario_plot_players, estrategia_candida
                                                                   estrategia = estrategia_plot_players, 
                                                                   cenario = cenario_plot_players, 
                                                                   variavel = "sNPVProfit", 
-                                                                  nome_amigavel_variavel = "VPL", 
+                                                                  nome_amigavel_variavel = "Net Present Value", 
                                                                   opcoes = opcoes)
     
     ,plot_players_vpl = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
@@ -2780,7 +2784,7 @@ salvar_plots_result = function(results, cenario_plot_players, estrategia_candida
                                                                           estrategia = estrategia_plot_players, 
                                                                           cenario = cenario_plot_players, 
                                                                           variavel = "fNetIncome", 
-                                                                          nome_amigavel_variavel = "Lucro Líquido", 
+                                                                          nome_amigavel_variavel = "Net Profit", 
                                                                           opcoes = opcoes)
     
     
@@ -2788,14 +2792,14 @@ salvar_plots_result = function(results, cenario_plot_players, estrategia_candida
                                                                            estrategia = estrategia_plot_players, 
                                                                            cenario = cenario_plot_players, 
                                                                            variavel = "aPerformance", 
-                                                                           nome_amigavel_variavel = "Performance do Produto", 
+                                                                           nome_amigavel_variavel = "Product Performance", 
                                                                            opcoes = opcoes)
     
     ,plot_players_pantes = plot_linha_uma_variavel_players_um_cenario(dados = results$DadosSimulados, 
                                                                       estrategia = estrategia_plot_players, 
                                                                       cenario = cenario_plot_players, 
                                                                       variavel = "aPatentesEmpresaTemAcesso", 
-                                                                      nome_amigavel_variavel = "Patentes acessadas pela Empresa", 
+                                                                      nome_amigavel_variavel = "Patents Accessed by Player", 
                                                                       opcoes = opcoes)
   )
   
@@ -3022,9 +3026,19 @@ obter_fundamentos_financeiros_quandl = function(company_code = "DDD") {
 # https://stackoverflow.com/questions/46657442/understanding-vectorisation
 format_for_humans <- function(x, digits = 3){
   grouping <- pmax(floor(log(abs(x), 1000)), 0)
-  paste0(signif(x / (1000 ^ grouping), digits = digits), 
-         c('', 'K', 'M', 'B', 'T')[grouping + 1])
+  paste(signif(x / (1000 ^ grouping), digits = digits), 
+         c('', 'K', 'M', 'B', 'T')[grouping + 1],sep = " ")
 }
 
 
 transf_colunas_em_vetor = function(x) {as.vector(t(x))}
+
+
+format_percentage_for_humans = function(x, digits = 1){
+  paste(round(100 * x, digits), "%", sep = "")
+}
+
+format_currency_for_humans = function(x, currency = "$", digits = 4) {
+  paste(currency, format_for_humans(x, digits = digits), sep = " ")
+}
+

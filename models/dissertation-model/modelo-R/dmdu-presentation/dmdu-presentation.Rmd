@@ -7,11 +7,17 @@ output:
     theme: Berlin 
     slide_level: 3
     toc: true
+fig_width: 9 
+fig_height: 4 
+
+
 # "Darmstadt"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+library(kableExtra)
+library(DT)
 ```
 
 # Why 3D Printing
@@ -37,7 +43,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ### Shaping events in the 3D Printing Industry
 
-A confluence of events are
+- Patent Dynamics
 
 #### Patent Dynamics and Expiration
 The FDM patent expiration in 2007
@@ -74,6 +80,73 @@ summary(cars)
 ```
 
 # Case Generation
+
+### Design of Experiments
+
+- Full factorial design of these variables, resulting in 54 strategies:
+
+|Variable | Meaning | Levels |
+|-----------|---------------------------------------|------------------------|
+| $S_1$ | Market & Pricing Strategy. Defines wether the player pursue an agressive marketing strategy to gain market share (by cutting prices and accepting excess capacity), or pursue a conservative strategy, | Agressive (1); Conservative (2)|
+| $S_1^{max}$ or $S_1^{min}$ | Desired Market Share. For a Conservative Strategy, the player adopts the $S_1^{max}$, and for an Agressive Strategy, $S_1^{min}$ | 20%; 30%; 40%|
+| $\eta_1$ | R & D budget, as a fraction of revenue. | 5%; 10%; 15%|
+| $\kappa_i$ | Fraction of R & D budget released to open source technologies. | 0 %; 50 %; 90 % |
+
+
+### Candidate Strategy NPV across scenarios
+
+```{r, fig.align='center'}
+plots_results$plots_linha_geral$plot_estrategia_candidata_vpl
+```
+
+### Global Demand across scenarios
+
+```{r, fig.align='center'}
+plots_results$plots_linha_geral$plot_estrategia_candidata_demanda_global
+```
+
+### Market Share of the 4 Players in a given scenario
+
+```{r, fig.align='center'}
+plots_results$plots_players$plot_players_vpl
+```
+
+
+### Net Present Value across strategies and Scenarios
+
+```{r, fig.align='center'}
+plots_results$plots_whisker$plot_whisker_lever_profit
+```
+
+### Regret across strategies and Scenarios
+
+```{r, fig.align='center'}
+plots_results$plots_whisker$plot_whisker_lever_regret
+```
+
+### Ranking Strategies by Regret
+
+```{r}
+
+formatted_strategies_ranking = ranking_estrategias[,c(1, 6, 8, 9, 7, 3)]
+
+
+# Parei aqui
+
+formatted_strategies_ranking[,c(3,4,5)] = format_for_humans(formatted_strategies_ranking[,3])
+
+# Não dá para usar isso.
+# formatted_strategies_ranking = DT::datatable(formatted_strategies_ranking) %>% 
+#   DT::formatCurrency(columns = 5, digits = 0) %>%
+#   DT::formatPercentage(columns = c(2:4), digits = 0)
+
+column_names = c("Lever", "Capac. Strategy", "Desired Mkt Share", "R&D Inv.", "Open Source R&D", "Profit Regret 75% percentile")
+
+knitr::kable(x = head(formatted_strategies_ranking, 10), col.names = column_names, digits = 2, format="latex", booktabs=TRUE) %>% 
+  kable_styling(latex_options="scale_down")
+
+```
+
 
 # Scenario Discovery
 
