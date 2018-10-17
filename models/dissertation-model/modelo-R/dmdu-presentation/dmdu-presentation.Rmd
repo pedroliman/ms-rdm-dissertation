@@ -22,6 +22,12 @@ library(DT)
 
 # Why 3D Printing
 
+### Supporting **Strategic Business Decisions** with DMDU methods
+- DMDU provides guidance for decision making in many contexts, but...
+- There is scant guidance on how to apply it for business decisions;
+- Strategic Decision making Literature still ignores its contribuitions;
+- 
+
 ### Key Features of 3D printing
 
  - 3D printing may
@@ -30,54 +36,29 @@ library(DT)
 
 3D Printing is an emergint technology, but decision makers face uncertainty.
 
-#### Positive Evidence
+**Positive Evidence**:
  - 3D printing Industry has seen two digits growth consistently in the last few years;
  - 3D printing is already reshaping supply chains across industries (e.g.: prothesis, aerospace, etc.);
 
-#### Negative Evidence
+**Negative Evidence**:
  - Major players have been observing declining profitability (e.g.: Stratasys, 3D Systems);
  - Estimates of 3D printing growth diverge;
-
-### 3D Printing Prospected Effects - Why do we Care?
+ 
+### Where to start in DMDU?
 
 
 ### Shaping events in the 3D Printing Industry
 
-- Patent Dynamics
-
-#### Patent Dynamics and Expiration
-The FDM patent expiration in 2007
-
-
-#### Strategies Played by Key Players
-Leading 3D printing players (e.g. 3D Systems and Stratasys) historically have been adopting a closed-source strategy.
-
-However, the key event leading to 3D printing growth was patent expiration.
-
-##### Dynamyc Hipothesis 1: Holding Patents m
-
-
-#### A fourth level
-
-Some Text Here
-
-##### A fith level
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
-
-## Slide with Bullets
-
-- Bullet 1
-- Bullet 2
-- Bullet 3
+- Patent Dynamics & Patent Expiration (e.g. FDM Patent);
+- Fierce Competition;
+- After the 3D printing Bubble, major players refocused their operations on industrial-grade printers;
 
 # XLRM
 
 ## Model
 
-```{r cars, echo = TRUE}
-summary(cars)
-```
+![Model Structure & Boundaries](images/model-modules-and-boundaries.png)
+
 
 # Case Generation
 
@@ -105,7 +86,7 @@ plots_results$plots_linha_geral$plot_estrategia_candidata_vpl
 plots_results$plots_linha_geral$plot_estrategia_candidata_demanda_global
 ```
 
-### Market Share of the 4 Players in a given scenario
+### 4 Players Net Present Value in a given scenario
 
 ```{r, fig.align='center'}
 plots_results$plots_players$plot_players_vpl
@@ -126,19 +107,12 @@ plots_results$plots_whisker$plot_whisker_lever_regret
 
 ### Ranking Strategies by Regret
 
-```{r}
-
+```{r, eval=F}
 formatted_strategies_ranking = ranking_estrategias[,c(1, 6, 8, 9, 7, 3)]
 
-
 # Parei aqui
-
 formatted_strategies_ranking[,c(3,4,5)] = format_for_humans(formatted_strategies_ranking[,3])
 
-# Não dá para usar isso.
-# formatted_strategies_ranking = DT::datatable(formatted_strategies_ranking) %>% 
-#   DT::formatCurrency(columns = 5, digits = 0) %>%
-#   DT::formatPercentage(columns = c(2:4), digits = 0)
 
 column_names = c("Lever", "Capac. Strategy", "Desired Mkt Share", "R&D Inv.", "Open Source R&D", "Profit Regret 75% percentile")
 

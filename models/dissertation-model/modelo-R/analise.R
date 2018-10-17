@@ -1457,12 +1457,12 @@ df_stocks_DDD = data.frame(time = as.vector(time(teste_preco_stock_3D_systems)),
 
 teste_preco_stock_Stratasys = Quandl("WIKI/SSYS", collapse="monthly", start_date="1900-01-01", type="ts")
 
-
-join_acoes = dplyr::inner_join(df_stocks_DDD, df_stocks_SSYS, by = "time")
-
 df_stocks_SSYS = data.frame(time = as.vector(time(teste_preco_stock_Stratasys)),
                             as.data.frame(teste_preco_stock_Stratasys))
 
+
+
+join_acoes = dplyr::inner_join(df_stocks_DDD, df_stocks_SSYS, by = "time")
 
 
 plot_acao_3D_Systems = ggplot(df_stocks_DDD, aes(time, Close)) + geom_line() + xlab("Tempo") + ylab("Valor da Ação - DDD")
@@ -1470,7 +1470,22 @@ plot_acao_3D_Systems = ggplot(df_stocks_DDD, aes(time, Close)) + geom_line() + x
 
 plot_acao_Stratasys = ggplot(df_stocks_SSYS, aes(time, Close)) + geom_line() + xlab("Tempo") + ylab("Valor da Ação - SSYS")
 
+library(gapminder)
+library(gganimate)
 
+ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  facet_wrap(~continent) +
+  # Here comes the gganimate specific bits
+  labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+  transition_time(year) +
+  ease_aes('linear')
+
+
+gganimate::anim_save()
 
 #### Gerando a Apresentação ####
 
