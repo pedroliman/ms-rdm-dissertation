@@ -17,6 +17,7 @@ list_tabelas_output = list()
 START<-2007; FINISH <-2017; STEP<-0.0625; SIM_TIME <- seq(START, FINISH, by=STEP)
 VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001; 
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
+N_PLAYERS <<- 4;
 source('funcoes.R', encoding = 'UTF-8')
 # Parâmetros para a Geração dos Gráficos
 plots_width = 9
@@ -339,15 +340,15 @@ BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
 
 # Simular
-results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
-                                            sdmodel = sdmodel, 
-                                            opcoes = opcoes)
+# results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+#                                            sdmodel = sdmodel, 
+#                                            opcoes = opcoes)
 
 # Salvar Resultados com apenas 10 anos simulados.
 
 results_path = "C:/Temporario/rdm-results-backup/"
 
-save(results, file = paste0(results_path,"results_final.rda"))
+#save(results, file = paste0(results_path,"results_final.rda"))
 
 load(paste0(results_path,"results_final.rda"))
 
@@ -579,6 +580,7 @@ forest = randomForest::randomForest(factor(y)~., data = x)
 
 # Logistic Regression
 glm.fit <- glm(factor(y)~., data = x, family = binomial)
+lm.fit = lm(formula = y_continuo~., data = x)
 
 
 
@@ -589,13 +591,25 @@ library(DALEX)
 library(modelDown)
 
 explainer_glm <- DALEX::explain(glm.fit, data=x, y= y)
+explainer_lm <- DALEX::explain(lm.fit, data=x, y= y_continuo)
 explainer_randomforest <- DALEX::explain(forest, data=x, y= y)
+explainer_randomforest_continuo <- DALEX::explain(forest_continuo, data=x, y= y_continuo)
+
+
+single_variable_pdp_rf = DALEX::single_variable(explainer_randomforest, "aReferencePopulation", type = "pdp")
+single_variable_pdp_rf_continuo = DALEX::single_variable(explainer_randomforest_continuo, "aReferencePopulation", type = "pdp")
+single_variable_pdp_glm = DALEX::single_variable(explainer_glm, "aReferencePopulation", type = "pdp")
+single_variable_pdp_lm = DALEX::single_variable(explainer_lm, "aReferencePopulation", type = "pdp")
+
+
+
+plot(single_variable_pdp_rf_continuo, single_variable_pdp_lm)
 
 
 DALEX::model_performance(explainer_glm, explainer_randomforest)
 
 # Gerando a Página com o ModelDown
-modelDown::modelDown(explainer_glm, explainer_randomforest)
+modelDown::modelDown(explainer_lm, explainer_randomforest_continuo)
 
 devtools::install_github("MI2DataLab/modelDown")
 

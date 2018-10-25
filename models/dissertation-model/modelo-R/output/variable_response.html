@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1"
+    crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+  <div class="container template-home">
+
+    <header>
+      <div class="navbar navbar-default navbar-fixed-top navbar-mi2" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            </a>
+            <a class="navbar-brand navbar-mi2" href="index.html">modelDown</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-mi2 nav navbar-nav">
+              <li>
+                <a href="index.html">
+                  <span class="fa fa-home fa-lg"></span>
+
+                </a>
+              </li>
+
+              <li>
+                  <a href="model_performance.html">Model Performance</a>
+              </li>
+              <li>
+                  <a href="variable_importance.html">Variable Importance</a>
+              </li>
+              <li>
+                  <a href="variable_response.html">Variable Response</a>
+              </li>
+              <li>
+                  <a href="prediction_breakdown.html">Prediction BreakDown</a>
+              </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right"></ul>
+          </div>
+          <!--/.nav-collapse -->
+        </div>
+        <!--/.container -->
+      </div>
+      <!--/.navbar -->
+    </header>
+
+    <div class="row" style="position: relative; margin-bottom:60px;">
+      <div style="position: fixed; width: 300px;">
+    <div class="panel panel-default">
+        <ul class="list-group">
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aCapacityAcquisitionDelay">aCapacityAcquisitionDelay</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aCustoMedioPatente">aCustoMedioPatente</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aDesiredMarketShare2">aDesiredMarketShare2</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aDesiredMarketShare3">aDesiredMarketShare3</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aDesiredMarketShare4">aDesiredMarketShare4</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aFractionalDiscardRate">aFractionalDiscardRate</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aInitialReorderShare">aInitialReorderShare</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aInnovatorAdoptionFraction">aInnovatorAdoptionFraction</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aLCStrength">aLCStrength</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aNormalCapacityUtilization">aNormalCapacityUtilization</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aOrcamentoPeD2">aOrcamentoPeD2</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aOrcamentoPeD3">aOrcamentoPeD3</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aOrcamentoPeD4">aOrcamentoPeD4</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aPercPeDAberto2">aPercPeDAberto2</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aPercPeDAberto3">aPercPeDAberto3</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aPercPeDAberto4">aPercPeDAberto4</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aPerfSlope">aPerfSlope</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aRatioOfFixedToVarCost">aRatioOfFixedToVarCost</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aReferenceIndustryDemandElasticity">aReferenceIndustryDemandElasticity</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aReferencePopulation">aReferencePopulation</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aSensOfAttractToAvailability">aSensOfAttractToAvailability</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aSensOfAttractToPerformance">aSensOfAttractToPerformance</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aSensOfAttractToPrice">aSensOfAttractToPrice</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aSensOfPriceToCosts">aSensOfPriceToCosts</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aSensOfPriceToDSBalance">aSensOfPriceToDSBalance</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aSensOfPriceToShare">aSensOfPriceToShare</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aSwitchForCapacityStrategy2">aSwitchForCapacityStrategy2</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aSwitchForCapacityStrategy3">aSwitchForCapacityStrategy3</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aSwitchForCapacityStrategy4">aSwitchForCapacityStrategy4</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aTaxaRejeicao">aTaxaRejeicao</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aTempodeInutilizacaoPatente">aTempodeInutilizacaoPatente</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aTempoMedioAvaliacao">aTempoMedioAvaliacao</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aTempoMedioRealizacaoPeD">aTempoMedioRealizacaoPeD</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aVolumeReportingDelay">aVolumeReportingDelay</a>
+            </li>
+            <li class="list-group-item" style="padding: 5px 15px;">
+                <a href="#aWOMStrength">aWOMStrength</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="col-md-push-3 col-md-9" style="left: 300px; width: auto;">
+    <a id="aCapacityAcquisitionDelay" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aCapacityAcquisitionDelay</h2>
+        <img src="img/variable_response_aCapacityAcquisitionDelay_pdp.png" />
+    </div>
+    <a id="aCustoMedioPatente" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aCustoMedioPatente</h2>
+        <img src="img/variable_response_aCustoMedioPatente_pdp.png" />
+    </div>
+    <a id="aDesiredMarketShare2" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aDesiredMarketShare2</h2>
+        <img src="img/variable_response_aDesiredMarketShare2_pdp.png" />
+    </div>
+    <a id="aDesiredMarketShare3" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aDesiredMarketShare3</h2>
+        <img src="img/variable_response_aDesiredMarketShare3_pdp.png" />
+    </div>
+    <a id="aDesiredMarketShare4" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aDesiredMarketShare4</h2>
+        <img src="img/variable_response_aDesiredMarketShare4_pdp.png" />
+    </div>
+    <a id="aFractionalDiscardRate" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aFractionalDiscardRate</h2>
+        <img src="img/variable_response_aFractionalDiscardRate_pdp.png" />
+    </div>
+    <a id="aInitialReorderShare" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aInitialReorderShare</h2>
+        <img src="img/variable_response_aInitialReorderShare_pdp.png" />
+    </div>
+    <a id="aInnovatorAdoptionFraction" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aInnovatorAdoptionFraction</h2>
+        <img src="img/variable_response_aInnovatorAdoptionFraction_pdp.png" />
+    </div>
+    <a id="aLCStrength" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aLCStrength</h2>
+        <img src="img/variable_response_aLCStrength_pdp.png" />
+    </div>
+    <a id="aNormalCapacityUtilization" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aNormalCapacityUtilization</h2>
+        <img src="img/variable_response_aNormalCapacityUtilization_pdp.png" />
+    </div>
+    <a id="aOrcamentoPeD2" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aOrcamentoPeD2</h2>
+        <img src="img/variable_response_aOrcamentoPeD2_pdp.png" />
+    </div>
+    <a id="aOrcamentoPeD3" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aOrcamentoPeD3</h2>
+        <img src="img/variable_response_aOrcamentoPeD3_pdp.png" />
+    </div>
+    <a id="aOrcamentoPeD4" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aOrcamentoPeD4</h2>
+        <img src="img/variable_response_aOrcamentoPeD4_pdp.png" />
+    </div>
+    <a id="aPercPeDAberto2" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aPercPeDAberto2</h2>
+        <img src="img/variable_response_aPercPeDAberto2_pdp.png" />
+    </div>
+    <a id="aPercPeDAberto3" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aPercPeDAberto3</h2>
+        <img src="img/variable_response_aPercPeDAberto3_pdp.png" />
+    </div>
+    <a id="aPercPeDAberto4" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aPercPeDAberto4</h2>
+        <img src="img/variable_response_aPercPeDAberto4_pdp.png" />
+    </div>
+    <a id="aPerfSlope" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aPerfSlope</h2>
+        <img src="img/variable_response_aPerfSlope_pdp.png" />
+    </div>
+    <a id="aRatioOfFixedToVarCost" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aRatioOfFixedToVarCost</h2>
+        <img src="img/variable_response_aRatioOfFixedToVarCost_pdp.png" />
+    </div>
+    <a id="aReferenceIndustryDemandElasticity" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aReferenceIndustryDemandElasticity</h2>
+        <img src="img/variable_response_aReferenceIndustryDemandElasticity_pdp.png" />
+    </div>
+    <a id="aReferencePopulation" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aReferencePopulation</h2>
+        <img src="img/variable_response_aReferencePopulation_pdp.png" />
+    </div>
+    <a id="aSensOfAttractToAvailability" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aSensOfAttractToAvailability</h2>
+        <img src="img/variable_response_aSensOfAttractToAvailability_pdp.png" />
+    </div>
+    <a id="aSensOfAttractToPerformance" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aSensOfAttractToPerformance</h2>
+        <img src="img/variable_response_aSensOfAttractToPerformance_pdp.png" />
+    </div>
+    <a id="aSensOfAttractToPrice" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aSensOfAttractToPrice</h2>
+        <img src="img/variable_response_aSensOfAttractToPrice_pdp.png" />
+    </div>
+    <a id="aSensOfPriceToCosts" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aSensOfPriceToCosts</h2>
+        <img src="img/variable_response_aSensOfPriceToCosts_pdp.png" />
+    </div>
+    <a id="aSensOfPriceToDSBalance" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aSensOfPriceToDSBalance</h2>
+        <img src="img/variable_response_aSensOfPriceToDSBalance_pdp.png" />
+    </div>
+    <a id="aSensOfPriceToShare" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aSensOfPriceToShare</h2>
+        <img src="img/variable_response_aSensOfPriceToShare_pdp.png" />
+    </div>
+    <a id="aSwitchForCapacityStrategy2" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aSwitchForCapacityStrategy2</h2>
+        <img src="img/variable_response_aSwitchForCapacityStrategy2_pdp.png" />
+    </div>
+    <a id="aSwitchForCapacityStrategy3" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aSwitchForCapacityStrategy3</h2>
+        <img src="img/variable_response_aSwitchForCapacityStrategy3_pdp.png" />
+    </div>
+    <a id="aSwitchForCapacityStrategy4" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aSwitchForCapacityStrategy4</h2>
+        <img src="img/variable_response_aSwitchForCapacityStrategy4_pdp.png" />
+    </div>
+    <a id="aTaxaRejeicao" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aTaxaRejeicao</h2>
+        <img src="img/variable_response_aTaxaRejeicao_pdp.png" />
+    </div>
+    <a id="aTempodeInutilizacaoPatente" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aTempodeInutilizacaoPatente</h2>
+        <img src="img/variable_response_aTempodeInutilizacaoPatente_pdp.png" />
+    </div>
+    <a id="aTempoMedioAvaliacao" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aTempoMedioAvaliacao</h2>
+        <img src="img/variable_response_aTempoMedioAvaliacao_pdp.png" />
+    </div>
+    <a id="aTempoMedioRealizacaoPeD" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aTempoMedioRealizacaoPeD</h2>
+        <img src="img/variable_response_aTempoMedioRealizacaoPeD_pdp.png" />
+    </div>
+    <a id="aVolumeReportingDelay" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aVolumeReportingDelay</h2>
+        <img src="img/variable_response_aVolumeReportingDelay_pdp.png" />
+    </div>
+    <a id="aWOMStrength" style="display: block;position: relative;top: -51px;visibility: hidden;"></a>
+    <div style="padding: 0px 20px;">
+        <h2>aWOMStrength</h2>
+        <img src="img/variable_response_aWOMStrength_pdp.png" />
+    </div>
+</div>
+    </div>
+
+
+  <footer>
+    <div class="footer">
+      <div class="text-center">Site built with <a href="https://github.com/MI2DataLab/modelDown">modelDown</a>.</div>
+      <div class="text-center" style="margin: 0px 0px 5px;">Last updated: 2018-10-25 15:27:53</div>
+    </div>
+  </footer>
+
+  </div>
+
+</body>
+</html>

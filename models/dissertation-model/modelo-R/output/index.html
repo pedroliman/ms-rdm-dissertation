@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1"
+    crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+  <div class="container template-home">
+
+    <header>
+      <div class="navbar navbar-default navbar-fixed-top navbar-mi2" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            </a>
+            <a class="navbar-brand navbar-mi2" href="index.html">modelDown</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-mi2 nav navbar-nav">
+              <li>
+                <a href="index.html">
+                  <span class="fa fa-home fa-lg"></span>
+
+                </a>
+              </li>
+
+              <li>
+                  <a href="model_performance.html">Model Performance</a>
+              </li>
+              <li>
+                  <a href="variable_importance.html">Variable Importance</a>
+              </li>
+              <li>
+                  <a href="variable_response.html">Variable Response</a>
+              </li>
+              <li>
+                  <a href="prediction_breakdown.html">Prediction BreakDown</a>
+              </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right"></ul>
+          </div>
+          <!--/.nav-collapse -->
+        </div>
+        <!--/.container -->
+      </div>
+      <!--/.navbar -->
+    </header>
+
+    <div class="row" style="position: relative; margin-bottom:60px;">
+      <header class="bg-primary text-white">
+  <div class="container text-center">
+    <h1>modelDown</h1>
+    <p class="lead">Explore your model!</p>
+  </div>
+</header>
+
+<br>
+<br>
+
+<div class="row">
+  <div class="col-md-8">
+    <h3 class="my-3">Basic data information</h3>
+    <ul>
+      <li>200 observations</li>
+      <li>35 columns</li>
+    </ul>
+  </div>
+  <div class="col-md-4" >
+    <h3 class="my-3">Explainers</h3>
+      <ul><li>lm <a href='explainers/lm.rda'>(download)</a></li><li>randomForest <a href='explainers/randomForest.rda'>(download)</a></li></ul>
+  </div>
+</div>
+
+<hr>
+
+<div class="text-center">
+  <h3 class="my-3">Summaries for numerical variables</h3>
+  <br>
+  <table class="table table-responsive table-bordered table-hover" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> vars </th>
+   <th style="text-align:right;"> n </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> median </th>
+   <th style="text-align:right;"> trimmed </th>
+   <th style="text-align:right;"> mad </th>
+   <th style="text-align:right;"> min </th>
+   <th style="text-align:right;"> max </th>
+   <th style="text-align:right;"> range </th>
+   <th style="text-align:right;"> skew </th>
+   <th style="text-align:right;"> kurtosis </th>
+   <th style="text-align:right;"> se </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> aFractionalDiscardRate </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 1.500076e-01 </td>
+   <td style="text-align:right;"> 2.892990e-02 </td>
+   <td style="text-align:right;"> 1.499630e-01 </td>
+   <td style="text-align:right;"> 1.500080e-01 </td>
+   <td style="text-align:right;"> 3.691540e-02 </td>
+   <td style="text-align:right;"> 1.001708e-01 </td>
+   <td style="text-align:right;"> 1.999405e-01 </td>
+   <td style="text-align:right;"> 9.976960e-02 </td>
+   <td style="text-align:right;"> -0.0004835 </td>
+   <td style="text-align:right;"> -1.215225 </td>
+   <td style="text-align:right;"> 2.045700e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aReferenceIndustryDemandElasticity </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 4.998014e-01 </td>
+   <td style="text-align:right;"> 2.894236e-01 </td>
+   <td style="text-align:right;"> 4.987867e-01 </td>
+   <td style="text-align:right;"> 4.998473e-01 </td>
+   <td style="text-align:right;"> 3.699291e-01 </td>
+   <td style="text-align:right;"> 1.547700e-03 </td>
+   <td style="text-align:right;"> 9.954867e-01 </td>
+   <td style="text-align:right;"> 9.939390e-01 </td>
+   <td style="text-align:right;"> -0.0003640 </td>
+   <td style="text-align:right;"> -1.218387 </td>
+   <td style="text-align:right;"> 2.046530e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aReferencePopulation </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 6.249490e+04 </td>
+   <td style="text-align:right;"> 2.169488e+04 </td>
+   <td style="text-align:right;"> 6.242041e+04 </td>
+   <td style="text-align:right;"> 6.249687e+04 </td>
+   <td style="text-align:right;"> 2.792149e+04 </td>
+   <td style="text-align:right;"> 2.533921e+04 </td>
+   <td style="text-align:right;"> 9.968805e+04 </td>
+   <td style="text-align:right;"> 7.434884e+04 </td>
+   <td style="text-align:right;"> -0.0000839 </td>
+   <td style="text-align:right;"> -1.219280 </td>
+   <td style="text-align:right;"> 1.534060e+03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aInnovatorAdoptionFraction </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 5.499600e-03 </td>
+   <td style="text-align:right;"> 3.183500e-03 </td>
+   <td style="text-align:right;"> 5.494300e-03 </td>
+   <td style="text-align:right;"> 5.500100e-03 </td>
+   <td style="text-align:right;"> 4.105400e-03 </td>
+   <td style="text-align:right;"> 2.020000e-05 </td>
+   <td style="text-align:right;"> 1.095180e-02 </td>
+   <td style="text-align:right;"> 1.093160e-02 </td>
+   <td style="text-align:right;"> 0.0003598 </td>
+   <td style="text-align:right;"> -1.217860 </td>
+   <td style="text-align:right;"> 2.251000e-04 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aWOMStrength </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 9.502182e-01 </td>
+   <td style="text-align:right;"> 3.181731e-01 </td>
+   <td style="text-align:right;"> 9.494648e-01 </td>
+   <td style="text-align:right;"> 9.502146e-01 </td>
+   <td style="text-align:right;"> 4.057774e-01 </td>
+   <td style="text-align:right;"> 4.011996e-01 </td>
+   <td style="text-align:right;"> 1.495026e+00 </td>
+   <td style="text-align:right;"> 1.093827e+00 </td>
+   <td style="text-align:right;"> -0.0002622 </td>
+   <td style="text-align:right;"> -1.217244 </td>
+   <td style="text-align:right;"> 2.249820e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aVolumeReportingDelay </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 1.562408e-01 </td>
+   <td style="text-align:right;"> 5.426430e-02 </td>
+   <td style="text-align:right;"> 1.565267e-01 </td>
+   <td style="text-align:right;"> 1.562451e-01 </td>
+   <td style="text-align:right;"> 6.923690e-02 </td>
+   <td style="text-align:right;"> 6.284670e-02 </td>
+   <td style="text-align:right;"> 2.498765e-01 </td>
+   <td style="text-align:right;"> 1.870297e-01 </td>
+   <td style="text-align:right;"> 0.0003834 </td>
+   <td style="text-align:right;"> -1.218195 </td>
+   <td style="text-align:right;"> 3.837100e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aCapacityAcquisitionDelay </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 7.499261e-01 </td>
+   <td style="text-align:right;"> 1.446434e-01 </td>
+   <td style="text-align:right;"> 7.504819e-01 </td>
+   <td style="text-align:right;"> 7.498847e-01 </td>
+   <td style="text-align:right;"> 1.851306e-01 </td>
+   <td style="text-align:right;"> 5.021134e-01 </td>
+   <td style="text-align:right;"> 9.993420e-01 </td>
+   <td style="text-align:right;"> 4.972286e-01 </td>
+   <td style="text-align:right;"> 0.0014959 </td>
+   <td style="text-align:right;"> -1.217385 </td>
+   <td style="text-align:right;"> 1.022780e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aSensOfAttractToAvailability </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> -4.000316e+00 </td>
+   <td style="text-align:right;"> 1.157066e+00 </td>
+   <td style="text-align:right;"> -4.002156e+00 </td>
+   <td style="text-align:right;"> -4.000135e+00 </td>
+   <td style="text-align:right;"> 1.474867e+00 </td>
+   <td style="text-align:right;"> -5.989449e+00 </td>
+   <td style="text-align:right;"> -2.018204e+00 </td>
+   <td style="text-align:right;"> 3.971245e+00 </td>
+   <td style="text-align:right;"> -0.0000429 </td>
+   <td style="text-align:right;"> -1.217161 </td>
+   <td style="text-align:right;"> 8.181690e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aSensOfAttractToPrice </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> -8.000272e+00 </td>
+   <td style="text-align:right;"> 2.316074e+00 </td>
+   <td style="text-align:right;"> -8.012820e+00 </td>
+   <td style="text-align:right;"> -8.000340e+00 </td>
+   <td style="text-align:right;"> 2.974711e+00 </td>
+   <td style="text-align:right;"> -1.196585e+01 </td>
+   <td style="text-align:right;"> -4.005159e+00 </td>
+   <td style="text-align:right;"> 7.960693e+00 </td>
+   <td style="text-align:right;"> 0.0005651 </td>
+   <td style="text-align:right;"> -1.216669 </td>
+   <td style="text-align:right;"> 1.637712e-01 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aLCStrength </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 8.500166e-01 </td>
+   <td style="text-align:right;"> 8.688040e-02 </td>
+   <td style="text-align:right;"> 8.496473e-01 </td>
+   <td style="text-align:right;"> 8.499879e-01 </td>
+   <td style="text-align:right;"> 1.115139e-01 </td>
+   <td style="text-align:right;"> 7.003129e-01 </td>
+   <td style="text-align:right;"> 9.988341e-01 </td>
+   <td style="text-align:right;"> 2.985212e-01 </td>
+   <td style="text-align:right;"> 0.0014898 </td>
+   <td style="text-align:right;"> -1.218738 </td>
+   <td style="text-align:right;"> 6.143400e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aRatioOfFixedToVarCost </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 1.666419e+00 </td>
+   <td style="text-align:right;"> 7.714310e-01 </td>
+   <td style="text-align:right;"> 1.663990e+00 </td>
+   <td style="text-align:right;"> 1.666571e+00 </td>
+   <td style="text-align:right;"> 9.858611e-01 </td>
+   <td style="text-align:right;"> 3.460713e-01 </td>
+   <td style="text-align:right;"> 2.988475e+00 </td>
+   <td style="text-align:right;"> 2.642404e+00 </td>
+   <td style="text-align:right;"> -0.0008783 </td>
+   <td style="text-align:right;"> -1.217937 </td>
+   <td style="text-align:right;"> 5.454840e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aNormalCapacityUtilization </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 8.000101e-01 </td>
+   <td style="text-align:right;"> 1.157560e-01 </td>
+   <td style="text-align:right;"> 8.001674e-01 </td>
+   <td style="text-align:right;"> 8.000181e-01 </td>
+   <td style="text-align:right;"> 1.485835e-01 </td>
+   <td style="text-align:right;"> 6.017661e-01 </td>
+   <td style="text-align:right;"> 9.993363e-01 </td>
+   <td style="text-align:right;"> 3.975703e-01 </td>
+   <td style="text-align:right;"> -0.0010835 </td>
+   <td style="text-align:right;"> -1.218121 </td>
+   <td style="text-align:right;"> 8.185200e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aSensOfPriceToCosts </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 7.500248e-01 </td>
+   <td style="text-align:right;"> 1.447466e-01 </td>
+   <td style="text-align:right;"> 7.500340e-01 </td>
+   <td style="text-align:right;"> 7.500008e-01 </td>
+   <td style="text-align:right;"> 1.856537e-01 </td>
+   <td style="text-align:right;"> 5.020331e-01 </td>
+   <td style="text-align:right;"> 9.994799e-01 </td>
+   <td style="text-align:right;"> 4.974468e-01 </td>
+   <td style="text-align:right;"> 0.0004562 </td>
+   <td style="text-align:right;"> -1.218331 </td>
+   <td style="text-align:right;"> 1.023510e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aSensOfPriceToDSBalance </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 1.250250e-01 </td>
+   <td style="text-align:right;"> 7.233820e-02 </td>
+   <td style="text-align:right;"> 1.248789e-01 </td>
+   <td style="text-align:right;"> 1.250358e-01 </td>
+   <td style="text-align:right;"> 9.235530e-02 </td>
+   <td style="text-align:right;"> 6.831000e-04 </td>
+   <td style="text-align:right;"> 2.491747e-01 </td>
+   <td style="text-align:right;"> 2.484916e-01 </td>
+   <td style="text-align:right;"> -0.0008039 </td>
+   <td style="text-align:right;"> -1.217796 </td>
+   <td style="text-align:right;"> 5.115100e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aSensOfPriceToShare </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> -2.499938e-01 </td>
+   <td style="text-align:right;"> 1.446843e-01 </td>
+   <td style="text-align:right;"> -2.502954e-01 </td>
+   <td style="text-align:right;"> -2.500157e-01 </td>
+   <td style="text-align:right;"> 1.860407e-01 </td>
+   <td style="text-align:right;"> -4.996183e-01 </td>
+   <td style="text-align:right;"> -3.035000e-04 </td>
+   <td style="text-align:right;"> 4.993148e-01 </td>
+   <td style="text-align:right;"> 0.0011871 </td>
+   <td style="text-align:right;"> -1.217417 </td>
+   <td style="text-align:right;"> 1.023070e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aTempoMedioRealizacaoPeD </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 2.500001e+00 </td>
+   <td style="text-align:right;"> 8.677617e-01 </td>
+   <td style="text-align:right;"> 2.501492e+00 </td>
+   <td style="text-align:right;"> 2.500237e+00 </td>
+   <td style="text-align:right;"> 1.112879e+00 </td>
+   <td style="text-align:right;"> 1.011093e+00 </td>
+   <td style="text-align:right;"> 3.993078e+00 </td>
+   <td style="text-align:right;"> 2.981985e+00 </td>
+   <td style="text-align:right;"> -0.0016894 </td>
+   <td style="text-align:right;"> -1.217829 </td>
+   <td style="text-align:right;"> 6.136000e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aCustoMedioPatente </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 2.000149e+06 </td>
+   <td style="text-align:right;"> 5.789037e+05 </td>
+   <td style="text-align:right;"> 2.000781e+06 </td>
+   <td style="text-align:right;"> 2.000364e+06 </td>
+   <td style="text-align:right;"> 7.380382e+05 </td>
+   <td style="text-align:right;"> 1.000478e+06 </td>
+   <td style="text-align:right;"> 2.996837e+06 </td>
+   <td style="text-align:right;"> 1.996359e+06 </td>
+   <td style="text-align:right;"> -0.0022648 </td>
+   <td style="text-align:right;"> -1.216365 </td>
+   <td style="text-align:right;"> 4.093468e+04 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aTempoMedioAvaliacao </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 2.249760e+00 </td>
+   <td style="text-align:right;"> 4.343209e-01 </td>
+   <td style="text-align:right;"> 2.249934e+00 </td>
+   <td style="text-align:right;"> 2.249713e+00 </td>
+   <td style="text-align:right;"> 5.554113e-01 </td>
+   <td style="text-align:right;"> 1.507305e+00 </td>
+   <td style="text-align:right;"> 2.997018e+00 </td>
+   <td style="text-align:right;"> 1.489712e+00 </td>
+   <td style="text-align:right;"> -0.0000802 </td>
+   <td style="text-align:right;"> -1.218868 </td>
+   <td style="text-align:right;"> 3.071110e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aTaxaRejeicao </td>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 4.500216e-01 </td>
+   <td style="text-align:right;"> 8.682690e-02 </td>
+   <td style="text-align:right;"> 4.502953e-01 </td>
+   <td style="text-align:right;"> 4.500041e-01 </td>
+   <td style="text-align:right;"> 1.113253e-01 </td>
+   <td style="text-align:right;"> 3.001423e-01 </td>
+   <td style="text-align:right;"> 5.987153e-01 </td>
+   <td style="text-align:right;"> 2.985731e-01 </td>
+   <td style="text-align:right;"> 0.0002426 </td>
+   <td style="text-align:right;"> -1.218932 </td>
+   <td style="text-align:right;"> 6.139600e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aTempodeInutilizacaoPatente </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 9.999275e+00 </td>
+   <td style="text-align:right;"> 2.895125e+00 </td>
+   <td style="text-align:right;"> 9.990659e+00 </td>
+   <td style="text-align:right;"> 1.000004e+01 </td>
+   <td style="text-align:right;"> 3.732409e+00 </td>
+   <td style="text-align:right;"> 5.016757e+00 </td>
+   <td style="text-align:right;"> 1.498866e+01 </td>
+   <td style="text-align:right;"> 9.971903e+00 </td>
+   <td style="text-align:right;"> -0.0014896 </td>
+   <td style="text-align:right;"> -1.217482 </td>
+   <td style="text-align:right;"> 2.047163e-01 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aPerfSlope </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 2.479540e-02 </td>
+   <td style="text-align:right;"> 7.174500e-03 </td>
+   <td style="text-align:right;"> 2.476440e-02 </td>
+   <td style="text-align:right;"> 2.479720e-02 </td>
+   <td style="text-align:right;"> 9.246000e-03 </td>
+   <td style="text-align:right;"> 1.248700e-02 </td>
+   <td style="text-align:right;"> 3.710080e-02 </td>
+   <td style="text-align:right;"> 2.461380e-02 </td>
+   <td style="text-align:right;"> -0.0017276 </td>
+   <td style="text-align:right;"> -1.218219 </td>
+   <td style="text-align:right;"> 5.073000e-04 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aSensOfAttractToPerformance </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> -7.999773e+00 </td>
+   <td style="text-align:right;"> 2.313671e+00 </td>
+   <td style="text-align:right;"> -7.995029e+00 </td>
+   <td style="text-align:right;"> -8.000392e+00 </td>
+   <td style="text-align:right;"> 2.963513e+00 </td>
+   <td style="text-align:right;"> -1.197830e+01 </td>
+   <td style="text-align:right;"> -4.010422e+00 </td>
+   <td style="text-align:right;"> 7.967881e+00 </td>
+   <td style="text-align:right;"> 0.0012886 </td>
+   <td style="text-align:right;"> -1.217322 </td>
+   <td style="text-align:right;"> 1.636012e-01 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aInitialReorderShare </td>
+   <td style="text-align:right;"> 23 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 4.500084e-01 </td>
+   <td style="text-align:right;"> 2.024513e-01 </td>
+   <td style="text-align:right;"> 4.495855e-01 </td>
+   <td style="text-align:right;"> 4.499329e-01 </td>
+   <td style="text-align:right;"> 2.593369e-01 </td>
+   <td style="text-align:right;"> 1.027757e-01 </td>
+   <td style="text-align:right;"> 7.980409e-01 </td>
+   <td style="text-align:right;"> 6.952652e-01 </td>
+   <td style="text-align:right;"> 0.0013464 </td>
+   <td style="text-align:right;"> -1.219639 </td>
+   <td style="text-align:right;"> 1.431550e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aPercPeDAberto2 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 4.999464e-01 </td>
+   <td style="text-align:right;"> 2.891872e-01 </td>
+   <td style="text-align:right;"> 4.982904e-01 </td>
+   <td style="text-align:right;"> 4.998937e-01 </td>
+   <td style="text-align:right;"> 3.692944e-01 </td>
+   <td style="text-align:right;"> 1.771300e-03 </td>
+   <td style="text-align:right;"> 9.987875e-01 </td>
+   <td style="text-align:right;"> 9.970161e-01 </td>
+   <td style="text-align:right;"> 0.0002907 </td>
+   <td style="text-align:right;"> -1.216635 </td>
+   <td style="text-align:right;"> 2.044860e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aPercPeDAberto3 </td>
+   <td style="text-align:right;"> 25 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 5.001125e-01 </td>
+   <td style="text-align:right;"> 2.894623e-01 </td>
+   <td style="text-align:right;"> 5.008025e-01 </td>
+   <td style="text-align:right;"> 4.999653e-01 </td>
+   <td style="text-align:right;"> 3.682192e-01 </td>
+   <td style="text-align:right;"> 3.400300e-03 </td>
+   <td style="text-align:right;"> 9.992034e-01 </td>
+   <td style="text-align:right;"> 9.958031e-01 </td>
+   <td style="text-align:right;"> 0.0024574 </td>
+   <td style="text-align:right;"> -1.218247 </td>
+   <td style="text-align:right;"> 2.046810e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aPercPeDAberto4 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 5.000228e-01 </td>
+   <td style="text-align:right;"> 2.893991e-01 </td>
+   <td style="text-align:right;"> 5.008023e-01 </td>
+   <td style="text-align:right;"> 5.000209e-01 </td>
+   <td style="text-align:right;"> 3.729287e-01 </td>
+   <td style="text-align:right;"> 4.973000e-04 </td>
+   <td style="text-align:right;"> 9.957742e-01 </td>
+   <td style="text-align:right;"> 9.952769e-01 </td>
+   <td style="text-align:right;"> 0.0002121 </td>
+   <td style="text-align:right;"> -1.220525 </td>
+   <td style="text-align:right;"> 2.046360e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aOrcamentoPeD2 </td>
+   <td style="text-align:right;"> 27 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 1.000073e-01 </td>
+   <td style="text-align:right;"> 2.893370e-02 </td>
+   <td style="text-align:right;"> 1.001008e-01 </td>
+   <td style="text-align:right;"> 1.000093e-01 </td>
+   <td style="text-align:right;"> 3.711190e-02 </td>
+   <td style="text-align:right;"> 5.009220e-02 </td>
+   <td style="text-align:right;"> 1.497496e-01 </td>
+   <td style="text-align:right;"> 9.965740e-02 </td>
+   <td style="text-align:right;"> -0.0007731 </td>
+   <td style="text-align:right;"> -1.218761 </td>
+   <td style="text-align:right;"> 2.045900e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aOrcamentoPeD3 </td>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 1.000241e-01 </td>
+   <td style="text-align:right;"> 2.895470e-02 </td>
+   <td style="text-align:right;"> 1.000512e-01 </td>
+   <td style="text-align:right;"> 1.000300e-01 </td>
+   <td style="text-align:right;"> 3.721900e-02 </td>
+   <td style="text-align:right;"> 5.005890e-02 </td>
+   <td style="text-align:right;"> 1.498944e-01 </td>
+   <td style="text-align:right;"> 9.983550e-02 </td>
+   <td style="text-align:right;"> -0.0004070 </td>
+   <td style="text-align:right;"> -1.218309 </td>
+   <td style="text-align:right;"> 2.047400e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aOrcamentoPeD4 </td>
+   <td style="text-align:right;"> 29 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 1.000061e-01 </td>
+   <td style="text-align:right;"> 2.893670e-02 </td>
+   <td style="text-align:right;"> 1.000730e-01 </td>
+   <td style="text-align:right;"> 1.000039e-01 </td>
+   <td style="text-align:right;"> 3.700580e-02 </td>
+   <td style="text-align:right;"> 5.045060e-02 </td>
+   <td style="text-align:right;"> 1.498222e-01 </td>
+   <td style="text-align:right;"> 9.937160e-02 </td>
+   <td style="text-align:right;"> 0.0001849 </td>
+   <td style="text-align:right;"> -1.217681 </td>
+   <td style="text-align:right;"> 2.046100e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aDesiredMarketShare2 </td>
+   <td style="text-align:right;"> 30 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 4.349513e-01 </td>
+   <td style="text-align:right;"> 8.389730e-02 </td>
+   <td style="text-align:right;"> 4.347912e-01 </td>
+   <td style="text-align:right;"> 4.349270e-01 </td>
+   <td style="text-align:right;"> 1.076785e-01 </td>
+   <td style="text-align:right;"> 2.908467e-01 </td>
+   <td style="text-align:right;"> 5.794484e-01 </td>
+   <td style="text-align:right;"> 2.886017e-01 </td>
+   <td style="text-align:right;"> 0.0016652 </td>
+   <td style="text-align:right;"> -1.218252 </td>
+   <td style="text-align:right;"> 5.932400e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aDesiredMarketShare3 </td>
+   <td style="text-align:right;"> 31 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 2.249920e-01 </td>
+   <td style="text-align:right;"> 4.341750e-02 </td>
+   <td style="text-align:right;"> 2.248574e-01 </td>
+   <td style="text-align:right;"> 2.249982e-01 </td>
+   <td style="text-align:right;"> 5.592410e-02 </td>
+   <td style="text-align:right;"> 1.507175e-01 </td>
+   <td style="text-align:right;"> 2.996409e-01 </td>
+   <td style="text-align:right;"> 1.489234e-01 </td>
+   <td style="text-align:right;"> -0.0007468 </td>
+   <td style="text-align:right;"> -1.219251 </td>
+   <td style="text-align:right;"> 3.070100e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aDesiredMarketShare4 </td>
+   <td style="text-align:right;"> 32 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 4.199769e-01 </td>
+   <td style="text-align:right;"> 8.104000e-02 </td>
+   <td style="text-align:right;"> 4.199482e-01 </td>
+   <td style="text-align:right;"> 4.200059e-01 </td>
+   <td style="text-align:right;"> 1.043268e-01 </td>
+   <td style="text-align:right;"> 2.803887e-01 </td>
+   <td style="text-align:right;"> 5.587199e-01 </td>
+   <td style="text-align:right;"> 2.783312e-01 </td>
+   <td style="text-align:right;"> -0.0024477 </td>
+   <td style="text-align:right;"> -1.218220 </td>
+   <td style="text-align:right;"> 5.730400e-03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aSwitchForCapacityStrategy2 </td>
+   <td style="text-align:right;"> 33 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 1.504718e+00 </td>
+   <td style="text-align:right;"> 5.756874e-01 </td>
+   <td style="text-align:right;"> 1.503216e+00 </td>
+   <td style="text-align:right;"> 1.504669e+00 </td>
+   <td style="text-align:right;"> 7.373173e-01 </td>
+   <td style="text-align:right;"> 5.196627e-01 </td>
+   <td style="text-align:right;"> 2.499441e+00 </td>
+   <td style="text-align:right;"> 1.979779e+00 </td>
+   <td style="text-align:right;"> 0.0001752 </td>
+   <td style="text-align:right;"> -1.216357 </td>
+   <td style="text-align:right;"> 4.070720e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aSwitchForCapacityStrategy3 </td>
+   <td style="text-align:right;"> 34 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 1.505280e+00 </td>
+   <td style="text-align:right;"> 5.757546e-01 </td>
+   <td style="text-align:right;"> 1.504865e+00 </td>
+   <td style="text-align:right;"> 1.505396e+00 </td>
+   <td style="text-align:right;"> 7.364675e-01 </td>
+   <td style="text-align:right;"> 5.119237e-01 </td>
+   <td style="text-align:right;"> 2.492927e+00 </td>
+   <td style="text-align:right;"> 1.981004e+00 </td>
+   <td style="text-align:right;"> -0.0006337 </td>
+   <td style="text-align:right;"> -1.217689 </td>
+   <td style="text-align:right;"> 4.071200e-02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> aSwitchForCapacityStrategy4 </td>
+   <td style="text-align:right;"> 35 </td>
+   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 1.505076e+00 </td>
+   <td style="text-align:right;"> 5.761156e-01 </td>
+   <td style="text-align:right;"> 1.506810e+00 </td>
+   <td style="text-align:right;"> 1.504933e+00 </td>
+   <td style="text-align:right;"> 7.390466e-01 </td>
+   <td style="text-align:right;"> 5.187670e-01 </td>
+   <td style="text-align:right;"> 2.499668e+00 </td>
+   <td style="text-align:right;"> 1.980901e+00 </td>
+   <td style="text-align:right;"> 0.0011416 </td>
+   <td style="text-align:right;"> -1.218058 </td>
+   <td style="text-align:right;"> 4.073750e-02 </td>
+  </tr>
+</tbody>
+</table>
+  <hr>
+</div>
+
+<br>
+<br>
+    </div>
+
+
+  <footer>
+    <div class="footer">
+      <div class="text-center">Site built with <a href="https://github.com/MI2DataLab/modelDown">modelDown</a>.</div>
+      <div class="text-center" style="margin: 0px 0px 5px;">Last updated: 2018-10-25 15:27:55</div>
+    </div>
+  </footer>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1"
+    crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+  <div class="container template-home">
+
+    <header>
+      <div class="navbar navbar-default navbar-fixed-top navbar-mi2" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            </a>
+            <a class="navbar-brand navbar-mi2" href="index.html">modelDown</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-mi2 nav navbar-nav">
+              <li>
+                <a href="index.html">
+                  <span class="fa fa-home fa-lg"></span>
+
+                </a>
+              </li>
+
+              <li>
+                  <a href="model_performance.html">Model Performance</a>
+              </li>
+              <li>
+                  <a href="variable_importance.html">Variable Importance</a>
+              </li>
+              <li>
+                  <a href="variable_response.html">Variable Response</a>
+              </li>
+              <li>
+                  <a href="prediction_breakdown.html">Prediction BreakDown</a>
+              </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right"></ul>
+          </div>
+          <!--/.nav-collapse -->
+        </div>
+        <!--/.container -->
+      </div>
+      <!--/.navbar -->
+    </header>
+
+    <div class="row" style="position: relative; margin-bottom:60px;">
+      <div style="text-align: center">
+    <div style="padding: 0px 20px;">
+      <h2>Variable Importance</h2>
+      <img src="img/variable_importance.png" />
+    </div>
+    <div style="padding: 0px 20px;">
+      <br>
+      <table class="table table-responsive table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> variable </th>
+   <th style="text-align:right;"> dropout_loss </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="37"><td colspan="2" style="border-bottom: 1px solid;"><strong>lm</strong></td></tr>
+<tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> _full_model_ </td>
+   <td style="text-align:right;"> 5.479703e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aLCStrength </td>
+   <td style="text-align:right;"> 5.472636e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aTempodeInutilizacaoPatente </td>
+   <td style="text-align:right;"> 5.475328e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aRatioOfFixedToVarCost </td>
+   <td style="text-align:right;"> 5.475941e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aWOMStrength </td>
+   <td style="text-align:right;"> 5.476772e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aOrcamentoPeD3 </td>
+   <td style="text-align:right;"> 5.477480e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSwitchForCapacityStrategy3 </td>
+   <td style="text-align:right;"> 5.478882e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aPercPeDAberto3 </td>
+   <td style="text-align:right;"> 5.479287e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aPercPeDAberto2 </td>
+   <td style="text-align:right;"> 5.479538e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aDesiredMarketShare2 </td>
+   <td style="text-align:right;"> 5.484492e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfPriceToShare </td>
+   <td style="text-align:right;"> 5.488307e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfPriceToCosts </td>
+   <td style="text-align:right;"> 5.489420e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfPriceToDSBalance </td>
+   <td style="text-align:right;"> 5.495336e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aInnovatorAdoptionFraction </td>
+   <td style="text-align:right;"> 5.509875e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aReferenceIndustryDemandElasticity </td>
+   <td style="text-align:right;"> 5.511452e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfAttractToAvailability </td>
+   <td style="text-align:right;"> 5.513421e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aTaxaRejeicao </td>
+   <td style="text-align:right;"> 5.532491e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aOrcamentoPeD4 </td>
+   <td style="text-align:right;"> 5.550384e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aTempoMedioRealizacaoPeD </td>
+   <td style="text-align:right;"> 5.558632e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aOrcamentoPeD2 </td>
+   <td style="text-align:right;"> 5.585502e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aPercPeDAberto4 </td>
+   <td style="text-align:right;"> 5.595125e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aCustoMedioPatente </td>
+   <td style="text-align:right;"> 5.607175e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aInitialReorderShare </td>
+   <td style="text-align:right;"> 5.658336e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aDesiredMarketShare3 </td>
+   <td style="text-align:right;"> 5.663231e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aPerfSlope </td>
+   <td style="text-align:right;"> 5.766053e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aFractionalDiscardRate </td>
+   <td style="text-align:right;"> 5.788072e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aVolumeReportingDelay </td>
+   <td style="text-align:right;"> 5.801733e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aCapacityAcquisitionDelay </td>
+   <td style="text-align:right;"> 5.835618e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfAttractToPerformance </td>
+   <td style="text-align:right;"> 5.838463e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aTempoMedioAvaliacao </td>
+   <td style="text-align:right;"> 5.877734e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aDesiredMarketShare4 </td>
+   <td style="text-align:right;"> 5.961552e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aNormalCapacityUtilization </td>
+   <td style="text-align:right;"> 6.260512e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfAttractToPrice </td>
+   <td style="text-align:right;"> 6.578997e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aReferencePopulation </td>
+   <td style="text-align:right;"> 6.769505e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSwitchForCapacityStrategy2 </td>
+   <td style="text-align:right;"> 7.017836e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSwitchForCapacityStrategy4 </td>
+   <td style="text-align:right;"> 7.157462e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> _baseline_ </td>
+   <td style="text-align:right;"> 1.330620e+20 </td>
+  </tr>
+  <tr grouplength="37"><td colspan="2" style="border-bottom: 1px solid;"><strong>randomForest</strong></td></tr>
+<tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> _full_model_ </td>
+   <td style="text-align:right;"> 1.492134e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfAttractToAvailability </td>
+   <td style="text-align:right;"> 1.537032e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSwitchForCapacityStrategy3 </td>
+   <td style="text-align:right;"> 1.541269e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aOrcamentoPeD4 </td>
+   <td style="text-align:right;"> 1.545916e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aTempoMedioRealizacaoPeD </td>
+   <td style="text-align:right;"> 1.557691e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aDesiredMarketShare4 </td>
+   <td style="text-align:right;"> 1.562714e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aInitialReorderShare </td>
+   <td style="text-align:right;"> 1.564908e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aInnovatorAdoptionFraction </td>
+   <td style="text-align:right;"> 1.568892e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aPercPeDAberto2 </td>
+   <td style="text-align:right;"> 1.569012e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aOrcamentoPeD3 </td>
+   <td style="text-align:right;"> 1.570029e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aReferenceIndustryDemandElasticity </td>
+   <td style="text-align:right;"> 1.571495e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aRatioOfFixedToVarCost </td>
+   <td style="text-align:right;"> 1.574142e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aPercPeDAberto3 </td>
+   <td style="text-align:right;"> 1.576986e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfAttractToPerformance </td>
+   <td style="text-align:right;"> 1.580429e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aDesiredMarketShare2 </td>
+   <td style="text-align:right;"> 1.583639e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfPriceToShare </td>
+   <td style="text-align:right;"> 1.588525e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aPercPeDAberto4 </td>
+   <td style="text-align:right;"> 1.603860e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aWOMStrength </td>
+   <td style="text-align:right;"> 1.606498e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aLCStrength </td>
+   <td style="text-align:right;"> 1.610850e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aCustoMedioPatente </td>
+   <td style="text-align:right;"> 1.617914e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aTempodeInutilizacaoPatente </td>
+   <td style="text-align:right;"> 1.626874e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aDesiredMarketShare3 </td>
+   <td style="text-align:right;"> 1.639084e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfPriceToDSBalance </td>
+   <td style="text-align:right;"> 1.645088e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfPriceToCosts </td>
+   <td style="text-align:right;"> 1.650097e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aTaxaRejeicao </td>
+   <td style="text-align:right;"> 1.658433e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aFractionalDiscardRate </td>
+   <td style="text-align:right;"> 1.683452e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aNormalCapacityUtilization </td>
+   <td style="text-align:right;"> 1.713143e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aOrcamentoPeD2 </td>
+   <td style="text-align:right;"> 1.755798e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aPerfSlope </td>
+   <td style="text-align:right;"> 1.798509e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aTempoMedioAvaliacao </td>
+   <td style="text-align:right;"> 1.808623e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aVolumeReportingDelay </td>
+   <td style="text-align:right;"> 1.920690e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aCapacityAcquisitionDelay </td>
+   <td style="text-align:right;"> 1.998790e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aReferencePopulation </td>
+   <td style="text-align:right;"> 2.450778e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSwitchForCapacityStrategy4 </td>
+   <td style="text-align:right;"> 2.634584e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSensOfAttractToPrice </td>
+   <td style="text-align:right;"> 2.854474e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> aSwitchForCapacityStrategy2 </td>
+   <td style="text-align:right;"> 4.240015e+19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left; padding-left: 2em;" indentlevel="1"> _baseline_ </td>
+   <td style="text-align:right;"> 1.603837e+20 </td>
+  </tr>
+</tbody>
+</table>
+    </div>
+</div>
+    </div>
+
+
+  <footer>
+    <div class="footer">
+      <div class="text-center">Site built with <a href="https://github.com/MI2DataLab/modelDown">modelDown</a>.</div>
+      <div class="text-center" style="margin: 0px 0px 5px;">Last updated: 2018-10-25 15:27:53</div>
+    </div>
+  </footer>
+
+  </div>
+
+</body>
+</html>
