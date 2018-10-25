@@ -616,6 +616,18 @@ devtools::install_github("MI2DataLab/modelDown")
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 #### 4.3.1 Visualizações Próprias
 
 plot_importancia_forest = randomForest::varImpPlot(forest)

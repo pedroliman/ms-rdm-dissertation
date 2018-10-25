@@ -1,4 +1,4 @@
-\documentclass[ignorenonframetext,]{beamer}
+\documentclass[12pt,ignorenonframetext,]{beamer}
 \setbeamertemplate{caption}[numbered]
 \setbeamertemplate{caption label separator}{: }
 \setbeamercolor{caption name}{fg=normal text.fg}
@@ -18,7 +18,8 @@
   \fi
   \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
 \fi
-\usetheme[]{Berlin}
+\usetheme[]{Frankfurt}
+\usecolortheme{lily}
 % use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 % use microtype if available
@@ -28,8 +29,8 @@
 }{}
 \newif\ifbibliography
 \hypersetup{
-            pdftitle={Strategic Decision Making in the 3D Printing Industry - A Robust Decision Making (RDM) analysis},
-            pdfauthor={Pedro Nascimento de Lima},
+            pdftitle={Strategic Decision Making in the 3D Printing Industry},
+            pdfauthor={Pedro Nascimento de Lima\^{}1, Maria Isabel Wolf Motta Morandi\^{}1, Daniel Pacheco Lacerda\^{}1},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -78,33 +79,31 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{0}
+\def\begincols{\begin{columns}}
+\def\begincol{\begin{column}}
+\def\endcol{\end{column}}
+\def\endcols{\end{columns}}
 
-\title{Strategic Decision Making in the 3D Printing Industry - A Robust
-Decision Making (RDM) analysis}
-\author{Pedro Nascimento de Lima}
-\date{25 de setembro de 2018}
+\title{Strategic Decision Making in the 3D Printing Industry}
+\subtitle{A Robust Decision Making (RDM) analysis}
+\author{Pedro Nascimento de Lima\(^1\), Maria Isabel Wolf Motta Morandi\(^1\),
+Daniel Pacheco Lacerda\(^1\)}
+\institute{\(^1\) GMAP Research Group, UNISINOS University, RS, Brazil}
+\date{November 14, 2018}
 
 \begin{document}
 \frame{\titlepage}
 
-\begin{frame}
-\tableofcontents[hideallsubsections]
-\end{frame}
+\section{Introduction}\label{introduction}
 
-\section{Why 3D Printing}\label{why-3d-printing}
-
-\begin{frame}{Supporting \textbf{Strategic Business Decisions} with DMDU
-methods}
+\begin{frame}{Motivation - DMDU and Business Decisions}
 
 \begin{itemize}
+\tightlist
 \item
-  DMDU provides guidance for decision making in many contexts,
-  but\ldots{}
+  Decision Makers in Business are faced with uncertainty, but\ldots{}
 \item
-  There is scant guidance on how to apply it for business decisions;
-\item
-  Strategic Decision making Literature still ignores its contribuitions;
-\item
+  Testing quotation: (Lima 2018, Gong et al. (2017), Wholers (2016))
 \end{itemize}
 
 \end{frame}
@@ -114,8 +113,37 @@ methods}
 \begin{itemize}
 \tightlist
 \item
-  3D printing may
+  3D printing allows us to manufacture parts with unprecedented
+  \textbf{complexity}, in \textbf{low volume};
+\item
+  By doing so, entire manufacturing industries might be disrupted by AM,
+  presenting challenges to \ldots{}
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Two Column Layout}
+
+\begincols
+ \begincol{.48\textwidth}
+
+\begin{itemize}
+\tightlist
+\item
+  3D printing allows us to manufacture parts with unprecedented
+  \textbf{complexity}, in \textbf{low volume};
+\item
+  By doing so, entire manufacturing industries might be disrupted by AM,
+  presenting challenges to \ldots{}
+\end{itemize}
+
+\endcol
+\begincol{.48\textwidth}
+
+\includegraphics{dmdu-presentation_files/figure-beamer/test-1.pdf}
+
+\endcol
+\endcols
 
 \end{frame}
 
@@ -132,10 +160,6 @@ etc.);
 \textbf{Negative Evidence}: - Major players have been observing
 declining profitability (e.g.: Stratasys, 3D Systems); - Estimates of 3D
 printing growth diverge;
-
-\end{frame}
-
-\begin{frame}{Where to start in DMDU?}
 
 \end{frame}
 
@@ -156,13 +180,15 @@ printing growth diverge;
 
 \section{XLRM}\label{xlrm}
 
-\subsection{Model}\label{model}
+\begin{frame}{Model Boundaries}
 
 \begin{figure}
 \centering
 \includegraphics{images/model-modules-and-boundaries.png}
 \caption{Model Structure \& Boundaries}
 \end{figure}
+
+\end{frame}
 
 \section{Case Generation}\label{case-generation}
 
@@ -257,14 +283,28 @@ Fraction of R \& D budget released to open source technologies.\strut
 
 \section{Scenario Discovery}\label{scenario-discovery}
 
-\section{Tradeoffs}\label{tradeoffs}
+\section*{Conclusions}\label{conclusions}
+\addcontentsline{toc}{section}{Conclusions}
 
-\section{Second Iteration}\label{second-iteration}
+\hypertarget{refs}{}
+\hypertarget{ref-Gong2017}{}
+Gong, Min, Robert Lempert, Andrew Parker, Lauren A. Mayer, Jordan
+Fischbach, Matthew Sisco, Zhimin Mao, David H. Krantz, and Howard
+Kunreuther. 2017. ``Testing the scenario hypothesis: An experimental
+comparison of scenarios and forecasts for decision support in a complex
+decision environment.'' \emph{Environmental Modelling \& Software} 91.
+Elsevier Ltd: 135--55.
+doi:\href{https://doi.org/10.1016/j.envsoft.2017.02.002}{10.1016/j.envsoft.2017.02.002}.
 
-\section{Final Thoughts}\label{final-thoughts}
+\hypertarget{ref-Lima2018}{}
+Lima, Pedro Nascimento de. 2018. ``Avaliação de Decisões Estratégicas
+sob Incerteza Profunda na Indústria da Manufatura Aditiva: Uma Análise a
+partir do método Robust Decision Making (RDM).'' Masters Dissertation,
+UNISINOS.
+\url{http://www.repositorio.jesuita.org.br/handle/UNISINOS/6991}.
 
-\subsection{Slide with Plot}\label{slide-with-plot}
-
-\includegraphics{dmdu-presentation_files/figure-beamer/pressure-1.pdf}
+\hypertarget{ref-Wholers2016}{}
+Wholers, Terry. 2016. ``Popularity of FDM.''
+\url{https://wohlersassociates.com/blog/2016/01/popularity-of-fdm/}.
 
 \end{document}

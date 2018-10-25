@@ -1,16 +1,27 @@
 ---
-title: "Strategic Decision Making in the 3D Printing Industry - A Robust Decision Making (RDM) analysis"
-author: "Pedro Nascimento de Lima"
-date: "25 de setembro de 2018"
+title: "Strategic Decision Making in the 3D Printing Industry"
+subtitle: "A Robust Decision Making (RDM) analysis"
+author: 
+   - Pedro Nascimento de Lima$^1$, Maria Isabel Wolf Motta Morandi$^1$, Daniel Pacheco Lacerda$^1$
+institute: 
+   - $^1$ GMAP Research Group, UNISINOS University, RS, Brazil
+date: "November 14, 2018"
+fontsize: '12pt'
+#citecolor: 'cyan'
 output: 
   beamer_presentation:
-    theme: Berlin 
-    slide_level: 3
-    toc: true
-fig_width: 9 
-fig_height: 4 
-
-
+    theme: Frankfurt
+    color: lily 
+    slide_level: 2
+    toc: false
+    fig_width: 9 
+    fig_height: 6
+    includes:
+      in_header: mypreamble.tex
+bibliography: bibliography.bib
+header-includes:
+    - \usepackage {hyperref}
+    - \hypersetup {colorlinks = true, linkcolor = blue, urlcolor = blue, citecolor = blue} 
 # "Darmstadt"
 ---
 
@@ -20,19 +31,38 @@ library(kableExtra)
 library(DT)
 ```
 
-# Why 3D Printing
+# Introduction
 
-### Supporting **Strategic Business Decisions** with DMDU methods
-- DMDU provides guidance for decision making in many contexts, but...
-- There is scant guidance on how to apply it for business decisions;
-- Strategic Decision making Literature still ignores its contribuitions;
-- 
+## Motivation  - DMDU and Business Decisions
+- Decision Makers in Business are faced with uncertainty, but...
+- Testing quotation: [@Lima2018], [@Gong2017], [@Wholers2016].
 
-### Key Features of 3D printing
+## Key Features of 3D printing
 
- - 3D printing may
+- 3D printing allows us to manufacture parts with unprecedented **complexity**, in **low volume**;
+- By doing so, entire manufacturing industries might be disrupted by AM, presenting challenges to ...
 
-### Why 3D Printing?
+## Two Column Layout
+
+\begincols
+  \begincol{.48\textwidth}
+
+- 3D printing allows us to manufacture parts with unprecedented **complexity**, in **low volume**;
+- By doing so, entire manufacturing industries might be disrupted by AM, presenting challenges to ...
+
+
+  \endcol
+\begincol{.48\textwidth}
+
+```{r test}
+plot(pressure)
+```
+
+  \endcol
+\endcols
+
+
+## Why 3D Printing?
 
 3D Printing is an emergint technology, but decision makers face uncertainty.
 
@@ -44,10 +74,8 @@ library(DT)
  - Major players have been observing declining profitability (e.g.: Stratasys, 3D Systems);
  - Estimates of 3D printing growth diverge;
  
-### Where to start in DMDU?
 
-
-### Shaping events in the 3D Printing Industry
+## Shaping events in the 3D Printing Industry
 
 - Patent Dynamics & Patent Expiration (e.g. FDM Patent);
 - Fierce Competition;
@@ -55,14 +83,13 @@ library(DT)
 
 # XLRM
 
-## Model
-
+## Model Boundaries
 ![Model Structure & Boundaries](images/model-modules-and-boundaries.png)
 
 
 # Case Generation
 
-### Design of Experiments
+## Design of Experiments
 
 - Full factorial design of these variables, resulting in 54 strategies:
 
@@ -74,38 +101,38 @@ library(DT)
 | $\kappa_i$ | Fraction of R & D budget released to open source technologies. | 0 %; 50 %; 90 % |
 
 
-### Candidate Strategy NPV across scenarios
+## Candidate Strategy NPV across scenarios
 
 ```{r, fig.align='center'}
 plots_results$plots_linha_geral$plot_estrategia_candidata_vpl
 ```
 
-### Global Demand across scenarios
+## Global Demand across scenarios
 
 ```{r, fig.align='center'}
 plots_results$plots_linha_geral$plot_estrategia_candidata_demanda_global
 ```
 
-### 4 Players Net Present Value in a given scenario
+## 4 Players Net Present Value in a given scenario
 
 ```{r, fig.align='center'}
 plots_results$plots_players$plot_players_vpl
 ```
 
 
-### Net Present Value across strategies and Scenarios
+## Net Present Value across strategies and Scenarios
 
 ```{r, fig.align='center'}
 plots_results$plots_whisker$plot_whisker_lever_profit
 ```
 
-### Regret across strategies and Scenarios
+## Regret across strategies and Scenarios
 
 ```{r, fig.align='center'}
 plots_results$plots_whisker$plot_whisker_lever_regret
 ```
 
-### Ranking Strategies by Regret
+## Ranking Strategies by Regret
 
 ```{r, eval=F}
 formatted_strategies_ranking = ranking_estrategias[,c(1, 6, 8, 9, 7, 3)]
@@ -124,15 +151,4 @@ knitr::kable(x = head(formatted_strategies_ranking, 10), col.names = column_name
 
 # Scenario Discovery
 
-# Tradeoffs
-
-# Second Iteration
-
-# Final Thoughts
-
-## Slide with Plot
-
-```{r pressure}
-plot(pressure)
-```
-
+# Conclusions
