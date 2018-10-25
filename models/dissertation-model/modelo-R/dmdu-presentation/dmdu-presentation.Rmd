@@ -10,6 +10,7 @@ fontsize: '12pt'
 #citecolor: 'cyan'
 output: 
   beamer_presentation:
+    fig_caption: false
     theme: Frankfurt
     color: lily 
     slide_level: 2
@@ -64,16 +65,26 @@ plot(pressure)
 
 ## Why 3D Printing?
 
-3D Printing is an emergint technology, but decision makers face uncertainty.
+3D Printing is an emergint technology, but decision makers face uncertainty:
+
+\begincols
+  \begincol{.48\textwidth}
 
 **Positive Evidence**:
- - 3D printing Industry has seen two digits growth consistently in the last few years;
- - 3D printing is already reshaping supply chains across industries (e.g.: prothesis, aerospace, etc.);
+
+- 3D printing Industry has seen two digits growth consistently in the last few years;
+- 3D printing is already reshaping supply chains across industries (e.g.: prothesis, aerospace, etc.).
+
+  \endcol
+\begincol{.48\textwidth}
 
 **Negative Evidence**:
- - Major players have been observing declining profitability (e.g.: Stratasys, 3D Systems);
- - Estimates of 3D printing growth diverge;
- 
+
+- Major players have been observing declining profitability (e.g.: Stratasys, 3D Systems);
+- Estimates of 3D printing growth diverge.
+
+  \endcol
+\endcols
 
 ## Shaping events in the 3D Printing Industry
 
@@ -84,7 +95,7 @@ plot(pressure)
 # XLRM
 
 ## Model Boundaries
-![Model Structure & Boundaries](images/model-modules-and-boundaries.png)
+![Model Structure & Boundaries](images/model-modules-and-boundaries.jpg)
 
 
 # Case Generation
