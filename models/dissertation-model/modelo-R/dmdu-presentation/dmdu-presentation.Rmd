@@ -2,10 +2,14 @@
 title: "Strategic Decision Making in the 3D Printing Industry"
 subtitle: "A Robust Decision Making (RDM) analysis"
 author: 
-   - Pedro Nascimento de Lima$^1$, Maria Isabel Wolf Motta Morandi$^1$, Daniel Pacheco Lacerda$^1$
+   - Pedro Nascimento de Lima
+   - Maria I. W. M. Morandi
+   - Daniel Pacheco Lacerda
 institute: 
-   - $^1$ GMAP Research Group, UNISINOS University, RS, Brazil
+   - GMAP Research Group, UNISINOS University, RS, Brazil
+   - 2018 DMDU Annual Meeting
 date: "November 14, 2018"
+
 fontsize: '12pt'
 #citecolor: 'cyan'
 output: 
@@ -20,10 +24,6 @@ output:
     includes:
       in_header: mypreamble.tex
 bibliography: bibliography.bib
-header-includes:
-    - \usepackage {hyperref}
-    - \hypersetup {colorlinks = true, linkcolor = blue, urlcolor = blue, citecolor = blue} 
-# "Darmstadt"
 ---
 
 ```{r setup, include=FALSE}
@@ -86,13 +86,80 @@ plot(pressure)
   \endcol
 \endcols
 
-## Shaping events in the 3D Printing Industry
+## Shaping Events and Factors in the 3D Printing Industry
 
-- Patent Dynamics & Patent Expiration (e.g. FDM Patent);
-- Fierce Competition;
+- Patent Dynamics & Patent Expiration:  (e.g. FDM Patent);
+- R & D
+- Strong Competition: 
 - After the 3D printing Bubble, major players refocused their operations on industrial-grade printers;
 
-# XLRM
+# Problem Structuring / XLRM
+
+## New Product Diffusion Models
+
+There is a broad range of models portraying new product diffusion and technological substititions, beyond the basic Bass Diffusion Model [@Bass1969]:
+
+- New Product Launch Strategy and timing between successive Product Generations [@Mahajan1996];
+- Social Factors (e.g. Reference Users and Opinion Leaders - GE in the case of AM) [@Dattee2007];
+- Competition Among Players and Substitution Between Product Generations [@Maier1998];
+- Market Uncertainty [@Cui2011];
+- Competition, Learning Curves, diffusion dynamics, Pricing and Capacity Strategies [@Sterman2007].
+
+## What's the Problem
+
+- Most of these models are employed with a **consolidative** approach (model parameters are estimated from past products);
+
+- Some of them employ Senstitivity Analysis to explain under which conditions one might choose a different strategy based on thresholds of uncertain parameters.
+
+## Sterman et. al (2007) Model
+
+We have choosen [@Sterman2007] model as a bed-rock for our analysis, since :
+ 
+- It Captures competition among players;
+- It Captures increasing returns mechanisms (Learning Curve);
+- It was fully documented, and provided the original model for comparisons, and;
+- Our goal was not to **focus on model development** but to focus on employing an **exploratory modelling** approach to the 3D printing industry.
+
+## X - Uncertainties
+
+- Market size and diffusion velocity is still unknown, reflecting on diverging industry forecasts;
+
+- Share prices of lead players have fallen between 71 % and 80 % in 17 months in 2017 [@Kelleher2015];
+
+- Signals of Uncertainty for some, or Information Assimetry:
+
+- Major AM Systems Manufacturers have seen falling Net profits;
+
+## X - Uncertainties
+
+- Successfull 3D printing adoption for manufacturing final parts depends on changing **product engineering processess** towards a **design for AM** posture. [@Aston2017]
+
+- What the final market will prefer? A cheap, low-resolution printer or a high-quality, high-cost printer? 
+
+- What if your competitor is able to provide a high-quality, low-cost printer?
+
+- How much capacity will your oponents build? 
+
+## L - Levers
+
+From [@Sterman2007]:
+
+- **Pricing and Capacity Strategy**: 
+ - **Agressive**: Build capacity towards a target-market share; dynamicaly adjust your prices to leverage increasing returns (maybe at the expense of near term results);
+ - **Conservative**: Define a minimum target market share, and adjust your pricing towards this share. Don't build excess capacity.
+
+## L - Levers
+
+Relevant factors from the AM industry:
+- R & D and printer performance are key factor:
+- Patents are used by leading companies to deter new entrants;
+- 
+ - R & D Budget: C
+
+
+## R - Relationships
+
+## M - Metrics
 
 ## Model Boundaries
 ![Model Structure & Boundaries](images/model-modules-and-boundaries.jpg)
