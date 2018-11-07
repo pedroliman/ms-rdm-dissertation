@@ -1942,7 +1942,7 @@ plot_dispersao_duas_variaveis  = function(df_dados, variavel1, nome_amigavel_var
   p = p + xlab(nome_amigavel_var1) + ylab(nome_amigavel_var2) + scale_y_continuous(labels = format_for_humans) + scale_x_continuous(labels = format_for_humans)
 
   
-  p$labels$colour <- "Estratégia"
+  p$labels$colour <- "Strategy"
   
   
   if(facet == TRUE){

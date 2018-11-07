@@ -1026,7 +1026,7 @@ ensemble_e_resultados = dplyr::inner_join(as.data.frame(results$Ensemble), resul
 ensemble_e_resultados = na.omit(ensemble_e_resultados)
 
 
-# Utilizar apenas as primeiros 8 estratégias do ranking:
+# Utilizar apenas as primeiras estratégias do ranking:
 
 top_10_estrategias = ranking_estrategias$Lever[1:12]
 
@@ -1104,26 +1104,26 @@ plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in
                               nome_amigavel_var2 = "Imp. 3D Installadas Player 1", linha_regr = FALSE, facet = FALSE)
 
 
-duas_estrategias_a_comparar = c(31,25)
+duas_estrategias_a_comparar = c(31,32)
 
 list_plots_duas_estrategias = list(
   plot_duas_estrategias_preco_base_instalada = plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% duas_estrategias_a_comparar),
                                                                              variavel1 = "sPrice1", 
-                                                                             nome_amigavel_var1 = "Preço Player 1", 
+                                                                             nome_amigavel_var1 = "Player 1 Avg. Price", 
                                                                              variavel2 = "sInstalledBase1", 
-                                                                             nome_amigavel_var2 = "Imp. 3D Instaladas Player 1", linha_regr = FALSE, facet = FALSE)
+                                                                             nome_amigavel_var2 = "Player 1 Installed Base", linha_regr = FALSE, facet = FALSE) + scale_color_hue(labels = c("31 - Agress.", "32 - Conserv."))
   
   ,plot_duas_estrategias_preco_market_share = plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% duas_estrategias_a_comparar),
                                                                            variavel1 = "sPrice1", 
-                                                                           nome_amigavel_var1 = "Preço Player 1", 
+                                                                           nome_amigavel_var1 = "Player 1 Avg. Price", 
                                                                            variavel2 = "aOrderShare1", 
-                                                                           nome_amigavel_var2 = "Market Share Player 1", linha_regr = FALSE, facet = FALSE)
+                                                                           nome_amigavel_var2 = " Player 1 Market Share", linha_regr = FALSE, facet = FALSE)  + scale_color_hue(labels = c("31 - Agress.", "32 - Conserv."))
   
   ,plot_duas_estrategias_preco_vpl = plot_dispersao_duas_variaveis(df_dados = subset(ensemble_e_resultados, Lever %in% duas_estrategias_a_comparar),
                                                                   variavel1 = "sPrice1", 
-                                                                  nome_amigavel_var1 = "Preço Player 1", 
+                                                                  nome_amigavel_var1 = "Player 1 Avg. Price", 
                                                                   variavel2 = "sNPVProfit1", 
-                                                                  nome_amigavel_var2 = "VPL Player 1", linha_regr = FALSE, facet = FALSE)
+                                                                  nome_amigavel_var2 = "Player 1 NPV", linha_regr = FALSE, facet = FALSE)  + scale_color_hue(labels = c("31 - Agressive", "32 - Conservative"))
   
   
 )
@@ -1133,6 +1133,7 @@ list_plots_duas_estrategias = list(
 plot_comparacao_duas_estrategias = do.call("grid.arrange", c(list_plots_duas_estrategias, ncol=3))
 
 
+do.call("grid.arrange", c(list_plots_duas_estrategias, ncol=3))
 
 
 
