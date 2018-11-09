@@ -1,4 +1,4 @@
-TODO para finalizar a Dissertação:
+﻿ TODO para finalizar a Dissertação:
 
 - Dominar o Modelo do Sterman - Documentar;
 
