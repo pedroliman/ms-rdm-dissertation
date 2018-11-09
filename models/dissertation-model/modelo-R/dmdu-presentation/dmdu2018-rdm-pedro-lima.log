@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6745 64-bit) (preloaded format=pdflatex 2018.7.31)  8 NOV 2018 14:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6745 64-bit) (preloaded format=pdflatex 2018.7.31)  8 NOV 2018 18:58
 entering extended mode
-**./dmdu-presentation.tex
-(dmdu-presentation.tex
+**./dmdu2018-rdm-pedro-lima.tex
+(dmdu2018-rdm-pedro-lima.tex
 LaTeX2e <2018-04-01> patch level 5
 ("C:\Program Files\MiKTeX 2.9\tex\latex\beamer\beamer.cls"
 Document Class: beamer 2018/02/20 v3.50 A class for typesetting presentations
@@ -848,97 +848,33 @@ File: microtype.cfg 2018/01/14 v2.7a microtype main configuration file (RS)
 Package: parskip 2001/04/09 non-zero parskip adjustments
 )
 Package hyperref Info: Option `breaklinks' set `true' on input line 75.
-("C:\Program Files\MiKTeX 2.9\tex\latex\tools\longtable.sty"
-Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
-\LTleft=\skip61
-\LTright=\skip62
-\LTpre=\skip63
-\LTpost=\skip64
-\LTchunksize=\count166
-\LTcapwidth=\dimen195
-\LT@head=\box54
-\LT@firsthead=\box55
-\LT@foot=\box56
-\LT@lastfoot=\box57
-\LT@cols=\count167
-\LT@rows=\count168
-\c@LT@tables=\count169
-\c@LT@chunks=\count170
-\LT@p@ftn=\toks46
-) ("C:\Program Files\MiKTeX 2.9\tex\latex\booktabs\booktabs.sty"
-Package: booktabs 2005/04/14 v1.61803 publication quality tables
-\heavyrulewidth=\dimen196
-\lightrulewidth=\dimen197
-\cmidrulewidth=\dimen198
-\belowrulesep=\dimen199
-\belowbottomsep=\dimen256
-\aboverulesep=\dimen257
-\abovetopsep=\dimen258
-\cmidrulesep=\dimen259
-\cmidrulekern=\dimen260
-\defaultaddspace=\dimen261
-\@cmidla=\count171
-\@cmidlb=\count172
-\@aboverulesep=\dimen262
-\@belowrulesep=\dimen263
-\@thisruleclass=\count173
-\@lastruleclass=\count174
-\@thisrulewidth=\dimen264
-) ("C:\Program Files\MiKTeX 2.9\tex\latex\caption\caption.sty"
-Package: caption 2018/05/01 v3.3-147 Customizing captions (AR)
-("C:\Program Files\MiKTeX 2.9\tex\latex\caption\caption3.sty"
-Package: caption3 2018/05/27 v1.8a caption3 kernel (AR)
-Package caption3 Info: TeX engine: e-TeX on input line 64.
-\captionmargin=\dimen265
-\captionmargin@=\dimen266
-\captionwidth=\dimen267
-\caption@tempdima=\dimen268
-\caption@indent=\dimen269
-\caption@parindent=\dimen270
-\caption@hangindent=\dimen271
-)
-\c@ContinuedFloat=\count175
-Package caption Info: beamer document class.
-Package caption Info: hyperref package is loaded.
-Package caption Info: Hyperref support is turned off
-(caption)             because hyperref has stopped early.
-Package caption Info: longtable package is loaded.
-("C:\Program Files\MiKTeX 2.9\tex\latex\caption\ltcaption.sty"
-Package: ltcaption 2013/06/09 v1.4-94 longtable captions (AR)
-)) ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\grffile.sty"
-Package: grffile 2017/06/30 v1.18 Extended file name support for graphics (HO)
-Package grffile Info: Option `multidot' is set to `true'.
-Package grffile Info: Option `extendedchars' is set to `false'.
-Package grffile Info: Option `space' is set to `true'.
-Package grffile Info: \Gin@ii of package `graphicx' fixed on input line 494.
-)
-No file dmdu-presentation.aux.
-\openout1 = `dmdu-presentation.aux'.
+No file dmdu2018-rdm-pedro-lima.aux.
+\openout1 = `dmdu2018-rdm-pedro-lima.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 132.
-LaTeX Font Info:    ... okay on input line 132.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 132.
-LaTeX Font Info:    ... okay on input line 132.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 132.
-LaTeX Font Info:    ... okay on input line 132.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 132.
-LaTeX Font Info:    ... okay on input line 132.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 132.
-LaTeX Font Info:    ... okay on input line 132.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 132.
-LaTeX Font Info:    ... okay on input line 132.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 132.
-LaTeX Font Info:    ... okay on input line 132.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 132.
-LaTeX Font Info:    ... okay on input line 132.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 132.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 132.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 110.
+LaTeX Font Info:    ... okay on input line 110.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 110.
+LaTeX Font Info:    ... okay on input line 110.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 110.
+LaTeX Font Info:    ... okay on input line 110.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 110.
+LaTeX Font Info:    ... okay on input line 110.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 110.
+LaTeX Font Info:    ... okay on input line 110.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 110.
+LaTeX Font Info:    ... okay on input line 110.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 110.
+LaTeX Font Info:    ... okay on input line 110.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 110.
+LaTeX Font Info:    ... okay on input line 110.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 110.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 110.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 132.
-LaTeX Font Info:    Try loading font information for T1+lmss on input line 132.
+LaTeX Font Info:    ... okay on input line 110.
+LaTeX Font Info:    Try loading font information for T1+lmss on input line 110.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\t1lmss.fd"
 File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -979,17 +915,17 @@ File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 
 ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count176
-\scratchdimen=\dimen272
-\scratchbox=\box58
-\nofMPsegments=\count177
-\nofMParguments=\count178
-\everyMPshowfont=\toks47
-\MPscratchCnt=\count179
-\MPscratchDim=\dimen273
-\MPnumerator=\count180
-\makeMPintoPDFobject=\count181
-\everyMPtoPDFconversion=\toks48
+\scratchcounter=\count166
+\scratchdimen=\dimen195
+\scratchbox=\box54
+\nofMPsegments=\count167
+\nofMParguments=\count168
+\everyMPshowfont=\toks46
+\MPscratchCnt=\count169
+\MPscratchDim=\dimen196
+\MPnumerator=\count170
+\makeMPintoPDFobject=\count171
+\everyMPtoPDFconversion=\toks47
 ) ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\grfext.sty"
@@ -1002,67 +938,67 @@ Package grfext Info: Graphics extension search list:
 G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 ) ABD: EveryShipout initializing macros
-\AtBeginShipoutBox=\box59
-Package hyperref Info: Link coloring OFF on input line 132.
+\AtBeginShipoutBox=\box55
+Package hyperref Info: Link coloring OFF on input line 110.
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count182
+\c@section@level=\count172
 )
-LaTeX Info: Redefining \ref on input line 132.
-LaTeX Info: Redefining \pageref on input line 132.
-LaTeX Info: Redefining \nameref on input line 132.
+LaTeX Info: Redefining \ref on input line 110.
+LaTeX Info: Redefining \pageref on input line 110.
+LaTeX Info: Redefining \nameref on input line 110.
 \@outlinefile=\write5
-\openout5 = `dmdu-presentation.out'.
+\openout5 = `dmdu2018-rdm-pedro-lima.out'.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/lmr/m/n --> OT1/cmss/m/n on input line 132.
+(Font)                  OT1/lmr/m/n --> OT1/cmss/m/n on input line 110.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/lmr/bx/n --> OT1/cmss/bx/n on input line 132.
+(Font)                  OT1/lmr/bx/n --> OT1/cmss/bx/n on input line 110.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 132.
+(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 110.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmss/bx/n --> OT1/lmss/bx/n on input line 132.
+(Font)                  OT1/cmss/bx/n --> OT1/lmss/bx/n on input line 110.
 \symnumbers=\mathgroup6
 \sympureletters=\mathgroup7
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/lmss/m/n --> T1/lmr/m/n on input line 132.
-LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 132.
+(Font)                  OT1/lmss/m/n --> T1/lmr/m/n on input line 110.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/lmr/bx/n --> T1/lmss/bx/n on input line 132.
+(Font)                  OT1/lmr/bx/n --> T1/lmss/bx/n on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  OT1/lmr/bx/n --> T1/lmss/bx/n on input line 132.
-LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 132.
+(Font)                  OT1/lmr/bx/n --> T1/lmss/bx/n on input line 110.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/lmss/m/n --> T1/lmss/m/n on input line 132.
+(Font)                  OT1/lmss/m/n --> T1/lmss/m/n on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/lmss/bx/n --> T1/lmss/m/n on input line 132.
-LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 132.
+(Font)                  OT1/lmss/bx/n --> T1/lmss/m/n on input line 110.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/lmr/m/it --> T1/lmss/m/it on input line 132.
+(Font)                  OT1/lmr/m/it --> T1/lmss/m/it on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/lmr/bx/it --> T1/lmss/m/it on input line 132.
-LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 132.
+(Font)                  OT1/lmr/bx/it --> T1/lmss/m/it on input line 110.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 132.
+(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 132.
+(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 110.
 LaTeX Font Info:    Overwriting symbol font `numbers' in version `bold'
-(Font)                  T1/lmss/m/n --> T1/lmss/bx/n on input line 132.
+(Font)                  T1/lmss/m/n --> T1/lmss/bx/n on input line 110.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
-(Font)                  T1/lmss/m/it --> T1/lmss/bx/it on input line 132.
+(Font)                  T1/lmss/m/it --> T1/lmss/bx/it on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `bold'
-(Font)                  OT1/lmss/bx/n --> T1/lmr/bx/n on input line 132.
+(Font)                  OT1/lmss/bx/n --> T1/lmr/bx/n on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  T1/lmss/bx/n --> T1/lmss/bx/n on input line 132.
+(Font)                  T1/lmss/bx/n --> T1/lmss/bx/n on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  T1/lmss/m/n --> T1/lmss/bx/n on input line 132.
+(Font)                  T1/lmss/m/n --> T1/lmss/bx/n on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  T1/lmss/m/it --> T1/lmss/bx/it on input line 132.
+(Font)                  T1/lmss/m/it --> T1/lmss/bx/it on input line 110.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  T1/lmtt/m/n --> T1/lmtt/bx/n on input line 132.
+(Font)                  T1/lmtt/m/n --> T1/lmtt/bx/n on input line 110.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\translator\translator-basic-dictionary-
 English.dict"
@@ -1088,7 +1024,7 @@ Dictionary: translator-numbers-dictionary, Language: English
 y-English.dict"
 Dictionary: translator-theorem-dictionary, Language: English 
 )
-LaTeX Info: Redefining \microtypecontext on input line 132.
+LaTeX Info: Redefining \microtypecontext on input line 110.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
@@ -1102,70 +1038,112 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-Package caption Info: Begin \AtBeginDocument code.
-Package caption Info: End \AtBeginDocument code.
-No file dmdu-presentation.nav.
-LaTeX Font Info:    Try loading font information for OT1+lmss on input line 132
+No file dmdu2018-rdm-pedro-lima.nav.
+LaTeX Font Info:    Try loading font information for OT1+lmss on input line 110
 .
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\ot1lmss.fd"
 File: ot1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 132.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 110.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omllmm.fd"
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 132
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 110
 .
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omslmsy.fd"
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 132
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 110
 .
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omxlmex.fd"
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 132.
+(Font)              <6> on input line 110.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 132.
-LaTeX Font Info:    Try loading font information for U+msa on input line 132.
+(Font)              <5> on input line 110.
+LaTeX Font Info:    Try loading font information for U+msa on input line 110.
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) ("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-msa.cfg"
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 132.
+LaTeX Font Info:    Try loading font information for U+msb on input line 110.
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) ("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-msb.cfg"
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <6> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 132.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 110.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <5> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 132.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 110.
 [1
 
 {C:/Users/Pedro Lima/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2
 
-] [3
+]
+<images/conventional-vs-3d.jpg, id=36, 602.25pt x 694.595pt>
+File: images/conventional-vs-3d.jpg Graphic file (type jpg)
+<use images/conventional-vs-3d.jpg>
+Package pdftex.def Info: images/conventional-vs-3d.jpg  used on input line 147.
 
-] [4
+(pdftex.def)             Requested size: 156.65482pt x 180.67499pt.
+[3
+
+ <./images/conventional-vs-3d.jpg>] [4
+
+] [5
+
+] [6
+
+] [7
+
+]
+<images/model-boundaries.png, id=71, 1166.9196pt x 580.0872pt>
+File: images/model-boundaries.png Graphic file (type png)
+<use images/model-boundaries.png>
+Package pdftex.def Info: images/model-boundaries.png  used on input line 247.
+(pdftex.def)             Requested size: 363.45068pt x 180.67499pt.
+[8
+
+ <./images/model-boundaries.png
+
+pdfTeX warning: pdflatex.exe (file ./images/model-boundaries.png): large interl
+aced PNG might cause out of memory (use non-interlaced PNG to fix this)
+>]
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `lmss' (encoding: OT1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <12> on input line 271.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 271.
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <12> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 271.
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <8> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 271.
+[9
+
+] [10
+
+] [11
 
 ]
 ! Extra }, or forgotten \endgroup.
 \endminipage ...pagefalse \color@endgroup \egroup 
                                                   \expandafter \@iiiparbox \...
-l.188 \end{frame}
+l.338 \end{frame}
                   
 Here is how much of TeX's memory you used:
- 23748 strings out of 492969
- 428484 string characters out of 3135784
- 517896 words of memory out of 3000000
- 27131 multiletter control sequences out of 15000+200000
- 38091 words of font info for 39 fonts, out of 3000000 for 9000
+ 22564 strings out of 492969
+ 407687 string characters out of 3135784
+ 495844 words of memory out of 3000000
+ 25907 multiletter control sequences out of 15000+200000
+ 52623 words of font info for 62 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 56i,16n,57p,807b,621s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 56i,16n,57p,813b,629s stack positions out of 5000i,500n,10000p,200000b,50000s
 
 !  ==> Fatal error occurred, no output PDF file produced!
