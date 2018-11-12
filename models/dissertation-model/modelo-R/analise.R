@@ -368,6 +368,12 @@ plots_results = salvar_plots_result(results = results,
                                     estrategia_candidata = results$EstrategiaCandidata$Lever[1],
                                     opcoes = opcoes)
 
+results_path = "C:/Temporario/rdm-results-backup/"
+saveRDS()
+save(plots_results, file = paste0(results_path,"plots_results.rda"))
+
+
+
 plots_results$plots_linha_geral$plot_estrategia_candidata_demanda_global
 
 plots_results$plots_whisker$plot_whisker_lever_regret

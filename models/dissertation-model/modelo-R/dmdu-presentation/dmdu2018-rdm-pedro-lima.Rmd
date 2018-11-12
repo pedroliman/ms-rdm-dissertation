@@ -2,8 +2,8 @@
 title: "Strategic Decision Making in the 3D Printing Industry"
 subtitle: "A Robust Decision Making (RDM) analysis"
 author: 
-   - Pedro Nascimento de Lima,
-   - Maria I. W. M. Morandi,
+   - Pedro Nascimento de Lima
+   - Maria I. W. M. Morandi
    - Daniel Pacheco Lacerda
 institute: 
    - GMAP Research Group, UNISINOS University, RS, Brazil
@@ -18,8 +18,8 @@ output:
     color: lily 
     slide_level: 2
     toc: false
-    fig_width: 9 
-    fig_height: 6
+#    fig_width: 9 
+#    fig_height: 6
     includes:
       in_header: mypreamble.tex
 bibliography: bibliography.bib
@@ -27,6 +27,10 @@ bibliography: bibliography.bib
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+results_path = "C:/Temporario/rdm-results-backup/"
+if (!exists(x = "plots_results")){
+ load(paste0(results_path,"plots_results.rda")) 
+}
 ```
 
 # Introduction
@@ -47,11 +51,11 @@ Additive Manufacturing (AM) holds the potential to impact production systems by:
 
 Image Source: [metal-am.com](https://www.metal-am.com/introduction-to-metal-additive-manufacturing-and-3d-printing/)
 
-## Key driving Factors in AM Industry
+## Challenges to AM Systems Manufacturers
 
 These are a few of the key deeply uncertain factors Challenging AM Systems Manufacturer's Strategy:
 
-- **Pace of R & D and Tech. Improvement**: will our competitors develop the next breakthrough in AM?
+- **Pace of R & D and Tech. Improvement**: Will our competitors develop the next technological breakthrough in AM?
 
 - **Patent Dynamics and Expiration**: Can we leverage the benefits of our technology before the patent expires? (e.g.: FDM in 2009).
 
@@ -119,23 +123,34 @@ We use the **Absolute Regret** of the Player’s 1 Net Present Value as the metr
 
 ## Candidate Strategy NPV across scenarios
 
-\centerline{\includegraphics[height=2.5in]{images/npv.png}}
+```{r}
+plots_results$plots_linha_geral$plot_estrategia_candidata_vpl
+```
 
 ## Global Demand across scenarios
 
-\centerline{\includegraphics[height=2.5in]{images/sales.png}}
+```{r}
+plots_results$plots_linha_geral$plot_estrategia_candidata_demanda_global
+```
 
 ## 4 Players Net Present Value in a given scenario
 
-\centerline{\includegraphics[height=2.5in]{images/npv-players.png}}
+```{r}
+plots_results$plots_players$plot_players_vpl
+```
+
 
 ## Net Present Value across strategies and Scenarios
 
-\centerline{\includegraphics[height=2.5in]{images/npv-whisker.png}}
+```{r}
+plots_results$plots_whisker$plot_whisker_lever_profit
+```
 
 ## Regret across strategies and Scenarios
 
-\centerline{\includegraphics[height=2.5in]{images/regret-whisker.png}}
+```{r}
+plots_results$plots_whisker$plot_whisker_lever_regret
+```
 
 ## Selected Candidate Strategy
 

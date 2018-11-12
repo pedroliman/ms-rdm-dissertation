@@ -1,0 +1,52 @@
+---
+title: "PlotsTest"
+author: "Pedro Nascimento de Lima"
+date: "10/11/2018"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+results_path = "C:/Temporario/rdm-results-backup/"
+if (!exists(x = "plots_results")){
+ load(paste0(results_path,"plots_results.rda")) 
+}
+```
+
+## Candidate Strategy NPV across scenarios
+
+```{r}
+plots_results$plots_linha_geral$plot_estrategia_candidata_vpl
+```
+
+## Candidate Strategy NPV across scenarios
+
+```{r}
+plots_results$plots_linha_geral$plot_estrategia_candidata_vpl
+```
+
+## Global Demand across scenarios
+
+```{r, fig.align='center',fig.height=2.8,fig.width=4.5}
+plots_results$plots_linha_geral$plot_estrategia_candidata_demanda_global
+```
+
+## Previous Image
+
+\centerline{\includegraphics[height=2.5in]{images/npv.png}}
+
+## Global Demand across scenarios
+
+\centerline{\includegraphics[height=2.5in]{images/sales.png}}
+
+## 4 Players Net Present Value in a given scenario
+
+\centerline{\includegraphics[height=2.5in]{images/npv-players.png}}
+
+## Net Present Value across strategies and Scenarios
+
+\centerline{\includegraphics[height=2.5in]{images/npv-whisker.png}}
+
+## Regret across strategies and Scenarios
+
+\centerline{\includegraphics[height=2.5in]{images/regret-whisker.png}}
