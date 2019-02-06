@@ -1,3 +1,7 @@
+# Número de casos total a rodar:
+
+# mudar de 2 para mil
+n_ensemble_total = 54 * 2
 
 # Local da Planilha com Dados de Entrada:
 planilha_simulacao_opcao1_futuro = "params_calibracao_opcao1.xlsx"
@@ -37,14 +41,11 @@ opcoes_iniciais = list(
 opcoes = opcoes_iniciais
 
 
-# Original:
-# n_casos_total = 54 * 200
-n_casos_total = 54 * 200
 
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_opcao1_futuro, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
-n_ensemble_total = 10
+
 
 
 
@@ -63,6 +64,8 @@ BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
 
 # Simular
-results_teste = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
                                                  sdmodel = sdmodel, 
                                                  opcoes = opcoes)
+
+save(results, file = "results.rda")
