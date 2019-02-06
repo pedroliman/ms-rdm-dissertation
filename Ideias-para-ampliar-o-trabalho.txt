@@ -1,0 +1,7 @@
+Ideias para ampliar o trabalho:
+
+ - Usar um mecanismo de "trigger" para alterar a meta de target-share;
+
+ - Questão a Avaliar:
+  - Até que ponto as metas deveriam ser ajustadas? Ajustar as metas com muita frequência é ruim?
+  - Não ajustar as metas com frequência é pior?

@@ -1309,6 +1309,9 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, opcoes = op
   t_fim_teste = Sys.time()
   t_uma_rodada = as.numeric(difftime(time1 = t_fim_teste, time2 = t_inicio_teste, units = "secs"))
   
+  # Esta funcao Executa a Resolução do Modelo para uma dada linha do Ensemble.
+  # O Ideal para o modo paralelo seria executar "n" linhas do ensemble por vez.
+  
   solve_modelo = function(n_linha_ensemble) {
     params = ensemble[n_linha_ensemble,]
     res = solve_modelo_dissertacao(parametros = params, modelo = modelo, simtime = simtime)
@@ -1316,6 +1319,64 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, opcoes = op
     cbind(res,
           Lever = ensemble[n_linha_ensemble,opcoes$VarEstrategias],
           Scenario = ensemble[n_linha_ensemble,opcoes$VarCenarios])
+  }
+  
+
+  
+  # Forma não elegante de resolver o problema:
+  solve_modelo_batch = function(n_linhas_por_vez, linha_inicial) {
+    
+    first_result = solve_modelo(linha_inicial)
+    
+    for (i in (linha_inicial+1):(n_linhas_por_vez+linha_inicial-1)) {
+      results_solve_modelo = solve_modelo(i)
+      
+      if (i == (linha_inicial + 1)) {
+        results = rbind(first_result, results_solve_modelo)
+      } else {
+        results = rbind(results, results_solve_modelo)
+      }
+      
+    }
+    
+    results
+    
+  }
+  
+  
+  # Teste para o Azure - Passar tudo por parâmetro
+  solve_modelo_batch_azure = function(n_linhas_por_vez, linha_inicial, ensemble, modelo, simtime, START, FINISH, VERIFICAR_STOCKS, VERIFICAR_CHECKS, VAR_LEVER, VAR_SCENARIO, INICIALIZAR_ESTOQUES_COM_CASO_BASE, SIMULAR_HISTORICO_DIFERENTE, ANO_INICIO_AVALIACAO, VERIFICAR_GLOBAL, opcoes, STEP, solve_modelo_dissertacao) {
+    
+    ensemble = ensemble
+    modelo = modelo
+    simtime = simtime
+    START = START
+    FINISH = FINISH
+    VERIFICAR_STOCKS = VERIFICAR_STOCKS
+    VERIFICAR_CHECKS = VERIFICAR_CHECKS
+    VAR_LEVER = VAR_LEVER
+    VAR_SCENARIO = VAR_SCENARIO
+    INICIALIZAR_ESTOQUES_COM_CASO_BASE = INICIALIZAR_ESTOQUES_COM_CASO_BASE
+    SIMULAR_HISTORICO_DIFERENTE = SIMULAR_HISTORICO_DIFERENTE
+    ANO_INICIO_AVALIACAO = ANO_INICIO_AVALIACAO
+    VERIFICAR_GLOBAL = VERIFICAR_GLOBAL
+    opcoes = opcoes
+    STEP = STEP
+    solve_modelo_dissertacao = solve_modelo_dissertacao
+    
+    first_result = solve_modelo(linha_inicial)
+    
+    for (i in (linha_inicial+1):(n_linhas_por_vez+linha_inicial-1)) {
+      results_solve_modelo = solve_modelo(i)
+      
+      if (i == (linha_inicial + 1)) {
+        results = rbind(first_result, results_solve_modelo)
+      } else {
+        results = rbind(results, results_solve_modelo)
+      }
+      
+    }
+    
   }
   
   if(paralelo == TRUE) {
@@ -1371,40 +1432,73 @@ simular = function(simtime, modelo, ensemble, nomes_variaveis_final, opcoes = op
       dados_simulacao <- parLapply(cl, 1:nrow(ensemble), solve_modelo)
       stopCluster(cl)
       
+      # Unindo Dados da Simulação, seja entregues pelo Azure seja pelo meu
+      dados_simulacao = do.call(rbind, dados_simulacao)
       
     }
     
     if(modo_paralelo == "Azure") {
+      
+      browser()
+      
       # 3. Set your credentials - you need to give the R session your credentials to interact with Azure
       setCredentials("credentials.json")
       
-      # 4. Register the pool. This will create a new pool if your pool hasn't already been provisioned.
-      cluster <- makeCluster("cluster.json")
+      # 4. Register the pool. This will create a new pool if your pool hasn't already been provisioned
+      browser()
+      
+      cluster <- doAzureParallel::makeCluster("cluster.json")
+      
+      browser()
       
       # 5. Register the pool as your parallel backend
       registerDoAzureParallel(cluster)
       
+      browser()
+      
       # 6. Check that your parallel backend has been registered
-      getDoParWorkers()
+      # getDoParWorkers()
       
       # GErando resultado
       # browser()
-      dados_simulacao <- foreach(i = 1:nrow(ensemble)) %dopar% {
-        # This code is executed, in parallel, across your cluster.
-        solve_modelo()
+      
+      # O Tamanho do Ensemble precisa ser multiplo do número de tarefas
+      numero_de_tarefas = 10
+      
+      linhas_por_vez = nrow(ensemble) / numero_de_tarefas
+      
+      vetor_tarefas = seq(from = 1, by = linhas_por_vez, length.out = numero_de_tarefas)
+      
+      browser()
+      
+      # Primeira tentativa
+      # dados_simulacao <- foreach(i = vetor_tarefas, .combine='rbind') %dopar% {
+      #   solve_modelo_batch(n_linhas_por_vez = linhas_por_vez, linha_inicial = i)
+      # }
+      
+      # Segunda Tentativa - Também Não funcionou. Parece que tudo precisa estar encapsulado na função.
+      # dados_simulacao <- foreach(i = 1:nrow(ensemble), .combine='rbind') %dopar% {
+      #    as.data.frame(solve_modelo(i))
+      # }
+      
+      # Terceira tentativa -Tentando passar os parâmetros por "força bruta"
+      dados_simulacao <- foreach(i = vetor_tarefas, .combine='rbind') %dopar% {
+        solve_modelo_batch_azure(n_linhas_por_vez = linhas_por_vez, linha_inicial = i, ensemble, modelo, simtime, START, FINISH, VERIFICAR_STOCKS, VERIFICAR_CHECKS, VAR_LEVER, VAR_SCENARIO, INICIALIZAR_ESTOQUES_COM_CASO_BASE, SIMULAR_HISTORICO_DIFERENTE, ANO_INICIO_AVALIACAO, VERIFICAR_GLOBAL, opcoes, STEP, solve_modelo_dissertacao)
       }
+      
+      
+      browser()
       
     }
     
-    # Unindo Dados da Simulação, seja entregues pelo Azure seja pelo meu
-    dados_simulacao = do.call(rbind, dados_simulacao)
+    
     
     t_fim = Sys.time()
     
-    perf = t_estimado / as.numeric(difftime(time1 = t_fim, time2 = t_inicio, units = "secs")) / 0.75
-    message(t_fim)
+    # perf = t_estimado / as.numeric(difftime(time1 = t_fim, time2 = t_inicio, units = "secs")) / 0.75
+    # message(t_fim)
     message("Finalizando Simulacao. Finalizando Cluster")
-    message(paste("Indice de Performance",perf))
+    # message(paste("Indice de Performance",perf))
     #resultados_paralelo = lapply(1:nrow(ensemble), solve_modelo)
     dados_simulacao = as.data.frame(dados_simulacao)
     
@@ -3040,5 +3134,4 @@ format_percentage_for_humans = function(x, digits = 1){
 
 format_currency_for_humans = function(x, currency = "$", digits = 4) {
   paste(currency, format_for_humans(x, digits = digits), sep = " ")
-}
-
+  }

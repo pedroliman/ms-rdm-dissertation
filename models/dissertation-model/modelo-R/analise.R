@@ -329,7 +329,7 @@ mapply(write.csv2,
 # Esta opção é inspirada na abordagem utilizada por Lempert.
 opcoes$FiltrarCasosPlausiveis = FALSE
 opcoes$SimularApenasCasoBase = FALSE
-opcoes$N = n_ensemble_total
+opcoes$N = 10 # n_ensemble_total
 INICIALIZAR_ESTOQUES_COM_CASO_BASE = FALSE
 SIMULAR_HISTORICO_DIFERENTE = FALSE
 ANO_INICIO_AVALIACAO = 2018
@@ -340,9 +340,9 @@ BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
 
 # Simular
-# results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
-#                                            sdmodel = sdmodel, 
-#                                            opcoes = opcoes)
+results_teste = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+                                            sdmodel = sdmodel, 
+                                            opcoes = opcoes)
 
 # Salvar Resultados com apenas 10 anos simulados.
 
@@ -1524,3 +1524,22 @@ gganimate::anim_save()
 
 rmarkdown::render("dmdu-presentation/dmdu-presentation.Rmd", encoding = "UTF-8")
 
+
+#### Preparando os Dados para Análise Multi-Objetivo ####
+
+names(results$DadosSimulados)
+
+names(results$DadosUltimoPeriodo)
+
+## Unindo as Estratégias com os Resultados no Último Período do Scenario 1
+
+cenario_base = 2
+
+# Criando um Dataset para Análise de Tradeoffs
+um_cenario_com_estrategia = dplyr::inner_join(subset(results$DadosUltimoPeriodo, Scenario == cenario_base), results$Inputs$Levers)
+
+names(um_cenario_com_estrategia)
+
+c("Time", "Player 1 Profit", "Player 2 Profit", "Player 3 Profit", "Player 4 Profit")
+
+write.csv(um_cenario_com_estrategia, file = "analise_multi_objetivo.csv", row.names = F)
