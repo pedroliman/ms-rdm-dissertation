@@ -1,0 +1,852 @@
+version: '1.29'
+children:
+- rules:
+  - description: Created 2019-02-07 14:28:46
+    name: Page 001
+    type: page name rule
+  - filename: C:\Users\Pedro Lima\Documents\DiscoveryDV\Report.pptx
+    index: -1
+    left: 25
+    top: 20
+    type: powerpoint settings
+    width: 50
+  - alpha: false
+    base: Snapshot_
+    crop: false
+    legend: true
+    scalarbars: true
+    type: snapshot settings
+  - names:
+    - Set Membership
+    - Data Columns
+    - Page 001
+    - Data Files
+    - Plots
+    type: storyboard expanded nodes rule
+  - names:
+    - Snapshots
+    type: page controls expanded groups rule
+  - animation axis: null
+    auto-plot brushing: true
+    auto-plot marking: true
+    auto-plot pareto sort: true
+    axes color:
+    - 70
+    - 70
+    - 70
+    - 255
+    axes font focus: 60
+    axes font size: 11
+    background color:
+    - 255
+    - 255
+    - 255
+    - 255
+    camcorder animation cycle: false
+    camcorder camera cycle: false
+    camcorder looping: true
+    camcorder stack: ''
+    camera lock: false
+    caption font size: 9
+    caption positions:
+    - filename: NA
+      height: 0
+      position:
+      - 0.08
+      - 0.0400000000000001
+      row: utopia
+    color axis: '"aPercPeDAberto1"'
+    colorbar label color:
+    - 70
+    - 70
+    - 70
+    - 255
+    colorbar position:
+    - 9.11
+    - 35.65
+    colorbar size:
+    - 3.0
+    - 55.14
+    colorbar visibility: true
+    colorbars font size: 11
+    ctrl+click captions: []
+    data inspector font size: 11
+    data inspector height: 100
+    data inspector position:
+    - 57.0
+    - 67.0
+    data inspector visibility: false
+    description: ''
+    empty view edge labeling:
+    - none
+    - none
+    - none
+    empty view focus:
+    - 0.0
+    - 0.0
+    - 0.0
+    empty view position:
+    - 0.0
+    - 0.0
+    - 0.0
+    empty view viewup:
+    - 0
+    - 1
+    - 0
+    glyph color:
+    - 127
+    - 127
+    - 127
+    - 255
+    glyph scale: 1.0
+    glyph type: cone
+    h zeros hidden: true
+    hiding axis: brushing
+    label offset: 15.0
+    labeling axis: null
+    legend H:
+    - 1.0
+    - 1.0
+    legend O:
+    - 1.0
+    - 49.0
+    legend S:
+    - 1.0
+    - 33.0
+    legend T:
+    - 1.0
+    - 17.0
+    legend all:
+    - 0.76046
+    - 1.09739
+    legend border: true
+    legend color:
+    - 70
+    - 70
+    - 70
+    - 255
+    legend font size: 11
+    legend grouping: true
+    legend label: true
+    legend show:
+    - true
+    - true
+    - true
+    - true
+    legend space: false
+    marking axis: null
+    marking thickness: 0.002
+    markingbar label color:
+    - 70
+    - 70
+    - 70
+    - 255
+    markingbar position:
+    - 18.0
+    - 38.0
+    markingbar size:
+    - 3.0
+    - 55.0
+    markingbar visibility: true
+    name: NDPlot 001
+    orientation axis: null
+    orientation normalization limits:
+    - 180.0
+    - 360.0
+    plot size:
+    - 600
+    - 600
+    rotate view: false
+    rotation angle: 3.0
+    show on hover: ''
+    size axis: null
+    size normalization limits:
+    - 0.05
+    - 3.0
+    title offset: 10.0
+    tooltip font size: 7
+    transparency axis: null
+    transparency normalization limits:
+    - 0.1
+    - 1.0
+    type: NDPlot state
+    utopia point shape: sphere
+    utopia point visibility: true
+    window position:
+    - 0
+    - 71
+    window state:
+    - maximized
+    window type: internal
+    window visibility: false
+    x axis: '"sNPVProfit1_mean"'
+    x normalization limits:
+    - 0.0
+    - 1.0
+    x view edge labeling:
+    - min_min
+    - none
+    - none
+    x view focus:
+    - 0.5
+    - 0.0
+    - 0.0
+    x view position:
+    - 0.5
+    - -5.0
+    - 0.0
+    x view viewup:
+    - 0
+    - 0
+    - 1
+    xy view edge labeling:
+    - min_min
+    - min_min
+    - none
+    xy view focus:
+    - 0.433
+    - 0.215
+    - 0.0
+    xy view position:
+    - 0.433
+    - 0.215
+    - 6.377
+    xy view viewup:
+    - 0
+    - 1
+    - 0
+    xyz view edge labeling:
+    - max_min
+    - max_min
+    - max_min
+    xyz view focus:
+    - 0.5
+    - 0.5
+    - 0.5
+    xyz view position:
+    - 4.382
+    - 5.815
+    - 1.687
+    xyz view viewup:
+    - 0.0
+    - 0.0
+    - 1.0
+    xz view edge labeling:
+    - min_min
+    - none
+    - min_min
+    xz view focus:
+    - 0.26
+    - 0.0
+    - 0.46
+    xz view position:
+    - 0.26
+    - -6.5
+    - 0.46
+    xz view viewup:
+    - 0
+    - 0
+    - 1
+    y axis: '"sInstalledBase1_mean"'
+    y normalization limits:
+    - 0.0
+    - 1.0
+    y view edge labeling:
+    - none
+    - min_min
+    - none
+    y view focus:
+    - 0.0
+    - 0.5
+    - 0.0
+    y view position:
+    - 5.0
+    - 0.5
+    - 0.0
+    y view viewup:
+    - 0
+    - 0
+    - 1
+    yz view edge labeling:
+    - none
+    - min_min
+    - min_min
+    yz view focus:
+    - 0.0
+    - 0.26
+    - 0.46
+    yz view position:
+    - 6.5
+    - 0.26
+    - 0.46
+    yz view viewup:
+    - 0
+    - 0
+    - 1
+    z axis: '"sPrice1_mean"'
+    z normalization limits:
+    - 0.0
+    - 1.0
+    z view edge labeling:
+    - none
+    - none
+    - min_min
+    z view focus:
+    - 0.0
+    - 0.0
+    - 0.5
+    z view position:
+    - 0.0
+    - 5.0
+    - 0.5
+    z view viewup:
+    - 1
+    - 0
+    - 0
+  - C: '"aSwitchForCapacityStrategy1"'
+    H: brushing
+    auto plot hover: true
+    auto-plot brushing: true
+    auto-plot marking: true
+    auto-plot pareto sort: true
+    axes color:
+    - 70
+    - 68
+    - 70
+    - 255
+    background color:
+    - 255
+    - 255
+    - 255
+    - 255
+    border gradient: false
+    border gradient weight: 3.0
+    brush hiding: false
+    brushing slider width: 19.9
+    camcorder frame delay: 0
+    camcorder looping: true
+    camera:
+    - 162.7249999999999
+    - 59.449999999999875
+    canvas:
+    - 650.537727971598
+    - 405.30115783332064
+    caption alpha: 255
+    caption color:
+    - 70
+    - 70
+    - 70
+    - 255
+    caption font size: 10
+    captions: []
+    colorbar alpha: 0
+    colorbar color:
+    - 70
+    - 70
+    - 70
+    - 255
+    colorbar font size: 10
+    colorbar position:
+    - 12.3
+    - 86.7
+    colorbar size:
+    - 33.0
+    - 2.98
+    colorbar visibility: true
+    control groups:
+    - Font Sizes
+    - Color Axis
+    - Transparency Axis
+    - Parallel Axes
+    - Size Axis
+    - All Axes
+    controls width: 325
+    data inspector alpha: 255
+    data inspector color:
+    - 70
+    - 70
+    - 70
+    - 255
+    data inspector font size: 10
+    data inspector height: 100
+    data inspector position:
+    - 1.0
+    - 1.0
+    data inspector visibility: false
+    data outside limits: hide
+    description: ''
+    font size: 10
+    h zeros hidden: true
+    hover:
+    - '"sPrice1_mean"'
+    - '"sNPVProfit1_mean"'
+    - '"sInstalledBase1_mean"'
+    - '"aOrderShare1_mean"'
+    - '"aOrcamentoPeD1"'
+    - '"aSwitchForCapacityStrategy1"'
+    - brushing
+    hover alpha: 180
+    hover font size: 8
+    hover label color:
+    - 70
+    - 70
+    - 70
+    - 255
+    hovered lines border color:
+    - 70
+    - 70
+    - 70
+    - 255
+    hovered lines color:
+    - 0
+    - 165
+    - 220
+    - 255
+    hovered matched axes:
+    - C
+    - T
+    - H
+    hovered points border color:
+    - 70
+    - 70
+    - 70
+    - 255
+    hovered points color:
+    - 0
+    - 165
+    - 220
+    - 255
+    hovered scale: 1.0
+    hovered show: true
+    hovered thickness: 1.5
+    label alignment: right
+    label angle: 0.0
+    label background alpha: 0
+    label color:
+    - 70
+    - 70
+    - 70
+    - 255
+    label font size: 10
+    label offset: -20
+    line alpha: 255
+    line alpha limits:
+    - 5.0
+    - 230.0
+    line color:
+    - 0
+    - 165
+    - 221
+    - 255
+    line size: 5.0
+    line size limits:
+    - 4.0
+    - 75.0
+    lines on: true
+    lock view: false
+    marking border weight: 2.5
+    markingbar alpha: 0
+    markingbar color:
+    - 70
+    - 70
+    - 70
+    - 255
+    markingbar font size: 10
+    markingbar position:
+    - 55.0
+    - 85.0
+    markingbar size:
+    - 33.0
+    - 3.0
+    markingbar visibility: true
+    name: PCPlot 001
+    parallel:
+    - '"sPrice1_mean"'
+    - '"sNPVProfit1_mean"'
+    - '"sInstalledBase1_mean"'
+    - '"aOrderShare1_mean"'
+    - '"aOrcamentoPeD1"'
+    point alpha: 255.0
+    point alpha limits:
+    - 5.0
+    - 230.0
+    point color:
+    - 0
+    - 165
+    - 220
+    - 255
+    point size: 10.0
+    point size limits:
+    - 3.0
+    - 50.0
+    points on: false
+    position:
+    - 208
+    - 71
+    pref arrows size: 10.0
+    pref arrows visible: true
+    presentation mode: false
+    saved size:
+    - 950
+    - 908
+    show utopia line: false
+    show utopia points: false
+    size:
+    - 1036
+    - 652
+    tick style: left
+    title alignment: center
+    title angle: -1
+    title color:
+    - 70
+    - 70
+    - 70
+    - 255
+    title font size: 6
+    title offset: -25
+    type: PCPlot state
+    utopia at data limits: false
+    utopia border thickness: 0.0
+    utopia line alpha: 255.0
+    utopia line border color:
+    - 0
+    - 0
+    - 0
+    - 255
+    utopia line color:
+    - 0
+    - 0
+    - 0
+    - 255
+    utopia line size: 6.5
+    utopia matched axes:
+    - C
+    - S
+    - T
+    - M
+    utopia points alpha: 255.0
+    utopia points border color:
+    - 0
+    - 0
+    - 0
+    - 255
+    utopia points color:
+    - 0
+    - 0
+    - 0
+    - 255
+    utopia points size: 10.0
+    v min in front: true
+    visible: false
+    win state:
+    - maximized
+    win type: external
+  - auto-plot brushing: true
+    background color:
+    - 255
+    - 255
+    - 255
+    - 255
+    brushing slider width: 12.0
+    color axis: '"aDesiredMarketShare1"'
+    control groups:
+    - Font Sizes
+    - All Axes
+    - Labeling
+    - Display Options
+    controls width: 325
+    count size: 6
+    description: ''
+    diagonal plotting: both
+    grid spacing: 2
+    hiding axis: null
+    label color:
+    - 70
+    - 70
+    - 70
+    - 255
+    label offset: 0
+    label size: 6
+    name: SPMatrix 001
+    plotted:
+    - '"sNPVProfit1_mean"'
+    - '"sInstalledBase1_mean"'
+    - '"sPrice1_mean"'
+    point color:
+    - 50
+    - 98
+    - 176
+    - 255
+    point size: 0.6
+    position:
+    - 344
+    - -742
+    presentation mode: false
+    saved_size:
+    - 1036
+    - 652
+    show counts: true
+    size:
+    - 950
+    - 908
+    state:
+    - maximized
+    title color:
+    - 70
+    - 70
+    - 70
+    - 255
+    title offset: 10
+    title size: 10
+    type: matrix plot
+    visible: false
+    win.type: external
+    zeros hidden: true
+  - mode: AND
+    rules: []
+    type: brushing state
+  - M1:
+      color:
+      - 255
+      - 0
+      - 0
+      - 255
+      description: double-click to add...
+      points:
+      - - 3
+        - C:/dev/ms-rdm-dissertation/models/dissertation-model/modelo-R/analise-multi-obj/output_analise_multi_objetivo.csv
+    color:
+    - 127
+    - 127
+    - 127
+    - 255
+    type: marking state
+  - rules:
+    - active: true
+      column: '"sPrice1_mean"'
+      epsilon: 1.0e-06
+      sense: min
+    - active: true
+      column: '"sInstalledBase1_mean"'
+      epsilon: 1.0e-06
+      sense: min
+    - active: true
+      column: '"sNPVProfit1_mean"'
+      epsilon: 1.0e-06
+      sense: min
+    - active: true
+      column: '"aOrderShare1_mean"'
+      epsilon: 1.0e-06
+      sense: min
+    - active: true
+      column: '"aPercPeDAberto1"'
+      epsilon: 1.0e-06
+      sense: min
+    - active: true
+      column: '"aDesiredMarketShare1"'
+      epsilon: 1.0e-06
+      sense: min
+    - active: true
+      column: '"sNPVProfit1_sd"'
+      epsilon: 1.0e-06
+      sense: min
+    - active: true
+      column: '"aOrcamentoPeD1"'
+      epsilon: 1.0e-06
+      sense: min
+    type: pareto state
+  - column: filename
+    name: File Name
+    type: display name rule
+  - column: filename
+    limit: -1.0
+    sense: lower
+    type: plotting limit rule
+  - column: filename
+    limit: 1.0
+    sense: upper
+    type: plotting limit rule
+  - column: filename
+    desired: string
+    type: column type rule
+  - column: filename
+    interpretation: categorical
+    type: column interpretation rule
+  - column: row
+    name: File Row
+    type: display name rule
+  - column: row
+    desired: int
+    type: column type rule
+  - column: brushing
+    name: Brushing
+    type: display name rule
+  - column: brushing
+    desired: bool
+    type: column type rule
+  - column: brushing
+    interpretation: categorical
+    type: column interpretation rule
+  - column: sort
+    name: Pareto Sort
+    type: display name rule
+  - column: sort
+    desired: bool
+    type: column type rule
+  - column: sort
+    interpretation: categorical
+    type: column interpretation rule
+  - column: marking
+    name: Marking
+    type: display name rule
+  - colormap: marking
+    column: marking
+    type: color map rule
+  - column: marking
+    desired: string
+    type: column type rule
+  - column: marking
+    interpretation: categorical
+    type: column interpretation rule
+  - column: membership
+    name: Set Membership
+    type: display name rule
+  - column: membership
+    desired: string
+    type: column type rule
+  - column: membership
+    interpretation: categorical
+    type: column interpretation rule
+  - column: '"time"'
+    direction: forward
+    mode: moving
+    offset: 91738
+    pause: true
+    step: 1.0
+    type: animation state
+    window: 2.0
+    wrap: false
+  - column: '"sNPVProfit1_mean"'
+    name: NPV
+    type: display name rule
+  - column: '"sNPVProfit1_mean"'
+    labels:
+    - '0'
+    - ' 0.4 B'
+    - ' 0.8 B'
+    - ' 1.2 B'
+    - ' 1.6 B'
+    - ' 2 B'
+    type: labeling rule
+  - column: '"sNPVProfit1_mean"'
+    sense: max
+    type: preference direction
+  - column: '"sInstalledBase1_mean"'
+    name: Installed Base
+    type: display name rule
+  - column: '"sInstalledBase1_mean"'
+    labels:
+    - '0'
+    - ' 6 K'
+    - ' 12 K'
+    - ' 18 K'
+    - ' 24 K'
+    - ' 30 K'
+    type: labeling rule
+  - column: '"sInstalledBase1_mean"'
+    sense: max
+    type: preference direction
+  - column: '"sPrice1_mean"'
+    name: Avg. Price
+    type: display name rule
+  - column: '"sPrice1_mean"'
+    labels:
+    - 110 K
+    - ' 122 K'
+    - ' 134 K'
+    - ' 146 K'
+    - ' 158 K'
+    - ' 170 K'
+    type: labeling rule
+  - column: '"aOrderShare1_mean"'
+    name: Mkt Share
+    type: display name rule
+  - column: '"aOrderShare1_mean"'
+    sense: max
+    type: preference direction
+  - column: '"aSwitchForCapacityStrategy1"'
+    name: Cap. Strategy
+    type: display name rule
+  - column: '"aSwitchForCapacityStrategy1"'
+    labels:
+    - Agr.
+    - ' Cons.'
+    type: labeling rule
+  - column: '"aSwitchForCapacityStrategy1"'
+    desired: int
+    type: column type rule
+  - column: '"aPercPeDAberto1"'
+    name: Open R & D
+    type: display name rule
+  - colormap: viridis
+    column: '"aPercPeDAberto1"'
+    type: color map rule
+  - column: '"aDesiredMarketShare1"'
+    name: Desired Mkt Share
+    type: display name rule
+  - column: '"aOrcamentoPeD1"'
+    name: R & D Budget
+    type: display name rule
+  - files:
+    - active: true
+      filename: C:/dev/ms-rdm-dissertation/models/dissertation-model/modelo-R/analise-multi-obj/output_analise_multi_objetivo.csv
+      filetype: csv_with_comments
+      interval: -1
+    type: file list
+  - filenames:
+      0: C:/dev/ms-rdm-dissertation/models/dissertation-model/modelo-R/analise-multi-obj/output_analise_multi_objetivo.csv
+    rules:
+    - description: Pareto sorted rows in "sPrice1_mean" (min), "sInstalledBase1_mean"
+        (min), "sNPVProfit1_mean" (min), "aOrderShare1_mean" (min), "aPercPeDAberto1"
+        (min), "aDesiredMarketShare1" (min), "sNPVProfit1_sd" (min) and "aOrcamentoPeD1"
+        (min) (37)
+      letter: A
+      rows:
+      - 0 1
+      - 0 3
+      - 0 5
+      - 0 6
+      - 0 7
+      - 0 8
+      - 0 9
+      - 0 10
+      - 0 11
+      - 0 13
+      - 0 15
+      - 0 17
+      - 0 18
+      - 0 19
+      - 0 21
+      - 0 23
+      - 0 24
+      - 0 25
+      - 0 26
+      - 0 27
+      - 0 28
+      - 0 29
+      - 0 30
+      - 0 31
+      - 0 33
+      - 0 35
+      - 0 37
+      - 0 39
+      - 0 41
+      - 0 43
+      - 0 44
+      - 0 45
+      - 0 46
+      - 0 47
+      - 0 49
+      - 0 51
+      - 0 53
+    type: set membership

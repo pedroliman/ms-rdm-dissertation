@@ -1,8 +1,3 @@
-# Número de casos total a rodar:
-
-# mudar de 2 para mil
-n_ensemble_total = 54 * 2
-
 # Local da Planilha com Dados de Entrada:
 planilha_simulacao_opcao1_futuro = "params_calibracao_opcao1.xlsx"
 
@@ -41,12 +36,9 @@ opcoes_iniciais = list(
 opcoes = opcoes_iniciais
 
 
-
 n_estrategias = nrow(carregar_inputs(arquivo_de_inputs = planilha_simulacao_opcao1_futuro, opcoes = opcoes)$Levers)
 
 # Tamanho do Ensemble Adimitido (para simular todas as estratégias)
-
-
 
 
 #### 4.2 Simulação dos Casos Contra Estratégias ####
@@ -63,9 +55,45 @@ VERIFICAR_STOCKS = FALSE; VERIFICAR_CHECKS = FALSE; CHECK_PRECISION = 0.001;
 BROWSE_ON_DIFF = TRUE; VERIFICAR_GLOBAL = FALSE;
 source('funcoes.R', encoding = 'UTF-8')
 
-# Simular
-results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
-                                                 sdmodel = sdmodel, 
-                                                 opcoes = opcoes)
+vetor_num_de_cenarios = c(5)
 
-save(results, file = "results.rda")
+for(i in vetor_num_de_cenarios) {
+  print(i)
+  
+  # Definir o Numero de Rodadas a Realizar
+  opcoes$N = i
+  
+  # In?cio da Simulacao
+  print(paste0("iniciando a simulacao com o seguinte n?mero de cen?rios : ",i))
+  Sys.time()
+  
+  # Simular
+  results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+                                             sdmodel = sdmodel, 
+                                             opcoes = opcoes)
+  names(results$DadosSimulados)
+  
+  # Observando apenas duas medi??es por ano para economizar espa?o:
+  ano_inicial = min(results$DadosSimulados$time)
+  ano_final = max(results$DadosSimulados$time)
+  vetor_tempo = seq.default(from = ano_inicial, to = ano_final, length.out = 21)
+  
+  results$DadosSimulados = subset(results$DadosSimulados, time %in% vetor_tempo)
+  
+  saveRDS(results, paste0(i,"results.RDS"))
+
+  # Salvar os Resultados
+  # save(results, file = paste0(i, "results.rda"))
+  
+  Sys.sleep(10)
+  
+}
+
+# Simular
+# results = simularRDM_e_escolher_estrategia(inputs = planilha_inputs,
+#                                                 sdmodel = sdmodel, 
+#                                                 opcoes = opcoes)
+
+
+
+

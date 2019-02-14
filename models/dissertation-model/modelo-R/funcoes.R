@@ -1649,7 +1649,7 @@ simular_RDM = function(arquivo_de_inputs="params.xlsx", sdmodel, n = opcoes$N, o
 #' @param var_group variável a agrupar (ex.: Cenários)
 #'
 #' @return mesmo dataframe de entrada com variáveis a mais.
-calcular_regret = function(dados, var_resposta, var_group) {
+calcular_regret = function(dados, var_resposta, var_group, sentido = "max") {
   var_maximo = paste("MaximoPor", var_group, sep = "")
   var_minimo = paste("MinimoPor", var_group, sep = "")
   var_regret = paste(var_resposta, "Regret", sep = "")
@@ -1659,7 +1659,11 @@ calcular_regret = function(dados, var_resposta, var_group) {
   
   dados[var_minimo] = calcular_minimo_por_variavel(var_resposta = var_resposta, var_group = var_group, dados = dados)
   
-  dados[var_regret] = dados[var_maximo] - dados[var_resposta]
+  if (sentido == "max") {
+    dados[var_regret] = dados[var_maximo] - dados[var_resposta]  
+  } else {
+    dados[var_regret] = dados[var_resposta] - dados[var_minimo]
+  }
   
   dados[var_regret_perc] = dados[var_regret] / (dados[var_maximo] - dados[var_minimo])
   
@@ -1683,8 +1687,10 @@ resumir_variavel_resposta = function(dados = dados_ano_final, var_resposta = "Ca
     expr =
       dplyr::group_by(dados, VarGroup) 
     %>% dplyr::select(VarGroup, VarResposta, VarRegret, VarRegretPerc)
-    %>% dplyr::summarise(VarMedio = mean(VarResposta, na.rm = TRUE),
+    %>% dplyr::summarise(
+                  VarMedio = mean(VarResposta, na.rm = TRUE),
                   VarDev = sd(VarResposta, na.rm = TRUE),
+                  VarMediaSobDesvio = mean(VarResposta, na.rm = TRUE) / sd(VarResposta, na.rm = TRUE),
                   Percentil25Var = quantile(VarResposta, probs = c(0.25), na.rm = TRUE),
                   Percentil75Var = quantile(VarResposta, probs = c(0.75), na.rm = TRUE),
                   RegretMedio = mean(VarRegret, na.rm = TRUE),
@@ -1710,6 +1716,7 @@ resumir_variavel_resposta = function(dados = dados_ano_final, var_resposta = "Ca
     var_group,
     paste(var_resposta, "Medio", sep = ""),
     paste(var_resposta, "Desvio", sep = ""),
+    paste(var_resposta, "MediaSobreDesvio", sep = ""),
     paste(var_resposta, "Percentil25", sep = ""),
     paste(var_resposta, "Percentil75", sep = ""),
     paste(var_regret, "Medio", sep = ""),
@@ -1771,8 +1778,14 @@ escolher_estrategia_candidata = function(dados, resumo_estrategias, var_resposta
 
 ##### CALCULAR E RESUMIR REGRET #####
 
-calcular_e_resumir_regret = function(dados, var_resposta, var_cenarios, var_estrategias) {
-  dados = calcular_regret(dados = dados, var_resposta = var_resposta, var_group = var_cenarios)
+calcular_e_resumir_regret = function(dados, var_resposta, var_cenarios, var_estrategias, sentido = "max") {
+  
+  if (sentido == "max") {
+    dados = calcular_regret(dados = dados, var_resposta = var_resposta, var_group = var_cenarios, sentido = "max")  
+  } else {
+    dados = calcular_regret(dados = dados, var_resposta = var_resposta, var_group = var_cenarios, sentido = "min")
+  }
+  
   
   # Resumindo Variável de Resposta Cash:
   resumo_estrategias = resumir_variavel_resposta(dados = dados, var_resposta = var_resposta, var_group = var_estrategias)
