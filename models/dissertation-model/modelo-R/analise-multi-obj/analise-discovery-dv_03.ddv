@@ -17,20 +17,19 @@ children:
     scalarbars: true
     type: snapshot settings
   - names:
-    - NDPlot 001.Glyphs
-    - Set Membership
-    - NDPlot 001.Fonts
-    - Data Files
-    - Page 001
-    - NDPlot 001.Axes Limits
-    - NDPlot 001.XYZ Labels
     - NDPlot 001.Camera View
-    - Plots
-    - NDPlot 001.Marking Bar
-    - output_regret_metricas.csv
-    - NDPlot 001.Color Bar
-    - Data Columns
+    - Page 001
     - NDPlot 001.Legend
+    - NDPlot 001.Color Bar
+    - Data Files
+    - NDPlot 001.XYZ Labels
+    - Set Membership
+    - NDPlot 001.Axes Limits
+    - NDPlot 001.Glyphs
+    - NDPlot 001.Marking Bar
+    - NDPlot 001.Fonts
+    - Plots
+    - Data Columns
     type: storyboard expanded nodes rule
   - names: []
     type: page controls expanded groups rule
@@ -189,7 +188,7 @@ children:
     utopia point shape: sphere
     utopia point visibility: false
     window position:
-    - -9
+    - 0
     - 16
     window state:
     - normal
@@ -341,11 +340,11 @@ children:
     camcorder frame delay: 0
     camcorder looping: true
     camera:
-    - 269.55000000000007
-    - 57.799999999999955
+    - 269
+    - 57
     canvas:
-    - 482.65958828096433
-    - 370.76600985826525
+    - 482
+    - 370
     caption alpha: 255
     caption color:
     - 0
@@ -570,11 +569,11 @@ children:
     camcorder frame delay: 0
     camcorder looping: true
     camera:
-    - 106.37499999999991
-    - 82.42500000000004
+    - 106
+    - 82
     canvas:
-    - 376.91621707489014
-    - 230.33768821243285
+    - 376
+    - 230
     caption alpha: 255
     caption color:
     - 70
@@ -794,11 +793,11 @@ children:
     camcorder frame delay: 0
     camcorder looping: true
     camera:
-    - 433.5999999999988
-    - 124.22499999999985
+    - 433
+    - 124
     canvas:
-    - 1352.2701747988751
-    - 520.035709281579
+    - 1352
+    - 520
     caption alpha: 255
     caption color:
     - 70
@@ -822,9 +821,9 @@ children:
     - 3.95
     colorbar visibility: true
     control groups:
-    - Transparency Axis
     - All Axes
     - Color Axis
+    - Transparency Axis
     controls width: 325
     data inspector alpha: 255
     data inspector color:
@@ -932,7 +931,7 @@ children:
     - '"sPriceAvgRegretPercentil75"'
     - '"aPerformanceAvgRegretPercentil75"'
     - '"sTotalInstalledBaseRegretPercentil75"'
-    point alpha: 246
+    point alpha: 246.0
     point alpha limits:
     - 5.0
     - 230.0
@@ -948,7 +947,7 @@ children:
     points on: false
     position:
     - 88
-    - -769
+    - 0
     pref arrows size: 10.0
     pref arrows visible: true
     presentation mode: false
@@ -958,8 +957,8 @@ children:
     show utopia line: false
     show utopia points: false
     size:
-    - 2230
-    - 964
+    - 1366
+    - 768
     tick style: left
     title alignment: center
     title angle: 0.0
@@ -1197,33 +1196,6 @@ children:
   - column: '"sNPVProfit1RegretPercentil75"'
     sense: min
     type: preference direction
-  - column: '"aPerformance1RegretPercentil75"'
-    name: Product Perf. Regret
-    type: display name rule
-  - column: '"aPerformance1RegretPercentil75"'
-    sense: min
-    type: preference direction
-  - column: '"aSwitchForCapacityStrategy1"'
-    name: Capacity Strategy
-    type: display name rule
-  - column: '"aSwitchForCapacityStrategy1"'
-    labels:
-    - Aggressive
-    - ' Conservative'
-    type: labeling rule
-  - column: '"aSwitchForCapacityStrategy1"'
-    desired: string
-    type: column type rule
-  - column: '"Lever"'
-    name: 'Strategy #'
-    type: display name rule
-  - column: '"aDesiredMarketShare1"'
-    name: Target Mkt Share
-    type: display name rule
-  - column: '"aDesiredMarketShare1"'
-    kind: colormap
-    reverse: true
-    type: reverse rule
   - column: '"aOrcamentoPeD1"'
     name: R & D Budget
     type: display name rule
@@ -1235,6 +1207,36 @@ children:
     limit: 0.15
     sense: upper
     type: plotting limit rule
+  - column: '"aDesiredMarketShare1"'
+    name: Target Mkt Share
+    type: display name rule
+  - column: '"aDesiredMarketShare1"'
+    kind: colormap
+    reverse: true
+    type: reverse rule
+  - column: '"aPercPeDAberto1"'
+    name: Open R & D
+    type: display name rule
+  - column: '"Lever"'
+    name: 'Strategy #'
+    type: display name rule
+  - column: '"aSwitchForCapacityStrategy1"'
+    name: Capacity Strategy
+    type: display name rule
+  - column: '"aSwitchForCapacityStrategy1"'
+    labels:
+    - Aggressive
+    - ' Conservative'
+    type: labeling rule
+  - column: '"aSwitchForCapacityStrategy1"'
+    desired: string
+    type: column type rule
+  - column: '"aPerformance1RegretPercentil75"'
+    name: Product Perf. Regret
+    type: display name rule
+  - column: '"aPerformance1RegretPercentil75"'
+    sense: min
+    type: preference direction
   - column: '"aOrderShare1RegretPercentil75"'
     name: Order Share Regret
     type: display name rule
@@ -1250,18 +1252,6 @@ children:
   - column: '"aOrderShare1RegretPercentil75"'
     sense: min
     type: preference direction
-  - column: '"aPercPeDAberto1"'
-    name: Open R & D
-    type: display name rule
-  - column: '"sInstalledBase1RegretPercentil75"'
-    name: Installed Base Regret
-    type: display name rule
-  - column: '"sInstalledBase1RegretPercentil75"'
-    sense: min
-    type: preference direction
-  - column: '"sCumulativeAdoptersRegretPercentil75"'
-    name: Cum. Adopters Regret
-    type: display name rule
   - column: '"sPriceAvgRegretPercentil75"'
     name: Avg Price Regret
     type: display name rule
@@ -1280,6 +1270,15 @@ children:
   - column: '"sTotalInstalledBaseRegretPercentil75"'
     sense: min
     type: preference direction
+  - column: '"sInstalledBase1RegretPercentil75"'
+    name: Installed Base Regret
+    type: display name rule
+  - column: '"sInstalledBase1RegretPercentil75"'
+    sense: min
+    type: preference direction
+  - column: '"sCumulativeAdoptersRegretPercentil75"'
+    name: Cum. Adopters Regret
+    type: display name rule
   - files:
     - active: true
       filename: C:/dev/ms-rdm-dissertation/models/dissertation-model/modelo-R/analise-multi-obj/output_regret_metricas.csv
